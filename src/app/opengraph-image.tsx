@@ -12,22 +12,45 @@ export const size = {
 export const contentType = 'image/png'
 
 export default async function Image() {
+  // Fetch the background image
+  const backgroundImageData = await fetch(
+    new URL('../../public/images/background.jpg', import.meta.url)
+  ).then((res) => res.arrayBuffer())
+
+  // Fetch the profile image
+  const profileImageData = await fetch(
+    new URL('../../public/images/profile.jpg', import.meta.url)
+  ).then((res) => res.arrayBuffer())
+
   return new ImageResponse(
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #0c0a1a 0%, #1a0a2e 50%, #2d1b4e 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '80px',
           position: 'relative',
         }}
       >
-        {/* Gradient Overlay */}
+        {/* Background Image */}
+        <img
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          src={backgroundImageData as any}
+          alt="Background"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
+
+        {/* Dark Overlay for better text readability */}
         <div
           style={{
             position: 'absolute',
@@ -35,7 +58,7 @@ export default async function Image() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(255, 0, 245, 0.15) 0%, transparent 50%)',
+            background: 'rgba(0, 0, 0, 0.4)',
           }}
         />
 
@@ -47,8 +70,24 @@ export default async function Image() {
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1,
+            padding: '80px',
           }}
         >
+          {/* Profile Image */}
+          <img
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            src={profileImageData as any}
+            alt="Ismail Kattakath"
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '4px solid #00d9ff',
+              marginBottom: 30,
+            }}
+          />
+
           {/* Name */}
           <h1
             style={{
