@@ -8,7 +8,10 @@ const colorMap: { [key: string]: string } = {
   'Cloud Services': 'bg-[var(--md-sys-color-secondary)]',
   'Authentication & Security': 'bg-[var(--md-sys-color-tertiary)]',
   'DevOps & CI/CD': 'bg-[var(--md-sys-color-primary)]',
-  'Programming Languages': 'bg-[var(--md-sys-color-secondary)]',
+  'Backend & APIs': 'bg-[var(--md-sys-color-secondary)]',
+  'Programming / Scripting': 'bg-[var(--md-sys-color-tertiary)]',
+  'Databases': 'bg-[var(--md-sys-color-primary)]',
+  'Protocols': 'bg-[var(--md-sys-color-secondary)]',
   'Web & Mobile UI': 'bg-[var(--md-sys-color-tertiary)]',
 }
 

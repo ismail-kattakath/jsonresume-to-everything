@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ChevronDown, Github, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+import { ChevronDown, Github, Linkedin, Mail, Phone, MapPin, Globe } from 'lucide-react'
 import { contactInfo } from '@/lib/data/portfolio'
 
 export default function Hero() {
@@ -31,7 +31,7 @@ export default function Hero() {
           </h1>
           
           <h2 className="md3-title-large md3-on-surface-variant mb-6 max-w-2xl mx-auto">
-            Principal Software Engineer & AI Research Scientist
+            {contactInfo.title}
           </h2>
           
           <p className="md3-body-large md3-on-surface-variant mb-8 max-w-2xl mx-auto">
@@ -75,8 +75,21 @@ export default function Hero() {
           >
             View Projects
           </motion.a>
+          {contactInfo.website && (
+            <motion.a
+              href={`https://${contactInfo.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="md3-btn-outlined inline-flex items-center justify-center gap-2"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Globe size={16} />
+              Website
+            </motion.a>
+          )}
           <motion.a
-            href="https://github.com/aloshy-ai"
+            href={`https://${contactInfo.github}`}
             target="_blank"
             rel="noopener noreferrer"
             className="md3-btn-outlined inline-flex items-center justify-center gap-2"
@@ -87,7 +100,7 @@ export default function Hero() {
             GitHub
           </motion.a>
           <motion.a
-            href="https://linkedin.com/in/ismailkattakath"
+            href={`https://${contactInfo.linkedin}`}
             target="_blank"
             rel="noopener noreferrer"
             className="md3-btn-outlined inline-flex items-center justify-center gap-2"

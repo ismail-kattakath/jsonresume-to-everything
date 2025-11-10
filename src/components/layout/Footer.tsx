@@ -17,14 +17,14 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3 className="md3-title-large mb-4">Ismail Kattakath</h3>
+            <h3 className="md3-title-large mb-4">{contactInfo.name}</h3>
             <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] mb-4">
-              Principal Software Engineer & AI Research Scientist with 15+ years 
-              of experience building scalable, mission-critical systems.
+              {contactInfo.title} with 15+ years of experience building scalable,
+              mission-critical systems.
             </p>
             <div className="flex space-x-4">
               <motion.a
-                href="https://github.com/aloshy-ai"
+                href={`https://${contactInfo.github}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
@@ -34,7 +34,7 @@ export default function Footer() {
                 <Github size={18} />
               </motion.a>
               <motion.a
-                href="https://linkedin.com/in/ismailkattakath"
+                href={`https://${contactInfo.linkedin}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
