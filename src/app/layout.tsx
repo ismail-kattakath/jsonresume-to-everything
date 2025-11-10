@@ -14,21 +14,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ismail.kattakath.com'),
-  title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
-  description: "Principal Software Engineer & Technical Leader | 15+ Years Architecting Full-Stack & AI/ML Solutions | OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways, RAG Systems & Production GenAI",
+  title: {
+    default: "Ismail Kattakath | Principal Software Engineer & Technical Leader",
+    template: "%s | Ismail Kattakath"
+  },
+  description: "Principal Software Engineer & Technical Leader with 15+ Years Architecting Full-Stack & AI/ML Solutions. Specializing in OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways, RAG Systems & Production GenAI.",
   keywords: "Principal Software Engineer, Technical Leader, Full Stack, AI/ML, OAuth, SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems, GenAI, Machine Learning, Cloud Architecture",
   authors: [{ name: "Ismail Kattakath" }],
   openGraph: {
-    title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
-    description: "15+ Years Architecting Full-Stack & AI/ML Solutions | Specializing in OAuth/SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems & Production GenAI Pipelines",
+    title: "Ismail Kattakath | Principal Software Engineer & Technical Leader",
+    description: "15+ Years Architecting Full-Stack & AI/ML Solutions | OAuth/SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems & Production GenAI",
     url: "https://ismail.kattakath.com",
-    siteName: "Ismail Kattakath - Portfolio",
+    siteName: "Ismail Kattakath",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
+    title: "Ismail Kattakath | Principal Software Engineer & Technical Leader",
     description: "15+ Years Architecting Full-Stack & AI/ML Solutions | OAuth/SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems & Production GenAI",
     creator: "@ismailkattakath",
   },
