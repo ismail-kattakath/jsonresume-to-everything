@@ -53,13 +53,15 @@ export default function Header() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Zap 
-              size={28} 
-              className="text-[var(--md-sys-color-primary)]"
+            <img 
+              src="./images/profile.jpg" 
+              alt="Ismail Kattakath"
+              className="w-10 h-10 rounded-full object-cover"
+              style={{
+                border: '2px solid var(--md-sys-color-primary)',
+              }}
             />
-            <span className="text-lg font-bold text-[var(--md-sys-color-on-surface)]">
-              IK
-            </span>
+
           </motion.button>
 
           {/* Desktop Navigation */}

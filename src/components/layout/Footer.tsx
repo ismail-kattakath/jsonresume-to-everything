@@ -21,7 +21,14 @@ export default function Footer() {
             className="md:col-span-2"
           >
             <div className="flex items-center gap-2 mb-4">
-              <Zap size={32} className="text-[var(--md-sys-color-primary)]" />
+              <img 
+              src="./images/profile.jpg" 
+              alt="Ismail Kattakath"
+              className="w-12 h-12 rounded-full object-cover"
+              style={{
+                border: '2px solid var(--md-sys-color-primary)',
+              }}
+            />
               <h3 className="md3-title-large">{contactInfo.name}</h3>
             </div>
             <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] mb-6 max-w-md">

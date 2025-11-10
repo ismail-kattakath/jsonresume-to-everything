@@ -13,21 +13,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ismail Kattakath - Principal Software Engineer & AI Research Scientist",
-  description: "15+ years of software engineering expertise in AI/ML, full-stack development, and technical leadership. Specialized in machine learning, distributed systems, and scalable architectures.",
-  keywords: "Principal Software Engineer, AI Research Scientist, Machine Learning, Full Stack Developer, AI/ML Expert, Software Architecture, Technical Leadership",
+  metadataBase: new URL('https://ismail.kattakath.com'),
+  title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
+  description: "Principal Software Engineer & Technical Leader | 15+ Years Architecting Full-Stack & AI/ML Solutions | OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways, RAG Systems & Production GenAI",
+  keywords: "Principal Software Engineer, Technical Leader, Full Stack, AI/ML, OAuth, SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems, GenAI, Machine Learning, Cloud Architecture",
   authors: [{ name: "Ismail Kattakath" }],
   openGraph: {
-    title: "Ismail Kattakath - Principal Software Engineer & AI Research Scientist",
-    description: "15+ years of software engineering expertise in AI/ML, full-stack development, and technical leadership.",
+    title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
+    description: "15+ Years Architecting Full-Stack & AI/ML Solutions | Specializing in OAuth/SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems & Production GenAI Pipelines",
     url: "https://ismail.kattakath.com",
-    siteName: "Ismail Kattakath Portfolio",
+    siteName: "Ismail Kattakath - Portfolio",
     type: "website",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ismail Kattakath - Principal Software Engineer & AI Research Scientist",
-    description: "15+ years of software engineering expertise in AI/ML, full-stack development, and technical leadership.",
+    title: "Ismail Kattakath - Principal Software Engineer & Technical Leader",
+    description: "15+ Years Architecting Full-Stack & AI/ML Solutions | OAuth/SSO, CI/CD, Kubernetes, MCP Gateways, RAG Systems & Production GenAI",
+    creator: "@ismailkattakath",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code", // Add your Google Search Console verification
   },
 };
 
@@ -38,6 +55,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{
