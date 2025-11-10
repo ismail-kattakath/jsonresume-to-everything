@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
+// Remove edge runtime since it doesn't support fs operations
+// export const runtime = 'edge'
 export const dynamic = 'force-static'
 
 export const alt = 'Ismail Kattakath - Principal Software Engineer & Technical Leader'
@@ -12,15 +13,16 @@ export const size = {
 export const contentType = 'image/png'
 
 export default async function Image() {
-  // Fetch the background image
-  const backgroundImageData = await fetch(
-    new URL('../../public/images/background.jpg', import.meta.url)
-  ).then((res) => res.arrayBuffer())
+  // Use public URLs to fetch images
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
-  // Fetch the profile image
-  const profileImageData = await fetch(
-    new URL('../../public/images/profile.jpg', import.meta.url)
-  ).then((res) => res.arrayBuffer())
+  const backgroundImageData = await fetch(`${baseUrl}/images/background.jpg`).then((res) =>
+    res.arrayBuffer()
+  )
+
+  const profileImageData = await fetch(`${baseUrl}/images/profile.jpg`).then((res) =>
+    res.arrayBuffer()
+  )
 
   return new ImageResponse(
     (
@@ -69,7 +71,7 @@ export default async function Image() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 1,
+            zIndex: '1',
             padding: '80px',
           }}
         >
