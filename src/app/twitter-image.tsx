@@ -80,8 +80,8 @@ export default async function Image() {
             height: 280,
             borderRadius: '50%',
             objectFit: 'cover',
-            border: '6px solid #00d9ff',
-            boxShadow: '0 8px 32px rgba(0, 217, 255, 0.4)',
+            border: '6px solid #0a66c2',
+            boxShadow: '0 8px 32px rgba(10, 102, 194, 0.4)',
             zIndex: '1',
           }}
         />

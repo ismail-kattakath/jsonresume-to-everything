@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Linkedin } from 'lucide-react'
 
 export default function Hero() {
   return (
@@ -38,6 +38,19 @@ export default function Hero() {
             OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways,
             RAG Systems & Production GenAI
           </p>
+
+          <motion.a
+            href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ismailkattakath"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full md3-label-large shadow-md hover:shadow-lg transition-shadow"
+            style={{ backgroundColor: '#0a66c2', color: '#ffffff' }}
+          >
+            <Linkedin size={20} />
+            Follow me on LinkedIn
+          </motion.a>
         </motion.div>
 
 
