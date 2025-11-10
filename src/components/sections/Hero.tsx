@@ -25,15 +25,15 @@ export default function Hero() {
             />
           </div>
           
-          <h1 className="md3-display-large mb-4 max-w-4xl mx-auto">
+          <h1 className="md3-display-medium mb-6 max-w-4xl mx-auto font-medium">
             Ismail Kattakath
           </h1>
-          
-          <h2 className="md3-title-large md3-on-surface-variant mb-6 max-w-2xl mx-auto">
+
+          <h2 className="md3-headline-small md3-on-surface-variant mb-6 max-w-2xl mx-auto font-normal">
             Principal Software Engineer & Technical Leader
           </h2>
 
-          <p className="md3-body-large md3-on-surface-variant mb-8 max-w-2xl mx-auto">
+          <p className="md3-body-large md3-on-surface-variant mb-10 max-w-3xl mx-auto leading-relaxed">
             15+ Years Architecting Full-Stack & AI/ML Solutions | Specializing in
             OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways,
             RAG Systems & Production GenAI

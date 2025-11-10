@@ -36,16 +36,16 @@ export default function Projects() {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="md3-title-medium">{project.name}</h3>
+                  <h3 className="md3-title-large font-medium">{project.name}</h3>
                   <Code className="md3-on-surface-variant" size={20} />
                 </div>
-                
-                <p className="md3-body-medium mb-4 leading-relaxed">
+
+                <p className="md3-body-medium mb-6 leading-relaxed">
                   {project.description}
                 </p>
 
-                <div className="mb-4">
-                  <h4 className="md3-title-medium mb-2">Key Highlights:</h4>
+                <div className="mb-6">
+                  <h4 className="md3-title-medium mb-3 font-medium">Key Highlights:</h4>
                   <ul className="space-y-1">
                     {project.highlights.map((highlight, highlightIndex) => (
                       <li key={highlightIndex} className="flex items-start gap-2 md3-body-medium md3-on-surface-variant">
@@ -56,18 +56,18 @@ export default function Projects() {
                   </ul>
                 </div>
 
-                <div className="mb-6">
+                <div>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.slice(0, 4).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-1 text-xs rounded md3-body-small md3-on-surface-variant" style={{background: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)'}}
+                        className="px-3 py-1.5 rounded-full md3-label-small md3-on-surface-variant" style={{background: 'var(--md-sys-color-surface-container)', border: '1px solid var(--md-sys-color-outline-variant)'}}
                       >
                         {tech}
                       </span>
                     ))}
                     {project.technologies.length > 4 && (
-                      <span className="px-2 py-1 rounded text-xs md3-body-small md3-on-surface-variant" style={{background: 'var(--md-sys-color-surface-container-high)'}}>
+                      <span className="px-3 py-1.5 rounded-full md3-label-small md3-on-surface-variant font-medium" style={{background: 'var(--md-sys-color-surface-container-high)'}}>
                         +{project.technologies.length - 4} more
                       </span>
                     )}

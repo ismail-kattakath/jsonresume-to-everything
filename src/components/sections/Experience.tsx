@@ -44,8 +44,8 @@ export default function Experience() {
               
               <div className="ml-20 md3-card p-8">
                 <div className="mb-4">
-                  <h3 className="md3-title-large mb-2">{exp.title}</h3>
-                  <h4 className="md3-title-medium text-[var(--md-sys-color-primary)] mb-3">{exp.company}</h4>
+                  <h3 className="md3-headline-small mb-2 font-medium">{exp.title}</h3>
+                  <h4 className="md3-title-large text-[var(--md-sys-color-primary)] mb-3 font-normal">{exp.company}</h4>
                   
                   <div className="flex flex-wrap gap-4 text-[var(--md-sys-color-on-surface-variant)] mb-4 md3-body-medium">
                     <div className="flex items-center gap-1">
@@ -68,7 +68,7 @@ export default function Experience() {
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: descIndex * 0.1 }}
                         viewport={{ once: true }}
-                        className="flex items-start gap-2 md3-body-medium"
+                        className="flex items-start gap-2 md3-body-medium leading-relaxed"
                       >
                         <div className="w-1.5 h-1.5 bg-[var(--md-sys-color-primary)] rounded-full mt-2 flex-shrink-0"></div>
                         <span>{desc}</span>
@@ -87,7 +87,7 @@ export default function Experience() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3, delay: techIndex * 0.05 }}
                         viewport={{ once: true }}
-                        className="px-3 py-1 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-full text-sm"
+                        className="px-3 py-1.5 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-full md3-label-medium"
                       >
                         {tech}
                       </motion.span>

@@ -31,7 +31,7 @@ export default function Footer() {
             />
               <h3 className="md3-title-large">{contactInfo.name}</h3>
             </div>
-            <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] mb-6 max-w-md">
+            <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] mb-6 max-w-md leading-relaxed">
               {contactInfo.title} passionate about building innovative AI solutions
               and scalable architectures. Based in {contactInfo.location}
             </p>
@@ -131,7 +131,7 @@ export default function Footer() {
               {['AI/ML', 'Full-Stack', 'Cloud', 'DevOps'].map((skill) => (
                 <span
                   key={skill}
-                  className="px-3 py-1.5 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-lg text-sm font-medium hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-primary)] transition-all cursor-default"
+                  className="px-3 py-1.5 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-lg md3-label-medium hover:bg-[var(--md-sys-color-primary-container)] hover:text-[var(--md-sys-color-primary)] transition-all cursor-default"
                 >
                   {skill}
                 </span>

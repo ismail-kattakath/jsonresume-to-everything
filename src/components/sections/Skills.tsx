@@ -58,7 +58,7 @@ export default function Skills() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: skillIndex * 0.05 }}
                     viewport={{ once: true }}
-                    className="px-3 py-1 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-full text-sm"
+                    className="px-3 py-1.5 bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface-variant)] rounded-full md3-label-medium"
                   >
                     {skill}
                   </motion.span>
