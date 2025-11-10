@@ -37,7 +37,7 @@ export default async function Image() {
           position: 'relative',
         }}
       >
-        {/* Background Image */}
+        {/* Background Image with blur effect applied directly */}
         <img
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           src={backgroundImageData as any}
@@ -49,6 +49,7 @@ export default async function Image() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            filter: 'blur(4px)',
           }}
         />
 
@@ -60,7 +61,7 @@ export default async function Image() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.4)',
+            background: 'rgba(0, 0, 0, 0.5)',
           }}
         />
 
