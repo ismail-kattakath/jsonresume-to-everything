@@ -1,7 +1,13 @@
 import FormButton from "@/components/resume-builder/form/FormButton";
 import React, { useContext, useState, useEffect } from "react";
 import { ResumeContext } from "@/app/resume/edit/ResumeContext";
-import { MdDelete, MdCheckCircle, MdCancel, MdLink, MdLinkOff } from "react-icons/md";
+import {
+  MdDelete,
+  MdCheckCircle,
+  MdCancel,
+  MdLink,
+  MdLinkOff,
+} from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const SocialMedia = () => {
@@ -11,24 +17,24 @@ const SocialMedia = () => {
   // Validate URL
   const validateUrl = async (url, index) => {
     if (!url || url.trim() === "") {
-      setValidationStatus(prev => ({ ...prev, [index]: "empty" }));
+      setValidationStatus((prev) => ({ ...prev, [index]: "empty" }));
       return;
     }
 
-    setValidationStatus(prev => ({ ...prev, [index]: "checking" }));
+    setValidationStatus((prev) => ({ ...prev, [index]: "checking" }));
 
     try {
       const fullUrl = url.startsWith("http") ? url : `https://${url}`;
       const response = await fetch(fullUrl, {
         method: "HEAD",
         mode: "no-cors",
-        cache: "no-cache"
+        cache: "no-cache",
       });
 
       // With no-cors mode, we can't check status, but if fetch succeeds, URL is likely valid
-      setValidationStatus(prev => ({ ...prev, [index]: "valid" }));
+      setValidationStatus((prev) => ({ ...prev, [index]: "valid" }));
     } catch (error) {
-      setValidationStatus(prev => ({ ...prev, [index]: "invalid" }));
+      setValidationStatus((prev) => ({ ...prev, [index]: "invalid" }));
     }
   };
 
@@ -41,12 +47,12 @@ const SocialMedia = () => {
           validateUrl(socialMedia.link, index);
         }, 1000);
       } else {
-        setValidationStatus(prev => ({ ...prev, [index]: "empty" }));
+        setValidationStatus((prev) => ({ ...prev, [index]: "empty" }));
       }
     });
 
     return () => {
-      Object.values(timeouts).forEach(timeout => clearTimeout(timeout));
+      Object.values(timeouts).forEach((timeout) => clearTimeout(timeout));
     };
   }, [resumeData.socialMedia]);
 
@@ -61,7 +67,7 @@ const SocialMedia = () => {
 
     // Clear validation status if link field is cleared
     if (e.target.name === "link" && e.target.value.trim() === "") {
-      setValidationStatus(prev => ({ ...prev, [index]: "empty" }));
+      setValidationStatus((prev) => ({ ...prev, [index]: "empty" }));
     }
   };
 
@@ -84,9 +90,9 @@ const SocialMedia = () => {
     setResumeData({ ...resumeData, socialMedia: newSocialMedia });
 
     // Remove validation status for deleted item and reindex remaining items
-    setValidationStatus(prev => {
+    setValidationStatus((prev) => {
       const newStatus = {};
-      Object.keys(prev).forEach(key => {
+      Object.keys(prev).forEach((key) => {
         const keyIndex = parseInt(key);
         if (keyIndex < index) {
           newStatus[keyIndex] = prev[keyIndex];
@@ -106,19 +112,42 @@ const SocialMedia = () => {
         const getStatusIcon = () => {
           switch (status) {
             case "valid":
-              return <MdCheckCircle className="text-xl text-green-500" title="URL is valid and reachable" />;
+              return (
+                <MdCheckCircle
+                  className="text-xl text-green-500"
+                  title="URL is valid and reachable"
+                />
+              );
             case "invalid":
-              return <MdLinkOff className="text-xl text-red-500" title="URL is invalid or unreachable" />;
+              return (
+                <MdLinkOff
+                  className="text-xl text-red-500"
+                  title="URL is invalid or unreachable"
+                />
+              );
             case "checking":
-              return <AiOutlineLoading3Quarters className="text-xl text-blue-400 animate-spin" title="Validating URL..." />;
+              return (
+                <AiOutlineLoading3Quarters
+                  className="text-xl text-blue-400 animate-spin"
+                  title="Validating URL..."
+                />
+              );
             case "empty":
             default:
-              return <MdLink className="text-xl text-gray-400" title="Enter a URL to validate" />;
+              return (
+                <MdLink
+                  className="text-xl text-gray-400"
+                  title="Enter a URL to validate"
+                />
+              );
           }
         };
 
         return (
-          <div key={index} className="flex items-center gap-2 hover:bg-blue-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors">
+          <div
+            key={index}
+            className="flex items-center gap-2 hover:bg-black-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+          >
             <div className="flex-shrink-0 flex items-center">
               {getStatusIcon()}
             </div>

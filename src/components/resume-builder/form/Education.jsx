@@ -69,7 +69,10 @@ const Education = () => {
         </div>
       </div>
       {resumeData.education.map((education, index) => (
-        <div key={index} className="flex flex-col hover:bg-blue-900/20 rounded px-2 py-2 -mx-2 -my-2 transition-colors">
+        <div
+          key={index}
+          className="flex flex-col hover:bg-black-900/20 rounded px-2 py-2 -mx-2 -my-2 transition-colors"
+        >
           <input
             type="text"
             placeholder="School"

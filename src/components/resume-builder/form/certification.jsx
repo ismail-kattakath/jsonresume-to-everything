@@ -15,7 +15,10 @@ const Certification = () => {
   };
 
   const addSkill = () => {
-    setResumeData({ ...resumeData, [skillType]: [...resumeData[skillType], ""] });
+    setResumeData({
+      ...resumeData,
+      [skillType]: [...resumeData[skillType], ""],
+    });
   };
 
   const removeSkill = (index) => {
@@ -27,13 +30,16 @@ const Certification = () => {
   const deleteSkill = (index) => {
     const newSkills = resumeData[skillType].filter((_, i) => i !== index);
     setResumeData({ ...resumeData, [skillType]: newSkills });
-  };  
+  };
 
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-base text-white font-semibold">{title}</h2>
       {resumeData[skillType].map((skill, index) => (
-        <div key={index} className="flex items-center gap-2 hover:bg-blue-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors">
+        <div
+          key={index}
+          className="flex items-center gap-2 hover:bg-black-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+        >
           <input
             type="text"
             placeholder={title}
@@ -52,7 +58,11 @@ const Certification = () => {
           </button>
         </div>
       ))}
-      <FormButton size={resumeData[skillType].length} add={addSkill} label="Certification" />
+      <FormButton
+        size={resumeData[skillType].length}
+        add={addSkill}
+        label="Certification"
+      />
     </div>
   );
 };

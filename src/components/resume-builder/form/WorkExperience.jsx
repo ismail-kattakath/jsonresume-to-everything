@@ -4,16 +4,13 @@ import { ResumeContext } from "@/app/resume/edit/ResumeContext";
 import { MdDelete } from "react-icons/md";
 
 const WorkExperience = () => {
-  const {
-    resumeData,
-    setResumeData,
-  } = useContext(ResumeContext);
+  const { resumeData, setResumeData } = useContext(ResumeContext);
 
   const handleWorkExperience = (e, index) => {
     const newworkExperience = [...resumeData.workExperience];
-    
+
     // Handle URL field formatting - remove protocols like social media does
-    if (e.target.name === 'url') {
+    if (e.target.name === "url") {
       newworkExperience[index][e.target.name] = e.target.value.replace(
         /^https?:\/\//,
         ""
@@ -21,7 +18,7 @@ const WorkExperience = () => {
     } else {
       newworkExperience[index][e.target.name] = e.target.value;
     }
-    
+
     setResumeData({ ...resumeData, workExperience: newworkExperience });
   };
 
@@ -51,7 +48,9 @@ const WorkExperience = () => {
   };
 
   const deleteWorkExperience = (index) => {
-    const newworkExperience = resumeData.workExperience.filter((_, i) => i !== index);
+    const newworkExperience = resumeData.workExperience.filter(
+      (_, i) => i !== index
+    );
     setResumeData({ ...resumeData, workExperience: newworkExperience });
   };
 
@@ -59,7 +58,10 @@ const WorkExperience = () => {
     <div className="flex flex-col gap-2">
       <h2 className="text-base text-white font-semibold">Work Experience</h2>
       {resumeData.workExperience.map((workExperience, index) => (
-        <div key={index} className="flex flex-col hover:bg-blue-900/20 rounded px-2 py-2 -mx-2 -my-2 transition-colors">
+        <div
+          key={index}
+          className="flex flex-col hover:bg-black-900/20 rounded px-2 py-2 -mx-2 -my-2 transition-colors"
+        >
           <input
             type="text"
             placeholder="Company"

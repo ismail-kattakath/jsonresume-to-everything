@@ -58,7 +58,10 @@ const Language = () => {
         </div>
       </div>
       {resumeData[skillType].map((skill, index) => (
-        <div key={index} className="flex items-center gap-2 hover:bg-blue-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors">
+        <div
+          key={index}
+          className="flex items-center gap-2 hover:bg-black-900/20 rounded px-2 py-1 -mx-2 -my-1 transition-colors"
+        >
           <input
             type="text"
             placeholder={placeholder}
