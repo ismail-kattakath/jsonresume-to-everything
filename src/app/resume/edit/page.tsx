@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import "./resume-builder.css";
 
 // Import components
@@ -17,11 +16,6 @@ import Summary from "@/components/resume-builder/form/Summary";
 import Education from "@/components/resume-builder/form/Education";
 import Certification from "@/components/resume-builder/form/certification";
 import { ResumeContext } from "./ResumeContext";
-
-// Server side rendering false for Print component
-const Print = dynamic(() => import("@/components/resume-builder/utility/WinPrint"), {
-  ssr: false,
-});
 
 export default function ResumeEditPage() {
   // Resume data
@@ -104,7 +98,6 @@ export default function ResumeEditPage() {
           </form>
           <Preview />
         </div>
-        <Print />
       </ResumeContext.Provider>
     </>
   );

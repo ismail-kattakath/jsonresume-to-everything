@@ -1,4 +1,5 @@
 import { FaCloudUploadAlt, FaCloudDownloadAlt } from "react-icons/fa";
+import { MdPictureAsPdf } from "react-icons/md";
 import React, { useContext } from "react";
 import { ResumeContext } from "@/app/resume/edit/ResumeContext";
 
@@ -69,6 +70,10 @@ const LoadUnload = () => {
     return `${yearMonth}-${cleanName}-${cleanPosition}-Resume.json`;
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="flex flex-wrap gap-4 mb-2 justify-center">
       <div className="inline-flex flex-row items-center gap-2">
@@ -98,6 +103,16 @@ const LoadUnload = () => {
           }
         >
           <FaCloudDownloadAlt className="text-[1.2rem] text-white" />
+        </button>
+      </div>
+      <div className="inline-flex flex-row items-center gap-2">
+        <h2 className="text-[1.2rem] text-white">PDF</h2>
+        <button
+          aria-label="Download PDF"
+          className="p-2 text-white bg-[deepskyblue] rounded"
+          onClick={handlePrint}
+        >
+          <MdPictureAsPdf className="text-[1.2rem] text-white" />
         </button>
       </div>
     </div>
