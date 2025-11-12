@@ -152,6 +152,7 @@ const SocialMedia = () => {
       <FormButton
         size={resumeData.socialMedia.length}
         add={addSocialMedia}
+        label="Social Media"
       />
     </div>
   );

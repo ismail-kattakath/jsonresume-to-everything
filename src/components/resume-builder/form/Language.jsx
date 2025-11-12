@@ -80,6 +80,7 @@ const Language = () => {
       <FormButton
         size={resumeData[skillType].length}
         add={addSkill}
+        label="Language"
       />
     </div>
   );

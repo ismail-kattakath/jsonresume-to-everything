@@ -132,6 +132,7 @@ const WorkExperience = () => {
       <FormButton
         size={resumeData.workExperience.length}
         add={addWorkExperience}
+        label="Work Experience"
       />
     </div>
   );

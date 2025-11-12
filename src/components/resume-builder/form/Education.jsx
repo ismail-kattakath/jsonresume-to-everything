@@ -125,6 +125,7 @@ const Education = () => {
       <FormButton
         size={resumeData.education.length}
         add={addEducation}
+        label="Education"
       />
     </div>
   );

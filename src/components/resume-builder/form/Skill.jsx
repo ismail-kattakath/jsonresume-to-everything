@@ -121,6 +121,7 @@ const Skill = ({ title }) => {
       <FormButton
         size={skillType.skills.length}
         add={() => addSkill(title)}
+        label={title}
       />
     </div>
   );

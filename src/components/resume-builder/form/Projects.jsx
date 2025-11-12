@@ -97,6 +97,7 @@ const Projects = () => {
         size={resumeData.projects.length}
         add={addProjects}
         remove={removeProjects}
+        label="Project"
       />
     </div>
   );

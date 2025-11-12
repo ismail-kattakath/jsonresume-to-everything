@@ -75,10 +75,10 @@ const LoadUnload = () => {
   };
 
   return (
-    <div className="flex flex-wrap gap-3 mb-2 justify-center">
-      <label className="inline-flex items-center gap-2 px-4 py-2 text-white bg-[deepskyblue] rounded cursor-pointer hover:bg-[#00a0e3] transition-colors">
-        <VscJson className="text-xl" />
-        <span className="text-base font-medium">Load</span>
+    <div className="flex flex-wrap gap-2 mb-2 justify-center">
+      <label className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-[deepskyblue] rounded cursor-pointer hover:bg-[#00a0e3] transition-colors text-sm">
+        <VscJson className="text-lg" />
+        <span>Load</span>
         <input
           aria-label="Load"
           type="file"
@@ -89,7 +89,7 @@ const LoadUnload = () => {
       </label>
       <button
         aria-label="Save"
-        className="inline-flex items-center gap-2 px-4 py-2 text-white bg-[deepskyblue] rounded hover:bg-[#00a0e3] transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-[deepskyblue] rounded hover:bg-[#00a0e3] transition-colors text-sm cursor-pointer"
         onClick={(event) =>
           handleDownload(
             resumeData,
@@ -98,16 +98,16 @@ const LoadUnload = () => {
           )
         }
       >
-        <VscJson className="text-xl" />
-        <span className="text-base font-medium">Save</span>
+        <VscJson className="text-lg" />
+        <span>Save</span>
       </button>
       <button
         aria-label="Print"
-        className="inline-flex items-center gap-2 px-4 py-2 text-white bg-[deepskyblue] rounded hover:bg-[#00a0e3] transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-[deepskyblue] rounded hover:bg-[#00a0e3] transition-colors text-sm cursor-pointer"
         onClick={handlePrint}
       >
-        <MdPictureAsPdf className="text-xl" />
-        <span className="text-base font-medium">Print</span>
+        <MdPictureAsPdf className="text-lg" />
+        <span>Print</span>
       </button>
     </div>
   );

@@ -52,7 +52,7 @@ const Certification = () => {
           </button>
         </div>
       ))}
-      <FormButton size={resumeData[skillType].length} add={addSkill} />
+      <FormButton size={resumeData[skillType].length} add={addSkill} label="Certification" />
     </div>
   );
 };
