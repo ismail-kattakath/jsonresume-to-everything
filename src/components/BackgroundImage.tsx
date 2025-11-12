@@ -1,11 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 export default function BackgroundImage() {
   const [isLoaded, setIsLoaded] = useState(false)
+  const pathname = usePathname()
+
+  // Don't show background on resume routes
+  const isResumeRoute = pathname?.startsWith('/resume')
 
   useEffect(() => {
+    if (isResumeRoute) return
+
     const img = new Image()
     img.src = '/images/background.jpg'
 
@@ -17,7 +24,9 @@ export default function BackgroundImage() {
     if (img.complete) {
       setIsLoaded(true)
     }
-  }, [])
+  }, [isResumeRoute])
+
+  if (isResumeRoute) return null
 
   return (
     <div
