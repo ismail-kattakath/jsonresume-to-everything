@@ -96,9 +96,7 @@ export default function ResumeEditPage() {
             <Language />
             <Certification />
           </form>
-          <div className="hidden lg:block">
-            <Preview />
-          </div>
+          <Preview />
         </div>
       </ResumeContext.Provider>
     </>
