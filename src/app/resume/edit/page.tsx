@@ -6,7 +6,6 @@ import "./resume-builder.css";
 
 // Import components
 import Language from "@/components/resume-builder/form/Language";
-import FormCP from "@/components/resume-builder/form/FormCP";
 import LoadUnload from "@/components/resume-builder/form/LoadUnload";
 import Preview from "@/components/resume-builder/preview/Preview";
 import DefaultResumeData from "@/components/resume-builder/utility/DefaultResumeData";
@@ -27,9 +26,6 @@ const Print = dynamic(() => import("@/components/resume-builder/utility/WinPrint
 export default function ResumeEditPage() {
   // Resume data
   const [resumeData, setResumeData] = useState(DefaultResumeData);
-
-  // Form hide/show
-  const [formClose, setFormClose] = useState(false);
 
   // Migrate skills data on mount if needed
   useEffect(() => {
@@ -93,24 +89,21 @@ export default function ResumeEditPage() {
         }}
       >
         <div className="f-col gap-4 md:flex-row justify-evenly max-w-7xl md:mx-auto md:h-screen">
-          {!formClose && (
-            <form className="p-4 bg-[royalblue] exclude-print md:max-w-[40%] md:h-screen md:overflow-y-scroll [&>*:not(:first-child)]:pt-4 [&>*:not(:first-child)]:mt-4 [&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-white/30">
-              <LoadUnload />
-              <PersonalInformation />
-              <SocialMedia />
-              <Summary />
-              <Education />
-              <WorkExperience />
-              {resumeData.skills.map((skill, index) => (
-                <Skill title={skill.title} key={index} />
-              ))}
-              <Language />
-              <Certification />
-            </form>
-          )}
+          <form className="p-4 bg-[royalblue] exclude-print md:max-w-[40%] md:h-screen md:overflow-y-scroll [&>*:not(:first-child)]:pt-4 [&>*:not(:first-child)]:mt-4 [&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-white/30">
+            <LoadUnload />
+            <PersonalInformation />
+            <SocialMedia />
+            <Summary />
+            <Education />
+            <WorkExperience />
+            {resumeData.skills.map((skill, index) => (
+              <Skill title={skill.title} key={index} />
+            ))}
+            <Language />
+            <Certification />
+          </form>
           <Preview />
         </div>
-        <FormCP formClose={formClose} setFormClose={setFormClose} />
         <Print />
       </ResumeContext.Provider>
     </>
