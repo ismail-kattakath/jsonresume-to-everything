@@ -3,6 +3,7 @@ export interface Experience {
   company: string;
   location: string;
   duration: string;
+  summary?: string; // Company/role description
   description: string[];
   technologies: string[];
 }

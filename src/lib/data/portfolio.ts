@@ -58,6 +58,7 @@ export const experience: Experience[] = DefaultResumeData.workExperience.map(job
   company: job.company,
   location: "Remote", // Could be enhanced with location data if added to DefaultResumeData
   duration: formatDateRange(job.startYear, job.endYear),
+  summary: job.description, // Company/role description
   description: job.keyAchievements.split('\n').filter(h => h.trim()),
   technologies: technologiesMap[job.company] || []
 }));

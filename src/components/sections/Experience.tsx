@@ -55,6 +55,14 @@ export default function Experience() {
                   </div>
                 </div>
 
+                {exp.summary && (
+                  <div className="mb-4">
+                    <p className="md3-body-medium text-[var(--md-sys-color-on-surface-variant)] italic">
+                      {exp.summary}
+                    </p>
+                  </div>
+                )}
+
                 <div className="mb-6">
                   <ul className="space-y-2">
                     {exp.description.map((desc, descIndex) => (
