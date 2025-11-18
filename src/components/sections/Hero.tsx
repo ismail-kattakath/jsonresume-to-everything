@@ -2,8 +2,14 @@
 
 import { motion } from 'framer-motion'
 import { ChevronDown, Linkedin } from 'lucide-react'
+import DefaultResumeData from '@/components/resume-builder/utility/DefaultResumeData'
 
 export default function Hero() {
+  const linkedInProfile = DefaultResumeData.socialMedia.find(s => s.socialMedia === "LinkedIn");
+  const linkedInUrl = linkedInProfile?.link.startsWith("http")
+    ? linkedInProfile.link
+    : `https://${linkedInProfile?.link}`;
+  const profileImage = DefaultResumeData.profilePicture || "./images/profile.jpg";
   return (
     <section className="min-h-screen flex items-center relative backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-6 py-24 text-center relative z-10">
@@ -14,9 +20,9 @@ export default function Hero() {
           className="mb-8"
         >
           <div className="relative inline-block mb-6">
-            <img 
-              src="./images/profile.jpg" 
-              alt="Ismail Kattakath - Principal Software Engineer & AI Research Scientist"
+            <img
+              src={profileImage}
+              alt={`${DefaultResumeData.name} - ${DefaultResumeData.position}`}
               className="w-32 h-32 rounded-full object-cover shadow-lg mx-auto"
               style={{
                 border: '4px solid var(--md-sys-color-primary)',
@@ -24,23 +30,21 @@ export default function Hero() {
               }}
             />
           </div>
-          
+
           <h1 className="md3-display-medium mb-6 max-w-4xl mx-auto font-medium">
-            Ismail Kattakath
+            {DefaultResumeData.name}
           </h1>
 
           <h2 className="md3-headline-small md3-on-surface-variant mb-6 max-w-2xl mx-auto font-normal">
-            Principal Software Engineer & Technical Leader
+            {DefaultResumeData.position.split('|')[0].trim()}
           </h2>
 
           <p className="md3-body-large md3-on-surface-variant mb-10 max-w-3xl mx-auto leading-relaxed">
-            15+ Years Architecting Full-Stack & AI/ML Solutions | Specializing in
-            OAuth/SSO Authentication, CI/CD Automation, Kubernetes, MCP Gateways,
-            RAG Systems & Production GenAI
+            {DefaultResumeData.position}
           </p>
 
           <motion.a
-            href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=ismailkattakath"
+            href={`${linkedInUrl}/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=${linkedInProfile?.link.split('/').pop()}`}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
