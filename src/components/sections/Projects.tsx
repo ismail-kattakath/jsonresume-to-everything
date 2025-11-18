@@ -18,10 +18,6 @@ export default function Projects() {
           <h2 className="md3-headline-large mb-4">
             Featured Projects
           </h2>
-          <p className="md3-body-large md3-on-surface-variant max-w-3xl mx-auto">
-            Showcase of innovative solutions and technical achievements that demonstrate
-            expertise across AI/ML, full-stack development, and system architecture.
-          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
