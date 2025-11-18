@@ -38,7 +38,7 @@ const DefaultResumeData = {
       url: "silvercreek.ai",
       position: "Principal Software Engineer",
       description:
-        "AI-as-a-Service platform providing B2B APIs for media manipulation and custom-trained generative AI pipelines tailored to specific business needs.",
+        "Aloshy.ai: AI-as-a-Service platform providing B2B APIs for media manipulation and custom-trained generative AI pipelines tailored to specific business needs.",
       keyAchievements:
         "Architected scalable GenAI inference infrastructure using Kubernetes/Containerization, vLLM etc. supporting multiple Diffusion and LLM models, and deployed on GCP/GKE and AWS/EKS for production.\nImplemented advanced techniques such as KV-cache, Distributed Inference, Multi-GPU/Node Scaling, CUDA optimization and memory/load management to reduce inference latency by 40%, and cutting operational costs by 25%.\nDesigned and documented GPU cluster management playbooks including model versioning/rollbacks, utilization monitoring, failure recovery, and load balancing strategies.\nBuilt enterprise-grade secured API architecture using centralized gateway/aggregator for serving internal and curated third-party MCP servers/tools.",
       startYear: "2024-08-01",
