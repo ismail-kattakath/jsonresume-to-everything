@@ -68,7 +68,7 @@ export default async function Image() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            zIndex: '1',
+            zIndex: 1,
           }}
         >
           <div
