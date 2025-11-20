@@ -96,6 +96,10 @@ const CoverLetterPreview = () => {
         <p className="content whitespace-pre-wrap editable" contentEditable suppressContentEditableWarning>
           {resumeData.content}
         </p>
+        <div className="content mt-4">
+          <p>Thanks and regards,</p>
+          <p>{resumeData.name}</p>
+        </div>
       </div>
     </div>
   );
