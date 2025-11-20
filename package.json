@@ -9,8 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next build && next export",
-    "generate-pdf": "node scripts/generate-resume-pdf.mjs",
-    "prebuild": "npm run generate-pdf",
     "deploy": "npm run build && npx gh-pages -d out -t true",
     "deploy-auto": "nohup npm run deploy > /tmp/deploy.log 2>&1 &"
   },
@@ -39,7 +37,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "next-sitemap": "^4.2.3",
-    "puppeteer": "^24.31.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

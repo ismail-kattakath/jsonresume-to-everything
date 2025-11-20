@@ -26,9 +26,6 @@ npm start
 # Run linter
 npm run lint
 
-# Generate resume PDF (requires dev server)
-npm run generate-pdf
-
 # Deploy to GitHub Pages
 npm run deploy
 
@@ -112,17 +109,6 @@ src/
 - `.nojekyll` file prevents Jekyll processing
 - GitHub Actions workflow handles automated deployment
 
-### Resume PDF Generation
-
-The `prebuild` script automatically generates a PDF from the resume editor:
-
-1. Starts Next.js dev server on port 3456
-2. Uses Puppeteer to render `/resume/edit` page
-3. Saves PDF to `public/resume.pdf`
-4. PDF is included in static build
-
-This runs automatically before every production build.
-
 ### SEO & Sitemap Generation
 
 SEO files are **automatically generated** using the `next-sitemap` package:
@@ -165,11 +151,10 @@ SEO files are **automatically generated** using the `next-sitemap` package:
 Deployment is handled by GitHub Actions (`.github/workflows/deploy.yml`):
 
 1. Triggers on push to `main` branch
-2. Installs dependencies (including Puppeteer system deps)
-3. Generates resume PDF via `prebuild` script
-4. Builds static site with `npm run build`
-5. Uploads `./out` directory as Pages artifact
-6. Deploys to GitHub Pages environment
+2. Installs dependencies
+3. Builds static site with `npm run build` (includes automatic sitemap generation)
+4. Uploads `./out` directory as Pages artifact
+5. Deploys to GitHub Pages environment
 
 Manual deployment: `npm run deploy` (uses `gh-pages` package)
 
@@ -181,7 +166,6 @@ Manual deployment: `npm run deploy` (uses `gh-pages` package)
 - **Animations**: Framer Motion 12.23.12
 - **Icons**: Lucide React 0.542.0
 - **Drag & Drop**: @hello-pangea/dnd 18.0.1
-- **PDF Generation**: Puppeteer 24.31.0
 - **Image Processing**: Sharp 0.34.3
 - **SEO**: next-sitemap (automatic sitemap/robots.txt generation)
 
@@ -190,5 +174,5 @@ Manual deployment: `npm run deploy` (uses `gh-pages` package)
 - **No src/pages directory**: This project uses Next.js 15 App Router exclusively
 - **DefaultResumeData is JSX**: Despite being in `src/components/resume-builder/utility/`, it's a `.jsx` file, not `.ts`
 - **Static site limitations**: No API routes in production (only at build time)
-- **PDF generation timing**: Happens during build, requires dev server
 - **Deployment target**: Custom domain via CNAME (ismail.kattakath.com)
+- **Resume printing**: Users can print the resume from `/resume` page using browser's print dialogue (Ctrl/Cmd+P)
