@@ -92,6 +92,7 @@ const CoverLetterPreview = () => {
 
       {/* Cover Letter Content */}
       <div className="mt-4">
+        <p className="content mb-2">Dear Hiring Manager,</p>
         <p className="content whitespace-pre-wrap editable" contentEditable suppressContentEditableWarning>
           {resumeData.content}
         </p>
