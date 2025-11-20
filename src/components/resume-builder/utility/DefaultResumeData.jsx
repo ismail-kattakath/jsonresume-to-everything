@@ -3,7 +3,7 @@ const DefaultResumeData = {
   position: "Full Stack Developer | Tech Lead | LLMOps",
   contactInformation: "+1 (647) 225-2878",
   email: "ismail@kattakath.com",
-  address: "24-242 John Garland Blvd, Etobicoke, ON M9V 1N8",
+  address: "24-242 John Garland Blvd, Toronto, ON M9V 1N8",
   profilePicture: "",
   showEducationDates: true,
   socialMedia: [
