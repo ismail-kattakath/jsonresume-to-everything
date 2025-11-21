@@ -33,6 +33,21 @@ input:focus {
   outline: none;
 }
 
+input::placeholder,
+textarea::placeholder {
+  text-align: right;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  text-align: right;
+}
+
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  text-align: right;
+}
+
 .list-disc li::marker {
   content: "⦿ ";
 }
