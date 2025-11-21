@@ -98,14 +98,26 @@ input:focus {
 }
 
 @media print {
-
-  body, html, body * {
+  body, html {
     background: white !important;
+    background-image: none !important;
+  }
+
+  /* Remove gradient backgrounds but preserve skill highlights */
+  div:not(.preview):not(.bg-blue-100) {
+    background-image: none !important;
   }
 
   .preview {
     display: block !important;
     background: white !important;
+  }
+
+  /* Preserve skill highlighting */
+  .bg-blue-100 {
+    background-color: #dbeafe !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
 
