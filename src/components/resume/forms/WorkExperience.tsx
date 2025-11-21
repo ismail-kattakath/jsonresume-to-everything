@@ -134,7 +134,7 @@ const WorkExperience = () => {
                   type="date"
                   placeholder="Start Date"
                   name="startYear"
-                  className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none transition-all"
+                  className="w-full px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none transition-all"
                   value={workExperience.startYear}
                   onChange={(e) => handleWorkExperience(e, index)}
                 />
@@ -145,7 +145,7 @@ const WorkExperience = () => {
                   type="date"
                   placeholder="End Date"
                   name="endYear"
-                  className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none transition-all"
+                  className="w-full px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 outline-none transition-all"
                   value={workExperience.endYear}
                   onChange={(e) => handleWorkExperience(e, index)}
                 />

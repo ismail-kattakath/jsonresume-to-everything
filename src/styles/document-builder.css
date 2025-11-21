@@ -39,10 +39,15 @@ input:focus {
   display: block;
 }
 
+/* Ensure date inputs have proper positioning context */
+.floating-label-group input[type="date"] {
+  position: relative;
+}
+
 /* Label styling - always visible */
 .floating-label {
   position: absolute;
-  right: 0.75rem;
+  right: 0.5rem;
   top: -0.5rem;
   background: linear-gradient(135deg, #1f2937 0%, #000000 100%);
   padding: 0.125rem 0.5rem;

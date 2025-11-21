@@ -111,7 +111,7 @@ const Education = () => {
                   type="date"
                   placeholder="Start Date"
                   name="startYear"
-                  className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all"
+                  className="w-full px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all"
                   value={education.startYear}
                   onChange={(e) => handleEducation(e, index)}
                 />
@@ -122,7 +122,7 @@ const Education = () => {
                   type="date"
                   placeholder="End Date"
                   name="endYear"
-                  className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all"
+                  className="w-full px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all"
                   value={education.endYear}
                   onChange={(e) => handleEducation(e, index)}
                 />
