@@ -3,6 +3,13 @@ node_modules/
 out/
 *.log
 .DS_Store
+
+# Environment variables (ignore all except example)
 .env*
+!.env.example
+
+# Temporary files
 /tmp/
+
+# Password config (ignore actual, keep example)
 src/config/password.ts

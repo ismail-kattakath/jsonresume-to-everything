@@ -1,30 +1,37 @@
-// Password hash configuration TEMPLATE
-// Copy this file to password.ts and add your bcrypt hash
-
-// To generate a password hash:
-// 1. Run: node scripts/generate-password-hash.js
-// 2. Enter your desired password
-// 3. Copy the hash below
-
-// Password hash configuration
-export const PASSWORD_HASH =
-  typeof window !== 'undefined'
-    ? undefined // Client-side: will be injected at build time
-    : process.env.NEXT_PUBLIC_EDIT_PASSWORD_HASH ||
-      'YOUR_BCRYPT_HASH_HERE'; // Replace with your bcrypt hash
-
-// For client components, export a function that gets the hash
-export function getPasswordHash(): string | undefined {
-  // Try to get from window object (injected at build time)
-  if (typeof window !== 'undefined' && (window as any).__PASSWORD_HASH__) {
-    return (window as any).__PASSWORD_HASH__;
-  }
-
-  // Fallback to environment variable (works in dev mode)
-  if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_EDIT_PASSWORD_HASH;
-  }
-
-  // Last resort: hardcoded for local development
-  return 'YOUR_BCRYPT_HASH_HERE'; // Replace with your bcrypt hash
-}
+// ============================================
+// Password Configuration Example (DEPRECATED)
+// ============================================
+//
+// NOTE: This file is NO LONGER NEEDED!
+//
+// Password protection is now configured via environment variables only.
+// You DO NOT need to create a password.ts file.
+//
+// ============================================
+// How Password Protection Works (Optional)
+// ============================================
+//
+// BY DEFAULT: Edit pages are publicly accessible (no password required)
+//
+// TO ENABLE PASSWORD PROTECTION:
+// 1. Generate hash: node scripts/generate-password-hash.js "your-password"
+// 2. Create .env.local file with:
+//    NEXT_PUBLIC_EDIT_PASSWORD_HASH=your-hash-here
+// 3. For production: Add to GitHub Secrets as NEXT_PUBLIC_EDIT_PASSWORD_HASH
+//
+// TO DISABLE PASSWORD PROTECTION:
+// - Simply don't set the NEXT_PUBLIC_EDIT_PASSWORD_HASH variable
+// - Or remove it from .env.local
+//
+// ============================================
+// Technical Details
+// ============================================
+//
+// The actual implementation is in src/config/password.ts:
+//
+// - If NEXT_PUBLIC_EDIT_PASSWORD_HASH is set → Password protection enabled
+// - If NEXT_PUBLIC_EDIT_PASSWORD_HASH is NOT set → Public access (no password)
+// - No hardcoded fallback password
+// - No password.ts file needed
+//
+// See docs/PASSWORD_PROTECTION_SETUP.md for complete setup guide.
