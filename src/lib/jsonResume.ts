@@ -1,4 +1,5 @@
 import DefaultResumeData from "@/components/resume-builder/utility/DefaultResumeData";
+import { validateJSONResume } from "./jsonResumeSchema";
 
 /**
  * Converts our DefaultResumeData format to JSON Resume standard format
@@ -91,42 +92,6 @@ export function convertToJSONResume(customData?: any) {
   };
 
   return jsonResume;
-}
-
-/**
- * Validates if the provided data matches JSON Resume schema
- * Returns validation result with any errors
- */
-export function validateJSONResume(data: any): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
-
-  // Check required top-level structure
-  if (!data.basics) {
-    errors.push("Missing 'basics' section");
-  } else {
-    if (!data.basics.name) errors.push("Missing 'basics.name'");
-    if (!data.basics.label) errors.push("Missing 'basics.label'");
-  }
-
-  // Validate work array structure if present
-  if (data.work && !Array.isArray(data.work)) {
-    errors.push("'work' must be an array");
-  }
-
-  // Validate education array structure if present
-  if (data.education && !Array.isArray(data.education)) {
-    errors.push("'education' must be an array");
-  }
-
-  // Validate skills array structure if present
-  if (data.skills && !Array.isArray(data.skills)) {
-    errors.push("'skills' must be an array");
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-  };
 }
 
 /**

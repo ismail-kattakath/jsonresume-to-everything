@@ -2,7 +2,8 @@ import { MdPictureAsPdf } from "react-icons/md";
 import { VscJson } from "react-icons/vsc";
 import React, { useContext } from "react";
 import { ResumeContext } from "@/app/resume/edit/ResumeContext";
-import { convertToJSONResume, convertFromJSONResume, validateJSONResume } from "@/lib/jsonResume";
+import { convertToJSONResume, convertFromJSONResume } from "@/lib/jsonResume";
+import { validateJSONResume } from "@/lib/jsonResumeSchema";
 import { toast } from "sonner";
 
 const LoadUnload = () => {
