@@ -6,7 +6,7 @@ import { convertToJSONResume, convertFromJSONResume } from "@/lib/jsonResume";
 import { validateJSONResume } from "@/lib/jsonResumeSchema";
 import { toast } from "sonner";
 
-const LoadUnload = ({ hideExportButton = false }) => {
+const LoadUnload = ({ hideExportButton = false, preserveContent = false }) => {
   const { resumeData, setResumeData } = useContext(ResumeContext);
 
   // migrate old skills format to new format
@@ -65,11 +65,22 @@ const LoadUnload = ({ hideExportButton = false }) => {
             return;
           }
 
+          // Preserve cover letter content if flag is set
+          if (preserveContent && resumeData.content) {
+            convertedData.content = resumeData.content;
+          }
+
           setResumeData(convertedData);
           toast.success("JSON Resume imported successfully!", { id: "import-resume" });
         } else {
           // Handle internal format (legacy)
           const migratedData = migrateSkillsData(loadedData);
+
+          // Preserve cover letter content if flag is set
+          if (preserveContent && resumeData.content) {
+            migratedData.content = resumeData.content;
+          }
+
           setResumeData(migratedData);
           toast.success("Resume data imported successfully!", { id: "import-resume" });
         }
