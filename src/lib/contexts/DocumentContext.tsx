@@ -9,6 +9,7 @@ export type DocumentContextType = {
   setResumeData: (data: ResumeData) => void;
   handleProfilePicture: (e: ChangeEvent<HTMLInputElement>) => void;
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  editable?: boolean;
 };
 
 export const DocumentContext = createContext<DocumentContextType>({
@@ -16,6 +17,7 @@ export const DocumentContext = createContext<DocumentContextType>({
   setResumeData: () => {},
   handleProfilePicture: () => {},
   handleChange: () => {},
+  editable: true,
 });
 
 // Export alias for backward compatibility during migration

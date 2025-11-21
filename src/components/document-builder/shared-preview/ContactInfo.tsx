@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { ResumeContext } from "@/lib/contexts/DocumentContext";
 
 const ContactInfo = ({ mainclass, linkclass, teldata, emaildata, addressdata, telicon, emailicon, addressicon }) => {
-    const { resumeData, setResumeData } = useContext(ResumeContext);
+    const { resumeData, setResumeData, editable = true } = useContext(ResumeContext);
 
     // Helper function to strip formatting from phone number for tel: link
     const getCleanPhoneNumber = (phone) => {
@@ -27,7 +27,7 @@ const ContactInfo = ({ mainclass, linkclass, teldata, emaildata, addressdata, te
           <a className={`${linkclass} editable`}
             aria-label="Phone Number"
             href={`tel:${getCleanPhoneNumber(teldata)}`}
-            contentEditable
+            contentEditable={editable}
             suppressContentEditableWarning
             onBlur={handlePhoneBlur}>
             {telicon}  {teldata}
@@ -37,7 +37,7 @@ const ContactInfo = ({ mainclass, linkclass, teldata, emaildata, addressdata, te
           <a className={`${linkclass} editable`}
             aria-label="Email Address"
             href={`mailto:${emaildata}`}
-            contentEditable
+            contentEditable={editable}
             suppressContentEditableWarning
             onBlur={handleEmailBlur}>
             {emailicon} {emaildata}
@@ -50,7 +50,7 @@ const ContactInfo = ({ mainclass, linkclass, teldata, emaildata, addressdata, te
             rel="noopener noreferrer"
             aria-label="Address"
             className={`${linkclass} editable`}
-            contentEditable
+            contentEditable={editable}
             suppressContentEditableWarning
             onBlur={handleAddressBlur}>
             {addressicon} {addressdata}

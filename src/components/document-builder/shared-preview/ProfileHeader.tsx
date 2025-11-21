@@ -15,7 +15,7 @@ import { useContext } from "react";
 import { ResumeContext } from "@/lib/contexts/DocumentContext";
 
 const ProfileHeader = () => {
-  const { resumeData, setResumeData } = useContext(ResumeContext);
+  const { resumeData, setResumeData, editable = true } = useContext(ResumeContext);
 
   const icons = [
     { name: "github", icon: <FaGithub /> },
@@ -40,10 +40,10 @@ const ProfileHeader = () => {
           />
         </div>
       )}
-      <h1 className="name editable" contentEditable suppressContentEditableWarning>
+      <h1 className="name editable" contentEditable={editable} suppressContentEditableWarning>
         {resumeData.name}
       </h1>
-      <h2 className="profession editable" contentEditable suppressContentEditableWarning>
+      <h2 className="profession editable" contentEditable={editable} suppressContentEditableWarning>
         {resumeData.position}
       </h2>
       <ContactInfo
@@ -73,7 +73,7 @@ const ProfileHeader = () => {
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 content align-center justify-center text-blue-700 hover:underline editable"
-              contentEditable
+              contentEditable={editable}
               suppressContentEditableWarning
               onBlur={handleSocialMediaBlur}
             >

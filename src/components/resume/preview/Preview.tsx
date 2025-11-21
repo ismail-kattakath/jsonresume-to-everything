@@ -61,7 +61,7 @@ const HighlightMenu = dynamic(
 );
 
 const Preview = () => {
-  const { resumeData, setResumeData } = useContext(ResumeContext);
+  const { resumeData, setResumeData, editable = true } = useContext(ResumeContext);
   const [content, setContent] = useState(resumeData);
   const icons = [
     { name: "github", icon: <FaGithub /> },
@@ -225,8 +225,8 @@ const Preview = () => {
                 />
               </div>
             )}
-            <h1 className="name editable" contentEditable suppressContentEditableWarning>{resumeData.name}</h1>
-            <h2 className="profession editable" contentEditable suppressContentEditableWarning>{resumeData.position}</h2>
+            <h1 className="name editable" contentEditable={editable} suppressContentEditableWarning>{resumeData.name}</h1>
+            <h2 className="profession editable" contentEditable={editable} suppressContentEditableWarning>{resumeData.position}</h2>
             <ContactInfo
               mainclass="flex flex-row gap-1 mb-1 contact"
               linkclass="inline-flex items-center gap-1"
@@ -254,7 +254,7 @@ const Preview = () => {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1 content align-center justify-center text-blue-700 hover:underline editable"
-                    contentEditable
+                    contentEditable={editable}
                     suppressContentEditableWarning
                     onBlur={handleSocialMediaBlur}
                     // Prevent text overflowing, If the socialMedia.link string is longer than 32 characters, apply the wordWrap and display styles to this <a> tag.
@@ -277,21 +277,21 @@ const Preview = () => {
             <div className="col-span-1 space-y-2">
               {resumeData.showSummary && resumeData.summary.length > 0 && (
                 <div className="mb-1">
-                  <h2 className="section-title mb-1 border-b-2 border-gray-300 border-dashed editable" contentEditable suppressContentEditableWarning>
+                  <h2 className="section-title mb-1 border-b-2 border-gray-300 border-dashed editable" contentEditable={editable} suppressContentEditableWarning>
                     Summary
                   </h2>
-                  <p className="content break-words editable" contentEditable suppressContentEditableWarning>{resumeData.summary}</p>
+                  <p className="content break-words editable" contentEditable={editable} suppressContentEditableWarning>{resumeData.summary}</p>
                 </div>
               )}
               <div>
                 {resumeData.education.length > 0 && (
                   <div className="mb-1">
-                    <h2 className="section-title mb-1 border-b-2 border-gray-300 border-dashed editable" contentEditable suppressContentEditableWarning>
+                    <h2 className="section-title mb-1 border-b-2 border-gray-300 border-dashed editable" contentEditable={editable} suppressContentEditableWarning>
                       Education
                     </h2>
                     {resumeData.education.map((item, index) => (
                       <div key={index} className="mb-1">
-                        <p className="content i-bold editable" contentEditable suppressContentEditableWarning>{item.degree}</p>
+                        <p className="content i-bold editable" contentEditable={editable} suppressContentEditableWarning>{item.degree}</p>
                         {item.url ? (
                           <a
                             href={formatUrl(item.url)}
@@ -361,7 +361,7 @@ const Preview = () => {
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       <h2
                         className="section-title mb-1 border-b-2 border-gray-300 border-dashed editable"
-                        contentEditable
+                        contentEditable={editable}
                         suppressContentEditableWarning
                       >
                         Work Experience
@@ -388,7 +388,7 @@ const Preview = () => {
                                   target={item.url ? "_blank" : "_self"}
                                   rel={item.url ? "noreferrer" : undefined}
                                   className="content i-bold text-blue-700 hover:underline editable"
-                                  contentEditable
+                                  contentEditable={editable}
                                   suppressContentEditableWarning
                                 >
                                   {item.company}
@@ -399,8 +399,8 @@ const Preview = () => {
                                   id={`work-experience-start-end-date`}
                                 />
                               </div>
-                              <p className="content i-bold editable" contentEditable suppressContentEditableWarning>{item.position}</p>
-                              <p className="content editable" contentEditable suppressContentEditableWarning>
+                              <p className="content i-bold editable" contentEditable={editable} suppressContentEditableWarning>{item.position}</p>
+                              <p className="content editable" contentEditable={editable} suppressContentEditableWarning>
                                 {item.description}
                               </p>
                               <Droppable
@@ -438,7 +438,7 @@ const Preview = () => {
                                                   dangerouslySetInnerHTML={{
                                                     __html: achievement,
                                                   }}
-                                                  contentEditable
+                                                  contentEditable={editable}
                                                 />
                                               </li>
                                             )}

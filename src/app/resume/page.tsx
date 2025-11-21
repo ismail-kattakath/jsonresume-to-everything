@@ -33,6 +33,7 @@ export default function ResumeDownloadPage() {
         setResumeData,
         handleProfilePicture: () => {},
         handleChange: () => {},
+        editable: false,
       }}
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
