@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 
+const TITLE = "Book Meeting";
+const DESCRIPTION = "Let's discuss how we can work together.";
+const URL = "https://ismail.kattakath.com/book";
+
 export const metadata: Metadata = {
-  title: "Book Meeting",
-  description: "Let's discuss how we can work together.",
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
-    title: "Book Meeting",
-    description: "Let's discuss how we can work together.",
+    title: TITLE,
+    description: DESCRIPTION,
     type: "website",
-    url: "https://ismail.kattakath.com/book",
+    url: URL,
   },
   twitter: {
     card: "summary",
-    title: "Book Meeting",
-    description: "Let's discuss how we can work together.",
+    title: TITLE,
+    description: DESCRIPTION,
   },
 };
 

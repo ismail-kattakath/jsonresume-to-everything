@@ -1,18 +1,22 @@
 import type { Metadata } from 'next'
 
+const TITLE = 'Download Resume'
+const DESCRIPTION = 'Print my latest resume in PDF'
+const URL = 'https://ismail.kattakath.com/resume'
+
 export const metadata: Metadata = {
-  title: 'Download Resume',
-  description: 'Print my latest resume in PDF',
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
-    title: 'Download Resume',
-    description: 'Print my latest resume in PDF',
+    title: TITLE,
+    description: DESCRIPTION,
     type: 'website',
-    url: 'https://ismail.kattakath.com/resume',
+    url: URL,
   },
   twitter: {
     card: 'summary',
-    title: 'Download Resume',
-    description: 'Print my latest resume in PDF',
+    title: TITLE,
+    description: DESCRIPTION,
   },
 }
 
