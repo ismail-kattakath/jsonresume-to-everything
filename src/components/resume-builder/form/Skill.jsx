@@ -92,38 +92,43 @@ const Skill = ({ title }) => {
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-base text-white font-semibold">{title}</h2>
-      {skillType.skills.map((skill, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-2 hover:opacity-90 border-1 border-white/20 hover:border-red-800 rounded px-2 py-1 -mx-2 transition-colors"
-        >
-          <input
-            type="checkbox"
-            checked={skill.highlight}
-            onChange={() => handleHighlight(index, title)}
-            className="w-4 h-4 cursor-pointer flex-shrink-0"
-            title="Highlight this skill"
-          />
-          <input
-            type="text"
-            placeholder={title}
-            name={title}
-            className="flex-1 min-w-0 px-2 py-1 bg-white text-gray-950 rounded"
-            value={skill.text}
-            onChange={(e) => handleSkill(e, index, title)}
-          />
-          <button
-            type="button"
-            onClick={() => deleteSkill(title, index)}
-            className="flex-shrink-0 p-1 text-red-800 cursor-pointer hover:opacity-90 rounded transition-opacity"
-            title="Delete this skill"
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <div className="w-1 h-6 bg-gradient-to-b from-pink-500 to-rose-500 rounded-full"></div>
+        <h2 className="text-lg text-white font-semibold">{title}</h2>
+      </div>
+      <div className="flex flex-col gap-2">
+        {skillType.skills.map((skill, index) => (
+          <div
+            key={index}
+            className="group flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-lg hover:border-white/20 hover:bg-white/10 transition-all"
           >
-            <MdDelete className="text-xl" />
-          </button>
-        </div>
-      ))}
+            <input
+              type="checkbox"
+              checked={skill.highlight}
+              onChange={() => handleHighlight(index, title)}
+              className="w-4 h-4 accent-pink-500 cursor-pointer flex-shrink-0 rounded"
+              title="Highlight this skill"
+            />
+            <input
+              type="text"
+              placeholder={`Enter ${title.toLowerCase()}`}
+              name={title}
+              className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-pink-400 focus:ring-2 focus:ring-pink-400/20 outline-none transition-all placeholder:text-white/40"
+              value={skill.text}
+              onChange={(e) => handleSkill(e, index, title)}
+            />
+            <button
+              type="button"
+              onClick={() => deleteSkill(title, index)}
+              className="flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-all"
+              title="Delete this skill"
+            >
+              <MdDelete className="text-xl" />
+            </button>
+          </div>
+        ))}
+      </div>
       <FormButton
         size={skillType.skills.length}
         add={() => addSkill(title)}

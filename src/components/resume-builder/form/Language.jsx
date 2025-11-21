@@ -38,48 +38,48 @@ const Language = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <h2 className="text-base text-white font-semibold mb-0">{title}</h2>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
+          <div className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full"></div>
+          <h2 className="text-lg text-white font-semibold">{title}</h2>
+        </div>
+        <label className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg cursor-pointer transition-colors border border-white/10">
           <input
             type="checkbox"
             id="showLanguages"
             checked={resumeData.showLanguages}
             onChange={handleToggleLanguages}
-            className="w-4 h-4 text-red-800 cursor-pointer bg-gray-100 border-gray-300 rounded focus:ring-fuchsia-500"
+            className="w-4 h-4 accent-emerald-500 cursor-pointer rounded"
           />
-          <label
-            htmlFor="showLanguages"
-            className="text-sm text-white cursor-pointer"
-          >
-            Display Languages Section
-          </label>
-        </div>
+          <span className="text-sm text-white/90">Display Section</span>
+        </label>
       </div>
-      {resumeData[skillType].map((skill, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-2 hover:opacity-90 border-1 border-white/20 hover:border-red-800 rounded px-2 py-1 -mx-2 transition-colors"
-        >
-          <input
-            type="text"
-            placeholder={placeholder}
-            name="skill"
-            className="flex-1 min-w-0 px-2 py-1 bg-white text-gray-950 rounded"
-            value={skill}
-            onChange={(e) => handleSkills(e, index, skillType)}
-          />
-          <button
-            type="button"
-            onClick={() => deleteSkill(index)}
-            className="flex-shrink-0 p-1 text-red-800 cursor-pointer hover:opacity-90 rounded transition-opacity"
-            title="Delete this language"
+      <div className="flex flex-col gap-2">
+        {resumeData[skillType].map((skill, index) => (
+          <div
+            key={index}
+            className="group flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-lg hover:border-white/20 hover:bg-white/10 transition-all"
           >
-            <MdDelete className="text-xl" />
-          </button>
-        </div>
-      ))}
+            <input
+              type="text"
+              placeholder={placeholder}
+              name="skill"
+              className="flex-1 px-3 py-2 bg-white/10 text-white rounded-lg text-sm border border-white/20 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 outline-none transition-all placeholder:text-white/40"
+              value={skill}
+              onChange={(e) => handleSkills(e, index, skillType)}
+            />
+            <button
+              type="button"
+              onClick={() => deleteSkill(index)}
+              className="flex-shrink-0 p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-all"
+              title="Delete this language"
+            >
+              <MdDelete className="text-xl" />
+            </button>
+          </div>
+        ))}
+      </div>
       <FormButton
         size={resumeData[skillType].length}
         add={addSkill}
