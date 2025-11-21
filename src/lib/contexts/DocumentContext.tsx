@@ -1,13 +1,14 @@
 'use client';
 
-import { createContext } from "react";
+import { createContext, ChangeEvent } from "react";
 import resumeData from "@/lib/resumeAdapter";
+import type { ResumeData } from "@/types";
 
-type DocumentContextType = {
-  resumeData: typeof resumeData;
-  setResumeData: (data: typeof resumeData) => void;
-  handleProfilePicture: (e: any) => void;
-  handleChange: (e: any) => void;
+export type DocumentContextType = {
+  resumeData: ResumeData;
+  setResumeData: (data: ResumeData) => void;
+  handleProfilePicture: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 export const DocumentContext = createContext<DocumentContextType>({

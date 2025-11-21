@@ -1,15 +1,16 @@
 import resumeData from "@/lib/resumeAdapter";
 import { validateJSONResume } from "./jsonResumeSchema";
+import type { ResumeData, SocialMediaLink, WorkExperience, Education, SkillGroup } from "@/types";
 
 /**
  * Converts our resumeData format to JSON Resume standard format
  * Schema: https://jsonresume.org/schema/
  */
-export function convertToJSONResume(customData?: any) {
+export function convertToJSONResume(customData?: ResumeData) {
   const data = customData || resumeData;
 
   // Parse social media links
-  const profiles = data.socialMedia.map((social) => ({
+  const profiles = data.socialMedia.map((social: SocialMediaLink) => ({
     network: social.socialMedia,
     username:
       social.socialMedia === "Github"
@@ -21,19 +22,19 @@ export function convertToJSONResume(customData?: any) {
   }));
 
   // Convert work experience
-  const work = data.workExperience.map((job) => ({
+  const work = data.workExperience.map((job: WorkExperience) => ({
     name: job.company,
     position: job.position,
     url: job.url ? (job.url.startsWith("http") ? job.url : `https://${job.url}`) : undefined,
     startDate: job.startYear,
     endDate: job.endYear === "Present" ? "" : job.endYear,
     summary: job.description,
-    highlights: job.keyAchievements.split("\n").filter((h) => h.trim()),
+    highlights: job.keyAchievements.split("\n").filter((h: string) => h.trim()),
     keywords: job.technologies || [],
   }));
 
   // Convert education
-  const education = data.education.map((edu) => ({
+  const education = data.education.map((edu: Education) => ({
     institution: edu.school,
     url: edu.url ? (edu.url.startsWith("http") ? edu.url : `https://${edu.url}`) : undefined,
     area: "Computer Science and Engineering",
@@ -43,14 +44,14 @@ export function convertToJSONResume(customData?: any) {
   }));
 
   // Convert skills
-  const skills = data.skills.map((skillGroup) => ({
+  const skills = data.skills.map((skillGroup: SkillGroup) => ({
     name: skillGroup.title,
     level: "",
     keywords: skillGroup.skills.map((s) => s.text),
   }));
 
   // Convert languages
-  const languages = data.languages.map((lang) => ({
+  const languages = data.languages.map((lang: string) => ({
     language: lang,
     fluency: "Native speaker",
   }));
@@ -73,7 +74,7 @@ export function convertToJSONResume(customData?: any) {
       image: data.profilePicture || "",
       email: data.email,
       phone: data.contactInformation,
-      url: profiles.find((p) => p.network === "Website")?.url || "",
+      url: profiles.find((p: { network: string; username: string; url: string }) => p.network === "Website")?.url || "",
       summary: data.summary,
       location,
       profiles: profiles.filter((p) => p.network !== "Website"),

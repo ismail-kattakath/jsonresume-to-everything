@@ -1,63 +1,11 @@
 import jsonResumeData from '@/data/resume.json';
-
-// JSON Resume types
-interface JSONResume {
-  basics?: {
-    name?: string;
-    label?: string;
-    image?: string;
-    email?: string;
-    phone?: string;
-    url?: string;
-    summary?: string;
-    location?: {
-      address?: string;
-      postalCode?: string;
-      city?: string;
-      countryCode?: string;
-      region?: string;
-    };
-    profiles?: Array<{
-      network?: string;
-      username?: string;
-      url?: string;
-    }>;
-  };
-  work?: Array<{
-    name?: string;
-    position?: string;
-    url?: string;
-    startDate?: string;
-    endDate?: string;
-    summary?: string;
-    highlights?: string[];
-    keywords?: string[];
-  }>;
-  education?: Array<{
-    institution?: string;
-    url?: string;
-    area?: string;
-    studyType?: string;
-    startDate?: string;
-    endDate?: string;
-  }>;
-  skills?: Array<{
-    name?: string;
-    level?: string;
-    keywords?: string[];
-  }>;
-  languages?: Array<{
-    language?: string;
-    fluency?: string;
-  }>;
-  certificates?: any[];
-}
+import type { JSONResume, ResumeData } from '@/types';
 
 /**
  * Converts JSON Resume format to internal resume data format
  * This allows the project to use a standard JSON Resume file as the source of truth
  */
-function convertFromJSONResume(jsonResume: JSONResume) {
+function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
   const basics = jsonResume.basics || {};
 
   // Convert profiles back to social media format
@@ -106,10 +54,17 @@ function convertFromJSONResume(jsonResume: JSONResume) {
   }));
 
   // Convert languages back
-  const languages = (jsonResume.languages || []).map((lang) => lang.language || lang);
+  const languages = (jsonResume.languages || []).map((lang) =>
+    typeof lang === 'string' ? lang : (lang.language || '')
+  ).filter(Boolean);
 
   // Convert certifications back
-  const certifications = jsonResume.certificates || [];
+  const certifications = (jsonResume.certificates || []).map((cert) => ({
+    name: cert.name || '',
+    date: cert.date || '',
+    issuer: cert.issuer || '',
+    url: cert.url || '',
+  }));
 
   // Reconstruct location
   const location = basics.location || {};

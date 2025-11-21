@@ -1,11 +1,12 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, ChangeEvent } from "react";
+import type { ResumeData } from "@/types";
 
 export const useDocumentHandlers = (
-  resumeData: any,
-  setResumeData: Dispatch<SetStateAction<any>>
+  resumeData: ResumeData,
+  setResumeData: Dispatch<SetStateAction<ResumeData>>
 ) => {
-  const handleProfilePicture = (e: any) => {
-    const file = e.target.files[0];
+  const handleProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
     if (file instanceof Blob) {
       const reader = new FileReader();
@@ -21,9 +22,9 @@ export const useDocumentHandlers = (
     }
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setResumeData((prevData: any) => ({ ...prevData, [name]: value }));
+    setResumeData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   return {
