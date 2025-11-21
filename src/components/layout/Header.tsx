@@ -10,7 +10,7 @@ const navItems = [
   { name: 'Experience', href: '#experience' },
   { name: 'Contact', href: '#contact' },
   { name: 'Resume', href: '/resume' },
-  { name: 'Book Meeting', href: '/book' },
+  { name: 'Calendar', href: '/book' },
 ]
 
 export default function Header() {

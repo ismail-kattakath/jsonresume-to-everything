@@ -35,7 +35,7 @@ export default function RootLayout({
           minHeight: '100vh'
         }}
       >
-        <BackgroundImage />
+        <BackgroundImage withBlur withOverlay />
         {children}
       </body>
     </html>
