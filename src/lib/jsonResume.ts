@@ -116,6 +116,14 @@ export function convertFromJSONResume(jsonResume: any): any | null {
       link: profile.url?.replace(/^https?:\/\//, "") || "",
     }));
 
+    // Add website if present in basics.url
+    if (basics.url) {
+      socialMedia.unshift({
+        socialMedia: "Website",
+        link: basics.url.replace(/^https?:\/\//, ""),
+      });
+    }
+
     // Convert work experience back
     const workExperience = (jsonResume.work || []).map((job: any) => ({
       company: job.name || "",
