@@ -26,7 +26,7 @@ export default function ResumeDownloadPage() {
 
   return (
     <ResumeContext.Provider value={{ resumeData, setResumeData }}>
-      <div className="bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <Preview />
       </div>
     </ResumeContext.Provider>
