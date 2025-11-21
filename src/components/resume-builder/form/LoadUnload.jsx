@@ -83,10 +83,10 @@ const LoadUnload = () => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 mb-2 justify-center">
-      <label className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-red-800 rounded cursor-pointer hover:opacity-90 transition-colors text-sm">
-        <VscJson className="text-lg" />
-        <span>Load</span>
+    <div className="flex flex-wrap gap-3 mb-4">
+      <label className="group flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl cursor-pointer hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all text-sm font-medium">
+        <VscJson className="text-lg group-hover:rotate-12 transition-transform" />
+        <span>Load Data</span>
         <input
           aria-label="Load"
           type="file"
@@ -97,21 +97,21 @@ const LoadUnload = () => {
       </label>
       <button
         aria-label="Save"
-        className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-red-800 rounded hover:opacity-90 transition-colors text-sm cursor-pointer"
+        className="group flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all text-sm font-medium cursor-pointer"
         onClick={(event) =>
           handleDownload(resumeData, generateFilename(), event)
         }
       >
-        <VscJson className="text-lg" />
-        <span>Save</span>
+        <VscJson className="text-lg group-hover:rotate-12 transition-transform" />
+        <span>Save Data</span>
       </button>
       <button
         aria-label="Print"
-        className="inline-flex items-center gap-2 px-3 py-1.5 text-white bg-red-800 rounded hover:opacity-90 transition-colors text-sm cursor-pointer"
+        className="group flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all text-sm font-medium cursor-pointer"
         onClick={handlePrint}
       >
-        <MdPictureAsPdf className="text-lg" />
-        <span>Print</span>
+        <MdPictureAsPdf className="text-lg group-hover:scale-110 transition-transform" />
+        <span>Print PDF</span>
       </button>
     </div>
   );

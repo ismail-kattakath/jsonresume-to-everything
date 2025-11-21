@@ -78,8 +78,19 @@ export default function CoverLetterEditPage() {
           handleChange,
         }}
       >
-        <div className="flex flex-col md:flex-row md:h-screen bg-black">
-          <form className="flex-1 p-4 bg-black exclude-print md:h-screen md:overflow-y-scroll [&>*:not(:first-child)]:pt-2 [&>*:not(:first-child)]:mt-2 [&>*:not(:first-child)]:border-t [&>*:not(:first-child)]:border-white/30">
+        <div className="flex flex-col md:flex-row md:h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+          <form className="flex-1 p-6 md:p-8 exclude-print md:h-screen md:overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/30 space-y-8">
+            {/* Header */}
+            <div className="flex items-center gap-3 pb-6 border-b border-white/10">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-2xl">✉️</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">Cover Letter Editor</h1>
+                <p className="text-sm text-white/60">Create your perfect cover letter</p>
+              </div>
+            </div>
+
             <LoadUnload />
             <PersonalInformation />
             <SocialMedia />
