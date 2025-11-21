@@ -28,6 +28,7 @@ export function convertToJSONResume() {
     endDate: job.endYear === "Present" ? "" : job.endYear,
     summary: job.description,
     highlights: job.keyAchievements.split("\n").filter((h) => h.trim()),
+    keywords: job.technologies || [],
   }));
 
   // Convert education
