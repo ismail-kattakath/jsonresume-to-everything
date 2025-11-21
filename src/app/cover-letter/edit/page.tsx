@@ -10,6 +10,7 @@ import defaultResumeData from "@/lib/resumeAdapter";
 import SocialMedia from "@/components/resume-builder/form/SocialMedia";
 import PersonalInformation from "@/components/resume-builder/form/PersonalInformation";
 import CoverLetterContent from "@/components/resume-builder/form/CoverLetterContent";
+import PrintButton from "@/components/resume-builder/PrintButton";
 import { ResumeContext } from "@/app/resume/edit/ResumeContext";
 import { Toaster } from "sonner";
 
@@ -80,7 +81,12 @@ export default function CoverLetterEditPage() {
           handleChange,
         }}
       >
-        <div className="flex flex-col md:flex-row md:h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-x-hidden">
+        <div className="flex flex-col md:flex-row md:h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-x-hidden relative">
+          {/* Floating Print Button - Hidden on print */}
+          <div className="exclude-print fixed bottom-8 right-8 z-50">
+            <PrintButton />
+          </div>
+
           <form onSubmit={(e) => e.preventDefault()} className="flex-1 p-4 md:p-6 lg:p-8 exclude-print md:h-screen md:overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/30 space-y-6 md:space-y-8">
             {/* Header */}
             <div className="flex items-center gap-3 pb-6 border-b border-white/10">
@@ -93,7 +99,7 @@ export default function CoverLetterEditPage() {
               </div>
             </div>
 
-            <LoadUnload hideExportButton={true} preserveContent={true} />
+            <LoadUnload hideExportButton={true} preserveContent={true} hidePrintButton={true} />
             <PersonalInformation />
             <SocialMedia />
             <CoverLetterContent />

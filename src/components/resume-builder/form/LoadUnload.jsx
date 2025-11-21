@@ -1,12 +1,12 @@
-import { MdPictureAsPdf } from "react-icons/md";
 import { VscJson } from "react-icons/vsc";
 import React, { useContext } from "react";
 import { ResumeContext } from "@/app/resume/edit/ResumeContext";
 import { convertToJSONResume, convertFromJSONResume } from "@/lib/jsonResume";
 import { validateJSONResume } from "@/lib/jsonResumeSchema";
 import { toast } from "sonner";
+import PrintButton from "@/components/resume-builder/PrintButton";
 
-const LoadUnload = ({ hideExportButton = false, preserveContent = false }) => {
+const LoadUnload = ({ hideExportButton = false, preserveContent = false, hidePrintButton = false }) => {
   const { resumeData, setResumeData } = useContext(ResumeContext);
 
   // migrate old skills format to new format
@@ -151,12 +151,8 @@ const LoadUnload = ({ hideExportButton = false, preserveContent = false }) => {
     return `${yearMonth}-${cleanName}-${cleanPosition}-Resume.json`;
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <div className={`grid gap-3 mb-4 max-w-3xl mx-auto ${hideExportButton ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
+    <div className={`grid gap-3 mb-4 max-w-3xl mx-auto ${hideExportButton && hidePrintButton ? 'grid-cols-1' : hideExportButton || hidePrintButton ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}>
       <label className="group inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl cursor-pointer hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all text-sm font-medium">
         <VscJson className="text-lg group-hover:rotate-12 transition-transform" />
         <span>Import Json Resume</span>
@@ -180,14 +176,7 @@ const LoadUnload = ({ hideExportButton = false, preserveContent = false }) => {
           <span>Export Json Resume</span>
         </button>
       )}
-      <button
-        aria-label="Print PDF"
-        className="group inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all text-sm font-medium cursor-pointer"
-        onClick={handlePrint}
-      >
-        <MdPictureAsPdf className="text-lg group-hover:scale-110 transition-transform" />
-        <span>Print PDF</span>
-      </button>
+      {!hidePrintButton && <PrintButton />}
     </div>
   );
 };

@@ -86,7 +86,32 @@ input:focus {
   font-weight: 700 !important;
 }
 
+/* Hide preview on mobile, show only on desktop and print */
+.preview {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .preview {
+    display: block;
+  }
+}
+
 @media print {
+  * {
+    background-image: none !important;
+  }
+
+  body, html, body * {
+    background: white !important;
+    background-color: white !important;
+  }
+
+  .preview {
+    display: block !important;
+    background: white !important;
+  }
+
   .exclude-print {
     display: none;
   }
@@ -106,17 +131,6 @@ input:focus {
     height: auto !important;
     overflow-y: visible !important;
     z-index: 0 !important;
-  }
-
-  .preview::after {
-    content: "";
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    opacity: 0.2;
-    font-size: small;
-    text-align: center;
-    z-index: -1;
   }
 
   /* Prevent breaking individual skill sections */
