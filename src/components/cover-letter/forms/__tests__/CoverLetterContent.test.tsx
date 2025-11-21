@@ -20,16 +20,15 @@ describe("CoverLetterContent Component", () => {
       expect(textarea.tagName).toBe("TEXTAREA");
     });
 
-    it("should render floating label", () => {
-      const { container } = renderWithContext(<CoverLetterContent />);
-      const label = container.querySelector(".floating-label");
-      expect(label).toBeInTheDocument();
-      expect(label).toHaveTextContent("Cover Letter Content");
-    });
-
     it("should render character counter", () => {
       renderWithContext(<CoverLetterContent />);
-      expect(screen.getByText("0 characters")).toBeInTheDocument();
+      expect(screen.getByText("0")).toBeInTheDocument();
+    });
+
+    it("should render Generate with AI button", () => {
+      renderWithContext(<CoverLetterContent />);
+      const button = screen.getByRole("button", { name: /Generate with AI/i });
+      expect(button).toBeInTheDocument();
     });
 
     it("should display existing content in textarea", () => {
@@ -52,7 +51,7 @@ describe("CoverLetterContent Component", () => {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText("11 characters")).toBeInTheDocument();
+      expect(screen.getByText("11")).toBeInTheDocument();
     });
   });
 
@@ -153,7 +152,7 @@ describe("CoverLetterContent Component", () => {
         </ResumeContext.Provider>
       );
 
-      expect(screen.getByText("4 characters")).toBeInTheDocument();
+      expect(screen.getByText("4")).toBeInTheDocument();
 
       // Update content
       const updatedData = { ...mockData, content: "Updated content" };
@@ -170,7 +169,7 @@ describe("CoverLetterContent Component", () => {
         </ResumeContext.Provider>
       );
 
-      expect(screen.getByText("15 characters")).toBeInTheDocument();
+      expect(screen.getByText("15")).toBeInTheDocument();
     });
 
     it("should count spaces and special characters", () => {
@@ -181,7 +180,7 @@ describe("CoverLetterContent Component", () => {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText("17 characters")).toBeInTheDocument();
+      expect(screen.getByText("17")).toBeInTheDocument();
     });
 
     it("should count newlines in character count", () => {
@@ -192,50 +191,35 @@ describe("CoverLetterContent Component", () => {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText("13 characters")).toBeInTheDocument();
+      expect(screen.getByText("13")).toBeInTheDocument();
     });
 
-    it("should show 0 characters for undefined content", () => {
+    it("should show 0 for undefined content", () => {
       const mockData = createMockResumeData({ content: undefined });
       renderWithContext(<CoverLetterContent />, {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText("0 characters")).toBeInTheDocument();
-    });
-  });
-
-  describe("Floating Label", () => {
-    it("should have floating-label-group wrapper", () => {
-      const { container } = renderWithContext(<CoverLetterContent />);
-      const floatingGroup = container.querySelector(".floating-label-group");
-      expect(floatingGroup).toBeInTheDocument();
-    });
-
-    it("should have floating-label class on label", () => {
-      const { container } = renderWithContext(<CoverLetterContent />);
-      const label = container.querySelector(".floating-label");
-      expect(label).toBeInTheDocument();
-      expect(label?.tagName.toLowerCase()).toBe("label");
+      expect(screen.getByText("0")).toBeInTheDocument();
     });
   });
 
   describe("Layout and Styling", () => {
-    it("should have green gradient accent on section heading", () => {
+    it("should have orange gradient accent on section heading", () => {
       const { container } = renderWithContext(<CoverLetterContent />);
-      const gradient = container.querySelector(".bg-gradient-to-b.from-green-500.to-emerald-500");
+      const gradient = container.querySelector(".bg-gradient-to-b.from-amber-500.to-orange-500");
       expect(gradient).toBeInTheDocument();
     });
 
-    it("should have focus styles with green color", () => {
+    it("should have focus styles with orange color", () => {
       const { container } = renderWithContext(<CoverLetterContent />);
-      const textarea = container.querySelector(".focus\\:border-green-400");
+      const textarea = container.querySelector(".focus\\:border-amber-400");
       expect(textarea).toBeInTheDocument();
     });
 
-    it("should have character counter positioned absolutely", () => {
+    it("should have character counter positioned at top right", () => {
       const { container } = renderWithContext(<CoverLetterContent />);
-      const counter = container.querySelector(".absolute.bottom-3.right-3");
+      const counter = container.querySelector(".absolute.top-3.right-3");
       expect(counter).toBeInTheDocument();
     });
 
@@ -243,7 +227,7 @@ describe("CoverLetterContent Component", () => {
       const { container } = renderWithContext(<CoverLetterContent />);
       const counter = container.querySelector(".pointer-events-none");
       expect(counter).toBeInTheDocument();
-      expect(counter).toHaveTextContent("0 characters");
+      expect(counter).toHaveTextContent("0");
     });
 
     it("should have resizable textarea", () => {
@@ -295,7 +279,7 @@ describe("CoverLetterContent Component", () => {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText("5000 characters")).toBeInTheDocument();
+      expect(screen.getByText("5000")).toBeInTheDocument();
       const textarea = screen.getByPlaceholderText(/Write your compelling cover letter here/i);
       expect(textarea).toHaveValue(longContent);
     });
@@ -320,7 +304,7 @@ describe("CoverLetterContent Component", () => {
 
       const textarea = screen.getByPlaceholderText(/Write your compelling cover letter here/i);
       expect(textarea).toHaveValue(specialContent);
-      expect(screen.getByText(`${specialContent.length} characters`)).toBeInTheDocument();
+      expect(screen.getByText(`${specialContent.length}`)).toBeInTheDocument();
     });
 
     it("should handle null content gracefully", () => {
@@ -331,7 +315,7 @@ describe("CoverLetterContent Component", () => {
 
       const textarea = screen.getByPlaceholderText(/Write your compelling cover letter here/i);
       expect(textarea).toHaveValue("");
-      expect(screen.getByText("0 characters")).toBeInTheDocument();
+      expect(screen.getByText("0")).toBeInTheDocument();
     });
 
     it("should handle content with only whitespace", () => {
@@ -341,7 +325,7 @@ describe("CoverLetterContent Component", () => {
         contextValue: { resumeData: mockData },
       });
 
-      expect(screen.getByText(`${whitespaceContent.length} characters`)).toBeInTheDocument();
+      expect(screen.getByText(`${whitespaceContent.length}`)).toBeInTheDocument();
     });
 
     it("should handle Unicode characters correctly", () => {
@@ -353,7 +337,7 @@ describe("CoverLetterContent Component", () => {
 
       const textarea = screen.getByPlaceholderText(/Write your compelling cover letter here/i);
       expect(textarea).toHaveValue(unicodeContent);
-      expect(screen.getByText(`${unicodeContent.length} characters`)).toBeInTheDocument();
+      expect(screen.getByText(`${unicodeContent.length}`)).toBeInTheDocument();
     });
 
     it("should handle rapid content updates", () => {
