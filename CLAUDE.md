@@ -62,13 +62,21 @@ The entire portfolio is driven by **`src/data/resume.json`**, which follows the 
 **Data Flow:**
 ```mermaid
 flowchart TD
-    A[src/data/resume.json<br/>JSON Resume v1.0.0] --> B[src/lib/resumeAdapter.ts<br/>convertFromJSONResume]
-    B --> C[Internal ResumeData Format<br/>TypeScript Interfaces]
-    C --> D[src/lib/data/portfolio.ts<br/>Homepage]
-    C --> E[src/app/resume/edit/page.tsx<br/>Resume Editor]
-    C --> F[src/app/cover-letter/edit/page.tsx<br/>Cover Letter]
-    C --> G[src/config/metadata.ts<br/>SEO Metadata]
-    C --> H[src/app/opengraph-image.tsx<br/>OG Images]
+    A["src/data/resume.json
+    JSON Resume v1.0.0"] --> B["src/lib/resumeAdapter.ts
+    convertFromJSONResume"]
+    B --> C["Internal ResumeData Format
+    TypeScript Interfaces"]
+    C --> D["src/lib/data/portfolio.ts
+    Homepage"]
+    C --> E["src/app/resume/edit/page.tsx
+    Resume Editor"]
+    C --> F["src/app/cover-letter/edit/page.tsx
+    Cover Letter"]
+    C --> G["src/config/metadata.ts
+    SEO Metadata"]
+    C --> H["src/app/opengraph-image.tsx
+    OG Images"]
 
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#bbf,stroke:#333,stroke-width:3px

@@ -85,14 +85,21 @@ When clicked, opens a modal with:
 
 ```mermaid
 flowchart TD
-    A[User Input<br/>Job Description or Career Highlights] --> B[Combine with Resume Data<br/>resume.json]
-    B --> C[Build Prompt<br/>Content-Type Specific]
-    C --> D[Send to OpenAI-Compatible API<br/>stream: true]
-    D --> E[Receive Streaming Chunks<br/>Server-Sent Events]
-    E --> F[Update UI in Real-Time<br/>word-by-word]
-    F --> G[Complete Response Received]
-    G --> H[Post-Process & Validate]
-    H --> I[Insert into Textarea<br/>Cover Letter or Summary]
+    A["User Input
+    Job Description or Career Highlights"] --> B["Combine with Resume Data
+    resume.json"]
+    B --> C["Build Prompt
+    Content-Type Specific"]
+    C --> D["Send to OpenAI-Compatible API
+    stream: true"]
+    D --> E["Receive Streaming Chunks
+    Server-Sent Events"]
+    E --> F["Update UI in Real-Time
+    word-by-word"]
+    F --> G["Complete Response Received"]
+    G --> H["Post-Process & Validate"]
+    H --> I["Insert into Textarea
+    Cover Letter or Summary"]
 
     style A fill:#e1f5ff,stroke:#333,stroke-width:2px
     style C fill:#fff4e6,stroke:#333,stroke-width:2px

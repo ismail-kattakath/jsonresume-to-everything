@@ -1,6 +1,7 @@
 {
-  "name": "ismail-portfolio",
+  "name": "jsonresume-to-everything",
   "version": "0.1.0",
+  "description": "Transform one JSON Resume into a complete portfolio ecosystem: responsive website, interactive resume builder, AI-powered cover letter generator, and more. Built with Next.js 15, TypeScript, Tailwind CSS. Deploy to GitHub Pages in 10 minutes. 125+ tests, fully customizable, SEO-optimized.",
   "private": true,
   "scripts": {
     "dev": "next dev",

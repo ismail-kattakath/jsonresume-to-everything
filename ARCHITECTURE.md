@@ -24,11 +24,16 @@
 
 ```mermaid
 graph TD
-    A[Next.js 15.5.2<br/>App Router, Static Export]
-    A --> B[React 19.1.0<br/>Client & Server Components]
-    A --> C[TypeScript 5<br/>Strict Mode]
-    A --> D[Tailwind CSS v4<br/>PostCSS]
-    A --> E[Deployment<br/>GitHub Pages + GitHub Actions]
+    A["Next.js 15.5.2
+    App Router, Static Export"]
+    A --> B["React 19.1.0
+    Client & Server Components"]
+    A --> C["TypeScript 5
+    Strict Mode"]
+    A --> D["Tailwind CSS v4
+    PostCSS"]
+    A --> E["Deployment
+    GitHub Pages + GitHub Actions"]
 
     style A fill:#0070f3,stroke:#333,stroke-width:3px,color:#fff
     style B fill:#61dafb,stroke:#333,stroke-width:2px
@@ -93,13 +98,19 @@ graph TD
 
 ```mermaid
 flowchart TD
-    A[src/data/resume.json<br/>JSON Resume v1.0.0] --> |Personal info, work,<br/>education, skills,<br/>social profiles| B[src/lib/resumeAdapter.ts<br/>convertFromJSONResume]
+    A["src/data/resume.json
+    JSON Resume v1.0.0"] --> B["src/lib/resumeAdapter.ts
+    convertFromJSONResume"]
 
-    B --> |Strips https:// from URLs<br/>Converts profiles to socialMedia<br/>Parses location into address<br/>Splits highlights into keyAchievements| C[Internal ResumeData Format<br/>types/resume.ts]
+    B --> C["Internal ResumeData Format
+    types/resume.ts"]
 
-    C --> |name, position, email<br/>socialMedia[], workExperience[]| D[Portfolio Homepage<br/>page.tsx]
-    C --> |Complete resume data<br/>with all fields| E[Resume Editor<br/>/resume/edit/page.tsx]
-    C --> |Personal info<br/>for auto-fill| F[Cover Letter Editor<br/>/cover-letter/edit]
+    C --> D["Portfolio Homepage
+    page.tsx"]
+    C --> E["Resume Editor
+    /resume/edit/page.tsx"]
+    C --> F["Cover Letter Editor
+    /cover-letter/edit"]
 
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#bbf,stroke:#333,stroke-width:3px

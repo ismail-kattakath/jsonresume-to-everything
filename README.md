@@ -36,8 +36,8 @@ A production-ready, customizable portfolio website built with Next.js 15, TypeSc
 
 ```bash
 # Fork this repository on GitHub, then:
-git clone https://github.com/YOUR-USERNAME/ismail-portfolio.git
-cd ismail-portfolio
+git clone https://github.com/YOUR-USERNAME/jsonresume-to-everything.git
+cd jsonresume-to-everything
 ```
 
 ### 2. Install & Run
@@ -112,7 +112,7 @@ code src/data/resume.json
 3. Source: **GitHub Actions**
 4. Done! Your site deploys automatically on every push to `main`
 
-Your portfolio will be live at: `https://YOUR-USERNAME.github.io/ismail-portfolio/`
+Your portfolio will be live at: `https://YOUR-USERNAME.github.io/jsonresume-to-everything/`
 
 **Want a custom domain?** See [Custom Domain Setup](#custom-domain-optional) below.
 
@@ -208,13 +208,20 @@ echo "NEXT_PUBLIC_EDIT_PASSWORD_HASH=<your-hash>" > .env.local
 
 ```mermaid
 graph TD
-    A[src/data/resume.json<br/>JSON Resume v1.0.0] --> B[Automatic Data Flow]
-    B --> C[Homepage<br/>all sections]
-    B --> D[Resume Editor<br/>/resume/edit]
-    B --> E[Cover Letter Editor<br/>/cover-letter/edit]
-    B --> F[SEO Metadata<br/>title, description]
-    B --> G[OpenGraph Images<br/>social sharing]
-    B --> H[Sitemap<br/>auto-generated]
+    A["src/data/resume.json
+    JSON Resume v1.0.0"] --> B["Automatic Data Flow"]
+    B --> C["Homepage
+    all sections"]
+    B --> D["Resume Editor
+    /resume/edit"]
+    B --> E["Cover Letter Editor
+    /cover-letter/edit"]
+    B --> F["SEO Metadata
+    title, description"]
+    B --> G["OpenGraph Images
+    social sharing"]
+    B --> H["Sitemap
+    auto-generated"]
 
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#bbf,stroke:#333,stroke-width:2px
@@ -280,7 +287,7 @@ graph TD
 
 3. **Access your site**:
    ```
-   https://YOUR-USERNAME.github.io/ismail-portfolio/
+   https://YOUR-USERNAME.github.io/jsonresume-to-everything/
    ```
 
 **What happens automatically:**
@@ -463,8 +470,8 @@ MIT License - feel free to use this template for your own portfolio!
 ## 💬 Support
 
 - **Documentation**: Check [docs/](./docs) directory
-- **Issues**: [GitHub Issues](https://github.com/aloshy-ai/ismail-portfolio/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/aloshy-ai/ismail-portfolio/discussions)
+- **Issues**: [GitHub Issues](https://github.com/YOUR-USERNAME/jsonresume-to-everything/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/YOUR-USERNAME/jsonresume-to-everything/discussions)
 
 ## 🎯 What's Next?
 
@@ -487,4 +494,4 @@ After setup, you can:
 
 **Live Site**: [https://ismail.kattakath.com](https://ismail.kattakath.com)
 
-**Questions?** Check the [documentation](./docs/README.md) or [open an issue](https://github.com/aloshy-ai/ismail-portfolio/issues).
+**Questions?** Check the [documentation](./docs/README.md) or [open an issue](https://github.com/YOUR-USERNAME/jsonresume-to-everything/issues).
