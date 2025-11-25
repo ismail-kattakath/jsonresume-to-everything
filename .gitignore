@@ -13,3 +13,5 @@ coverage/
 
 # Temporary files
 /tmp/
+# TypeScript
+tsconfig.tsbuildinfo
