@@ -59,9 +59,9 @@
     "framer-motion": "^12.23.12",
     "gh-pages": "^6.3.0",
     "lucide-react": "^0.542.0",
-    "next": "16.0.4",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "next": "15.5.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-highlight-menu": "^2.0.2",
     "react-icons": "^5.2.1",
     "react-intersection-observer": "^9.16.0",
@@ -81,10 +81,10 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.0.4",
+    "eslint-config-next": "15.5.2",
     "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-jsdoc": "^61.4.1",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
@@ -99,9 +99,5 @@
     "prettier-plugin-tailwindcss": "^0.7.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "overrides": {
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3"
   }
 }
