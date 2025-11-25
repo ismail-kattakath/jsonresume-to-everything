@@ -3,26 +3,15 @@ import { toHaveNoViolations } from 'jest-axe'
 
 expect.extend(toHaveNoViolations)
 
-// Suppress React act() warnings in tests
-// These warnings appear when async state updates happen outside act()
-// but are expected in our test scenarios
+// Suppress React act() warnings and intentional test console.errors
 const originalError = console.error
 beforeAll(() => {
   console.error = (...args) => {
-    // Suppress React act() warnings
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('not wrapped in act')
-    ) {
-      return
-    }
-    // Suppress intentional "Authentication error" test console.error
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Authentication error:')
-    ) {
-      return
-    }
+    const message = args[0]?.toString() || ''
+    // Suppress React act() warnings (expected in async tests)
+    if (message.includes('not wrapped in act')) return
+    // Suppress intentional auth error test
+    if (message.includes('Authentication error:')) return
     originalError.call(console, ...args)
   }
 })
