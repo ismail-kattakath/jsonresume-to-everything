@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 📖 Documentation Quick Links
+
+**For fast project onboarding, see these comprehensive guides:**
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Complete technical architecture, data flow, component hierarchy, testing, deployment
+- **[CLAUDE_CODE_GUIDE.md](./CLAUDE_CODE_GUIDE.md)** - Development guide specifically for Claude Code sessions with code examples and patterns
+- **[QUICKSTART.md](./QUICKSTART.md)** - User setup guide for deploying and customizing the portfolio
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines for contributing code, tests, and documentation
+- **[docs/](./docs/)** - Feature-specific guides (password protection, AI generator, data setup)
+
+**💡 Tip:** Before deep-diving into this file, check CLAUDE_CODE_GUIDE.md for quick development reference and common tasks.
+
+---
+
 ## Project Overview
 
 A modern, responsive portfolio website showcasing 15+ years of software engineering and AI/ML expertise. Built with Next.js 15.5.2, TypeScript, and Tailwind CSS, optimized for static generation and GitHub Pages deployment.

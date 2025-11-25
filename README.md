@@ -6,6 +6,19 @@ A production-ready, customizable portfolio website built with Next.js 15, TypeSc
 
 **Visit**: [https://ismail.kattakath.com](https://ismail.kattakath.com)
 
+## 📚 Documentation
+
+| Guide | Purpose | Audience |
+|-------|---------|----------|
+| **[Quick Start](./QUICKSTART.md)** | Deploy in 10 minutes | 👤 End Users |
+| **[Architecture](./ARCHITECTURE.md)** | Technical deep-dive | 👨‍💻 Developers |
+| **[Development Guide](./CLAUDE_CODE_GUIDE.md)** | Development reference | 🤖 AI Assistants & Developers |
+| **[Contributing](./CONTRIBUTING.md)** | Contribution guidelines | 🤝 Contributors |
+| **[Changelog](./CHANGELOG.md)** | Version history | 📋 Everyone |
+| **[Detailed Guides](./docs/)** | Feature-specific docs | 📖 Power Users |
+
+**👉 New here? Start with [QUICKSTART.md](./QUICKSTART.md) to get your portfolio live in 10 minutes!**
+
 ## ✨ Why This Template?
 
 - **Zero Config Required** - Works out of the box with sample data

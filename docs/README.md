@@ -1,8 +1,26 @@
 # Documentation
 
-This directory contains comprehensive documentation for the portfolio project.
+This directory contains feature-specific documentation for the portfolio project.
 
-## Getting Started
+## 📚 Main Documentation
+
+**For project overview and quick start, see the root-level documentation:**
+
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| **[../QUICKSTART.md](../QUICKSTART.md)** | Get started in 10 minutes | 👤 End Users |
+| **[../ARCHITECTURE.md](../ARCHITECTURE.md)** | Complete technical reference | 👨‍💻 Developers |
+| **[../CLAUDE_CODE_GUIDE.md](../CLAUDE_CODE_GUIDE.md)** | Development guide with examples | 🤖 AI Assistants & Developers |
+| **[../CONTRIBUTING.md](../CONTRIBUTING.md)** | How to contribute | 🤝 Contributors |
+| **[../CHANGELOG.md](../CHANGELOG.md)** | Version history | 📋 Everyone |
+| **[../CLAUDE.md](../CLAUDE.md)** | Detailed project architecture | 👨‍💻 Developers |
+| **[../README.md](../README.md)** | Project overview | 📖 Everyone |
+
+---
+
+## Feature-Specific Documentation
+
+This directory contains detailed guides for specific features:
 
 ### For New Users
 📄 **[DEFAULT_DATA_SETUP.md](./DEFAULT_DATA_SETUP.md)**
