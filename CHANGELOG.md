@@ -95,11 +95,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Zero-downtime deployments
 
 - **Documentation**
-  - README.md - Project overview
+  - README.md - Project overview with test statistics
   - CLAUDE.md - Architecture and development guidelines
+  - CONTRIBUTING.md - Contribution guidelines with testing section
+  - CHANGELOG.md - Version history
   - docs/DEFAULT_DATA_SETUP.md - Data customization guide
   - docs/PASSWORD_PROTECTION_SETUP.md - Auth setup guide
-  - docs/PASSWORD_PROTECTION_TESTS.md - Test documentation
   - docs/AI_CONTENT_GENERATOR.md - AI content generation guide (cover letters, summaries)
   - docs/README.md - Documentation index
 

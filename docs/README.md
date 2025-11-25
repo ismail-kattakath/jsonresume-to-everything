@@ -57,14 +57,11 @@ Documentation for the password protection system implemented for edit pages:
 - Security considerations
 
 #### Testing
-📄 **[PASSWORD_PROTECTION_TESTS.md](./PASSWORD_PROTECTION_TESTS.md)**
-- Comprehensive test suite documentation
-- **125 tests total** (112 passing, 13 failing)
-- **89.6% pass rate** with minor environment-related failures
-- Test statistics and coverage reports
-- Running instructions
-- Test patterns and best practices
-- Future improvement recommendations
+For comprehensive testing information:
+- **Run tests**: `npm test` to see current test results
+- **Test coverage**: `npm test:coverage` for detailed coverage reports
+- **Test guidelines**: See [CONTRIBUTING.md](../CONTRIBUTING.md#testing-guidelines)
+- **Current stats**: 125+ tests with 89.6% pass rate (documented in [README.md](../README.md#-testing))
 
 ## Quick Links
 
@@ -76,9 +73,10 @@ Documentation for the password protection system implemented for edit pages:
 
 ### For Developers
 - **Setup Password Protection**: [PASSWORD_PROTECTION_SETUP.md](./PASSWORD_PROTECTION_SETUP.md)
-- **Run Tests**: `npm test -- --testPathPatterns="password"`
-- **View Test Coverage**: See [PASSWORD_PROTECTION_TESTS.md](./PASSWORD_PROTECTION_TESTS.md)
+- **Run Tests**: `npm test` (all tests) or `npm test -- --testPathPatterns="password"` (password tests only)
+- **Test Coverage**: `npm test:coverage` for detailed coverage reports
 - **Update Resume Data**: See [DEFAULT_DATA_SETUP.md](./DEFAULT_DATA_SETUP.md)
+- **Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md) for test guidelines
 
 ### For Users
 - **Access Protected Pages**: Navigate to `/resume/edit` or `/cover-letter/edit`

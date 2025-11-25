@@ -410,7 +410,8 @@ node scripts/generate-password-hash.js "new-password"
 - **Full Guide:** `docs/DEFAULT_DATA_SETUP.md` (detailed customization)
 - **Architecture:** `ARCHITECTURE.md` (technical reference)
 - **Password Setup:** `docs/PASSWORD_PROTECTION_SETUP.md`
-- **Tests:** `docs/PASSWORD_PROTECTION_TESTS.md`
+- **AI Features:** `docs/AI_CONTENT_GENERATOR.md`
+- **Tests:** Run `npm test` to see current test results
 
 ### Support Channels
 

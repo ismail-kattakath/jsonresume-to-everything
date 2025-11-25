@@ -242,7 +242,7 @@ Automatic Data Flow
 |-------|---------|---------------|
 | **[Default Data Setup](./docs/DEFAULT_DATA_SETUP.md)** | ⭐ Customize your portfolio data | 30 min |
 | **[Password Protection Setup](./docs/PASSWORD_PROTECTION_SETUP.md)** | Secure edit pages | 5 min |
-| **[Test Documentation](./docs/PASSWORD_PROTECTION_TESTS.md)** | Understand test coverage | Reference |
+| **[AI Content Generator](./docs/AI_CONTENT_GENERATOR.md)** | Setup AI features | 10 min |
 | **[Docs Overview](./docs/README.md)** | Documentation index | 2 min |
 
 ### Quick Reference
@@ -256,7 +256,7 @@ Automatic Data Flow
 
 **Having issues?**
 - Check [Troubleshooting Guide](./docs/DEFAULT_DATA_SETUP.md#troubleshooting)
-- Review [Test Results](./docs/PASSWORD_PROTECTION_TESTS.md)
+- Run tests: `npm test` to verify functionality
 - Open a GitHub issue
 
 ## 🚀 Deployment Options
