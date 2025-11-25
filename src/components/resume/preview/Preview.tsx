@@ -16,14 +16,12 @@ import {
   FaGlobe,
 } from 'react-icons/fa'
 import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
-import { CgWebsite } from 'react-icons/cg'
 import Skills from '@/components/resume/preview/Skills'
 import DateRange from '@/components/resume-builder/utility/DateRange'
 import ContactInfo from '@/components/document-builder/shared-preview/ContactInfo'
 import { formatUrl } from '@/components/resume-builder/utility/formatUrl'
 import Image from 'next/image'
-import Link from 'next/link'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import dynamic from 'next/dynamic'
 import Language from '@/components/resume-builder/preview/Language'
@@ -65,7 +63,6 @@ const Preview = () => {
     setResumeData,
     editable = true,
   } = useContext(ResumeContext)
-  const [content, setContent] = useState(resumeData)
   const icons = [
     { name: 'github', icon: <FaGithub /> },
     { name: 'linkedin', icon: <FaLinkedin /> },

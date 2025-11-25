@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 const PersonalInformation = ({}) => {
-  const { resumeData, setResumeData, handleProfilePicture, handleChange } =
+  const { resumeData, handleProfilePicture, handleChange } =
     useContext(ResumeContext)
 
   return (

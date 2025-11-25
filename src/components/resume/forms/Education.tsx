@@ -36,13 +36,6 @@ const Education = () => {
     })
   }
 
-  const removeEducation = (index) => {
-    const newEducation = [...resumeData.education]
-    newEducation[index] = newEducation[newEducation.length - 1]
-    newEducation.pop()
-    setResumeData({ ...resumeData, education: newEducation })
-  }
-
   const deleteEducation = (index) => {
     const newEducation = resumeData.education.filter((_, i) => i !== index)
     setResumeData({ ...resumeData, education: newEducation })

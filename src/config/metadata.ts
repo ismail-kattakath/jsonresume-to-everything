@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
  * Single source of truth for all site metadata
  */
 export function generateSiteMetadata(): Metadata {
-  const { name, position, summary, socialMedia, skills } = resumeData
+  const { name, position, summary, socialMedia } = resumeData
 
   // Find LinkedIn handle for Twitter creator field
   const linkedInProfile = socialMedia.find(

@@ -773,7 +773,7 @@ npm test -- --clearCache
 
 ---
 
-## Code Quality Improvement
+## Code Quality & Automation
 
 **ESLint Gradual Improvement Plan:** [docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md](./docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md)
 
@@ -784,12 +784,18 @@ npm test -- --clearCache
 - ✅ `@typescript-eslint/no-require-imports` - Zero violations
 - ✅ `react/no-unescaped-entities` - Zero violations
 - ✅ `no-relative-import-paths/no-relative-import-paths` - Zero violations (enforces @/ alias imports)
+- ✅ `check-file/filename-naming-convention` - Enforces PascalCase components, camelCase libs, kebab-case types
+- ✅ `check-file/folder-naming-convention` - Enforces kebab-case folder names
+- ✅ **Commit Message Linting** - Conventional commits enforced via commitlint
+- ✅ **Test Coverage Thresholds** - 85% minimum coverage (branches, functions, lines, statements)
 - ⚠️ `@typescript-eslint/no-unused-expressions` - 3 violations (fix in progress)
 
 **Code Quality (Warning - Gradual Improvement):**
 
 - ⚠️ `@typescript-eslint/no-explicit-any` - 72 violations
 - ⚠️ `@typescript-eslint/no-unused-vars` - 32 violations
+- ⚠️ **JSDoc Documentation** - Public APIs should have JSDoc comments
+- ⚠️ **Security Rules** - 11 security patterns monitored
 
 ### Improvement Phases
 
@@ -801,6 +807,52 @@ npm test -- --clearCache
 6. **Phase 6:** Final cleanup & enforce all rules as errors
 
 **See full plan:** [docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md](./docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md)
+
+### Automated Enforcement Tools
+
+**The following conventions are now enforced automatically (no Claude Code needed):**
+
+#### 1. Commit Message Format (commitlint)
+- **Tool:** `@commitlint/config-conventional`
+- **Enforced:** Conventional commit format (feat:, fix:, docs:, etc.)
+- **Trigger:** Git commit hook
+- **Config:** `commitlint.config.js`
+
+#### 2. File Naming Conventions (eslint-plugin-check-file)
+- **Components:** PascalCase (`PersonalInformation.tsx`)
+- **Utilities:** camelCase (`resumeAdapter.ts`)
+- **Types:** kebab-case (`json-resume.ts`)
+- **Folders:** kebab-case everywhere
+- **Config:** `eslint.config.mjs`
+
+#### 3. Import Path Enforcement (eslint-plugin-no-relative-import-paths)
+- **Rule:** All imports must use `@/` alias (no `../` or `./` except same folder)
+- **Enforced:** Error level (blocks commits)
+- **Config:** `eslint.config.mjs`
+
+#### 4. Test Coverage Thresholds (Jest)
+- **Minimum:** 85% coverage (branches, functions, lines, statements)
+- **Enforced:** `npm test:coverage` fails if below threshold
+- **Config:** `jest.config.js`
+
+#### 5. TypeScript Strict Mode
+- **Additional checks:**
+  - `noUncheckedIndexedAccess` - Safer array/object access
+  - `noImplicitOverride` - Explicit override keyword
+  - `noPropertyAccessFromIndexSignature` - Safer property access
+  - `noUncheckedSideEffectImports` - Import side effects must be explicit
+- **Config:** `tsconfig.json`
+
+#### 6. JSDoc Documentation (eslint-plugin-jsdoc)
+- **Enforced:** Public functions, classes, interfaces, type aliases
+- **Level:** Warning (gradual adoption)
+- **Config:** `eslint.config.mjs`
+
+#### 7. Security Patterns (eslint-plugin-security)
+- **Monitored:** 11 security patterns (unsafe regex, eval, timing attacks, etc.)
+- **Critical errors:** Unsafe regex, eval, pseudo-random bytes
+- **Warnings:** Object injection, non-literal require, child process
+- **Config:** `eslint.config.mjs`
 
 ---
 

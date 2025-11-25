@@ -183,7 +183,7 @@ async function makeOpenAIStreamRequest(
                 done: false,
               })
             }
-          } catch (parseError) {
+          } catch {
             console.warn('Failed to parse SSE chunk:', jsonStr)
           }
         }
@@ -438,7 +438,7 @@ export async function testConnection(config: OpenAIConfig): Promise<boolean> {
 
     await makeOpenAIRequest(config, request)
     return true
-  } catch (error) {
+  } catch {
     return false
   }
 }

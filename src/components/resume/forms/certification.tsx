@@ -21,12 +21,6 @@ const Certification = () => {
     })
   }
 
-  const removeSkill = (index) => {
-    const newSkills = [...resumeData[skillType]]
-    newSkills.splice(-1, 1)
-    setResumeData({ ...resumeData, [skillType]: newSkills })
-  }
-
   const deleteSkill = (index) => {
     const newSkills = resumeData[skillType].filter((_, i) => i !== index)
     setResumeData({ ...resumeData, [skillType]: newSkills })

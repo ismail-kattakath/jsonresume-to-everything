@@ -4,7 +4,6 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import {
   MdDelete,
   MdCheckCircle,
-  MdCancel,
   MdLink,
   MdLinkOff,
 } from 'react-icons/md'
@@ -25,7 +24,7 @@ const SocialMedia = () => {
 
     try {
       const fullUrl = url.startsWith('http') ? url : `https://${url}`
-      const response = await fetch(fullUrl, {
+      await fetch(fullUrl, {
         method: 'HEAD',
         mode: 'no-cors',
         cache: 'no-cache',
@@ -33,7 +32,7 @@ const SocialMedia = () => {
 
       // With no-cors mode, we can't check status, but if fetch succeeds, URL is likely valid
       setValidationStatus((prev) => ({ ...prev, [index]: 'valid' }))
-    } catch (error) {
+    } catch {
       setValidationStatus((prev) => ({ ...prev, [index]: 'invalid' }))
     }
   }
@@ -76,13 +75,6 @@ const SocialMedia = () => {
       ...resumeData,
       socialMedia: [...resumeData.socialMedia, { socialMedia: '', link: '' }],
     })
-  }
-
-  const removeSocialMedia = (index) => {
-    const newSocialMedia = [...resumeData.socialMedia]
-    newSocialMedia[index] = newSocialMedia[newSocialMedia.length - 1]
-    newSocialMedia.pop()
-    setResumeData({ ...resumeData, socialMedia: newSocialMedia })
   }
 
   const deleteSocialMedia = (index) => {

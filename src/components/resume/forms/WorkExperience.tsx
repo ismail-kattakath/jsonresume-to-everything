@@ -40,13 +40,6 @@ const WorkExperience = () => {
     })
   }
 
-  const removeWorkExperience = (index) => {
-    const newworkExperience = [...resumeData.workExperience]
-    newworkExperience[index] = newworkExperience[newworkExperience.length - 1]
-    newworkExperience.pop()
-    setResumeData({ ...resumeData, workExperience: newworkExperience })
-  }
-
   const deleteWorkExperience = (index) => {
     const newworkExperience = resumeData.workExperience.filter(
       (_, i) => i !== index

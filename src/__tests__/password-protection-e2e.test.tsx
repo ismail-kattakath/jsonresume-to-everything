@@ -490,7 +490,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       expect(forms1.length).toBeGreaterThan(0) // At least one form in editor
 
       // Second "tab" would also have access due to shared sessionStorage
-      const { container: container2 } = render(<CoverLetterEditPage />)
+      render(<CoverLetterEditPage />)
 
       // Should be authenticated via shared session
       expect(

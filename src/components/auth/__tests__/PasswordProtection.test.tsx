@@ -527,9 +527,7 @@ describe('PasswordProtection Component', () => {
     })
 
     it('should position logout button in top-right corner', () => {
-      const { container } = render(
-        <PasswordProtection>{mockChildren}</PasswordProtection>
-      )
+      render(<PasswordProtection>{mockChildren}</PasswordProtection>)
 
       const logoutButton = screen.getByRole('button', { name: /logout/i })
       const parentDiv = logoutButton.parentElement
@@ -538,9 +536,7 @@ describe('PasswordProtection Component', () => {
     })
 
     it('should exclude logout button from print', () => {
-      const { container } = render(
-        <PasswordProtection>{mockChildren}</PasswordProtection>
-      )
+      render(<PasswordProtection>{mockChildren}</PasswordProtection>)
 
       const logoutButton = screen.getByRole('button', { name: /logout/i })
       const parentDiv = logoutButton.parentElement

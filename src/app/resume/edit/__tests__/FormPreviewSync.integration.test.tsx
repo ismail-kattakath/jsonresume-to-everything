@@ -9,10 +9,8 @@ import {
   screen,
   fireEvent,
   waitFor,
-  within,
 } from '@testing-library/react'
 import ResumeEditPage from '@/app/resume/edit/page'
-import { createMockResumeData } from '@/lib/__tests__/test-utils'
 
 // Mock dynamic imports to avoid SSR issues
 jest.mock('next/dynamic', () => ({
@@ -310,8 +308,6 @@ describe('Integration: Form → Preview Synchronization', () => {
         await waitFor(() => {
           const preview = container.querySelector('.preview')
           if (skillToDelete) {
-            // Check that the skill is either not present or there are fewer skills
-            const skillElements = preview?.querySelectorAll('.skill-item')
             // The skill should be removed
             expect(preview).not.toHaveTextContent(skillToDelete)
           }
