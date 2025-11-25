@@ -35,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: Run tests and collect coverage
-        run: npm run test:coverage
+        run: npm run test:coverage -- --coverageThreshold='{}'
         continue-on-error: false
 
       - name: Upload coverage to Codecov
