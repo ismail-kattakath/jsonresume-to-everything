@@ -4,9 +4,7 @@
 [![codecov](https://codecov.io/gh/ismail-kattakath/jsonresume-to-everything/graph/badge.svg?token=04e118ab-ec2a-4f3d-8819-fdbfff34f105)](https://codecov.io/gh/ismail-kattakath/jsonresume-to-everything)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fismail.kattakath.com)](https://ismail.kattakath.com)
 [![Uptime](https://img.shields.io/uptimerobot/ratio/7/m801867933-5facdf2dbeb3392754ea6a61)](https://stats.uptimerobot.com/dgusp6ainA)
-[![Next.js](https://img.shields.io/github/package-json/dependency-version/ismail-kattakath/jsonresume-to-everything/next?color=black&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/github/package-json/dependency-version/ismail-kattakath/jsonresume-to-everything/react?color=blue&logo=react)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/github/package-json/dependency-version/ismail-kattakath/jsonresume-to-everything/dev/typescript?color=3178C6&logo=typescript)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.0.4-black?logo=next.js)](https://nextjs.org/)
 
 A production-ready, customizable portfolio website built with Next.js 15, TypeScript, and Tailwind CSS. Perfect for developers, designers, and tech professionals who want a modern, responsive portfolio with resume builder and cover letter generator.
 

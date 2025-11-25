@@ -1,0 +1,35 @@
+codecov:
+  require_ci_to_pass: true
+  notify:
+    wait_for_ci: true
+
+coverage:
+  precision: 2
+  round: down
+  range: '70...100'
+  status:
+    project:
+      default:
+        target: 85%
+        threshold: 1%
+        base: auto
+    patch:
+      default:
+        target: 85%
+        threshold: 1%
+
+comment:
+  layout: 'reach,diff,flags,tree,footer'
+  behavior: default
+  require_changes: false
+
+ignore:
+  - '**/__tests__/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - 'src/**/*.d.ts'
+  - 'jest.config.js'
+  - 'jest.setup.js'
+  - 'next.config.mjs'
