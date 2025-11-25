@@ -12,7 +12,7 @@ A production-ready, customizable portfolio website built with Next.js 15, TypeSc
 |-------|---------|----------|
 | **[Quick Start](./QUICKSTART.md)** | Deploy in 10 minutes | 👤 End Users |
 | **[Architecture](./ARCHITECTURE.md)** | Technical deep-dive | 👨‍💻 Developers |
-| **[Development Guide](./CLAUDE_CODE_GUIDE.md)** | Development reference | 🤖 AI Assistants & Developers |
+| **[Claude Guide](./CLAUDE.md)** | Development reference | 🤖 Claude Code Sessions |
 | **[Contributing](./CONTRIBUTING.md)** | Contribution guidelines | 🤝 Contributors |
 | **[Changelog](./CHANGELOG.md)** | Version history | 📋 Everyone |
 | **[Detailed Guides](./docs/)** | Feature-specific docs | 📖 Power Users |

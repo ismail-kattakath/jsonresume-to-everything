@@ -642,7 +642,7 @@ npm install                    # Reinstall dependencies
 - **Documentation**: Check [docs/](./docs/) folder
 - **Architecture**: See [ARCHITECTURE.md](./ARCHITECTURE.md)
 - **Quick Start**: See [QUICKSTART.md](./QUICKSTART.md)
-- **Development**: See [CLAUDE_CODE_GUIDE.md](./CLAUDE_CODE_GUIDE.md)
+- **Development**: See [CLAUDE.md](./CLAUDE.md)
 - **Issues**: https://github.com/ismail-kattakath/ismail-portfolio/issues
 - **Discussions**: https://github.com/ismail-kattakath/ismail-portfolio/discussions
 

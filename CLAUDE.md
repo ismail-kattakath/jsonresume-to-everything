@@ -2,719 +2,622 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 📖 Documentation Quick Links
+## 📖 Documentation Index
 
-**For fast project onboarding, see these comprehensive guides:**
+**Quick navigation to project documentation:**
 
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Complete technical architecture, data flow, component hierarchy, testing, deployment
-- **[CLAUDE_CODE_GUIDE.md](./CLAUDE_CODE_GUIDE.md)** - Development guide specifically for Claude Code sessions with code examples and patterns
-- **[QUICKSTART.md](./QUICKSTART.md)** - User setup guide for deploying and customizing the portfolio
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines for contributing code, tests, and documentation
-- **[docs/](./docs/)** - Feature-specific guides (password protection, AI generator, data setup)
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| **[QUICKSTART.md](./QUICKSTART.md)** | Deploy in 10 minutes | 👤 End Users |
+| **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Complete technical deep-dive | 👨‍💻 Developers |
+| **[CONTRIBUTING.md](./CONTRIBUTING.md)** | Contribution guidelines | 🤝 Contributors |
+| **[CHANGELOG.md](./CHANGELOG.md)** | Version history | 📋 Everyone |
+| **[docs/](./docs/)** | Feature-specific guides | 📖 All |
 
-**💡 Tip:** Before deep-diving into this file, check CLAUDE_CODE_GUIDE.md for quick development reference and common tasks.
+**💡 For detailed technical architecture, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
 
 ---
 
-## Project Overview
+## Quick Project Summary
 
-A modern, responsive portfolio website showcasing 15+ years of software engineering and AI/ML expertise. Built with Next.js 15.5.2, TypeScript, and Tailwind CSS, optimized for static generation and GitHub Pages deployment.
+**Type:** Next.js 15 portfolio with static export
+**Deploy:** GitHub Pages via GitHub Actions
+**Data:** Single source of truth (`src/data/resume.json` - JSON Resume v1.0.0)
+**Auth:** Optional client-side password protection (bcrypt + sessionStorage)
+**AI:** OpenAI-compatible API for cover letter/summary generation
+**Tests:** Jest + RTL (25 test files, 500+ tests, 89.6% pass rate)
 
-**Live Site**: https://ismail.kattakath.com
+---
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-npm install
+# Development
+npm install          # Install dependencies
+npm run dev          # Start dev server (http://localhost:3000)
+npm run build        # Build for production (static export to ./out)
 
-# Start development server (http://localhost:3000)
-npm run dev
+# Testing
+npm test             # Run all tests
+npm test:watch       # Run tests in watch mode
+npm test:coverage    # Run tests with coverage
 
-# Build for production (static export to ./out)
-npm run build
+# Quality
+npm run lint         # Run linter
+npx tsc --noEmit     # Check TypeScript types
 
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm test:watch
-
-# Run tests with coverage
-npm test:coverage
-
-# Start production server
-npm start
-
-# Run linter
-npm run lint
-
-# Deploy to GitHub Pages
-npm run deploy
-
-# Auto-deploy in background
-npm run deploy-auto
+# Deployment
+npm run deploy       # Deploy to GitHub Pages (manual)
+git push origin main # Auto-deploy via GitHub Actions
 ```
 
-## Architecture
+---
+
+## Architecture Overview
 
 ### Single Source of Truth: JSON Resume Standard
 
-The entire portfolio is driven by **`src/data/resume.json`**, which follows the [JSON Resume](https://jsonresume.org) v1.0.0 standard format. This serves as the canonical data source for:
+The entire portfolio is driven by **`src/data/resume.json`**, which follows the [JSON Resume](https://jsonresume.org) v1.0.0 standard format.
 
-- Personal information (name, email, phone, location)
-- Work experience with achievements and technologies
-- Skills organized by category
-- Education and certifications
-- Social media profiles (GitHub, LinkedIn, Website)
-- Professional summary
-- Calendar booking link
-
-All other data files and metadata generation derive from this single source through a **data adapter pattern**, ensuring consistency across:
-- Main portfolio homepage (`src/app/page.tsx`)
-- Resume editor/preview (`src/app/resume/edit/page.tsx`)
-- Cover letter editor (`src/app/cover-letter/edit/page.tsx`)
-- SEO metadata (`src/config/metadata.ts`)
-- OG image generation (`src/app/opengraph-image.tsx`)
-- Portfolio data mappings (`src/lib/data/portfolio.ts`)
-- JSON API endpoint (`src/app/resume.json/route.ts`)
-
-**Important**: When updating personal information, skills, or experience, modify `src/data/resume.json` only. Changes automatically propagate throughout the site.
-
-### Data Flow Architecture
-
+**Data Flow:**
 ```
-src/data/resume.json (JSON Resume v1.0.0 Standard)
+src/data/resume.json (JSON Resume v1.0.0)
     ↓
 src/lib/resumeAdapter.ts → convertFromJSONResume()
     ↓
 Internal ResumeData format (TypeScript interfaces)
     ↓
-    ├── src/lib/data/portfolio.ts → Transform to Portfolio types
-    │   ↓
-    │   └── Homepage sections (Hero, About, Skills, Experience, Contact, Projects)
-    │
-    ├── src/config/metadata.ts → Generate SEO metadata
-    │
-    ├── src/app/opengraph-image.tsx → Generate OpenGraph images
-    │
-    ├── src/app/resume/edit/page.tsx → Resume editor with live preview
-    │
-    ├── src/app/cover-letter/edit/page.tsx → Cover letter editor
-    │
-    ├── src/app/resume/page.tsx → Print-optimized resume view
-    │
-    └── src/app/resume.json/route.ts → JSON API endpoint
+    ├── src/lib/data/portfolio.ts → Homepage
+    ├── src/app/resume/edit/page.tsx → Resume editor
+    ├── src/app/cover-letter/edit/page.tsx → Cover letter
+    ├── src/config/metadata.ts → SEO metadata
+    └── src/app/opengraph-image.tsx → OG images
+```
+
+**⚠️ CRITICAL:** When updating content, ALWAYS edit `src/data/resume.json` only. Changes automatically propagate throughout the site.
+
+### Project Structure Cheat Sheet
+
+```
+src/
+├── data/
+│   └── resume.json                  # ⭐ SINGLE SOURCE OF TRUTH
+│
+├── lib/
+│   ├── resumeAdapter.ts            # JSON Resume → Internal format
+│   ├── jsonResume.ts               # Internal → JSON Resume
+│   ├── jsonResumeSchema.ts         # AJV validator
+│   ├── data/portfolio.ts           # Internal → Portfolio UI
+│   └── ai/
+│       ├── openai-client.ts        # AI API client (streaming)
+│       └── document-prompts.ts     # Prompt engineering
+│
+├── types/
+│   ├── json-resume.ts              # JSON Resume types
+│   ├── resume.ts                   # Internal ResumeData types
+│   ├── portfolio.ts                # UI display types
+│   └── openai.ts                   # OpenAI API types
+│
+├── app/
+│   ├── page.tsx                    # Homepage
+│   ├── resume/edit/page.tsx        # Resume editor (protected)
+│   ├── cover-letter/edit/page.tsx  # Cover letter editor (protected)
+│   └── resume/page.tsx             # Print view
+│
+├── components/
+│   ├── sections/                   # Homepage sections
+│   ├── document-builder/           # Shared editor components
+│   ├── resume/                     # Resume-specific
+│   ├── cover-letter/               # Cover letter-specific
+│   └── auth/PasswordProtection.tsx # Auth wrapper
+│
+└── config/
+    ├── password.ts                 # Password config (optional)
+    └── metadata.ts                 # SEO metadata
 ```
 
 ### Data Adapter Pattern
 
-The project uses a sophisticated adapter pattern to bridge JSON Resume standard with internal types:
+The project uses a **bidirectional adapter pattern**:
 
-1. **`resume.json`** - External standard format (jsonresume.org)
-2. **`resumeAdapter.ts`** - Converts JSON Resume → Internal ResumeData format
-3. **`jsonResume.ts`** - Converts Internal format → JSON Resume (for export)
-4. **`jsonResumeSchema.ts`** - Validates JSON Resume format using AJV
-5. **`portfolio.ts`** - Transforms Internal format → Portfolio display types
+1. **JSON Resume → Internal:** `src/lib/resumeAdapter.ts`
+   - Converts JSON Resume standard to internal ResumeData format
+   - Strips `https://` from URLs
+   - Parses location into address string
+   - Converts highlights to keyAchievements
 
-This pattern allows:
-- Standard JSON Resume format for portability
-- Internal type safety with TypeScript
-- Bidirectional conversion (import/export)
-- Schema validation
-- Easy data migration
+2. **Internal → JSON Resume:** `src/lib/jsonResume.ts`
+   - Converts internal format back to JSON Resume
+   - Validates with AJV schema
+   - Adds `https://` back to URLs
 
-### Next.js App Router Structure
+3. **Internal → Portfolio UI:** `src/lib/data/portfolio.ts`
+   - Transforms ResumeData to display types
+   - Formats dates (ISO → "Mon YYYY")
+   - Extracts contact info from social media
 
-```
-src/
-├── app/                              # Next.js 15 App Router
-│   ├── page.tsx                      # Homepage (Hero, About, Skills, Experience, Contact)
-│   ├── layout.tsx                    # Root layout with fonts & metadata
-│   ├── globals.css                   # Global styles
-│   ├── opengraph-image.tsx          # Dynamic OG image generation
-│   ├── twitter-image.tsx            # Twitter card image
-│   ├── resume/
-│   │   ├── page.tsx                 # Print-optimized resume (auto-triggers print)
-│   │   ├── layout.tsx               # Resume-specific layout
-│   │   └── edit/
-│   │       ├── page.tsx             # Password-protected resume editor
-│   │       └── __tests__/           # Integration tests (3 files)
-│   ├── cover-letter/
-│   │   └── edit/
-│   │       ├── page.tsx             # Password-protected cover letter editor
-│   │       └── __tests__/           # Integration tests (2 files)
-│   ├── book/
-│   │   ├── page.tsx                 # Calendar redirect (Google Calendar)
-│   │   └── layout.tsx
-│   ├── resume.json/
-│   │   └── route.ts                 # JSON Resume API endpoint
-│   └── test-env/                    # Test environment page
-│
-├── components/
-│   ├── sections/                     # Homepage sections
-│   │   ├── Hero.tsx                 # Main hero with contact info
-│   │   ├── About.tsx                # Professional summary
-│   │   ├── Skills.tsx               # Technical skills display
-│   │   ├── Experience.tsx           # Work experience timeline
-│   │   ├── Contact.tsx              # Contact section
-│   │   └── Projects.tsx             # Featured projects
-│   ├── layout/
-│   │   ├── Header.tsx               # Site header/navigation
-│   │   └── Footer.tsx               # Site footer
-│   ├── auth/
-│   │   ├── PasswordProtection.tsx   # Password protection wrapper
-│   │   └── __tests__/               # Unit tests (62 tests)
-│   ├── document-builder/            # Shared document builder components
-│   │   ├── layout/                  # Layout components
-│   │   ├── shared-forms/            # Reusable form components
-│   │   │   ├── PersonalInformation.tsx
-│   │   │   ├── SocialMedia.tsx
-│   │   │   ├── LoadUnload.tsx       # Import/Export functionality
-│   │   │   └── __tests__/           # Tests (2 files)
-│   │   ├── shared-preview/          # Shared preview components
-│   │   │   ├── ContactInfo.tsx
-│   │   │   └── ProfileHeader.tsx
-│   │   └── ui/
-│   │       ├── PrintButton.tsx      # Print functionality
-│   │       └── __tests__/           # Tests
-│   ├── resume/
-│   │   ├── forms/                   # Resume-specific forms
-│   │   │   ├── WorkExperience.tsx
-│   │   │   ├── Education.tsx
-│   │   │   ├── Skill.tsx
-│   │   │   ├── Language.tsx
-│   │   │   ├── certification.tsx
-│   │   │   ├── Summary.tsx
-│   │   │   ├── Projects.tsx
-│   │   │   └── __tests__/           # Tests (5 files)
-│   │   └── preview/
-│   │       ├── Preview.tsx          # Resume preview component
-│   │       ├── Skills.tsx
-│   │       └── __tests__/           # Tests
-│   ├── cover-letter/
-│   │   ├── forms/
-│   │   │   ├── CoverLetterContent.tsx
-│   │   │   └── __tests__/           # Tests
-│   │   └── preview/
-│   │       └── CoverLetterPreview.tsx
-│   ├── ui/                          # Generic UI components
-│   ├── BackgroundImage.tsx
-│   └── Logo.tsx
-│
-├── data/
-│   └── resume.json                  # SINGLE SOURCE OF TRUTH (JSON Resume v1.0.0)
-│
-├── types/                           # TypeScript type definitions
-│   ├── json-resume.ts               # JSON Resume standard types
-│   ├── resume.ts                    # Internal ResumeData types
-│   ├── portfolio.ts                 # Portfolio display types
-│   ├── cover-letter.ts              # Cover letter types
-│   └── index.ts                     # Central export point
-│
-├── lib/
-│   ├── resumeAdapter.ts             # JSON Resume → Internal format converter
-│   ├── jsonResume.ts                # Internal → JSON Resume converter
-│   ├── jsonResumeSchema.ts          # JSON Resume validator (AJV)
-│   ├── data/
-│   │   └── portfolio.ts             # Internal → Portfolio types transformer
-│   ├── hooks/                       # Custom React hooks
-│   ├── utils/                       # Utility functions
-│   └── __tests__/                   # Library tests (test-utils.tsx)
-│
-├── config/
-│   ├── metadata.ts                  # SEO & metadata generation
-│   ├── site.ts                      # Site configuration
-│   ├── navigation.ts                # Navigation config
-│   ├── background.ts                # Background image config
-│   ├── password.ts                  # Password hash config (optional, generated)
-│   └── __tests__/                   # Config tests
-│
-└── utils/
-    └── generateOgImage.tsx          # OG image utilities
-```
-
-### Type System
-
-The project uses a robust TypeScript type system with clear separation:
+### Type System (4 Layers)
 
 ```typescript
-// External standard (jsonresume.org)
+// 1. External Standard (jsonresume.org)
 types/json-resume.ts
-  - JSONResume, JSONResumeBasics, JSONResumeWork, etc.
+  → JSONResume, JSONResumeBasics, JSONResumeWork
 
-// Internal application types
+// 2. Internal Application Types
 types/resume.ts
-  - ResumeData, WorkExperience, Education, SkillGroup, etc.
+  → ResumeData, WorkExperience, Education, SkillGroup
 
-// Display/UI types
+// 3. Display/UI Types
 types/portfolio.ts
-  - Experience, Skill, Project, ContactInfo
+  → Experience, Skill, Project, ContactInfo
 
-// Feature-specific types
-types/cover-letter.ts
-  - CoverLetterData
+// 4. Feature-Specific Types
+types/cover-letter.ts, types/openai.ts
 ```
 
-### Static Generation & GitHub Pages
+---
 
-- Configured for static export (`output: 'export'` in `next.config.ts`)
-- Images are unoptimized for GitHub Pages compatibility
-- Build output goes to `./out` directory
-- `.nojekyll` file prevents Jekyll processing
-- GitHub Actions workflow handles automated deployment
-- Custom domain: `ismail.kattakath.com` (via CNAME)
+## Common Development Tasks
 
-### SEO & Sitemap Generation
+### 1. Update Portfolio Content
 
-SEO files are **automatically generated** using the `next-sitemap` package:
+**User Request:** "Update my work experience"
 
-- **next-sitemap.config.js** → Configuration for sitemap and robots.txt generation
-- Runs automatically via `postbuild` script after every build
-- Auto-discovers all routes - **zero manual maintenance**
-- Outputs to `out/` directory for static export
-- Automatically excludes edit pages, API endpoints, and image routes
+**Action:**
+```typescript
+// Edit src/data/resume.json
+{
+  "work": [
+    {
+      "name": "New Company",
+      "position": "New Role",
+      "startDate": "2024-01-15",
+      "endDate": "",  // Present
+      "summary": "Role description",
+      "highlights": [
+        "Achievement with metrics",
+        "Impact-driven result"
+      ],
+      "keywords": ["Tech1", "Tech2"]
+    }
+  ]
+}
+```
 
-**Sitemap includes:**
-- Homepage (priority: 1.0, monthly updates)
-- Resume page (priority: 0.8, monthly updates)
-- Book page (priority: 0.5, yearly updates)
+**Verify:**
+```bash
+npm run dev
+# Check http://localhost:3000 (homepage)
+# Check http://localhost:3000/resume/edit (editor)
+```
 
-**Robots.txt blocks:**
-- `/resume/edit/` and `/cover-letter/edit/` (password-protected admin interfaces)
-- `/cover-letter/edit/` (password-protected admin interface)
-- `/resume.json/` (API endpoint)
+### 2. Add New Homepage Section
 
-**Important**: Don't create manual `src/app/sitemap.ts` or `src/app/robots.ts` files - next-sitemap handles everything automatically.
+**Steps:**
+1. Add data to `resume.json`
+2. Create component in `src/components/sections/`
+3. Import in `src/app/page.tsx`
+4. Update `src/lib/data/portfolio.ts` (if needed)
+5. Add tests
 
-### TypeScript Configuration
+### 3. Fix Build Errors
 
-- Path alias: `@/*` maps to `./src/*`
-- Strict mode enabled
-- Build errors ignored in production (`ignoreBuildErrors: true`)
-- ESLint errors ignored during builds (`ignoreDuringBuilds: true`)
+**Common Issue:** TypeScript errors after data changes
 
-## Key Features
+```bash
+# Diagnose
+npm run build
 
-### Password Protection System
+# Fix pattern:
+# 1. Update types in src/types/
+# 2. Update adapter in src/lib/resumeAdapter.ts
+# 3. Update components to handle new fields
+```
 
-**Fully implemented** password protection for edit pages using bcrypt hashing:
+### 4. Modify Password Protection
 
-- **Location**: `/resume/edit` and `/cover-letter/edit`
-- **Component**: `src/components/auth/PasswordProtection.tsx`
-- **Configuration**: `src/config/password.ts` + `.env.local`
-- **Security Features**:
-  - bcrypt password hashing (cost factor: 10)
-  - 24-hour session duration in sessionStorage
-  - Show/hide password toggle
-  - Error handling for authentication failures
-  - Environment variable support for production
-  - Shared session across protected pages
-  - Automatic session cleanup on logout
-- **Test Coverage**: 503 comprehensive tests (100% pass rate)
-  - 21 unit tests for password config (3 skipped - browser environment edge cases)
-  - 62 unit tests for PasswordProtection component (1 skipped - impossible scenario)
-  - 24 integration tests for resume edit page
-  - 21 integration tests for cover letter edit page
-  - 17 end-to-end workflow tests
-  - Plus extensive tests for forms, UI components, and data adapters
-  - 4 tests skipped by design (browser-specific edge cases + impossible state)
+**Enable:**
+```bash
+# Generate hash
+node scripts/generate-password-hash.js "password"
 
-See `docs/PASSWORD_PROTECTION_SETUP.md` for complete setup instructions.
+# Add to .env.local
+echo 'NEXT_PUBLIC_EDIT_PASSWORD_HASH="$2b$10$..."' >> .env.local
 
-### Resume Builder
+# Restart dev server
+npm run dev
+```
 
-Interactive resume editor with live preview:
+**Disable:**
+```bash
+# Remove from .env.local or set to empty
+NEXT_PUBLIC_EDIT_PASSWORD_HASH=""
+```
 
-- **Location**: `/resume/edit` (password-protected)
-- **Features**:
-  - Live preview panel
-  - Drag-and-drop support (@hello-pangea/dnd)
-  - Form sections: Personal Info, Work Experience, Education, Skills, Languages, Certifications, Summary
-  - Save/Load functionality (localStorage)
-  - JSON Resume import/export
-  - Print functionality
-- **Data Format**: JSON Resume v1.0.0 standard
-- **Preview**: `/resume` (auto-triggers browser print dialog)
+**Production:** Add to GitHub Secrets → `NEXT_PUBLIC_EDIT_PASSWORD_HASH`
 
-### Cover Letter Generator
-
-Interactive cover letter editor with AI generation:
-
-- **Location**: `/cover-letter/edit` (password-protected)
-- **Features**:
-  - **AI-Powered Generation**: "Generate with AI" button creates tailored cover letters using OpenAI-compatible APIs
-  - Reuses personal information from resume.json
-  - Custom content editor
-  - Live preview panel
-  - Save/Load functionality (localStorage)
-  - Print functionality
-- **AI Integration**: Client-side AI generation using OpenAI API or compatible servers (requires API key, see `docs/AI_COVER_LETTER_GENERATOR.md`)
-
-### Calendar Booking Integration
-
-- **Location**: `/book` page
-- **Functionality**: Redirects to Google Calendar booking link
-- **Data Source**: `resume.json` → `basics.calendar` field
-- **Current Link**: https://calendar.app.google/djSRHAdTuSEanoea7
-
-### Static Export & OG Image Generation
-
-- Dynamic OpenGraph images using `@vercel/og`
-- Twitter card images
-- Responsive images for social media sharing
-- Generated from resume.json data
-
-### Print Functionality
-
-- `/resume` page **automatically triggers** browser print dialog on load
-- PrintButton component for manual printing from edit pages
-- Print-optimized CSS for clean output
-- Supports Ctrl/Cmd+P for manual printing
-
-## Testing
-
-### Test Organization
-
-The project has comprehensive test coverage across three layers:
-
-**Unit Tests** (Component/Function level):
-- `src/config/__tests__/` - Password configuration tests (21 tests)
-- `src/components/auth/__tests__/` - PasswordProtection component (62 tests)
-- `src/components/document-builder/` - Form and UI components (3 test files)
-- `src/components/resume/` - Resume forms and preview (6 test files)
-- `src/components/cover-letter/` - Cover letter components (1 test file)
-- `src/lib/__tests__/` - Data adapters and utilities
-
-**Integration Tests** (Page level):
-- `src/app/resume/edit/__tests__/` - Resume editor workflows (4 test files)
-- `src/app/cover-letter/edit/__tests__/` - Cover letter workflows (1 test file)
-
-**End-to-End Tests** (User journeys):
-- `src/__tests__/password-protection-e2e.test.tsx` - Complete auth workflows (17 tests)
-
-### Test Commands
+### 5. Test Changes
 
 ```bash
 # Run all tests
 npm test
 
-# Run tests in watch mode
+# Run specific test
+npm test -- path/to/test.test.tsx
+
+# Watch mode during development
 npm test:watch
 
-# Run tests with coverage report
+# Coverage report
 npm test:coverage
-
-# Run specific test suites
-npm test -- --testPathPatterns="password"
-npm test -- --testPathPatterns="resume"
-npm test -- --testPathPatterns="cover-letter"
 ```
 
-### Test Framework
+---
 
-- **Framework**: Jest 30.2.0
-- **React Testing**: @testing-library/react 16.3.0
-- **Accessibility Testing**: jest-axe 10.0.0
-- **Mocking**: jest-mock for bcrypt, sessionStorage, etc.
+## Key Features
 
-See `docs/PASSWORD_PROTECTION_TESTS.md` for detailed test documentation.
+### Password Protection System
 
-## GitHub Pages Deployment
+**Status:** Optional, disabled by default
+**Scope:** `/resume/edit` and `/cover-letter/edit`
 
-Deployment is handled by GitHub Actions (`.github/workflows/deploy.yml`):
+**Architecture:**
+- Client-side bcrypt validation (cost factor: 10)
+- sessionStorage for 24-hour sessions
+- Shared session across edit pages
+- Enable by setting `NEXT_PUBLIC_EDIT_PASSWORD_HASH`
 
-1. **Triggers**: Push to `main` branch or pull request
-2. **Test Step**: Runs full test suite (**deployment fails if ANY tests fail** - strict enforcement)
-3. **Build Step**: `npm run build` (includes automatic sitemap generation via postbuild)
-4. **Upload**: `./out` directory as Pages artifact
-5. **Deploy**: Deploys to GitHub Pages environment (main branch only)
+**Files:**
+- `src/config/password.ts` - Config logic
+- `src/components/auth/PasswordProtection.tsx` - Component
+- `scripts/generate-password-hash.js` - Hash generator
 
-**Important**: The workflow has `continue-on-error: false` for the test step, ensuring no deployments occur with failing tests. All 499 actionable tests must pass (4 tests are intentionally skipped for browser-specific edge cases).
+**Docs:** See [docs/PASSWORD_PROTECTION_SETUP.md](./docs/PASSWORD_PROTECTION_SETUP.md)
 
-**Manual deployment**:
+### AI Integration
+
+**Features:** Cover letter and summary generation
+**Compatibility:** OpenAI, OpenRouter, Ollama, vLLM (any OpenAI-compatible API)
+
+**Architecture:**
+- Client-side API calls (no server)
+- Streaming SSE responses
+- Credential storage in localStorage
+- Prompt engineering with validation
+
+**Files:**
+- `src/lib/ai/openai-client.ts` - API client
+- `src/lib/ai/document-prompts.ts` - Prompts
+- `src/types/openai.ts` - Types
+
+**Docs:** See [docs/AI_COVER_LETTER_GENERATOR.md](./docs/AI_COVER_LETTER_GENERATOR.md)
+
+### Testing Infrastructure
+
+**Stats:**
+- 25 test files
+- 500+ total tests
+- 89.6% pass rate (4 intentionally skipped)
+- Jest 30.2.0 + RTL 16.3.0
+
+**Test Types:**
+- Unit tests: Component/function level
+- Integration tests: Page workflows
+- E2E tests: Complete user journeys
+
+**Location:**
+- Unit: `src/**/__tests__/*.test.tsx`
+- Integration: `src/app/**/__tests__/*.integration.test.tsx`
+- E2E: `src/__tests__/*-e2e.test.tsx`
+
+**Docs:** See [docs/PASSWORD_PROTECTION_TESTS.md](./docs/PASSWORD_PROTECTION_TESTS.md)
+
+---
+
+## Development Workflows
+
+### Local Development
+
 ```bash
-npm run deploy          # Build and deploy using gh-pages
-npm run deploy-auto     # Background deployment with logging
+# Start dev server
+npm run dev
+
+# Run tests in watch mode (in another terminal)
+npm test:watch
+
+# Check types (no emit)
+npx tsc --noEmit
+
+# Lint
+npm run lint
 ```
 
-## Data Management
+### Pre-Commit Checklist
 
-### How to Update Portfolio Data
+- [ ] Tests passing (`npm test`)
+- [ ] TypeScript compiles (`npm run build`)
+- [ ] No linting errors (`npm run lint`)
+- [ ] Changes tested in dev server
+- [ ] Documentation updated (if needed)
 
-**Primary Method**: Edit `src/data/resume.json` following JSON Resume v1.0.0 standard.
+### Deployment Workflow
 
-**Structure**:
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
-  "basics": {
-    "name": "Your Name",
-    "label": "Your Title",
-    "email": "email@example.com",
-    "phone": "+1 (123) 456-7890",
-    "url": "https://yourwebsite.com",
-    "calendar": "https://calendar.app.google/...",
-    "summary": "Your professional summary...",
-    "location": { "city": "City", "region": "State", ... },
-    "profiles": [
-      { "network": "LinkedIn", "url": "https://linkedin.com/in/..." },
-      { "network": "Github", "url": "https://github.com/..." }
-    ]
-  },
-  "work": [...],
-  "education": [...],
-  "skills": [...],
-  "languages": [...],
-  "certificates": [...]
+```bash
+# 1. Make changes
+git add .
+git commit -m "feat: description"
+
+# 2. Push to main
+git push origin main
+
+# 3. GitHub Actions automatically:
+#    - Runs npm test (fails deployment if any test fails)
+#    - Runs npm run build (includes sitemap generation)
+#    - Deploys to GitHub Pages
+
+# 4. Site live in 2-3 minutes
+```
+
+**⚠️ Important:** Deployment FAILS if ANY test fails (enforced by CI)
+
+---
+
+## Code Patterns & Conventions
+
+### File Naming
+
+- **Components:** PascalCase (`PersonalInformation.tsx`)
+- **Utilities:** camelCase (`resumeAdapter.ts`)
+- **Types:** kebab-case (`json-resume.ts`)
+- **Tests:** Same as file with `.test.tsx` suffix
+
+### Component Structure
+
+```typescript
+// 1. Imports
+import React, { useState } from 'react'
+import type { ResumeData } from '@/types'
+
+// 2. Types (if needed)
+interface Props {
+  data: ResumeData
+}
+
+// 3. Component
+export default function MyComponent({ data }: Props) {
+  // 4. Hooks
+  const [state, setState] = useState()
+
+  // 5. Handlers
+  const handleClick = () => { ... }
+
+  // 6. Render
+  return <div>...</div>
 }
 ```
 
-**Data Propagation**:
-Changes to `resume.json` automatically update:
-- Homepage sections (all content)
-- Resume editor (all forms)
-- Cover letter editor (personal info)
-- SEO metadata (title, description)
-- OpenGraph images
-- JSON API endpoint
+### Data Transformation
 
-**Validation**: The project includes JSON Resume schema validation using AJV. Invalid data will cause build errors.
+**Always use adapter functions:**
 
-See `docs/DEFAULT_DATA_SETUP.md` for comprehensive customization guide.
+```typescript
+// ✅ Good
+import resumeData from '@/lib/resumeAdapter'
+const experience = resumeData.workExperience
 
-## Configuration Files
-
-### Root Level
-
-- **package.json** - Dependencies & npm scripts
-- **next.config.ts** - Next.js configuration (static export)
-- **tsconfig.json** - TypeScript configuration (strict mode, path aliases)
-- **jest.config.js** - Test framework configuration
-- **jest.setup.js** - Test environment setup
-- **eslint.config.mjs** - ESLint rules
-- **postcss.config.mjs** - PostCSS/Tailwind CSS
-- **next-sitemap.config.js** - SEO sitemap generation
-- **.env.example** - Environment variable template
-- **.env.local** - Local environment variables (not committed)
-- **CNAME** - Custom domain configuration
-- **.nojekyll** - Disable GitHub Pages Jekyll processing
-
-### Environment Variables
-
-Create `.env.local` in project root:
-
-```bash
-# Password Protection (bcrypt hash)
-NEXT_PUBLIC_PASSWORD_HASH="$2b$10$..." # Generate using scripts/generate-password-hash.js
-
-# Add to GitHub Secrets for production:
-# Settings → Secrets → Actions → New repository secret
-# Name: NEXT_PUBLIC_PASSWORD_HASH
-# Value: your bcrypt hash
+// ❌ Bad
+import jsonResume from '@/data/resume.json'
+const experience = jsonResume.work  // Wrong format!
 ```
 
-Generate password hash:
-```bash
-node scripts/generate-password-hash.js
+### State Management
+
+- **Resume/Cover Letter Editors:** Use `ResumeContext` / `DocumentContext`
+- **Homepage:** Static data from `portfolio.ts` (no client state)
+
+---
+
+## Common Pitfalls
+
+### 1. Editing Wrong Files
+
+❌ **DON'T** edit display components for content changes
+✅ **DO** edit `src/data/resume.json`
+
+### 2. Missing Type Updates
+
+❌ **DON'T** add fields to JSON without updating types
+✅ **DO** update: types → adapter → UI (in that order)
+
+### 3. Breaking Password Protection
+
+❌ **DON'T** modify `src/config/password.ts` logic
+✅ **DO** only set environment variable
+
+### 4. Skipping Tests
+
+❌ **DON'T** skip failing tests
+✅ **DO** fix tests before deployment (GitHub Actions enforces this)
+
+### 5. Direct State Mutation
+
+```typescript
+// ❌ Bad
+resumeData.name = "New Name"
+
+// ✅ Good
+setResumeData({ ...resumeData, name: "New Name" })
 ```
 
-## Tech Stack
-
-### Core
-
-- **Framework**: Next.js 15.5.2 (App Router, static export)
-- **React**: 19.1.0
-- **TypeScript**: 5
-- **Styling**: Tailwind CSS v4 with PostCSS
-
-### Libraries
-
-- **Animations**: framer-motion 12.23.12
-- **Icons**: lucide-react 0.542.0, react-icons 5.2.1
-- **Drag & Drop**: @hello-pangea/dnd 18.0.1
-- **Validation**: ajv 8.17.1, ajv-formats 3.0.1 (JSON Resume schema)
-- **Authentication**: bcryptjs 3.0.3
-- **Notifications**: sonner 2.0.7 (toast notifications)
-- **Image Processing**: sharp 0.34.3
-- **Utilities**: clsx 2.1.1, tailwind-merge 3.3.1
-
-### Dev Dependencies
-
-- **Testing**: jest 30.2.0, @testing-library/react 16.3.0, jest-axe 10.0.0
-- **SEO**: next-sitemap 4.2.3
-- **Deployment**: gh-pages 6.3.0
-- **OG Images**: @vercel/og 0.8.1
-
-## Important Notes
-
-- **No src/pages directory**: This project uses Next.js 15 App Router exclusively
-- **JSON Resume Standard**: Data follows jsonresume.org v1.0.0 specification
-- **Adapter Pattern**: Bidirectional conversion between JSON Resume and internal types
-- **Static site limitations**: API routes only work at build time (not runtime)
-- **Resume auto-print**: `/resume` page automatically triggers print dialog on load
-- **Password protection**: Edit pages require authentication via bcrypt-hashed passwords
-- **Test-driven deployment**: GitHub Actions runs tests before deployment
-
-## Documentation
-
-Comprehensive documentation is available in the `docs/` directory:
-
-- **[docs/README.md](./docs/README.md)** - Documentation index and quick links
-- **[docs/DEFAULT_DATA_SETUP.md](./docs/DEFAULT_DATA_SETUP.md)** - How to customize resume.json data
-- **[docs/PASSWORD_PROTECTION_SETUP.md](./docs/PASSWORD_PROTECTION_SETUP.md)** - Password setup guide
-- **[docs/PASSWORD_PROTECTION_TESTS.md](./docs/PASSWORD_PROTECTION_TESTS.md)** - Test documentation (125 tests)
-
-## Development Workflow
-
-1. **Update data**: Edit `src/data/resume.json`
-2. **Test locally**: `npm run dev` → http://localhost:3000
-3. **Run tests**: `npm test`
-4. **Build**: `npm run build` (generates static site + sitemap)
-5. **Deploy**: Push to main branch (GitHub Actions handles deployment)
+---
 
 ## Tool Usage & Intelligence Maximization
 
 ### Core Tools - Use These Extensively
 
-Claude Code has access to powerful tools that should be leveraged for maximum efficiency and intelligence:
+**File Operations:**
+- **Read** - For ANY file (images, PDFs, notebooks, text)
+- **Edit** - Precise changes to existing files
+- **Glob** - Find files by pattern (`**/*.test.tsx`)
+- **Grep** - Search file contents with regex
 
-#### **File Operations**
-- **Read**: Use for reading ANY file. Can handle images (PNG, JPG), PDFs, Jupyter notebooks (.ipynb), and all text files
-- **Write**: Create new files (prefer Edit for existing files)
-- **Edit**: Make precise changes to existing files using exact string replacement
-- **Glob**: Find files by pattern (e.g., `**/*.test.tsx`, `src/components/**/*.ts`)
-- **Grep**: Search file contents with regex support. Use for finding code patterns, TODOs, function definitions
-  - Supports context lines (-A, -B, -C), case insensitive (-i), line numbers (-n)
-  - Use `output_mode: "content"` to see matching lines
-  - Use `output_mode: "files_with_matches"` to just get file paths
+**Code Search:**
+- **Task tool with Explore agent** - For "How does X work?" questions
+- Specify thoroughness: "quick", "medium", "very thorough"
 
-#### **Code Search & Exploration**
-- **Task tool with Explore agent**: Use for exploring codebases, finding patterns, answering "how does X work?" questions
-  - Specify thoroughness: "quick", "medium", or "very thorough"
-  - Example: "Find all API endpoints" or "How does authentication work?"
-- **Grep + Glob combination**: Use both in parallel for comprehensive searches
-  - Glob to find candidate files
-  - Grep to search within those files
+**Testing:**
+- **Bash** - Run terminal commands (git, npm, docker)
+- Use `run_in_background: true` for long-running processes
+- **BashOutput** - Monitor background processes
 
-#### **Testing & Background Processes**
-- **Bash**: Run terminal commands (git, npm, docker, etc.)
-  - Use `run_in_background: true` for long-running processes
-  - Chain commands with `&&` for sequential operations
-  - Run independent commands in parallel with multiple Bash calls in one message
-- **BashOutput**: Monitor output from background processes
-- **KillShell**: Terminate background processes when done
+**Task Planning:**
+- **TodoWrite** - ALWAYS use for multi-step tasks (3+ steps)
+- Track progress, demonstrate thoroughness
+- Mark todos in_progress BEFORE starting
+- Mark completed IMMEDIATELY after finishing
 
-#### **Task Planning & Tracking**
-- **TodoWrite**: ALWAYS use for multi-step tasks (3+ steps) or non-trivial work
-  - Track progress, demonstrate thoroughness
-  - Mark todos as in_progress BEFORE starting work
-  - Mark completed IMMEDIATELY after finishing (don't batch)
-  - Only ONE task should be in_progress at a time
-  - Provide both "content" (imperative) and "activeForm" (present continuous) for each task
+**User Interaction:**
+- **AskUserQuestion** - Clarify requirements, get decisions
 
-#### **User Interaction**
-- **AskUserQuestion**: Ask questions during execution for clarification, preferences, implementation choices
-  - Support single or multiple selection
-  - Use when requirements are ambiguous or multiple approaches are valid
+### Best Practices
 
-#### **Web Access** (Use When Available)
-- **WebFetch**: Fetch and analyze web content (converted HTML to markdown)
-- **WebSearch**: Search the web for current information beyond knowledge cutoff
-  - Use for latest documentation, recent changes, current events
-  - Support domain filtering (allowed_domains, blocked_domains)
+1. **Parallel Operations** - Call multiple independent tools in one message
+2. **Avoid Redundant Commands** - Use specialized tools (Read, not cat)
+3. **Plan Before Execute** - TodoWrite for multi-step tasks
+4. **Search Strategy** - Glob for files, Grep for content, Explore for understanding
 
-#### **MCP Resources** (If Configured)
-- **ListMcpResourcesTool**: List resources from configured MCP servers
-- **ReadMcpResourceTool**: Read specific resources from MCP servers
-- **Note**: MCP tools start with `mcp__` prefix when available
+---
 
-### Best Practices for Tool Usage
+## Quick Reference
 
-1. **Parallel Operations**: Call multiple independent tools in a single message
-   ```
-   Example: Read 3 different files in parallel, not sequentially
-   Example: Run git status, git diff, and git log simultaneously
-   ```
+### Key Files
 
-2. **Avoid Redundant Commands**:
-   - DON'T use bash for: find (use Glob), grep (use Grep), cat (use Read), echo for communication
-   - DO use specialized tools: they're faster, more reliable, and better integrated
+| Task | File |
+|------|------|
+| **Update content** | `src/data/resume.json` |
+| **Add homepage section** | `src/components/sections/` |
+| **Modify editor** | `src/components/resume/forms/` |
+| **Change types** | `src/types/` |
+| **Update metadata** | `src/config/metadata.ts` |
+| **Modify auth** | `src/components/auth/PasswordProtection.tsx` |
+| **AI prompts** | `src/lib/ai/document-prompts.ts` |
 
-3. **Plan Before Execute**:
-   - For complex tasks, use Task tool with Plan agent first
-   - Create TodoWrite list to track multi-step operations
-   - Ask questions early (AskUserQuestion) rather than making assumptions
+### Essential Commands
 
-4. **Background Processes**:
-   - Use `run_in_background: true` for dev servers, long builds, watching processes
-   - Monitor with BashOutput periodically
-   - Clean up with KillShell when done
+```bash
+npm run dev          # Dev server
+npm test             # Run tests
+npm run build        # Production build
+npm run lint         # Check code style
 
-5. **Search Strategy**:
-   - Start with Glob for file patterns
-   - Use Grep for content search
-   - Use Task/Explore agent for open-ended exploration
-   - Run searches in parallel when possible
-
-6. **Git Operations**:
-   - Run multiple git commands in parallel: `git status`, `git diff`, `git log`
-   - Use single bash command with `&&` for dependent operations: `git add . && git commit -m "..." && git push`
-   - NEVER skip hooks (--no-verify) unless explicitly requested
-   - NEVER force push to main/master without explicit user request
-
-7. **Testing Workflow**:
-   - Run tests in parallel with code exploration
-   - Use background mode for watch mode: `npm test:watch`
-   - Check BashOutput periodically for test results
-
-### Tool Selection Decision Tree
-
-```
-Question: "What files contain X?"
-→ Use Grep with output_mode: "files_with_matches"
-
-Question: "Show me the implementation of X"
-→ Use Grep with output_mode: "content" OR Read if you know the file
-
-Question: "How does feature X work?"
-→ Use Task tool with Explore agent (medium thoroughness)
-
-Task: "Add feature X"
-→ Use TodoWrite to plan, then execute with Read/Edit/Write
-
-Task: "Run tests and fix failures"
-→ Use Bash to run tests, TodoWrite to track fixes, Read/Edit to fix code
-
-Task: "Search web for latest docs"
-→ Use WebSearch (if available) or WebFetch
-
-Need clarification?
-→ Use AskUserQuestion before proceeding
+node scripts/generate-password-hash.js "password"  # Generate hash
+npx tsc --noEmit     # Type check
 ```
 
-### Memory & Context Management
+### Environment Variables
 
-- **File Reading**: Always Read files before editing to understand context
-- **Comprehensive Search**: Use parallel Grep/Glob to gather complete information
-- **Task Tracking**: TodoWrite provides persistent memory across conversation
-- **Background Monitoring**: BashOutput gives awareness of long-running processes
-- **Web Access**: WebSearch/WebFetch extends knowledge beyond training data
+```bash
+# .env.local (local development)
+NEXT_PUBLIC_EDIT_PASSWORD_HASH="$2b$10$..."
 
-### When to Use Task Tool (Specialized Agents)
+# GitHub Secrets (production)
+NEXT_PUBLIC_EDIT_PASSWORD_HASH
+```
 
-- **Explore agent**: "Find all error handlers", "How is authentication implemented?"
-- **Plan agent**: Complex feature planning before implementation
-- **General-purpose agent**: Multi-step autonomous tasks requiring multiple tool calls
-- **claude-code-guide agent**: Questions about Claude Code features, SDK, or usage
+### Common Queries
 
-**Remember**: Using the right tool for the job makes Claude Code more intelligent, efficient, and aware!
+**"Where is the homepage?"** → `src/app/page.tsx`
+**"Where is the resume editor?"** → `src/app/resume/edit/page.tsx`
+**"Where is the data?"** → `src/data/resume.json`
+**"Where are tests?"** → `src/**/__tests__/`
+**"How to add password?"** → Generate hash, set `NEXT_PUBLIC_EDIT_PASSWORD_HASH`
+**"How to customize colors?"** → `src/app/globals.css`
+**"How to deploy?"** → Push to main branch (GitHub Actions auto-deploys)
+
+---
+
+## Troubleshooting
+
+### Build Failures
+
+```bash
+# Check TypeScript
+npm run build
+
+# Check tests
+npm test
+
+# Validate resume.json
+node -e "JSON.parse(require('fs').readFileSync('src/data/resume.json'))"
+
+# Clean install
+rm -rf node_modules .next out
+npm install
+```
+
+### Password Not Working
+
+- Check `NEXT_PUBLIC_EDIT_PASSWORD_HASH` is set
+- Regenerate hash: `node scripts/generate-password-hash.js "password"`
+- Clear browser cache / use incognito
+- Check GitHub Secrets (production)
+
+### Tests Failing
+
+```bash
+# Verbose output
+npm test -- --verbose
+
+# Specific test
+npm test -- path/to/test.test.tsx
+
+# Clear Jest cache
+npm test -- --clearCache
+```
+
+### GitHub Pages 404
+
+- Ensure `.nojekyll` file exists in `out/`
+- Check GitHub Pages settings (Actions enabled)
+- Verify deployment succeeded (Actions tab)
+- Wait 2-3 minutes for CDN cache
+
+---
 
 ## Security
 
-- Password hashing using bcrypt (cost factor: 10)
-- Session management via sessionStorage (24-hour expiry)
-- Protected edit pages (/resume/edit, /cover-letter/edit)
-- Environment variables for sensitive configuration
-- No plain-text passwords stored anywhere
-- Robots.txt blocks admin interfaces from search engines
+- **Password protection:** Client-side (suitable for personal portfolios, can be bypassed)
+- **Session management:** sessionStorage (24-hour expiry)
+- **Environment variables:** Secrets via GitHub Actions
+- **No plain-text passwords:** All hashed with bcrypt (cost: 10)
+- **Robots.txt:** Blocks admin interfaces from search engines
+
+---
+
+## Tech Stack Summary
+
+- **Framework:** Next.js 15.5.2 (App Router, static export)
+- **React:** 19.1.0
+- **TypeScript:** 5 (strict mode)
+- **Styling:** Tailwind CSS v4
+- **Animations:** Framer Motion 12.23.12
+- **Forms/DnD:** @hello-pangea/dnd 18.0.1
+- **Validation:** AJV 8.17.1 (JSON Resume schema)
+- **Auth:** bcryptjs 3.0.3 (client-side)
+- **Testing:** Jest 30.2.0 + RTL 16.3.0
+- **SEO:** next-sitemap 4.2.3
+- **Deployment:** GitHub Pages + GitHub Actions
+
+---
+
+## Additional Resources
+
+- **Quick Start:** [QUICKSTART.md](./QUICKSTART.md) - Get started in 10 minutes
+- **Architecture:** [ARCHITECTURE.md](./ARCHITECTURE.md) - Complete technical reference (1,300+ lines)
+- **Contributing:** [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
+- **Changelog:** [CHANGELOG.md](./CHANGELOG.md) - Version history
+- **Feature Guides:** [docs/](./docs/) - Password protection, AI generator, data setup
+
+---
+
+**For More Details:** See [ARCHITECTURE.md](./ARCHITECTURE.md) for deep technical documentation (data flow diagrams, authentication details, AI integration, performance optimizations, comprehensive troubleshooting).
