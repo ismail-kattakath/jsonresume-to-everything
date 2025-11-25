@@ -773,12 +773,43 @@ npm test -- --clearCache
 
 ---
 
+## Code Quality Improvement
+
+**ESLint Gradual Improvement Plan:** [docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md](./docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md)
+
+### Current Status (2025-01-25)
+
+**Enforced (Error - Blocks Commits):**
+
+- ✅ `@typescript-eslint/no-require-imports` - Zero violations
+- ✅ `react/no-unescaped-entities` - Zero violations
+- ⚠️ `@typescript-eslint/no-unused-expressions` - 3 violations (fix in progress)
+
+**Code Quality (Warning - Gradual Improvement):**
+
+- ⚠️ `@typescript-eslint/no-explicit-any` - 72 violations
+- ⚠️ `@typescript-eslint/no-unused-vars` - 32 violations
+
+### Improvement Phases
+
+1. **Phase 1 (URGENT):** Fix 3 unused expressions in test files
+2. **Phase 2:** Clean up 32 unused variables in tests (2-3 hours)
+3. **Phase 3:** Clean up unused variables in source code (1-2 hours)
+4. **Phase 4:** Replace 44 `any` types in test files (4-6 hours)
+5. **Phase 5:** Replace 28 `any` types in source files (6-8 hours)
+6. **Phase 6:** Final cleanup & enforce all rules as errors
+
+**See full plan:** [docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md](./docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md)
+
+---
+
 ## Additional Resources
 
 - **Quick Start:** [QUICKSTART.md](./QUICKSTART.md) - Get started in 10 minutes
 - **Architecture:** [ARCHITECTURE.md](./ARCHITECTURE.md) - Complete technical reference (1,300+ lines)
 - **Contributing:** [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
 - **Changelog:** [CHANGELOG.md](./CHANGELOG.md) - Version history
+- **Code Quality:** [docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md](./docs/ESLINT_GRADUAL_IMPROVEMENT_PLAN.md) - ESLint improvement roadmap
 - **Feature Guides:** [docs/](./docs/) - Password protection, AI generator, data setup
 
 ---
