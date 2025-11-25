@@ -1,4 +1,5 @@
 import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
+import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import type { ResumeData } from '@/types'
 
 describe('JSON Resume Conversion', () => {
@@ -71,6 +72,19 @@ describe('JSON Resume Conversion', () => {
       expect(result).toHaveProperty('education')
       expect(result).toHaveProperty('skills')
       expect(result).toHaveProperty('languages')
+    })
+
+    it('should produce valid JSON Resume schema output', () => {
+      const result = convertToJSONResume(mockResumeData)
+      const validation = validateJSONResume(result)
+
+      if (!validation.valid) {
+        console.error(
+          'Validation errors:',
+          JSON.stringify(validation.errors, null, 2)
+        )
+      }
+      expect(validation.valid).toBe(true)
     })
 
     it('should correctly map basics fields', () => {

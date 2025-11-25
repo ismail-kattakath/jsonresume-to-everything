@@ -102,6 +102,22 @@ export function convertToJSONResume(customData?: ResumeData) {
     profiles: profiles, // Keep all profiles including Website for order preservation
   }
 
+  // Process certifications - add https:// to URLs and omit empty URLs
+  const certificates = (data.certifications || []).map((cert) => {
+    const certObj: any = {
+      name: cert.name,
+      date: cert.date,
+      issuer: cert.issuer,
+    }
+    // Only include url if it's not empty
+    if (cert.url && cert.url.trim()) {
+      certObj.url = cert.url.startsWith('http')
+        ? cert.url
+        : `https://${cert.url}`
+    }
+    return certObj
+  })
+
   const jsonResume = {
     $schema:
       'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
@@ -110,7 +126,7 @@ export function convertToJSONResume(customData?: ResumeData) {
     volunteer: [],
     education,
     awards: [],
-    certificates: data.certifications || [],
+    certificates,
     publications: [],
     skills,
     languages,
