@@ -100,7 +100,9 @@ CRITICAL INSTRUCTIONS - READ CAREFULLY:
    • Single paragraph format (semicolons for major transitions, commas for flow)
    • Use active, confident language: "Led", "Architected", "Transformed", "Known for"
    • Balance technical precision with human readability
-   • Quality over arbitrary length—aim for ${summary?.length || 900} characters but prioritize impact
+   • CRITICAL LENGTH REQUIREMENT: MAXIMUM 1200 characters (HARD LIMIT - will be truncated if exceeded)
+   • Aim for 1150-1200 characters for optimal impact while staying under limit
+   • Count characters as you write - every letter, space, and punctuation counts
 
 4b. VOICE/TONE (CRITICAL - Resume Format):
    • ALWAYS use third-person or implied third-person voice (professional resume style)
@@ -134,15 +136,18 @@ CRITICAL REMINDERS FOR THIS SPECIFIC JOB:
 • Etuper experience adds value (stakeholder collaboration, wireframes, prototypes)
 • Current role (Silver Creek) should be mentioned briefly but not dominate
 
-OUTPUT:
-Return ONLY the professional summary as plain text (no formatting, no code blocks, no preamble).`
+OUTPUT REQUIREMENTS:
+• Return ONLY the professional summary as plain text (no formatting, no code blocks, no preamble)
+• ABSOLUTE MAXIMUM: 1200 characters (this is a HARD limit - anything longer will be truncated)
+• Verify character count before returning - count every character including spaces and punctuation
+• If approaching 1200 chars, prioritize most relevant content and remove less critical details`
 
   return prompt
 }
 
 /**
  * Validates the generated summary content
- * Updated to match new prompt guidelines: ~900 characters for quality summaries
+ * Note: Validation is informational only - AI output is never modified/truncated
  */
 export function validateSummary(content: string): {
   isValid: boolean
@@ -155,11 +160,10 @@ export function validateSummary(content: string): {
     errors.push('Summary is too short (minimum 100 characters)')
   }
 
-  // Check maximum length (increased to ~1000 chars to accommodate quality summaries)
-  // The prompt aims for ~900 chars, allowing some flexibility
+  // Check maximum length (informational warning only)
   if (content.length > 1200) {
     errors.push(
-      'Summary is too long (maximum 1200 characters recommended for single paragraph)'
+      `Summary exceeds 1200 character limit (${content.length} chars) - may not fit in resume layout`
     )
   }
 

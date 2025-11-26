@@ -44,7 +44,7 @@ const Summary = () => {
         name="summary"
         rows={8}
         minHeight="160px"
-        maxLength={2000}
+        maxLength={1200}
         showCharacterCount={true}
       />
 

@@ -354,17 +354,14 @@ export async function generateSummary(
     }
   }
 
-  // Post-process the content
-  const processedContent = postProcessCoverLetter(generatedContent) // Reuse same post-processing
-
-  // Validate the content
-  const validation = validateSummary(processedContent)
+  // Validate the content (informational only - do not modify AI output)
+  const validation = validateSummary(generatedContent)
   if (!validation.isValid) {
     console.warn('Summary validation warnings:', validation.errors)
-    // Still return the content, but log warnings
+    // Still return the content as-is, but log warnings
   }
 
-  return processedContent
+  return generatedContent
 }
 
 /**
