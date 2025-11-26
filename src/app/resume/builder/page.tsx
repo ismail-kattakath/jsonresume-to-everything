@@ -241,38 +241,31 @@ function UnifiedEditor() {
             {/* Preview Section with Switcher */}
             <div className="exclude-print flex flex-col md:w-[8.5in]">
               {/* Preview Mode Switcher */}
-              <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4">
-                <div className="flex flex-col gap-2">
-                  <p className="text-xs font-medium tracking-wider text-white/40 uppercase">
-                    Preview Mode
-                  </p>
-                  <div className="flex gap-2 rounded-lg bg-white/5 p-1">
-                    <button
-                      type="button"
-                      onClick={() => setMode('resume')}
-                      className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${
-                        mode === 'resume'
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                          : 'text-white/60 hover:text-white/80'
-                      }`}
-                    >
-                      <span>📄</span>
-                      Resume
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMode('coverLetter')}
-                      className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-all ${
-                        mode === 'coverLetter'
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                          : 'text-white/60 hover:text-white/80'
-                      }`}
-                    >
-                      <span>✉️</span>
-                      Cover Letter
-                    </button>
-                  </div>
-                </div>
+              <div className="flex bg-gradient-to-br from-gray-900 via-black to-gray-900">
+                <button
+                  type="button"
+                  onClick={() => setMode('resume')}
+                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                    mode === 'resume'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                      : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                  }`}
+                >
+                  <span>📄</span>
+                  Resume
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode('coverLetter')}
+                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                    mode === 'coverLetter'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                      : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                  }`}
+                >
+                  <span>✉️</span>
+                  Cover Letter
+                </button>
               </div>
 
               {/* Conditional Preview */}
