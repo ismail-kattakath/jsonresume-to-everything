@@ -85,6 +85,56 @@ describe('Password Configuration', () => {
       expect(result).toBeUndefined()
     })
 
+    it('should return hash from process.env in browser-like test environment', () => {
+      const mockHash = '$2b$10$testHashFromProcessEnv'
+      ;(global as TestGlobal).window = {
+        document: {}, // Make it look like a browser environment
+      }
+      process.env.NEXT_PUBLIC_EDIT_PASSWORD_HASH = mockHash
+
+      const result = getPasswordHash()
+
+      expect(result).toBe(mockHash)
+    })
+
+    it('should handle browser environment with undefined process gracefully', () => {
+      ;(global as TestGlobal).window = {
+        document: {},
+      }
+      const originalProcess = global.process
+
+      // Simulate browser without process
+      try {
+        // @ts-ignore - deliberately testing undefined process
+        delete global.process
+
+        const result = getPasswordHash()
+
+        expect(result).toBeUndefined()
+      } finally {
+        global.process = originalProcess
+      }
+    })
+
+    it('should handle browser environment with defined process but no env property', () => {
+      ;(global as TestGlobal).window = {
+        document: {},
+      }
+      const originalEnv = process.env
+
+      try {
+        // Set process but with no env
+        // @ts-ignore - deliberately testing missing env
+        process.env = undefined
+
+        const result = getPasswordHash()
+
+        expect(result).toBeUndefined()
+      } finally {
+        process.env = originalEnv
+      }
+    })
+
     // TODO: This test is hard to properly mock in jsdom environment
     // The actual browser behavior works correctly - this is a testing limitation
     it.skip('should prioritize window.__PASSWORD_HASH__ over environment variable', () => {
