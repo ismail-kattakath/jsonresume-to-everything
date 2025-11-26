@@ -400,3 +400,12 @@ body {
     line-height: 32px;
   }
 }
+
+/* Print Styles - Override screen-specific layout for printing */
+@media print {
+  .preview {
+    overflow: visible !important;
+    height: auto !important;
+    position: static !important;
+  }
+}
