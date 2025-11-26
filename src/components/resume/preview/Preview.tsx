@@ -154,7 +154,14 @@ const Preview = () => {
   useKeyboardShortcut('u', true, toggleUnderline)
 
   return (
-    <div className="preview rm-padding-print w-full bg-white p-6 font-[sans-serif] text-black md:min-h-[11in] md:w-[8.5in]">
+    <div
+      className="preview rm-padding-print w-full bg-white p-6 font-[sans-serif] text-black md:min-h-[11in] md:w-[8.5in]"
+      style={{
+        backgroundImage:
+          'repeating-linear-gradient(to bottom, transparent 0, transparent calc(11in - 1px), #e5e7eb calc(11in - 1px), #e5e7eb 11in)',
+        backgroundSize: '100% 11in',
+      }}
+    >
       <A4PageWrapper>
         <HighlightMenu
           styles={{
