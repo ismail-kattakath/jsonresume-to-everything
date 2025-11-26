@@ -8,6 +8,63 @@ import {
   fireEvent,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
+// Mock @hello-pangea/dnd to test drag-and-drop functionality
+jest.mock('@hello-pangea/dnd', () => ({
+  DragDropContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode
+    onDragEnd: (result: unknown) => void
+  }) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
+  Droppable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="droppable">
+      {children(
+        {
+          droppableProps: {},
+          innerRef: jest.fn(),
+          placeholder: null,
+        },
+        {
+          isDraggingOver: false,
+          draggingOverWith: null,
+          draggingFromThisWith: null,
+          isUsingPlaceholder: false,
+        }
+      )}
+    </div>
+  ),
+  Draggable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="draggable">
+      {children(
+        {
+          draggableProps: {},
+          dragHandleProps: {},
+          innerRef: jest.fn(),
+        },
+        {
+          isDragging: false,
+          isDropAnimating: false,
+        }
+      )}
+    </div>
+  ),
+}))
+
 describe('WorkExperience Component', () => {
   describe('Rendering', () => {
     it('should render section heading', () => {
@@ -760,6 +817,266 @@ describe('WorkExperience Component', () => {
 
       expect(companyInput?.value).toBe("O'Brien & Associates")
       expect(positionInput?.value).toBe('Senior Developer (Team Lead)')
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+      capturedOnDragEnd = null
+    })
+
+    it('should not update data when dropped outside droppable area', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        workExperience: [
+          {
+            company: 'Company 1',
+            url: 'company1.com',
+            position: 'Role 1',
+            description: 'Desc 1',
+            keyAchievements: 'Achievements 1',
+            startYear: '2020-01-01',
+            endYear: '2021-01-01',
+          },
+          {
+            company: 'Company 2',
+            url: 'company2.com',
+            position: 'Role 2',
+            description: 'Desc 2',
+            keyAchievements: 'Achievements 2',
+            startYear: '2021-01-01',
+            endYear: '2023-01-01',
+          },
+        ],
+      })
+
+      renderWithContext(<WorkExperience />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      // Simulate dropping outside droppable area
+      capturedOnDragEnd!({
+        source: { droppableId: 'work-experience', index: 0 },
+        destination: null,
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should not update data when dropped in same position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        workExperience: [
+          {
+            company: 'Company 1',
+            url: 'company1.com',
+            position: 'Role 1',
+            description: 'Desc 1',
+            keyAchievements: 'Achievements 1',
+            startYear: '2020-01-01',
+            endYear: '2021-01-01',
+          },
+          {
+            company: 'Company 2',
+            url: 'company2.com',
+            position: 'Role 2',
+            description: 'Desc 2',
+            keyAchievements: 'Achievements 2',
+            startYear: '2021-01-01',
+            endYear: '2023-01-01',
+          },
+        ],
+      })
+
+      renderWithContext(<WorkExperience />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      // Simulate dropping in the same position
+      capturedOnDragEnd!({
+        source: { droppableId: 'work-experience', index: 1 },
+        destination: { droppableId: 'work-experience', index: 1 },
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should reorder work experience items from first to last position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        workExperience: [
+          {
+            company: 'Company 1',
+            url: 'company1.com',
+            position: 'Role 1',
+            description: 'Desc 1',
+            keyAchievements: 'Achievements 1',
+            startYear: '2020-01-01',
+            endYear: '2021-01-01',
+          },
+          {
+            company: 'Company 2',
+            url: 'company2.com',
+            position: 'Role 2',
+            description: 'Desc 2',
+            keyAchievements: 'Achievements 2',
+            startYear: '2021-01-01',
+            endYear: '2022-01-01',
+          },
+          {
+            company: 'Company 3',
+            url: 'company3.com',
+            position: 'Role 3',
+            description: 'Desc 3',
+            keyAchievements: 'Achievements 3',
+            startYear: '2022-01-01',
+            endYear: '2023-01-01',
+          },
+        ],
+      })
+
+      renderWithContext(<WorkExperience />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      // Drag first item to last position
+      capturedOnDragEnd!({
+        source: { droppableId: 'work-experience', index: 0 },
+        destination: { droppableId: 'work-experience', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        workExperience: [
+          mockData.workExperience[1],
+          mockData.workExperience[2],
+          mockData.workExperience[0],
+        ],
+      })
+    })
+
+    it('should reorder work experience items from last to first position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        workExperience: [
+          {
+            company: 'Company 1',
+            url: 'company1.com',
+            position: 'Role 1',
+            description: 'Desc 1',
+            keyAchievements: 'Achievements 1',
+            startYear: '2020-01-01',
+            endYear: '2021-01-01',
+          },
+          {
+            company: 'Company 2',
+            url: 'company2.com',
+            position: 'Role 2',
+            description: 'Desc 2',
+            keyAchievements: 'Achievements 2',
+            startYear: '2021-01-01',
+            endYear: '2022-01-01',
+          },
+          {
+            company: 'Company 3',
+            url: 'company3.com',
+            position: 'Role 3',
+            description: 'Desc 3',
+            keyAchievements: 'Achievements 3',
+            startYear: '2022-01-01',
+            endYear: '2023-01-01',
+          },
+        ],
+      })
+
+      renderWithContext(<WorkExperience />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      // Drag last item to first position
+      capturedOnDragEnd!({
+        source: { droppableId: 'work-experience', index: 2 },
+        destination: { droppableId: 'work-experience', index: 0 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        workExperience: [
+          mockData.workExperience[2],
+          mockData.workExperience[0],
+          mockData.workExperience[1],
+        ],
+      })
+    })
+
+    it('should reorder work experience items between middle positions', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        workExperience: [
+          {
+            company: 'Company 1',
+            url: 'company1.com',
+            position: 'Role 1',
+            description: 'Desc 1',
+            keyAchievements: 'Achievements 1',
+            startYear: '2020-01-01',
+            endYear: '2021-01-01',
+          },
+          {
+            company: 'Company 2',
+            url: 'company2.com',
+            position: 'Role 2',
+            description: 'Desc 2',
+            keyAchievements: 'Achievements 2',
+            startYear: '2021-01-01',
+            endYear: '2022-01-01',
+          },
+          {
+            company: 'Company 3',
+            url: 'company3.com',
+            position: 'Role 3',
+            description: 'Desc 3',
+            keyAchievements: 'Achievements 3',
+            startYear: '2022-01-01',
+            endYear: '2023-01-01',
+          },
+        ],
+      })
+
+      renderWithContext(<WorkExperience />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      // Drag middle item (index 1) down one position (index 2)
+      capturedOnDragEnd!({
+        source: { droppableId: 'work-experience', index: 1 },
+        destination: { droppableId: 'work-experience', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        workExperience: [
+          mockData.workExperience[0],
+          mockData.workExperience[2],
+          mockData.workExperience[1],
+        ],
+      })
     })
   })
 })

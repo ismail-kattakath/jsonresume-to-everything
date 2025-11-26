@@ -8,6 +8,63 @@ import {
   fireEvent,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
+// Mock @hello-pangea/dnd
+jest.mock('@hello-pangea/dnd', () => ({
+  DragDropContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode
+    onDragEnd: (result: unknown) => void
+  }) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
+  Droppable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="droppable">
+      {children(
+        {
+          droppableProps: {},
+          innerRef: jest.fn(),
+          placeholder: null,
+        },
+        {
+          isDraggingOver: false,
+          draggingOverWith: null,
+          draggingFromThisWith: null,
+          isUsingPlaceholder: false,
+        }
+      )}
+    </div>
+  ),
+  Draggable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="draggable">
+      {children(
+        {
+          draggableProps: {},
+          dragHandleProps: {},
+          innerRef: jest.fn(),
+        },
+        {
+          isDragging: false,
+          isDropAnimating: false,
+        }
+      )}
+    </div>
+  ),
+}))
+
 describe('Education Component', () => {
   describe('Rendering', () => {
     it('should render section heading', () => {
@@ -681,6 +738,230 @@ describe('Education Component', () => {
       }) as HTMLInputElement
 
       expect(checkbox.checked).toBe(false)
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    const mockSetResumeData = jest.fn()
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      capturedOnDragEnd = null
+    })
+
+    describe('onDragEnd - No Destination', () => {
+      it('should not update data when dropped outside droppable area', () => {
+        const mockData = createMockResumeData({
+          education: [
+            {
+              school: 'University A',
+              url: 'ua.edu',
+              degree: 'Bachelor of Science',
+              startYear: '2015-09-01',
+              endYear: '2019-06-01',
+            },
+          ],
+        })
+
+        renderWithContext(<Education />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        capturedOnDragEnd!({
+          source: { droppableId: 'education', index: 0 },
+          destination: null,
+        })
+
+        expect(mockSetResumeData).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('onDragEnd - Same Position', () => {
+      it('should not update data when dropped at same position', () => {
+        const mockData = createMockResumeData({
+          education: [
+            {
+              school: 'University A',
+              url: 'ua.edu',
+              degree: 'Bachelor of Science',
+              startYear: '2015-09-01',
+              endYear: '2019-06-01',
+            },
+          ],
+        })
+
+        renderWithContext(<Education />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        capturedOnDragEnd!({
+          source: { droppableId: 'education', index: 0 },
+          destination: { droppableId: 'education', index: 0 },
+        })
+
+        expect(mockSetResumeData).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('onDragEnd - Reordering Education Items', () => {
+      it('should reorder education items from first to last position', () => {
+        const mockData = createMockResumeData({
+          education: [
+            {
+              school: 'University A',
+              url: 'ua.edu',
+              degree: 'BS Computer Science',
+              startYear: '2015-09-01',
+              endYear: '2019-06-01',
+            },
+            {
+              school: 'University B',
+              url: 'ub.edu',
+              degree: 'MS Software Engineering',
+              startYear: '2019-09-01',
+              endYear: '2021-06-01',
+            },
+            {
+              school: 'University C',
+              url: 'uc.edu',
+              degree: 'PhD Computer Science',
+              startYear: '2021-09-01',
+              endYear: '2024-06-01',
+            },
+          ],
+        })
+
+        renderWithContext(<Education />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first item to last position
+        capturedOnDragEnd!({
+          source: { droppableId: 'education', index: 0 },
+          destination: { droppableId: 'education', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          education: [
+            mockData.education[1],
+            mockData.education[2],
+            mockData.education[0],
+          ],
+        })
+      })
+
+      it('should reorder education items from last to first position', () => {
+        const mockData = createMockResumeData({
+          education: [
+            {
+              school: 'University A',
+              url: 'ua.edu',
+              degree: 'Bachelor Degree',
+              startYear: '2015-09-01',
+              endYear: '2019-06-01',
+            },
+            {
+              school: 'University B',
+              url: 'ub.edu',
+              degree: 'Master Degree',
+              startYear: '2019-09-01',
+              endYear: '2021-06-01',
+            },
+          ],
+        })
+
+        renderWithContext(<Education />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        // Move last item to first position
+        capturedOnDragEnd!({
+          source: { droppableId: 'education', index: 1 },
+          destination: { droppableId: 'education', index: 0 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          education: [mockData.education[1], mockData.education[0]],
+        })
+      })
+
+      it('should reorder education items in middle positions', () => {
+        const mockData = createMockResumeData({
+          education: [
+            {
+              school: 'A',
+              url: '',
+              degree: 'Degree A',
+              startYear: '',
+              endYear: '',
+            },
+            {
+              school: 'B',
+              url: '',
+              degree: 'Degree B',
+              startYear: '',
+              endYear: '',
+            },
+            {
+              school: 'C',
+              url: '',
+              degree: 'Degree C',
+              startYear: '',
+              endYear: '',
+            },
+            {
+              school: 'D',
+              url: '',
+              degree: 'Degree D',
+              startYear: '',
+              endYear: '',
+            },
+          ],
+        })
+
+        renderWithContext(<Education />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        // Move second item to third position
+        capturedOnDragEnd!({
+          source: { droppableId: 'education', index: 1 },
+          destination: { droppableId: 'education', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          education: [
+            mockData.education[0],
+            mockData.education[2],
+            mockData.education[1],
+            mockData.education[3],
+          ],
+        })
+      })
     })
   })
 })

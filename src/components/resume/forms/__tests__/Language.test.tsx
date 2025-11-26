@@ -8,6 +8,63 @@ import {
   createMockResumeData,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
+// Mock @hello-pangea/dnd to test drag-and-drop functionality
+jest.mock('@hello-pangea/dnd', () => ({
+  DragDropContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode
+    onDragEnd: (result: unknown) => void
+  }) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
+  Droppable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="droppable">
+      {children(
+        {
+          droppableProps: {},
+          innerRef: jest.fn(),
+          placeholder: null,
+        },
+        {
+          isDraggingOver: false,
+          draggingOverWith: null,
+          draggingFromThisWith: null,
+          isUsingPlaceholder: false,
+        }
+      )}
+    </div>
+  ),
+  Draggable: ({
+    children,
+  }: {
+    children: (provided: unknown, snapshot: unknown) => React.ReactNode
+  }) => (
+    <div data-testid="draggable">
+      {children(
+        {
+          draggableProps: {},
+          dragHandleProps: {},
+          innerRef: jest.fn(),
+        },
+        {
+          isDragging: false,
+          isDropAnimating: false,
+        }
+      )}
+    </div>
+  ),
+}))
+
 describe('Language Component', () => {
   describe('Rendering', () => {
     it('should render section heading', () => {
@@ -548,6 +605,162 @@ describe('Language Component', () => {
       expect(inputs).toHaveLength(3)
       inputs.forEach((input) => {
         expect(input).toHaveValue('English')
+      })
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+      capturedOnDragEnd = null
+    })
+
+    it('should not update data when dropped outside droppable area', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        languages: ['English', 'Spanish'],
+      })
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Language />
+        </ResumeContext.Provider>
+      )
+
+      // Simulate dropping outside droppable area
+      capturedOnDragEnd!({
+        source: { droppableId: 'languages', index: 0 },
+        destination: null,
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should not update data when dropped in same position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        languages: ['English', 'Spanish'],
+      })
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Language />
+        </ResumeContext.Provider>
+      )
+
+      // Simulate dropping in the same position
+      capturedOnDragEnd!({
+        source: { droppableId: 'languages', index: 1 },
+        destination: { droppableId: 'languages', index: 1 },
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should reorder languages from first to last position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        languages: ['English', 'Spanish', 'French'],
+      })
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Language />
+        </ResumeContext.Provider>
+      )
+
+      // Drag first item to last position
+      capturedOnDragEnd!({
+        source: { droppableId: 'languages', index: 0 },
+        destination: { droppableId: 'languages', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        languages: ['Spanish', 'French', 'English'],
+      })
+    })
+
+    it('should reorder languages from last to first position', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        languages: ['English', 'Spanish', 'French'],
+      })
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Language />
+        </ResumeContext.Provider>
+      )
+
+      // Drag last item to first position
+      capturedOnDragEnd!({
+        source: { droppableId: 'languages', index: 2 },
+        destination: { droppableId: 'languages', index: 0 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        languages: ['French', 'English', 'Spanish'],
+      })
+    })
+
+    it('should reorder languages between middle positions', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        languages: ['English', 'Spanish', 'French'],
+      })
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Language />
+        </ResumeContext.Provider>
+      )
+
+      // Drag middle item (index 1) down one position (index 2)
+      capturedOnDragEnd!({
+        source: { droppableId: 'languages', index: 1 },
+        destination: { droppableId: 'languages', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        languages: ['English', 'French', 'Spanish'],
       })
     })
   })
