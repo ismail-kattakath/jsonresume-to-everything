@@ -167,3 +167,75 @@ describe('Portfolio Data - Projects', () => {
     })
   })
 })
+
+describe('Portfolio Data - extractLocation Function', () => {
+  // We need to test the internal extractLocation function by testing the result
+  it('should extract location from full address', () => {
+    // The actual extractLocation is not exported, but we can verify the result through contactInfo.location
+    // The format should be "City, Province 🇨🇦"
+    expect(contactInfo.location).toMatch(/[A-Za-z\s]+, [A-Z]{2} 🇨🇦/)
+  })
+
+  it('should handle various address formats', () => {
+    // Location should always contain the Canadian flag emoji
+    expect(contactInfo.location).toContain('🇨🇦')
+  })
+})
+
+describe('Portfolio Data - formatDateRange Function', () => {
+  it('should format date ranges correctly in experience', () => {
+    experience.forEach((job) => {
+      // Should contain dash separator
+      expect(job.duration).toContain(' - ')
+
+      // Should either end with "Present" or a date
+      expect(job.duration).toMatch(/.+ - (Present|\w+ \d{4})/)
+    })
+  })
+
+  it('should handle "Present" for current jobs', () => {
+    // At least one job should have "Present" (current position)
+    const hasCurrentJob = experience.some((job) =>
+      job.duration.includes('Present')
+    )
+    expect(hasCurrentJob).toBe(true)
+  })
+
+  it('should format dates as "Mon YYYY"', () => {
+    experience.forEach((job) => {
+      // Start date should be in "Mon YYYY" format
+      const startMatch = job.duration.match(/^(\w+ \d{4})/)
+      expect(startMatch).toBeTruthy()
+    })
+  })
+})
+
+describe('Portfolio Data - Edge Cases', () => {
+  it('should handle missing social media profiles', () => {
+    // Fields should be strings (empty or populated)
+    expect(typeof contactInfo.github).toBe('string')
+    expect(typeof contactInfo.linkedin).toBe('string')
+    expect(typeof contactInfo.website).toBe('string')
+  })
+
+  it('should handle empty description lines in experience', () => {
+    experience.forEach((job) => {
+      // All description items should be non-empty after filtering
+      job.description.forEach((desc) => {
+        expect(desc.trim()).not.toBe('')
+      })
+    })
+  })
+
+  it('should handle optional technologies array', () => {
+    experience.forEach((job) => {
+      // Technologies should be an array (could be empty)
+      expect(Array.isArray(job.technologies)).toBe(true)
+    })
+  })
+
+  it('should handle calendar link', () => {
+    // Calendar link should be a string (empty or populated)
+    expect(typeof contactInfo.calendar).toBe('string')
+  })
+})

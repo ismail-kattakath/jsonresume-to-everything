@@ -7,11 +7,21 @@ import {
   createMockResumeData,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
 // Mock dynamic imports
 jest.mock('@hello-pangea/dnd', () => ({
-  DragDropContext: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="drag-drop-context">{children}</div>
-  ),
+  DragDropContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode
+    onDragEnd: (result: unknown) => void
+  }) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
   Droppable: ({
     children,
   }: {
@@ -465,6 +475,334 @@ describe('Preview Component', () => {
       const { container } = renderWithContext(<Preview />)
       const gridLayout = container.querySelector('.grid.grid-cols-3')
       expect(gridLayout).toBeInTheDocument()
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    const mockSetResumeData = jest.fn()
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+      capturedOnDragEnd = null
+    })
+
+    describe('onDragEnd - No Destination', () => {
+      it('should not update data when dropped outside droppable area', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              company: 'Company A',
+              position: 'Developer',
+              startYear: '2020',
+              endYear: 'Present',
+              description: 'Work description',
+              keyAchievements: 'Achievement 1',
+              technologies: [],
+              url: '',
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        capturedOnDragEnd!({
+          source: { droppableId: 'work-experience', index: 0 },
+          destination: null,
+        })
+
+        expect(mockSetResumeData).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('onDragEnd - Same Position', () => {
+      it('should not update data when dropped at same position', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              company: 'Company A',
+              position: 'Developer',
+              startYear: '2020',
+              endYear: 'Present',
+              description: 'Work description',
+              keyAchievements: 'Achievement 1',
+              technologies: [],
+              url: '',
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        capturedOnDragEnd!({
+          source: { droppableId: 'work-experience', index: 0 },
+          destination: { droppableId: 'work-experience', index: 0 },
+        })
+
+        expect(mockSetResumeData).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('onDragEnd - Work Experience Reordering', () => {
+      it('should reorder work experience items', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              company: 'Company A',
+              position: 'Developer A',
+              startYear: '2020',
+              endYear: '2021',
+              description: 'Work A',
+              keyAchievements: 'Achievement A',
+              technologies: [],
+              url: '',
+            },
+            {
+              company: 'Company B',
+              position: 'Developer B',
+              startYear: '2021',
+              endYear: '2022',
+              description: 'Work B',
+              keyAchievements: 'Achievement B',
+              technologies: [],
+              url: '',
+            },
+            {
+              company: 'Company C',
+              position: 'Developer C',
+              startYear: '2022',
+              endYear: 'Present',
+              description: 'Work C',
+              keyAchievements: 'Achievement C',
+              technologies: [],
+              url: '',
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first item to last position
+        capturedOnDragEnd!({
+          source: { droppableId: 'work-experience', index: 0 },
+          destination: { droppableId: 'work-experience', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          workExperience: [
+            mockData.workExperience[1],
+            mockData.workExperience[2],
+            mockData.workExperience[0],
+          ],
+        })
+      })
+    })
+
+    describe('onDragEnd - Work Experience Key Achievements', () => {
+      it('should reorder key achievements within work experience', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              company: 'Company A',
+              position: 'Developer',
+              startYear: '2020',
+              endYear: 'Present',
+              description: 'Work description',
+              keyAchievements: 'Achievement 1\nAchievement 2\nAchievement 3',
+              technologies: [],
+              url: '',
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first achievement to last position within work experience index 0
+        capturedOnDragEnd!({
+          source: {
+            droppableId: 'WORK_EXPERIENCE_KEY_ACHIEVEMENT-0',
+            index: 0,
+          },
+          destination: {
+            droppableId: 'WORK_EXPERIENCE_KEY_ACHIEVEMENT-0',
+            index: 2,
+          },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          workExperience: [
+            {
+              ...mockData.workExperience[0],
+              keyAchievements: 'Achievement 2\nAchievement 3\nAchievement 1',
+            },
+          ],
+        })
+      })
+    })
+
+    describe('onDragEnd - Skills Reordering', () => {
+      it('should reorder skills groups', () => {
+        const mockData = createMockResumeData({
+          skills: [
+            {
+              title: 'Programming Languages',
+              skills: [{ text: 'JavaScript', highlight: false }],
+            },
+            {
+              title: 'Frameworks',
+              skills: [{ text: 'React', highlight: false }],
+            },
+            {
+              title: 'Tools',
+              skills: [{ text: 'Git', highlight: false }],
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first skill group to last position
+        capturedOnDragEnd!({
+          source: { droppableId: 'skills', index: 0 },
+          destination: { droppableId: 'skills', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          skills: [mockData.skills[1], mockData.skills[2], mockData.skills[0]],
+        })
+      })
+    })
+
+    describe('onDragEnd - Projects Reordering', () => {
+      it('should reorder projects', () => {
+        const mockData = createMockResumeData({
+          projects: [
+            {
+              name: 'Project A',
+              description: 'Description A',
+              keyAchievements: 'Achievement A',
+              url: '',
+              technologies: [],
+            },
+            {
+              name: 'Project B',
+              description: 'Description B',
+              keyAchievements: 'Achievement B',
+              url: '',
+              technologies: [],
+            },
+            {
+              name: 'Project C',
+              description: 'Description C',
+              keyAchievements: 'Achievement C',
+              url: '',
+              technologies: [],
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first project to last position
+        capturedOnDragEnd!({
+          source: { droppableId: 'projects', index: 0 },
+          destination: { droppableId: 'projects', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          projects: [
+            mockData.projects[1],
+            mockData.projects[2],
+            mockData.projects[0],
+          ],
+        })
+      })
+    })
+
+    describe('onDragEnd - Project Key Achievements', () => {
+      it('should reorder key achievements within projects', () => {
+        const mockData = createMockResumeData({
+          projects: [
+            {
+              name: 'Project A',
+              description: 'Description A',
+              keyAchievements: 'Achievement 1\nAchievement 2\nAchievement 3',
+              url: '',
+              technologies: [],
+            },
+          ],
+        })
+
+        renderWithContext(<Preview />, {
+          contextValue: {
+            resumeData: mockData,
+            setResumeData: mockSetResumeData,
+          },
+        })
+
+        expect(capturedOnDragEnd).toBeTruthy()
+
+        // Move first achievement to last position within project index 0
+        capturedOnDragEnd!({
+          source: { droppableId: 'PROJECTS_KEY_ACHIEVEMENT-0', index: 0 },
+          destination: { droppableId: 'PROJECTS_KEY_ACHIEVEMENT-0', index: 2 },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalledWith({
+          ...mockData,
+          projects: [
+            {
+              ...mockData.projects[0],
+              keyAchievements: 'Achievement 2\nAchievement 3\nAchievement 1',
+            },
+          ],
+        })
+      })
     })
   })
 })
