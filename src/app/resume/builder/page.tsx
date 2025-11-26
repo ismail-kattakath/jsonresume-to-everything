@@ -245,7 +245,7 @@ function UnifiedEditor() {
                 <button
                   type="button"
                   onClick={() => setMode('resume')}
-                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                  className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
                     mode === 'resume'
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
                       : 'text-white/60 hover:bg-white/5 hover:text-white/80'
@@ -257,7 +257,7 @@ function UnifiedEditor() {
                 <button
                   type="button"
                   onClick={() => setMode('coverLetter')}
-                  className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                  className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
                     mode === 'coverLetter'
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
                       : 'text-white/60 hover:bg-white/5 hover:text-white/80'
