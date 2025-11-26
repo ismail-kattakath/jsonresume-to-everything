@@ -208,7 +208,19 @@ function UnifiedEditor() {
                 title="Cover Letter"
                 icon={<Mail className="h-5 w-5 text-blue-400" />}
               >
-                <CoverLetterContent />
+                <ResumeContext.Provider
+                  value={{
+                    resumeData: coverLetterData as ResumeData,
+                    setResumeData: setCoverLetterData as React.Dispatch<
+                      React.SetStateAction<ResumeData>
+                    >,
+                    handleProfilePicture:
+                      coverLetterHandlers.handleProfilePicture,
+                    handleChange: coverLetterHandlers.handleChange,
+                  }}
+                >
+                  <CoverLetterContent />
+                </ResumeContext.Provider>
               </CollapsibleSection>
 
               <CollapsibleSection
