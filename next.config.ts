@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Explicitly set workspace root to silence multiple lockfile warning
+  turbopack: {
+    root: __dirname,
+  },
   // Remove basePath and assetPrefix for custom domain
   // If not using custom domain, uncomment these lines:
   // assetPrefix: process.env.NODE_ENV === 'production' ? '/jsonresume-to-everything' : '',
