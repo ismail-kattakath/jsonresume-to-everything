@@ -7,13 +7,19 @@ import {
   fireEvent,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
 // Mock drag-and-drop components
 jest.mock('@hello-pangea/dnd', () => ({
-  DragDropContext: ({ children, onDragEnd }: any) => (
-    <div data-testid="drag-drop-context" onDragEnd={onDragEnd}>
-      {children}
-    </div>
-  ),
+  DragDropContext: ({ children, onDragEnd }: any) => {
+    capturedOnDragEnd = onDragEnd
+    return (
+      <div data-testid="drag-drop-context" onDragEnd={onDragEnd}>
+        {children}
+      </div>
+    )
+  },
   Droppable: ({ children, droppableId }: any) => {
     const provided = {
       droppableProps: {
@@ -742,6 +748,158 @@ describe('Skill Component', () => {
       ) as HTMLInputElement
 
       expect(skillInput?.value).toBe(longSkillText)
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    it('should reorder skills from first to last position', () => {
+      const mockData = createMockResumeData({
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'JavaScript', highlight: false },
+              { text: 'Python', highlight: false },
+              { text: 'Java', highlight: false },
+            ],
+          },
+        ],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Skill title="Skills" />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'skills-Skills', index: 0 },
+        destination: { droppableId: 'skills-Skills', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalled()
+      const updater = mockSetResumeData.mock.calls[0][0]
+      const result = updater(mockData)
+
+      expect(result).toEqual({
+        ...mockData,
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'Python', highlight: false },
+              { text: 'Java', highlight: false },
+              { text: 'JavaScript', highlight: false },
+            ],
+          },
+        ],
+      })
+    })
+
+    it('should reorder skills from last to first position', () => {
+      const mockData = createMockResumeData({
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'JavaScript', highlight: false },
+              { text: 'Python', highlight: false },
+              { text: 'Java', highlight: false },
+            ],
+          },
+        ],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Skill title="Skills" />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'skills-Skills', index: 2 },
+        destination: { droppableId: 'skills-Skills', index: 0 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalled()
+      const updater = mockSetResumeData.mock.calls[0][0]
+      const result = updater(mockData)
+
+      expect(result).toEqual({
+        ...mockData,
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'Java', highlight: false },
+              { text: 'JavaScript', highlight: false },
+              { text: 'Python', highlight: false },
+            ],
+          },
+        ],
+      })
+    })
+
+    it('should not reorder when dropped in same position', () => {
+      const mockData = createMockResumeData({
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'JavaScript', highlight: false },
+              { text: 'Python', highlight: false },
+            ],
+          },
+        ],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Skill title="Skills" />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'skills-Skills', index: 0 },
+        destination: { droppableId: 'skills-Skills', index: 0 },
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should not reorder when dropped outside droppable area', () => {
+      const mockData = createMockResumeData({
+        skills: [
+          {
+            title: 'Skills',
+            skills: [
+              { text: 'JavaScript', highlight: false },
+              { text: 'Python', highlight: false },
+            ],
+          },
+        ],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Skill title="Skills" />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'skills-Skills', index: 0 },
+        destination: null,
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
     })
   })
 })

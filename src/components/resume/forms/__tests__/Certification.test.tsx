@@ -8,27 +8,36 @@ import {
   createMockResumeData,
 } from '@/lib/__tests__/test-utils'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
 // Mock @hello-pangea/dnd
 jest.mock('@hello-pangea/dnd', () => ({
-  DragDropContext: ({ children }: any) => <div>{children}</div>,
-  Droppable: ({ children }: any) =>
-    children(
-      {
-        draggableProps: {},
-        dragHandleProps: {},
-        innerRef: jest.fn(),
-      },
-      {}
-    ),
-  Draggable: ({ children }: any) =>
-    children(
-      {
-        draggableProps: {},
-        dragHandleProps: {},
-        innerRef: jest.fn(),
-      },
-      { isDragging: false }
-    ),
+  DragDropContext: ({ children, onDragEnd }: any) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
+  Droppable: ({ children }: any) => (
+    <div data-testid="droppable">
+      {children(
+        { droppableProps: {}, innerRef: jest.fn(), placeholder: null },
+        {
+          isDraggingOver: false,
+          draggingOverWith: null,
+          draggingFromThisWith: null,
+          isUsingPlaceholder: false,
+        }
+      )}
+    </div>
+  ),
+  Draggable: ({ children }: any) => (
+    <div data-testid="draggable">
+      {children(
+        { draggableProps: {}, dragHandleProps: {}, innerRef: jest.fn() },
+        { isDragging: false, isDropAnimating: false }
+      )}
+    </div>
+  ),
 }))
 
 describe('Certification Component', () => {
@@ -577,6 +586,122 @@ describe('Certification Component', () => {
         ...mockData,
         certifications: ['ISO/IEC 27001:2013 Lead Auditor'],
       })
+    })
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    it('should reorder certifications from first to last position', () => {
+      const mockData = createMockResumeData({
+        certifications: ['AWS Certified', 'Google Cloud', 'Azure Certified'],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Certification />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'certifications', index: 0 },
+        destination: { droppableId: 'certifications', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        certifications: ['Google Cloud', 'Azure Certified', 'AWS Certified'],
+      })
+    })
+
+    it('should reorder certifications from last to first position', () => {
+      const mockData = createMockResumeData({
+        certifications: ['AWS Certified', 'Google Cloud', 'Azure Certified'],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Certification />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'certifications', index: 2 },
+        destination: { droppableId: 'certifications', index: 0 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        certifications: ['Azure Certified', 'AWS Certified', 'Google Cloud'],
+      })
+    })
+
+    it('should reorder certifications to adjacent position', () => {
+      const mockData = createMockResumeData({
+        certifications: ['AWS Certified', 'Google Cloud', 'Azure Certified'],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Certification />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'certifications', index: 0 },
+        destination: { droppableId: 'certifications', index: 1 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...mockData,
+        certifications: ['Google Cloud', 'AWS Certified', 'Azure Certified'],
+      })
+    })
+
+    it('should not reorder when dropped in same position', () => {
+      const mockData = createMockResumeData({
+        certifications: ['AWS Certified', 'Google Cloud'],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Certification />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'certifications', index: 0 },
+        destination: { droppableId: 'certifications', index: 0 },
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should not reorder when dropped outside droppable area', () => {
+      const mockData = createMockResumeData({
+        certifications: ['AWS Certified', 'Google Cloud'],
+      })
+      const mockSetResumeData = jest.fn()
+
+      renderWithContext(<Certification />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'certifications', index: 0 },
+        destination: null,
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
     })
   })
 })

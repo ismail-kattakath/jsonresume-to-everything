@@ -3,29 +3,44 @@ import Projects from '@/components/resume/forms/Projects'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import type { ResumeData } from '@/types/resume'
 
+// Store the onDragEnd callback for testing
+let capturedOnDragEnd: ((result: unknown) => void) | null = null
+
 // Mock @hello-pangea/dnd
 jest.mock('@hello-pangea/dnd', () => ({
-  DragDropContext: ({ children }: any) => (
-    <div data-testid="drag-drop-context">{children}</div>
+  DragDropContext: ({ children, onDragEnd }: any) => {
+    capturedOnDragEnd = onDragEnd
+    return <div data-testid="drag-drop-context">{children}</div>
+  },
+  Droppable: ({ children, droppableId }: any) => (
+    <div data-testid="droppable">
+      {children(
+        {
+          droppableProps: { 'data-droppable-id': droppableId },
+          innerRef: jest.fn(),
+          placeholder: null,
+        },
+        {
+          isDraggingOver: false,
+          draggingOverWith: null,
+          draggingFromThisWith: null,
+          isUsingPlaceholder: false,
+        }
+      )}
+    </div>
   ),
-  Droppable: ({ children, droppableId }: any) =>
-    children(
-      {
-        droppableProps: { 'data-droppable-id': droppableId },
-        innerRef: jest.fn(),
-        placeholder: null,
-      },
-      {}
-    ),
-  Draggable: ({ children, draggableId, index }: any) =>
-    children(
-      {
-        draggableProps: { 'data-draggable-id': draggableId },
-        dragHandleProps: {},
-        innerRef: jest.fn(),
-      },
-      { isDragging: false }
-    ),
+  Draggable: ({ children, draggableId, index }: any) => (
+    <div data-testid="draggable">
+      {children(
+        {
+          draggableProps: { 'data-draggable-id': draggableId },
+          dragHandleProps: {},
+          innerRef: jest.fn(),
+        },
+        { isDragging: false, isDropAnimating: false }
+      )}
+    </div>
+  ),
 }))
 
 // Mock next/dynamic - same pattern as integration tests
@@ -273,5 +288,152 @@ describe('Projects Form Component', () => {
 
     expect(screen.getByText(/add project/i)).toBeInTheDocument()
     expect(screen.queryByLabelText(/project name/i)).not.toBeInTheDocument()
+  })
+
+  describe('Drag and Drop Functionality', () => {
+    const project1 = {
+      name: 'Project 1',
+      link: 'https://project1.com',
+      description: 'First project',
+      keyAchievements: 'Achievement 1',
+      startYear: '2023-01',
+      endYear: '2023-06',
+    }
+
+    const project2 = {
+      name: 'Project 2',
+      link: 'https://project2.com',
+      description: 'Second project',
+      keyAchievements: 'Achievement 2',
+      startYear: '2023-07',
+      endYear: '2023-12',
+    }
+
+    const project3 = {
+      name: 'Project 3',
+      link: 'https://project3.com',
+      description: 'Third project',
+      keyAchievements: 'Achievement 3',
+      startYear: '2024-01',
+      endYear: '2024-06',
+    }
+
+    it('should reorder projects from first to last position', () => {
+      const dataWithProjects = {
+        ...mockResumeData,
+        projects: [project1, project2, project3],
+      }
+      const mockSetResumeData = jest.fn()
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: dataWithProjects,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Projects />
+        </ResumeContext.Provider>
+      )
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'projects', index: 0 },
+        destination: { droppableId: 'projects', index: 2 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...dataWithProjects,
+        projects: [project2, project3, project1],
+      })
+    })
+
+    it('should reorder projects from last to first position', () => {
+      const dataWithProjects = {
+        ...mockResumeData,
+        projects: [project1, project2, project3],
+      }
+      const mockSetResumeData = jest.fn()
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: dataWithProjects,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Projects />
+        </ResumeContext.Provider>
+      )
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'projects', index: 2 },
+        destination: { droppableId: 'projects', index: 0 },
+      })
+
+      expect(mockSetResumeData).toHaveBeenCalledWith({
+        ...dataWithProjects,
+        projects: [project3, project1, project2],
+      })
+    })
+
+    it('should not reorder when dropped in same position', () => {
+      const dataWithProjects = {
+        ...mockResumeData,
+        projects: [project1, project2],
+      }
+      const mockSetResumeData = jest.fn()
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: dataWithProjects,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Projects />
+        </ResumeContext.Provider>
+      )
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'projects', index: 0 },
+        destination: { droppableId: 'projects', index: 0 },
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('should not reorder when dropped outside droppable area', () => {
+      const dataWithProjects = {
+        ...mockResumeData,
+        projects: [project1, project2],
+      }
+      const mockSetResumeData = jest.fn()
+
+      render(
+        <ResumeContext.Provider
+          value={{
+            resumeData: dataWithProjects,
+            setResumeData: mockSetResumeData,
+            handleProfilePicture: jest.fn(),
+            handleChange: jest.fn(),
+          }}
+        >
+          <Projects />
+        </ResumeContext.Provider>
+      )
+
+      capturedOnDragEnd!({
+        source: { droppableId: 'projects', index: 0 },
+        destination: null,
+      })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
   })
 })
