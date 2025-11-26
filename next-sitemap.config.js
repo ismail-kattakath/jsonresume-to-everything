@@ -12,8 +12,6 @@ module.exports = {
   exclude: [
     '/resume/edit',
     '/resume/edit/*',
-    '/cover-letter/edit',
-    '/cover-letter/edit/*',
     '/resume.json',
     '/opengraph-image',
     '/twitter-image',
@@ -25,7 +23,7 @@ module.exports = {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/resume/edit/', '/cover-letter/edit/', '/resume.json/'],
+        disallow: ['/resume/edit/', '/resume.json/'],
       },
     ],
   },

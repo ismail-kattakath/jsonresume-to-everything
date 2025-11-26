@@ -2,7 +2,6 @@ import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import ResumeEditPage from '@/app/resume/edit/page'
-import CoverLetterEditPage from '@/app/cover-letter/edit/page'
 import bcrypt from 'bcryptjs'
 
 // Mock the password config
@@ -216,12 +215,51 @@ describe('Password Protection - End-to-End Workflows', () => {
     })
   })
 
-  describe('Cross-Page Session Sharing', () => {
-    it('should share session between resume and cover letter pages', async () => {
+  describe('Unified Editor Tab Switching', () => {
+    it('should switch between resume and cover letter modes', async () => {
       ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
-      // 1. Login on resume page
-      const { unmount: unmountResume } = render(<ResumeEditPage />)
+      // 1. Login
+      render(<ResumeEditPage />)
+
+      fireEvent.change(screen.getByLabelText('Password'), {
+        target: { value: correctPassword },
+      })
+      fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Personal Information')).toBeInTheDocument()
+      })
+
+      // 2. Verify resume mode is active (should see resume-specific sections)
+      expect(screen.getByText('Resume Generator')).toBeInTheDocument()
+      expect(screen.getAllByText('Work Experience').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
+
+      // 3. Switch to cover letter mode
+      const coverLetterTab = screen.getByRole('button', {
+        name: /✉️ Cover Letter/i,
+      })
+      fireEvent.click(coverLetterTab)
+
+      // 4. Verify cover letter mode is active
+      await waitFor(() => {
+        expect(screen.getByText('Personal Information')).toBeInTheDocument()
+      })
+
+      // 5. Switch back to resume mode
+      const resumeTab = screen.getByRole('button', { name: /📄 Resume/i })
+      fireEvent.click(resumeTab)
+
+      // 6. Verify resume mode is active again
+      expect(screen.getAllByText('Work Experience').length).toBeGreaterThan(0)
+    })
+
+    it('should maintain session across mode switches', async () => {
+      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+
+      // 1. Login
+      render(<ResumeEditPage />)
 
       fireEvent.change(screen.getByLabelText('Password'), {
         target: { value: correctPassword },
@@ -236,49 +274,22 @@ describe('Password Protection - End-to-End Workflows', () => {
       const token = sessionStorage.getItem('edit-auth-token')
       const expiry = sessionStorage.getItem('edit-auth-expiry')
 
-      expect(token).toBe('authenticated')
-      expect(expiry).toBeTruthy()
+      // 3. Switch to cover letter mode
+      const coverLetterTab = screen.getByRole('button', {
+        name: /✉️ Cover Letter/i,
+      })
+      fireEvent.click(coverLetterTab)
 
-      // 3. Unmount resume page
-      unmountResume()
-
-      // 4. Navigate to cover letter page
-      render(<CoverLetterEditPage />)
-
-      // 5. Should be automatically authenticated
-      expect(screen.getByText('Personal Information')).toBeInTheDocument()
-      expect(screen.queryByText('Protected Area')).not.toBeInTheDocument()
-
-      // 6. Session should still be the same
+      // 4. Session should persist
       expect(sessionStorage.getItem('edit-auth-token')).toBe(token)
       expect(sessionStorage.getItem('edit-auth-expiry')).toBe(expiry)
-    })
 
-    it('should logout from both pages when session ends', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
-
-      // 1. Login on resume page
-      const { unmount: unmountResume } = render(<ResumeEditPage />)
-
-      fireEvent.change(screen.getByLabelText('Password'), {
-        target: { value: correctPassword },
-      })
-      fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
-
-      await waitFor(() => {
-        expect(screen.getByText('Personal Information')).toBeInTheDocument()
-      })
-
-      // 2. Logout from resume page
+      // 5. Logout should work from cover letter mode
       fireEvent.click(screen.getByRole('button', { name: /logout/i }))
-      unmountResume()
 
-      // 3. Try to access cover letter page
-      render(<CoverLetterEditPage />)
-
-      // 4. Should show password prompt (session was cleared)
+      // 6. Should return to password screen
       expect(screen.getByText('Protected Area')).toBeInTheDocument()
-      expect(screen.queryByText('Personal Information')).not.toBeInTheDocument()
+      expect(sessionStorage.getItem('edit-auth-token')).toBeNull()
     })
   })
 
@@ -467,11 +478,11 @@ describe('Password Protection - End-to-End Workflows', () => {
   })
 
   describe('Multi-Tab Behavior', () => {
-    it('should handle independent sessions in different components', async () => {
+    it('should persist session across page reloads', async () => {
       ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
-      // Simulate two separate tabs (two component instances)
-      const { container: container1 } = render(<ResumeEditPage />)
+      // 1. Login
+      const { container, unmount } = render(<ResumeEditPage />)
 
       fireEvent.change(screen.getByLabelText('Password'), {
         target: { value: correctPassword },
@@ -479,23 +490,31 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        // Wait for editor sections to render (use getAllByText since text appears in forms and preview)
         expect(
           screen.getAllByText('Personal Information').length
         ).toBeGreaterThan(0)
       })
 
-      // Verify forms rendered
-      const forms1 = container1.querySelectorAll('form')
-      expect(forms1.length).toBeGreaterThan(0) // At least one form in editor
+      // 2. Verify forms rendered
+      const forms1 = container.querySelectorAll('form')
+      expect(forms1.length).toBeGreaterThan(0)
 
-      // Second "tab" would also have access due to shared sessionStorage
-      render(<CoverLetterEditPage />)
+      // 3. Store session
+      const token = sessionStorage.getItem('edit-auth-token')
+      const expiry = sessionStorage.getItem('edit-auth-expiry')
 
-      // Should be authenticated via shared session
+      // 4. Unmount (simulate page navigation)
+      unmount()
+
+      // 5. Re-render (simulate returning to page)
+      render(<ResumeEditPage />)
+
+      // 6. Should be authenticated via persisted session
       expect(
         screen.getAllByText('Personal Information').length
-      ).toBeGreaterThanOrEqual(2) // At least one per component
+      ).toBeGreaterThan(0)
+      expect(sessionStorage.getItem('edit-auth-token')).toBe(token)
+      expect(sessionStorage.getItem('edit-auth-expiry')).toBe(expiry)
     })
   })
 })

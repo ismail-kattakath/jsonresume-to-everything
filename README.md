@@ -206,13 +206,7 @@ echo "NEXT_PUBLIC_EDIT_PASSWORD_HASH=<your-hash>" > .env.local
 - **Import/Export** JSON Resume format
 - **Password protected** for security
 - **Print ready** - triggers browser print dialog
-
-#### ✉️ Cover Letter Generator (`/cover-letter/edit`)
-
-- **Auto-populated** personal info from resume
-- **Live preview** as you type
-- **Password protected** for security
-- **Print ready** for applications
+- **Cover Letter Mode** - Switch between resume and cover letter editing with a tab interface
 
 #### 🔗 Calendar Booking (`/book`)
 
@@ -236,15 +230,14 @@ graph TD
     JSON Resume v1.0.0"] --> B["Automatic Data Flow"]
     B --> C["Homepage
     all sections"]
-    B --> D["Resume Editor
-    /resume/edit"]
-    B --> E["Cover Letter Editor
-    /cover-letter/edit"]
-    B --> F["SEO Metadata
+    B --> D["Unified Editor
+    /resume/edit
+    Resume & Cover Letter"]
+    B --> E["SEO Metadata
     title, description"]
-    B --> G["OpenGraph Images
+    B --> F["OpenGraph Images
     social sharing"]
-    B --> H["Sitemap
+    B --> G["Sitemap
     auto-generated"]
 ```
 
@@ -454,8 +447,7 @@ Edit `src/app/globals.css`:
 ### Change Layout
 
 - **Homepage sections**: `src/components/sections/`
-- **Resume editor**: `src/app/resume/edit/page.tsx`
-- **Cover letter editor**: `src/app/cover-letter/edit/page.tsx`
+- **Unified editor** (resume & cover letter): `src/app/resume/edit/page.tsx`
 
 ### Add Sections
 
