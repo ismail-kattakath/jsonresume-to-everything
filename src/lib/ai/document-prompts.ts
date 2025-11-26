@@ -8,7 +8,7 @@ export function buildSummaryPrompt(
   resumeData: ResumeData,
   jobDescription: string
 ): string {
-  const { name, position, workExperience, skills } = resumeData
+  const { name, position, summary, workExperience, skills } = resumeData
 
   console.log('Building summary prompt with resume data:', {
     name,
@@ -17,68 +17,70 @@ export function buildSummaryPrompt(
     skillsCount: skills?.length || 0,
   })
 
-  // Build work experience summary
+  // Build comprehensive work experience with ALL achievements
   const experienceSummary =
     workExperience
-      ?.slice(0, 3)
-      .map((exp) => {
+      ?.map((exp) => {
         const achievements = exp.keyAchievements
           ?.split('\n')
           .filter(Boolean)
-          .slice(0, 3)
-          .join('; ')
+          .join('\n')
 
-        return `${exp.position} at ${exp.company}: ${achievements}`
+        return `${exp.position} at ${exp.company} (${exp.startDate} - ${exp.endDate || 'Present'}):\n${achievements}`
       })
       .filter(Boolean)
       .join('\n\n') || 'No work experience provided'
 
-  // Build skills summary
+  // Build comprehensive skills list (all skills, organized by category)
   const skillsList =
     skills
-      ?.flatMap((group) => group.skills.map((s) => s.text))
-      .slice(0, 20)
-      .join(', ') || 'No skills provided'
+      ?.map(
+        (group) =>
+          `${group.name}: ${group.skills.map((s) => s.text).join(', ')}`
+      )
+      .join('\n') || 'No skills provided'
 
-  const prompt = `You are a professional resume writer. Write a compelling professional summary based STRICTLY on the candidate information provided below.
+  const prompt = `You are an expert tech recruiter and senior engineer who writes extremely concise, technically accurate, and high-impact professional summaries.
 
-CANDIDATE INFORMATION:
+CANDIDATE'S JSON RESUME DATA:
+
 Name: ${name}
 Current Role: ${position}
 
-Key Experience:
+COMPLETE WORK EXPERIENCE:
 ${experienceSummary}
 
-Technical Skills: ${skillsList}
+COMPLETE TECHNICAL SKILLS:
+${skillsList}
 
-JOB DESCRIPTION TO TAILOR FOR:
+CURRENT SUMMARY (for length reference - aim for similar character count):
+${summary}
+
+JOB DESCRIPTION:
 ${jobDescription}
 
-CRITICAL REQUIREMENTS - YOU MUST FOLLOW THESE EXACTLY:
-1. ONLY mention qualifications, skills, and experiences that are explicitly listed in the candidate information above
-2. DO NOT invent, assume, or fabricate ANY qualifications, certifications, or experiences not shown above
-3. DO NOT claim the candidate has skills not listed in their technical skills
-4. DO NOT reference companies, positions, or achievements not mentioned in their experience
-5. If the job requires something the candidate doesn't have, DO NOT claim they have it - focus on what they DO have
-6. Use ONLY the specific metrics, achievements, and details provided in the candidate's experience
+TASK:
+Write a professional summary that makes ${name} the ideal candidate for this position.
 
-WRITING INSTRUCTIONS:
-1. Write a professional summary as a SINGLE PARAGRAPH (approximately 100-150 words, 450-675 characters)
-2. Start with role/expertise, then current focus, then key achievements, then proven abilities
-3. Use semicolons to separate major sections within the paragraph (NOT multiple paragraphs)
-4. Highlight 2-3 key achievements from the candidate's ACTUAL experience with specific metrics
-5. Demonstrate how the candidate's DOCUMENTED skills solve the employer's needs
-6. Use ONLY the specific metrics and examples from the candidate's background provided above
-7. Write in third person if the name is provided, otherwise first person
-8. Focus on impact, results, and measurable outcomes
-9. Tailor the summary to emphasize skills/experience relevant to the job description
-10. End with a forward-looking statement about proven abilities
+CHARACTER LIMIT:
+Match the length of the CURRENT SUMMARY above (~${summary?.length || 675} characters).
 
-ACCURACY VERIFICATION:
-Before writing each sentence, verify that ANY claim about the candidate's background is explicitly stated in the candidate information above. If you cannot find it in the provided information, DO NOT include it.
+CRITICAL RULES:
+1. Use ONLY data from the JSON Resume above - no fabrication
+2. Every skill, achievement, metric, company, or technology MUST appear in the data above
+3. If the job requires something not in the resume, focus on what IS there
+4. Be 100% truthful to the resume data
 
-OUTPUT FORMAT:
-Return ONLY the professional summary as plain text, without any additional formatting, markdown, or explanations. The summary should be ready to paste directly into a resume.`
+WRITING STYLE:
+• Extremely concise - every word must earn its place
+• Technically accurate - use precise terminology
+• High-impact - lead with strongest, most relevant achievements
+• Single paragraph - use semicolons to separate major sections
+• Metrics-driven - include specific numbers from achievements
+• Tailored - emphasize experience/skills matching the job description
+
+OUTPUT:
+Return ONLY the professional summary as plain text (no formatting, no code blocks, no explanations).`
 
   return prompt
 }
