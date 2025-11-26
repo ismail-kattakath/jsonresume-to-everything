@@ -162,7 +162,7 @@ function UnifiedEditor() {
                       Resume Generator
                     </h1>
                     <p className="text-sm text-white/60">
-                      Build your professional resume and cover letter
+                      Build your targeted resume and cover letter
                     </p>
                   </div>
                 </div>
