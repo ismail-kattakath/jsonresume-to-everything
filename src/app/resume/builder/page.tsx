@@ -18,6 +18,7 @@ import Summary from '@/components/resume/forms/Summary'
 import Education from '@/components/resume/forms/Education'
 import CoverLetterContent from '@/components/cover-letter/forms/CoverLetterContent'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
+import ATSCheckButton from '@/components/document-builder/ui/ATSCheckButton'
 import CollapsibleSection from '@/components/document-builder/ui/CollapsibleSection'
 import { AccordionCard } from '@/components/ui/AccordionCard'
 import AISettings from '@/components/document-builder/shared-forms/AISettings'
@@ -468,14 +469,15 @@ function UnifiedEditor() {
             excludeFooterFromPrint
           >
             <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
-              {/* Floating Print Button - Hidden on print */}
-              <div className="exclude-print fixed top-8 right-8 z-50">
+              {/* Floating Action Buttons - Hidden on print */}
+              <div className="exclude-print fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-3">
                 <PrintButton
                   name={
                     mode === 'resume' ? resumeData.name : coverLetterData.name
                   }
                   documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
                 />
+                {mode === 'resume' && <ATSCheckButton name={resumeData.name} />}
               </div>
 
               <form
