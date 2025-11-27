@@ -50,7 +50,10 @@ const mockResumeData: ResumeData = {
       url: 'techcorp.com',
       position: 'Senior Developer',
       description: 'Leading development',
-      keyAchievements: 'Built scalable systems\nReduced bugs by 50%',
+      keyAchievements: [
+        { text: 'Built scalable systems' },
+        { text: 'Reduced bugs by 50%' },
+      ],
       startYear: '2020',
       endYear: 'Present',
       technologies: ['React', 'Node.js'],
