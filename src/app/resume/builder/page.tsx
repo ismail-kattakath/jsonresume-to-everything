@@ -530,9 +530,10 @@ function UnifiedEditor() {
                 {/* Form Sections - Conditionally rendered based on mode */}
                 <CollapsibleSection
                   title="Import / Export"
-                  icon={<ArrowDownUp className="h-5 w-5 text-blue-400" />}
+                  icon={<ArrowDownUp className="h-5 w-5 text-amber-400" />}
                   isExpanded={expandedSection === 'import-export'}
                   onToggle={createToggleHandler('import-export')}
+                  variant="utility"
                 >
                   <ImportExport preserveContent={mode === 'coverLetter'} />
                 </CollapsibleSection>
@@ -543,6 +544,7 @@ function UnifiedEditor() {
                   isExpanded={expandedSection === 'ai-settings'}
                   onToggle={createToggleHandler('ai-settings')}
                   action={<AISettingsStatusIndicator />}
+                  variant="utility"
                 >
                   <AISettings />
                 </CollapsibleSection>

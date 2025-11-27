@@ -10,12 +10,16 @@ import {
 } from 'lucide-react'
 import { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 
+type SectionVariant = 'default' | 'utility'
+
 interface CollapsibleSectionProps {
   title: string
   icon?: React.ReactNode
   children: React.ReactNode
   defaultExpanded?: boolean
   action?: React.ReactNode
+  // Visual variant - 'utility' adds subtle amber tint for config/tool sections
+  variant?: SectionVariant
   // Editable mode props
   editable?: boolean
   onRename?: (newTitle: string) => void
@@ -32,6 +36,7 @@ const CollapsibleSection = ({
   children,
   defaultExpanded = false,
   action,
+  variant = 'default',
   editable = false,
   onRename,
   onDelete,
@@ -91,8 +96,15 @@ const CollapsibleSection = ({
     }
   }
 
+  const variantClasses =
+    variant === 'utility'
+      ? 'border-amber-500/20 bg-gradient-to-r from-amber-500/5 to-transparent hover:border-amber-500/30'
+      : 'border-white/10 bg-white/5 hover:border-white/20'
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm transition-all hover:border-white/20">
+    <div
+      className={`overflow-hidden rounded-2xl border backdrop-blur-sm transition-all ${variantClasses}`}
+    >
       {/* Header - Clickable */}
       <button
         type="button"
