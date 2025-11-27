@@ -9,7 +9,7 @@ const AISettings: React.FC = () => {
   const [showApiKey, setShowApiKey] = useState(false)
 
   return (
-    <div className="space-y-5">
+    <div className="flex flex-col gap-4">
       {/* Status indicator */}
       <div
         className={`flex items-center gap-2 rounded-lg border p-3 ${
@@ -35,52 +35,29 @@ const AISettings: React.FC = () => {
         )}
       </div>
 
-      {/* API URL */}
-      <div className="space-y-2">
-        <label
-          htmlFor="ai-api-url"
-          className="flex items-center gap-2 text-sm font-medium text-white"
-        >
-          API URL
-          <span className="text-xs font-normal text-white/50">
-            (OpenAI or compatible)
-          </span>
-        </label>
-        <input
-          id="ai-api-url"
-          type="text"
-          value={settings.apiUrl}
-          onChange={(e) => updateSettings({ apiUrl: e.target.value })}
-          placeholder="https://api.openai.com"
-          className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm text-white transition-all outline-none placeholder:text-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
-        />
-      </div>
-
-      {/* API Key */}
-      <div className="space-y-2">
-        <label
-          htmlFor="ai-api-key"
-          className="flex items-center gap-2 text-sm font-medium text-white"
-        >
-          API Key
-          <a
-            href="https://platform.openai.com/api-keys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-blue-400 underline hover:text-blue-300"
-          >
-            Get key
-          </a>
-        </label>
-        <div className="relative">
+      {/* API URL and Key - Same line */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="floating-label-group">
+          <input
+            id="ai-api-url"
+            type="text"
+            placeholder="https://api.openai.com"
+            value={settings.apiUrl}
+            onChange={(e) => updateSettings({ apiUrl: e.target.value })}
+            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+          />
+          <label className="floating-label">API URL</label>
+        </div>
+        <div className="floating-label-group relative">
           <input
             id="ai-api-key"
             type={showApiKey ? 'text' : 'password'}
+            placeholder="sk-proj-..."
             value={settings.apiKey}
             onChange={(e) => updateSettings({ apiKey: e.target.value })}
-            placeholder="sk-proj-..."
-            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 pr-12 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
           />
+          <label className="floating-label">API Key</label>
           <button
             type="button"
             onClick={() => setShowApiKey(!showApiKey)}
@@ -93,32 +70,23 @@ const AISettings: React.FC = () => {
       </div>
 
       {/* Job Description */}
-      <div className="space-y-2">
-        <label
-          htmlFor="ai-job-description"
-          className="flex items-center gap-2 text-sm font-medium text-white"
-        >
+      <div className="floating-label-group">
+        <textarea
+          id="ai-job-description"
+          placeholder="Paste the job posting here..."
+          value={settings.jobDescription}
+          onChange={(e) => updateSettings({ jobDescription: e.target.value })}
+          rows={8}
+          className="min-h-[160px] w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+        />
+        <label className="floating-label">
           Job Description
           {settings.jobDescription && (
-            <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-300">
-              {settings.jobDescription.length} characters
+            <span className="ml-2 rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-300">
+              {settings.jobDescription.length} chars
             </span>
           )}
         </label>
-        <textarea
-          id="ai-job-description"
-          value={settings.jobDescription}
-          onChange={(e) => updateSettings({ jobDescription: e.target.value })}
-          placeholder="Paste the job posting here...
-
-Include:
-- Job title and requirements
-- Responsibilities and qualifications
-- Company info and benefits
-- Any specific skills needed"
-          rows={8}
-          className="min-h-[160px] w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
-        />
       </div>
     </div>
   )
