@@ -174,6 +174,34 @@ function UnifiedEditor() {
                     </p>
                   </div>
                 </div>
+
+                {/* Preview Mode Switcher */}
+                <div className="flex overflow-hidden rounded-lg bg-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setMode('resume')}
+                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                      mode === 'resume'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                    }`}
+                  >
+                    <span>📄</span>
+                    Resume
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode('coverLetter')}
+                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                      mode === 'coverLetter'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                        : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                    }`}
+                  >
+                    <span>✉️</span>
+                    Cover Letter
+                  </button>
+                </div>
               </div>
 
               {/* All Form Sections - Always Visible */}
@@ -258,36 +286,8 @@ function UnifiedEditor() {
               </CollapsibleSection>
             </form>
 
-            {/* Preview Section with Switcher */}
+            {/* Preview Section */}
             <div className="flex flex-col md:w-[8.5in]">
-              {/* Preview Mode Switcher */}
-              <div className="exclude-print flex bg-gradient-to-br from-gray-900 via-black to-gray-900">
-                <button
-                  type="button"
-                  onClick={() => setMode('resume')}
-                  className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
-                    mode === 'resume'
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                      : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-                  }`}
-                >
-                  <span>📄</span>
-                  Resume
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode('coverLetter')}
-                  className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
-                    mode === 'coverLetter'
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                      : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-                  }`}
-                >
-                  <span>✉️</span>
-                  Cover Letter
-                </button>
-              </div>
-
               {/* Both Previews - Toggle visibility with CSS */}
               <ResumeContext.Provider
                 value={{
