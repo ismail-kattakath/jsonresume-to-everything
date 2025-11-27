@@ -469,15 +469,27 @@ function UnifiedEditor() {
             excludeFooterFromPrint
           >
             <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
-              {/* Floating Action Buttons - Hidden on print */}
-              <div className="exclude-print fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-3">
-                <PrintButton
-                  name={
-                    mode === 'resume' ? resumeData.name : coverLetterData.name
+              {/* Floating Action Buttons (Capsule) - Hidden on print */}
+              <div className="exclude-print fixed top-8 right-8 z-50 flex flex-row items-center overflow-hidden rounded-full shadow-2xl">
+                {mode === 'resume' && (
+                  <div className="[&>button]:animate-none [&>button]:rounded-r-none [&>button]:shadow-none">
+                    <ATSCheckButton name={resumeData.name} />
+                  </div>
+                )}
+                <div
+                  className={
+                    mode === 'resume'
+                      ? '[&>button]:animate-none [&>button]:rounded-l-none [&>button]:shadow-none'
+                      : ''
                   }
-                  documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
-                />
-                {mode === 'resume' && <ATSCheckButton name={resumeData.name} />}
+                >
+                  <PrintButton
+                    name={
+                      mode === 'resume' ? resumeData.name : coverLetterData.name
+                    }
+                    documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
+                  />
+                </div>
               </div>
 
               <form
