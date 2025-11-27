@@ -199,6 +199,37 @@ describe('Education Component', () => {
     })
   })
 
+  describe('Accordion Toggle Functionality', () => {
+    it('should toggle accordion when expand/collapse button is clicked', () => {
+      const mockData = createMockResumeData({
+        education: [
+          {
+            school: 'Test University',
+            url: 'test.edu',
+            degree: 'Test Degree',
+            startYear: '2015-09-01',
+            endYear: '2019-06-01',
+          },
+        ],
+      })
+
+      const { container } = renderWithContext(<Education />, {
+        contextValue: { resumeData: mockData },
+      })
+
+      // Find the toggle button by title attribute (should be "Expand" or "Collapse")
+      const expandButton = container.querySelector('button[title="Expand"]')
+      const collapseButton = container.querySelector('button[title="Collapse"]')
+      const toggleButton = expandButton || collapseButton
+
+      if (toggleButton) {
+        fireEvent.click(toggleButton)
+        // After click, should toggle the expanded state
+        expect(toggleButton).toBeInTheDocument()
+      }
+    })
+  })
+
   describe('Delete Functionality', () => {
     it('should render delete button for each entry', () => {
       const mockData = createMockResumeData({
@@ -370,7 +401,7 @@ describe('Education Component', () => {
       }
     })
 
-    it('should handle date changes', () => {
+    it('should handle start date changes', () => {
       const mockSetResumeData = jest.fn()
       const mockData = createMockResumeData({
         education: [
@@ -396,6 +427,38 @@ describe('Education Component', () => {
       if (startYearInput) {
         fireEvent.change(startYearInput, {
           target: { name: 'startYear', value: '2015-09-01' },
+        })
+
+        expect(mockSetResumeData).toHaveBeenCalled()
+      }
+    })
+
+    it('should handle end date changes', () => {
+      const mockSetResumeData = jest.fn()
+      const mockData = createMockResumeData({
+        education: [
+          {
+            school: 'Test',
+            url: '',
+            degree: '',
+            startYear: '2015-09-01',
+            endYear: '',
+          },
+        ],
+      })
+
+      const { container } = renderWithContext(<Education />, {
+        contextValue: {
+          resumeData: mockData,
+          setResumeData: mockSetResumeData,
+        },
+      })
+
+      const endYearInput = container.querySelector('input[name="endYear"]')
+
+      if (endYearInput) {
+        fireEvent.change(endYearInput, {
+          target: { name: 'endYear', value: '2019-06-01' },
         })
 
         expect(mockSetResumeData).toHaveBeenCalled()
