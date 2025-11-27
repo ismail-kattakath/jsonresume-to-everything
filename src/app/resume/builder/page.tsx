@@ -456,8 +456,23 @@ function UnifiedEditor() {
               onSubmit={(e) => e.preventDefault()}
               className="exclude-print flex-1 space-y-6 overflow-y-scroll p-4 md:h-0 md:min-h-full md:flex-none md:space-y-8 md:p-6 lg:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 hover:[&::-webkit-scrollbar-thumb]:bg-white/30 [&::-webkit-scrollbar-track]:bg-white/5"
             >
-              {/* Preview Mode Switcher */}
-              <div className="border-b border-white/10 pb-6">
+              {/* Header */}
+              <div className="space-y-4 border-b border-white/10 pb-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg">
+                    <span className="text-2xl">🎯</span>
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-white">
+                      Resume Generator
+                    </h1>
+                    <p className="text-sm text-white/60">
+                      Build your targeted resume and cover letter
+                    </p>
+                  </div>
+                </div>
+
+                {/* Preview Mode Switcher */}
                 <div className="flex overflow-hidden rounded-lg bg-white/5">
                   <button
                     type="button"
