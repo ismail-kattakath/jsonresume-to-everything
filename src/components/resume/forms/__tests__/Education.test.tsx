@@ -218,13 +218,16 @@ describe('Education Component', () => {
       })
 
       const deleteButton = container.querySelector(
-        'button[title="Delete this education"]'
+        'button[title="Delete education"]'
       )
 
       expect(deleteButton).toBeInTheDocument()
     })
 
     it('should delete education entry when delete button is clicked', () => {
+      // Mock window.confirm to return true
+      const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
+
       const mockSetResumeData = jest.fn()
       const mockData = createMockResumeData({
         education: [
@@ -253,7 +256,7 @@ describe('Education Component', () => {
       })
 
       const deleteButtons = container.querySelectorAll(
-        'button[title="Delete this education"]'
+        'button[title="Delete education"]'
       )
 
       if (deleteButtons[0]) {
@@ -264,6 +267,8 @@ describe('Education Component', () => {
           education: [mockData.education[1]],
         })
       }
+
+      confirmSpy.mockRestore()
     })
   })
 
@@ -449,7 +454,7 @@ describe('Education Component', () => {
   })
 
   describe('Layout and Styling', () => {
-    it('should apply hover effects to entry containers', () => {
+    it('should apply card styling to entry containers', () => {
       const mockData = createMockResumeData({
         education: [
           {
@@ -466,12 +471,10 @@ describe('Education Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      const entryContainer = container.querySelector('.group')
+      const entryContainer = container.querySelector('.rounded-lg.border')
 
-      expect(entryContainer).toHaveClass(
-        'hover:border-white/20',
-        'hover:bg-white/10'
-      )
+      expect(entryContainer).toBeInTheDocument()
+      expect(entryContainer).toHaveClass('bg-white/5')
     })
 
     it('should use responsive layout for date inputs', () => {
@@ -548,7 +551,7 @@ describe('Education Component', () => {
       })
 
       const deleteButton = container.querySelector(
-        'button[title="Delete this education"]'
+        'button[title="Delete education"]'
       )
 
       expect(deleteButton).toHaveAttribute('title')

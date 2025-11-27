@@ -245,13 +245,16 @@ describe('WorkExperience Component', () => {
       })
 
       const deleteButton = container.querySelector(
-        'button[title="Delete this work experience"]'
+        'button[title="Delete experience"]'
       )
 
       expect(deleteButton).toBeInTheDocument()
     })
 
     it('should delete work experience entry when delete button is clicked', () => {
+      // Mock window.confirm to return true
+      const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(true)
+
       const mockSetResumeData = jest.fn()
       const mockData = createMockResumeData({
         workExperience: [
@@ -284,7 +287,7 @@ describe('WorkExperience Component', () => {
       })
 
       const deleteButtons = container.querySelectorAll(
-        'button[title="Delete this work experience"]'
+        'button[title="Delete experience"]'
       )
 
       if (deleteButtons[0]) {
@@ -295,6 +298,8 @@ describe('WorkExperience Component', () => {
           workExperience: [mockData.workExperience[1]],
         })
       }
+
+      confirmSpy.mockRestore()
     })
   })
 
@@ -600,7 +605,7 @@ describe('WorkExperience Component', () => {
   })
 
   describe('Layout and Styling', () => {
-    it('should apply hover effects to entry containers', () => {
+    it('should apply card styling to entry containers', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
@@ -619,12 +624,10 @@ describe('WorkExperience Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      const entryContainer = container.querySelector('.group')
+      const entryContainer = container.querySelector('.rounded-lg.border')
 
-      expect(entryContainer).toHaveClass(
-        'hover:border-white/20',
-        'hover:bg-white/10'
-      )
+      expect(entryContainer).toBeInTheDocument()
+      expect(entryContainer).toHaveClass('bg-white/5')
     })
 
     it('should use responsive layout for date inputs', () => {
@@ -705,7 +708,7 @@ describe('WorkExperience Component', () => {
       })
 
       const deleteButton = container.querySelector(
-        'button[title="Delete this work experience"]'
+        'button[title="Delete experience"]'
       )
 
       expect(deleteButton).toHaveAttribute('title')
