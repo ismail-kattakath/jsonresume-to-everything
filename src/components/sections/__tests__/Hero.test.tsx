@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import Hero from '@/components/sections/Hero'
 import resumeData from '@/lib/resumeAdapter'
 
@@ -44,6 +44,12 @@ jest.mock('framer-motion', () => ({
 }))
 
 describe('Hero', () => {
+  beforeEach(() => {
+    // Mock getElementById and scrollIntoView
+    document.getElementById = jest.fn()
+    Element.prototype.scrollIntoView = jest.fn()
+  })
+
   it('renders hero section', () => {
     render(<Hero />)
     expect(screen.getByText(resumeData.name)).toBeInTheDocument()
@@ -78,5 +84,43 @@ describe('Hero', () => {
   it('renders scroll indicator', () => {
     render(<Hero />)
     expect(screen.getByText(/scroll/i)).toBeInTheDocument()
+  })
+
+  it('scrolls to about section when scroll indicator is clicked', () => {
+    const mockAboutElement = { scrollIntoView: jest.fn() }
+    ;(document.getElementById as jest.Mock).mockReturnValue(mockAboutElement)
+
+    const { container } = render(<Hero />)
+
+    // Find the scroll indicator div (contains "Scroll" text and is clickable)
+    const scrollIndicator =
+      screen.getByText(/scroll/i).parentElement?.parentElement
+
+    expect(scrollIndicator).toBeInTheDocument()
+    fireEvent.click(scrollIndicator!)
+
+    // Verify getElementById was called with 'about'
+    expect(document.getElementById).toHaveBeenCalledWith('about')
+
+    // Verify scrollIntoView was called
+    expect(mockAboutElement.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+    })
+  })
+
+  it('handles scroll indicator click when about element is not found', () => {
+    ;(document.getElementById as jest.Mock).mockReturnValue(null)
+
+    const { container } = render(<Hero />)
+
+    // Find the scroll indicator div
+    const scrollIndicator =
+      screen.getByText(/scroll/i).parentElement?.parentElement
+
+    // Should not throw when element is not found (tests the ?. operator)
+    expect(() => fireEvent.click(scrollIndicator!)).not.toThrow()
+
+    // Verify getElementById was called
+    expect(document.getElementById).toHaveBeenCalledWith('about')
   })
 })
