@@ -481,7 +481,11 @@ Respond with ONLY "YES" if this is a valid job description, or "NO" if it is not
 
     const response = await makeOpenAIRequest(config, request)
     const answer = response.choices[0]?.message?.content?.trim().toUpperCase()
-    return answer === 'YES'
+
+    // Be lenient - accept various affirmative responses
+    // Some models may respond with "YES.", "Yes", "YES!", "TRUE", etc.
+    const positiveResponses = ['YES', 'YES.', 'YES!', 'TRUE', 'VALID', 'Y']
+    return positiveResponses.some((pos) => answer?.startsWith(pos))
   } catch {
     // If validation fails, assume it's not valid
     return false
