@@ -35,6 +35,7 @@ jest.mock('framer-motion', () => ({
       <span {...props}>{children}</span>
     ),
   },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
 }))
 
 describe('Header', () => {
@@ -210,21 +211,56 @@ describe('Header', () => {
       }
     })
 
-    it('navigates to Resume page when Resume button is clicked', () => {
-      render(<Header />)
+    it('shows Resume dropdown submenu on hover', () => {
+      const { container } = render(<Header />)
 
-      // Find the "Resume" navigation button (href: '/resume', not an anchor link)
-      const resumeButtons = screen.getAllByText('Resume')
+      // Find the Resume button container
+      const resumeButton = screen.getAllByText('Resume')[0]
 
-      // Spy on window.location before clicking
-      const originalLocation = window.location
+      // Hover over the Resume button to show dropdown
+      fireEvent.mouseEnter(resumeButton.closest('div')!)
 
-      // Click the Resume navigation button (this triggers line 31: window.location.href = href)
-      fireEvent.click(resumeButtons[0])
+      // Check if submenu items are present
+      expect(screen.getByText('Download Resume')).toBeInTheDocument()
+      expect(screen.getByText('AI Resume Builder')).toBeInTheDocument()
+    })
 
-      // The navigation handler was triggered
-      // (The actual navigation is mocked in beforeEach, but the code path is executed)
-      expect(resumeButtons[0]).toBeInTheDocument()
+    it('navigates to Download Resume when submenu item is clicked', () => {
+      const { container } = render(<Header />)
+
+      // Find the Resume button container and hover to show dropdown
+      const resumeButton = screen.getAllByText('Resume')[0]
+      fireEvent.mouseEnter(resumeButton.closest('div')!)
+
+      // Find and click the Download Resume submenu item
+      const downloadResumeButton = screen.getByText('Download Resume')
+
+      // Reset window.location.href
+      window.location.href = ''
+
+      fireEvent.click(downloadResumeButton)
+
+      // The navigation handler was triggered (dropdown closes after click)
+      expect(screen.queryByText('Download Resume')).not.toBeInTheDocument()
+    })
+
+    it('navigates to AI Resume Builder when submenu item is clicked', () => {
+      const { container } = render(<Header />)
+
+      // Find the Resume button container and hover to show dropdown
+      const resumeButton = screen.getAllByText('Resume')[0]
+      fireEvent.mouseEnter(resumeButton.closest('div')!)
+
+      // Find and click the AI Resume Builder submenu item
+      const builderButton = screen.getByText('AI Resume Builder')
+
+      // Reset window.location.href
+      window.location.href = ''
+
+      fireEvent.click(builderButton)
+
+      // The navigation handler was triggered (dropdown closes after click)
+      expect(screen.queryByText('AI Resume Builder')).not.toBeInTheDocument()
     })
   })
 
