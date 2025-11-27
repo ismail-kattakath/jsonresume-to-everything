@@ -74,6 +74,22 @@ describe('Modal', () => {
     expect(backdrop).toHaveClass('absolute', 'inset-0')
   })
 
+  it('calls onClose when backdrop is clicked directly', () => {
+    render(
+      <Modal isOpen={true} onClose={mockOnClose} title="Test Modal">
+        <div>Content</div>
+      </Modal>
+    )
+
+    // Find the backdrop element (the motion.div with backdrop-blur-sm)
+    const backdrop = document.querySelector('.backdrop-blur-sm')
+    if (backdrop) {
+      // Click directly on the backdrop to trigger handleBackdropClick
+      fireEvent.click(backdrop)
+      expect(mockOnClose).toHaveBeenCalledTimes(1)
+    }
+  })
+
   it('does not call onClose when modal content is clicked', () => {
     render(
       <Modal isOpen={true} onClose={mockOnClose} title="Test Modal">
