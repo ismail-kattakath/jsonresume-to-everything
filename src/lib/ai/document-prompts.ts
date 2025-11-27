@@ -32,7 +32,7 @@ export function buildSummaryPrompt(
     workExperience
       ?.map((exp) => {
         const achievements = exp.keyAchievements
-          ?.split('\n')
+          ?.map((a) => a.text)
           .filter(Boolean)
           .join('\n')
 
@@ -238,7 +238,7 @@ export function buildCoverLetterPrompt(
       ?.slice(0, 3) // Use top 3 most recent experiences
       .map((exp) => {
         const achievements = exp.keyAchievements
-          ?.split('\n')
+          ?.map((a) => a.text)
           .filter(Boolean)
           .slice(0, 3) // Top 3 achievements per job
           .join('; ')

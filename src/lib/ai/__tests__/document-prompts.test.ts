@@ -23,8 +23,11 @@ const mockResumeData: ResumeData = {
       url: 'techcorp.com',
       position: 'Lead Engineer',
       description: 'Leading a team',
-      keyAchievements:
-        'Built microservices architecture\nReduced deployment time by 70%\nMentored 5 junior developers',
+      keyAchievements: [
+        { text: 'Built microservices architecture' },
+        { text: 'Reduced deployment time by 70%' },
+        { text: 'Mentored 5 junior developers' },
+      ],
       startYear: '2020',
       endYear: 'Present',
       technologies: ['React', 'Node.js', 'AWS'],
@@ -34,7 +37,10 @@ const mockResumeData: ResumeData = {
       url: 'startupco.com',
       position: 'Frontend Developer',
       description: 'Building UI',
-      keyAchievements: 'Created design system\nImproved performance by 40%',
+      keyAchievements: [
+        { text: 'Created design system' },
+        { text: 'Improved performance by 40%' },
+      ],
       startYear: '2018',
       endYear: '2020',
       technologies: ['Vue.js', 'TypeScript'],
@@ -98,7 +104,7 @@ describe('Cover Letter Prompt Engineering', () => {
             url: '',
             position: 'Position3',
             description: '',
-            keyAchievements: 'Achievement 3',
+            keyAchievements: [{ text: 'Achievement 3' }],
             startYear: '2015',
             endYear: '2018',
             technologies: [],
@@ -108,7 +114,7 @@ describe('Cover Letter Prompt Engineering', () => {
             url: '',
             position: 'Position4',
             description: '',
-            keyAchievements: 'Achievement 4',
+            keyAchievements: [{ text: 'Achievement 4' }],
             startYear: '2012',
             endYear: '2015',
             technologies: [],
@@ -138,8 +144,13 @@ describe('Cover Letter Prompt Engineering', () => {
         workExperience: [
           {
             ...mockResumeData.workExperience[0],
-            keyAchievements:
-              'Achievement 1\nAchievement 2\nAchievement 3\nAchievement 4\nAchievement 5',
+            keyAchievements: [
+              { text: 'Achievement 1' },
+              { text: 'Achievement 2' },
+              { text: 'Achievement 3' },
+              { text: 'Achievement 4' },
+              { text: 'Achievement 5' },
+            ],
           },
         ],
       }
