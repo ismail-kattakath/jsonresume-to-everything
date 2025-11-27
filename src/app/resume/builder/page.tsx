@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
 
@@ -38,6 +38,9 @@ import {
   Languages,
   Award,
   Plus,
+  Pencil,
+  Trash2,
+  GripVertical,
 } from 'lucide-react'
 import {
   DnDContext,
@@ -53,10 +56,112 @@ const DEFAULT_COVER_LETTER_CONTENT =
 type EditorMode = 'resume' | 'coverLetter'
 
 /**
- * Skill Groups Section Component
- * Handles drag-and-drop reordering and CRUD operations for skill groups
+ * Skill Group Header Component
+ * Displays group name with edit/delete controls
  */
-function SkillGroupsSection() {
+function SkillGroupHeader({
+  title,
+  onRename,
+  onDelete,
+  dragHandleProps,
+}: {
+  title: string
+  onRename: (newTitle: string) => void
+  onDelete: () => void
+  dragHandleProps?: React.HTMLAttributes<HTMLDivElement> | null
+}) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedTitle, setEditedTitle] = useState(title)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [isEditing])
+
+  const handleRename = () => {
+    if (editedTitle.trim() && editedTitle !== title) {
+      onRename(editedTitle.trim())
+    } else {
+      setEditedTitle(title)
+    }
+    setIsEditing(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleRename()
+    } else if (e.key === 'Escape') {
+      setEditedTitle(title)
+      setIsEditing(false)
+    }
+  }
+
+  const handleDeleteClick = () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${title}"? This will remove all skills in this group.`
+    )
+    if (confirmed) {
+      onDelete()
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {dragHandleProps && (
+        <div
+          {...dragHandleProps}
+          className="cursor-grab text-white/30 hover:text-white/50 active:cursor-grabbing"
+        >
+          <GripVertical className="h-4 w-4" />
+        </div>
+      )}
+
+      {isEditing ? (
+        <input
+          ref={inputRef}
+          type="text"
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          onBlur={handleRename}
+          onKeyDown={handleKeyDown}
+          className="rounded border border-pink-400 bg-white/10 px-2 py-0.5 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-pink-400/20"
+        />
+      ) : (
+        <span className="text-sm font-medium text-white/70">{title}</span>
+      )}
+
+      {!isEditing && (
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="rounded p-1 text-white/30 transition-all hover:bg-white/10 hover:text-white/60"
+            title="Rename group"
+          >
+            <Pencil className="h-3 w-3" />
+          </button>
+          <button
+            type="button"
+            onClick={handleDeleteClick}
+            className="rounded p-1 text-white/30 transition-all hover:bg-white/10 hover:text-red-400"
+            title="Delete group"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/**
+ * Skills Section Component
+ * Single collapsible section containing all skill groups
+ */
+function SkillsSection() {
   const context = useContext(ResumeContext)
   if (!context) return null
 
@@ -91,56 +196,56 @@ function SkillGroupsSection() {
   }
 
   return (
-    <>
-      <DnDContext onDragEnd={handleDragEnd}>
-        <DnDDroppable droppableId="skill-groups">
-          {(provided) => (
-            <div
-              className="flex flex-col gap-6"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {resumeData.skills.map((skill, index) => (
-                <DnDDraggable
-                  key={`skill-group-${skill.title}`}
-                  draggableId={`skill-group-${skill.title}`}
-                  index={index}
-                >
-                  {(dragProvided, snapshot) => (
-                    <div
-                      ref={dragProvided.innerRef}
-                      {...dragProvided.draggableProps}
-                      className={snapshot.isDragging ? 'opacity-50' : ''}
-                    >
-                      <CollapsibleSection
-                        title={skill.title}
-                        icon={<Code className="h-5 w-5 text-blue-400" />}
-                        editable={true}
-                        onRename={(newTitle) =>
-                          renameGroup(skill.title, newTitle)
-                        }
-                        onDelete={() => removeGroup(skill.title)}
-                        dragHandleProps={dragProvided.dragHandleProps}
+    <CollapsibleSection
+      title="Skills"
+      icon={<Code className="h-5 w-5 text-blue-400" />}
+    >
+      <div className="space-y-6">
+        <DnDContext onDragEnd={handleDragEnd}>
+          <DnDDroppable droppableId="skill-groups">
+            {(provided) => (
+              <div
+                className="space-y-5"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {resumeData.skills.map((skillGroup, index) => (
+                  <DnDDraggable
+                    key={`skill-group-${skillGroup.title}`}
+                    draggableId={`skill-group-${skillGroup.title}`}
+                    index={index}
+                  >
+                    {(dragProvided, snapshot) => (
+                      <div
+                        ref={dragProvided.innerRef}
+                        {...dragProvided.draggableProps}
+                        className={`space-y-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
                       >
-                        <Skill title={skill.title} />
-                      </CollapsibleSection>
-                    </div>
-                  )}
-                </DnDDraggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </DnDDroppable>
-      </DnDContext>
+                        <SkillGroupHeader
+                          title={skillGroup.title}
+                          onRename={(newTitle) =>
+                            renameGroup(skillGroup.title, newTitle)
+                          }
+                          onDelete={() => removeGroup(skillGroup.title)}
+                          dragHandleProps={dragProvided.dragHandleProps}
+                        />
+                        <Skill title={skillGroup.title} />
+                      </div>
+                    )}
+                  </DnDDraggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </DnDDroppable>
+        </DnDContext>
 
-      {/* Add Skill Group Button/Input */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+        {/* Add Skill Group */}
         {isAdding ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <input
               type="text"
-              placeholder="Enter skill group name (e.g., 'Frontend Stack')"
+              placeholder="Group name (e.g., 'Frontend')"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -148,12 +253,12 @@ function SkillGroupsSection() {
                 if (!newGroupName.trim()) setIsAdding(false)
               }}
               autoFocus
-              className="flex-1 rounded-lg border border-blue-400 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:ring-2 focus:ring-blue-400/20"
+              className="flex-1 rounded-full border border-dashed border-pink-400 bg-transparent px-3 py-1 text-sm text-white outline-none placeholder:text-white/40 focus:ring-2 focus:ring-pink-400/20"
             />
             <button
               type="button"
               onClick={handleAddGroup}
-              className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-purple-600"
+              className="rounded-full bg-pink-500/20 px-3 py-1 text-sm font-medium text-pink-400 transition-all hover:bg-pink-500/30"
             >
               Add
             </button>
@@ -163,23 +268,23 @@ function SkillGroupsSection() {
                 setNewGroupName('')
                 setIsAdding(false)
               }}
-              className="rounded-lg bg-white/10 px-6 py-3 font-medium text-white/60 transition-all hover:bg-white/20 hover:text-white"
+              className="rounded-full px-2 py-1 text-sm text-white/40 transition-all hover:text-white/60"
             >
-              Cancel
+              ✕
             </button>
           </div>
         ) : (
           <button
             type="button"
             onClick={() => setIsAdding(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-white/20 bg-white/5 px-4 py-3 text-white/60 transition-all hover:border-blue-400/40 hover:bg-white/10 hover:text-blue-400"
+            className="flex items-center gap-1 text-sm text-white/40 transition-all hover:text-pink-400"
           >
-            <Plus className="h-5 w-5" />
-            <span className="font-medium">Add Skill Group</span>
+            <Plus className="h-4 w-4" />
+            <span>Add group</span>
           </button>
         )}
       </div>
-    </>
+    </CollapsibleSection>
   )
 }
 
@@ -400,8 +505,8 @@ function UnifiedEditor() {
                 <WorkExperience />
               </CollapsibleSection>
 
-              {/* Skill Groups Section - Now Editable! */}
-              <SkillGroupsSection />
+              {/* Skills Section - All groups in single collapsible */}
+              <SkillsSection />
 
               <CollapsibleSection
                 title="Languages"
