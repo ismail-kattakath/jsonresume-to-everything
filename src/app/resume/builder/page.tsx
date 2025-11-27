@@ -25,7 +25,7 @@ import { Toaster } from 'sonner'
 import { useDocumentHandlers } from '@/hooks/useDocumentHandlers'
 import { useSkillGroupsManagement } from '@/hooks/useSkillGroupsManagement'
 import PasswordProtection from '@/components/auth/PasswordProtection'
-import Footer from '@/components/layout/Footer'
+import MainLayout from '@/components/layout/MainLayout'
 import type { CoverLetterData, ResumeData } from '@/types'
 import {
   User,
@@ -282,7 +282,10 @@ function UnifiedEditor() {
     <>
       <Toaster position="top-right" richColors closeButton />
       <ResumeContext.Provider value={currentContext}>
-        <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900">
+        <MainLayout
+          className="flex min-h-screen flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900"
+          excludeFooterFromPrint
+        >
           <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
             {/* Floating Print Button - Hidden on print */}
             <div className="exclude-print fixed right-8 bottom-8 z-50">
@@ -450,12 +453,7 @@ function UnifiedEditor() {
               </ResumeContext.Provider>
             </div>
           </div>
-
-          {/* Footer - Hidden on print */}
-          <div className="exclude-print">
-            <Footer />
-          </div>
-        </div>
+        </MainLayout>
       </ResumeContext.Provider>
     </>
   )

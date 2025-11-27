@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(npm test:*)",
+      "Bash(/opt/homebrew/bin/npm test -- --testPathPattern=\"MainLayout\" --verbose)",
+      "Bash(source ~/.zshrc)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(/opt/homebrew/bin/node /opt/homebrew/bin/npm test -- --testPathPattern=\"MainLayout\" --verbose)",
+      "Bash(/opt/homebrew/bin/node node_modules/.bin/jest:*)",
+      "Bash(/opt/homebrew/bin/npm install)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node:*)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node /opt/homebrew/lib/node_modules/npm/bin/npm-cli.js install:*)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node node_modules/.bin/jest:*)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node node_modules/.bin/next build:*)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node node_modules/.bin/eslint:*)",
+      "Bash(PATH=\"/opt/homebrew/bin:$PATH\" /opt/homebrew/bin/node node_modules/.bin/tsc:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
