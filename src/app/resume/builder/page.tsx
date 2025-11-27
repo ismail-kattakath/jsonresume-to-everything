@@ -20,7 +20,9 @@ import CoverLetterContent from '@/components/cover-letter/forms/CoverLetterConte
 import PrintButton from '@/components/document-builder/ui/PrintButton'
 import CollapsibleSection from '@/components/document-builder/ui/CollapsibleSection'
 import { AccordionCard } from '@/components/ui/AccordionCard'
+import AISettings from '@/components/document-builder/shared-forms/AISettings'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { AISettingsProvider } from '@/lib/contexts/AISettingsContext'
 import { Toaster } from 'sonner'
 import { useDocumentHandlers } from '@/hooks/useDocumentHandlers'
 import { useSkillGroupsManagement } from '@/hooks/useSkillGroupsManagement'
@@ -43,6 +45,7 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowDownUp,
+  Sparkles,
 } from 'lucide-react'
 import { MdAddCircle } from 'react-icons/md'
 import {
@@ -440,209 +443,220 @@ function UnifiedEditor() {
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
-      <ResumeContext.Provider value={currentContext}>
-        <MainLayout
-          className="flex min-h-screen flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900"
-          excludeFooterFromPrint
-        >
-          <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
-            {/* Floating Print Button - Hidden on print */}
-            <div className="exclude-print fixed top-8 right-8 z-50">
-              <PrintButton
-                name={
-                  mode === 'resume' ? resumeData.name : coverLetterData.name
-                }
-                documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
-              />
-            </div>
-
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="exclude-print flex-1 space-y-6 overflow-y-scroll p-4 md:h-0 md:min-h-full md:flex-none md:space-y-8 md:p-6 lg:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 hover:[&::-webkit-scrollbar-thumb]:bg-white/30 [&::-webkit-scrollbar-track]:bg-white/5"
-            >
-              {/* Header */}
-              <div className="space-y-4 border-b border-white/10 pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg">
-                    <span className="text-2xl">🎯</span>
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-white">
-                      Resume Generator
-                    </h1>
-                    <p className="text-sm text-white/60">
-                      Build your targeted resume and cover letter
-                    </p>
-                  </div>
-                </div>
-
-                {/* Preview Mode Switcher */}
-                <div className="flex overflow-hidden rounded-lg bg-white/5">
-                  <button
-                    type="button"
-                    onClick={() => setMode('resume')}
-                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
-                      mode === 'resume'
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                        : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-                    }`}
-                  >
-                    <span>📄</span>
-                    Resume
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMode('coverLetter')}
-                    className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
-                      mode === 'coverLetter'
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                        : 'text-white/60 hover:bg-white/5 hover:text-white/80'
-                    }`}
-                  >
-                    <span>✉️</span>
-                    Cover Letter
-                  </button>
-                </div>
+      <AISettingsProvider>
+        <ResumeContext.Provider value={currentContext}>
+          <MainLayout
+            className="flex min-h-screen flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900"
+            excludeFooterFromPrint
+          >
+            <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
+              {/* Floating Print Button - Hidden on print */}
+              <div className="exclude-print fixed top-8 right-8 z-50">
+                <PrintButton
+                  name={
+                    mode === 'resume' ? resumeData.name : coverLetterData.name
+                  }
+                  documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
+                />
               </div>
 
-              {/* Form Sections - Conditionally rendered based on mode */}
-              <CollapsibleSection
-                title="Import / Export"
-                icon={<ArrowDownUp className="h-5 w-5 text-blue-400" />}
-                isExpanded={expandedSection === 'import-export'}
-                onToggle={createToggleHandler('import-export')}
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className="exclude-print flex-1 space-y-6 overflow-y-scroll p-4 md:h-0 md:min-h-full md:flex-none md:space-y-8 md:p-6 lg:p-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 hover:[&::-webkit-scrollbar-thumb]:bg-white/30 [&::-webkit-scrollbar-track]:bg-white/5"
               >
-                <ImportExport preserveContent={mode === 'coverLetter'} />
-              </CollapsibleSection>
+                {/* Header */}
+                <div className="space-y-4 border-b border-white/10 pb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg">
+                      <span className="text-2xl">🎯</span>
+                    </div>
+                    <div>
+                      <h1 className="text-2xl font-bold text-white">
+                        Resume Generator
+                      </h1>
+                      <p className="text-sm text-white/60">
+                        Build your targeted resume and cover letter
+                      </p>
+                    </div>
+                  </div>
 
-              <CollapsibleSection
-                title="Personal Information"
-                icon={<User className="h-5 w-5 text-blue-400" />}
-                isExpanded={expandedSection === 'personal-info'}
-                onToggle={createToggleHandler('personal-info')}
-              >
-                <PersonalInformation />
-              </CollapsibleSection>
+                  {/* Preview Mode Switcher */}
+                  <div className="flex overflow-hidden rounded-lg bg-white/5">
+                    <button
+                      type="button"
+                      onClick={() => setMode('resume')}
+                      className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                        mode === 'resume'
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                          : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                      }`}
+                    >
+                      <span>📄</span>
+                      Resume
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMode('coverLetter')}
+                      className={`flex flex-1 cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
+                        mode === 'coverLetter'
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                          : 'text-white/60 hover:bg-white/5 hover:text-white/80'
+                      }`}
+                    >
+                      <span>✉️</span>
+                      Cover Letter
+                    </button>
+                  </div>
+                </div>
 
-              <CollapsibleSection
-                title="Social Media"
-                icon={<Share2 className="h-5 w-5 text-blue-400" />}
-                isExpanded={expandedSection === 'social-media'}
-                onToggle={createToggleHandler('social-media')}
-              >
-                <SocialMedia />
-              </CollapsibleSection>
-
-              {/* Resume-only sections */}
-              {mode === 'resume' && (
-                <>
-                  <CollapsibleSection
-                    title="Professional Summary"
-                    icon={<FileText className="h-5 w-5 text-blue-400" />}
-                    isExpanded={expandedSection === 'summary'}
-                    onToggle={createToggleHandler('summary')}
-                  >
-                    <Summary />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection
-                    title="Education"
-                    icon={<GraduationCap className="h-5 w-5 text-blue-400" />}
-                    isExpanded={expandedSection === 'education'}
-                    onToggle={createToggleHandler('education')}
-                  >
-                    <Education />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection
-                    title="Work Experience"
-                    icon={<Briefcase className="h-5 w-5 text-blue-400" />}
-                    isExpanded={expandedSection === 'work-experience'}
-                    onToggle={createToggleHandler('work-experience')}
-                  >
-                    <WorkExperience />
-                  </CollapsibleSection>
-
-                  {/* Skills Section - All groups in single collapsible */}
-                  <CollapsibleSection
-                    title="Skills"
-                    icon={<Code className="h-5 w-5 text-blue-400" />}
-                    isExpanded={expandedSection === 'skills'}
-                    onToggle={createToggleHandler('skills')}
-                  >
-                    <SkillsSection />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection
-                    title="Additional Info"
-                    icon={<Layers className="h-5 w-5 text-blue-400" />}
-                    isExpanded={expandedSection === 'additional-info'}
-                    onToggle={createToggleHandler('additional-info')}
-                  >
-                    <AdditionalSections />
-                  </CollapsibleSection>
-                </>
-              )}
-
-              {/* Cover Letter-only sections */}
-              {mode === 'coverLetter' && (
+                {/* Form Sections - Conditionally rendered based on mode */}
                 <CollapsibleSection
-                  title="Content"
-                  icon={<Mail className="h-5 w-5 text-blue-400" />}
-                  isExpanded={expandedSection === 'cover-letter'}
-                  onToggle={createToggleHandler('cover-letter')}
+                  title="Import / Export"
+                  icon={<ArrowDownUp className="h-5 w-5 text-blue-400" />}
+                  isExpanded={expandedSection === 'import-export'}
+                  onToggle={createToggleHandler('import-export')}
                 >
-                  <ResumeContext.Provider
-                    value={{
-                      resumeData: coverLetterData as ResumeData,
-                      setResumeData: setCoverLetterData as React.Dispatch<
-                        React.SetStateAction<ResumeData>
-                      >,
-                      handleProfilePicture:
-                        coverLetterHandlers.handleProfilePicture,
-                      handleChange: coverLetterHandlers.handleChange,
-                    }}
-                  >
-                    <CoverLetterContent />
-                  </ResumeContext.Provider>
+                  <ImportExport preserveContent={mode === 'coverLetter'} />
                 </CollapsibleSection>
-              )}
-            </form>
 
-            {/* Preview Section */}
-            <div className="flex flex-col md:w-[8.5in]">
-              {/* Both Previews - Toggle visibility with CSS */}
-              <ResumeContext.Provider
-                value={{
-                  resumeData,
-                  setResumeData,
-                  handleProfilePicture: resumeHandlers.handleProfilePicture,
-                  handleChange: resumeHandlers.handleChange,
-                }}
-              >
-                <div className={mode === 'resume' ? 'block' : 'hidden'}>
-                  <Preview />
-                </div>
-              </ResumeContext.Provider>
-              <ResumeContext.Provider
-                value={{
-                  resumeData: coverLetterData as ResumeData,
-                  setResumeData: setCoverLetterData as React.Dispatch<
-                    React.SetStateAction<ResumeData>
-                  >,
-                  handleProfilePicture:
-                    coverLetterHandlers.handleProfilePicture,
-                  handleChange: coverLetterHandlers.handleChange,
-                }}
-              >
-                <div className={mode === 'coverLetter' ? 'block' : 'hidden'}>
-                  <CoverLetterPreview />
-                </div>
-              </ResumeContext.Provider>
+                <CollapsibleSection
+                  title="AI Settings"
+                  icon={<Sparkles className="h-5 w-5 text-amber-400" />}
+                  isExpanded={expandedSection === 'ai-settings'}
+                  onToggle={createToggleHandler('ai-settings')}
+                >
+                  <AISettings />
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                  title="Personal Information"
+                  icon={<User className="h-5 w-5 text-blue-400" />}
+                  isExpanded={expandedSection === 'personal-info'}
+                  onToggle={createToggleHandler('personal-info')}
+                >
+                  <PersonalInformation />
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                  title="Social Media"
+                  icon={<Share2 className="h-5 w-5 text-blue-400" />}
+                  isExpanded={expandedSection === 'social-media'}
+                  onToggle={createToggleHandler('social-media')}
+                >
+                  <SocialMedia />
+                </CollapsibleSection>
+
+                {/* Resume-only sections */}
+                {mode === 'resume' && (
+                  <>
+                    <CollapsibleSection
+                      title="Professional Summary"
+                      icon={<FileText className="h-5 w-5 text-blue-400" />}
+                      isExpanded={expandedSection === 'summary'}
+                      onToggle={createToggleHandler('summary')}
+                    >
+                      <Summary />
+                    </CollapsibleSection>
+
+                    <CollapsibleSection
+                      title="Education"
+                      icon={<GraduationCap className="h-5 w-5 text-blue-400" />}
+                      isExpanded={expandedSection === 'education'}
+                      onToggle={createToggleHandler('education')}
+                    >
+                      <Education />
+                    </CollapsibleSection>
+
+                    <CollapsibleSection
+                      title="Work Experience"
+                      icon={<Briefcase className="h-5 w-5 text-blue-400" />}
+                      isExpanded={expandedSection === 'work-experience'}
+                      onToggle={createToggleHandler('work-experience')}
+                    >
+                      <WorkExperience />
+                    </CollapsibleSection>
+
+                    {/* Skills Section - All groups in single collapsible */}
+                    <CollapsibleSection
+                      title="Skills"
+                      icon={<Code className="h-5 w-5 text-blue-400" />}
+                      isExpanded={expandedSection === 'skills'}
+                      onToggle={createToggleHandler('skills')}
+                    >
+                      <SkillsSection />
+                    </CollapsibleSection>
+
+                    <CollapsibleSection
+                      title="Additional Info"
+                      icon={<Layers className="h-5 w-5 text-blue-400" />}
+                      isExpanded={expandedSection === 'additional-info'}
+                      onToggle={createToggleHandler('additional-info')}
+                    >
+                      <AdditionalSections />
+                    </CollapsibleSection>
+                  </>
+                )}
+
+                {/* Cover Letter-only sections */}
+                {mode === 'coverLetter' && (
+                  <CollapsibleSection
+                    title="Content"
+                    icon={<Mail className="h-5 w-5 text-blue-400" />}
+                    isExpanded={expandedSection === 'cover-letter'}
+                    onToggle={createToggleHandler('cover-letter')}
+                  >
+                    <ResumeContext.Provider
+                      value={{
+                        resumeData: coverLetterData as ResumeData,
+                        setResumeData: setCoverLetterData as React.Dispatch<
+                          React.SetStateAction<ResumeData>
+                        >,
+                        handleProfilePicture:
+                          coverLetterHandlers.handleProfilePicture,
+                        handleChange: coverLetterHandlers.handleChange,
+                      }}
+                    >
+                      <CoverLetterContent />
+                    </ResumeContext.Provider>
+                  </CollapsibleSection>
+                )}
+              </form>
+
+              {/* Preview Section */}
+              <div className="flex flex-col md:w-[8.5in]">
+                {/* Both Previews - Toggle visibility with CSS */}
+                <ResumeContext.Provider
+                  value={{
+                    resumeData,
+                    setResumeData,
+                    handleProfilePicture: resumeHandlers.handleProfilePicture,
+                    handleChange: resumeHandlers.handleChange,
+                  }}
+                >
+                  <div className={mode === 'resume' ? 'block' : 'hidden'}>
+                    <Preview />
+                  </div>
+                </ResumeContext.Provider>
+                <ResumeContext.Provider
+                  value={{
+                    resumeData: coverLetterData as ResumeData,
+                    setResumeData: setCoverLetterData as React.Dispatch<
+                      React.SetStateAction<ResumeData>
+                    >,
+                    handleProfilePicture:
+                      coverLetterHandlers.handleProfilePicture,
+                    handleChange: coverLetterHandlers.handleChange,
+                  }}
+                >
+                  <div className={mode === 'coverLetter' ? 'block' : 'hidden'}>
+                    <CoverLetterPreview />
+                  </div>
+                </ResumeContext.Provider>
+              </div>
             </div>
-          </div>
-        </MainLayout>
-      </ResumeContext.Provider>
+          </MainLayout>
+        </ResumeContext.Provider>
+      </AISettingsProvider>
     </>
   )
 }

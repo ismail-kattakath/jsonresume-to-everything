@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(/opt/homebrew/bin/npm run build)",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(export PATH=\"/opt/homebrew/opt/node/bin:/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(npx next:*)",
+      "Bash(source ~/.zshrc)",
+      "Bash(npx tsc:*)",
+      "Bash(npx prettier --write src/app/resume/builder/page.tsx)",
+      "Bash(npx eslint:*)",
+      "Bash(npx jest:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(GIT_EDITOR=true git rebase:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
