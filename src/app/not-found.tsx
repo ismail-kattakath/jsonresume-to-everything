@@ -3,12 +3,12 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import MainLayout from '@/components/layout/MainLayout'
 import { Home, ArrowLeft } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[var(--md-sys-color-background)]">
+    <MainLayout className="min-h-screen bg-[var(--md-sys-color-background)]">
       <Header />
 
       <main className="flex min-h-screen flex-col items-center justify-center px-6 pt-20">
@@ -69,8 +69,6 @@ export default function NotFound() {
           </motion.div>
         </motion.div>
       </main>
-
-      <Footer />
-    </div>
+    </MainLayout>
   )
 }

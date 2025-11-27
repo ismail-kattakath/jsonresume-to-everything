@@ -1,5 +1,5 @@
 import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import MainLayout from '@/components/layout/MainLayout'
 import Hero from '@/components/sections/Hero'
 import About from '@/components/sections/About'
 import Skills from '@/components/sections/Skills'
@@ -8,7 +8,7 @@ import Contact from '@/components/sections/Contact'
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <MainLayout>
       <Header />
       <main>
         <Hero />
@@ -17,7 +17,6 @@ export default function Home() {
         <Experience />
         <Contact />
       </main>
-      <Footer />
-    </div>
+    </MainLayout>
   )
 }
