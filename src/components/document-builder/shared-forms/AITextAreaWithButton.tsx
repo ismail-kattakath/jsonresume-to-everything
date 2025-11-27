@@ -161,7 +161,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
         title={
           isConfigured ? 'Generate with AI' : 'Configure AI settings first'
         }
-        className={`absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-all duration-200 ${
+        className={`absolute right-6 bottom-3 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-all duration-200 ${
           isGenerating
             ? 'cursor-not-allowed bg-amber-500/80'
             : isConfigured

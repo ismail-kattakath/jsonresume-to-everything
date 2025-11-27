@@ -228,7 +228,7 @@ describe('AITextAreaWithButton Component', () => {
       const { container } = renderWithProviders(
         <AITextAreaWithButton {...defaultProps} />
       )
-      const button = container.querySelector('.absolute.right-3.bottom-3')
+      const button = container.querySelector('.absolute.right-6.bottom-3')
       expect(button).toBeInTheDocument()
     })
 
