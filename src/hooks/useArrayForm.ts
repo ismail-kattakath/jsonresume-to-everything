@@ -1,5 +1,6 @@
 import { useContext, ChangeEvent } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { stripProtocol } from '@/lib/utils/urlHelpers'
 import type { ResumeData } from '@/types'
 
 interface UseArrayFormOptions<T> {
@@ -35,13 +36,6 @@ export function useArrayForm<T extends Record<string, any>>(
 ) {
   const { resumeData, setResumeData } = useContext(ResumeContext)
   const data = (resumeData[dataKey] as T[]) || []
-
-  /**
-   * Strip protocol from URLs (https:// or http://)
-   */
-  const stripProtocol = (url: string): string => {
-    return url.replace(/^https?:\/\//, '')
-  }
 
   /**
    * Handle input change for array items

@@ -1,5 +1,6 @@
 import resumeData from '@/lib/resumeAdapter'
 import { validateJSONResume } from '@/lib/jsonResumeSchema'
+import { ensureProtocol } from '@/lib/utils/urlHelpers'
 import type {
   ResumeData,
   SocialMediaLink,
@@ -24,20 +25,14 @@ export function convertToJSONResume(customData?: ResumeData) {
         : social.socialMedia === 'LinkedIn'
           ? social.link.replace('linkedin.com/in/', '')
           : '',
-    url: social.link.startsWith('http')
-      ? social.link
-      : `https://${social.link}`,
+    url: ensureProtocol(social.link),
   }))
 
   // Convert work experience
   const work = data.workExperience.map((job: WorkExperience) => ({
     name: job.company,
     position: job.position,
-    url: job.url
-      ? job.url.startsWith('http')
-        ? job.url
-        : `https://${job.url}`
-      : undefined,
+    url: job.url ? ensureProtocol(job.url) : undefined,
     startDate: job.startYear,
     endDate: job.endYear === 'Present' ? '' : job.endYear,
     summary: job.description,
@@ -48,11 +43,7 @@ export function convertToJSONResume(customData?: ResumeData) {
   // Convert education
   const education = data.education.map((edu: Education) => ({
     institution: edu.school,
-    url: edu.url
-      ? edu.url.startsWith('http')
-        ? edu.url
-        : `https://${edu.url}`
-      : undefined,
+    url: edu.url ? ensureProtocol(edu.url) : undefined,
     area: 'Computer Science and Engineering',
     studyType: "Bachelor's Degree",
     startDate: edu.startYear,
@@ -111,9 +102,7 @@ export function convertToJSONResume(customData?: ResumeData) {
     }
     // Only include url if it's not empty
     if (cert.url && cert.url.trim()) {
-      certObj.url = cert.url.startsWith('http')
-        ? cert.url
-        : `https://${cert.url}`
+      certObj.url = ensureProtocol(cert.url)
     }
     return certObj
   })

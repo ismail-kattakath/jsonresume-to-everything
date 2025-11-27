@@ -213,8 +213,8 @@ describe('JSON Resume Conversion', () => {
       const githubProfile = result.basics.profiles.find(
         (p) => p.network === 'Github'
       )
-      // Empty URLs become https:// when converted
-      expect(githubProfile?.url).toBe('https://')
+      // Empty URLs remain empty (improved behavior with urlHelpers)
+      expect(githubProfile?.url).toBe('')
 
       // Empty URLs are undefined when falsy
       expect(result.work[0].url).toBeUndefined()

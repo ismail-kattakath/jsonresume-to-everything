@@ -1,4 +1,5 @@
 import jsonResumeData from '@/data/resume.json'
+import { stripProtocol } from '@/lib/utils/urlHelpers'
 import type { JSONResume, ResumeData } from '@/types'
 
 /**
@@ -12,7 +13,7 @@ function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
   const profiles = basics.profiles || []
   const socialMedia = profiles.map((profile) => ({
     socialMedia: profile.network || '',
-    link: profile.url?.replace(/^https?:\/\//, '') || '',
+    link: stripProtocol(profile.url || ''),
   }))
 
   // Add website if present AND not already in profiles (for backward compatibility)
@@ -23,14 +24,14 @@ function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
   if (basics.url && !hasWebsiteInProfiles) {
     socialMedia.unshift({
       socialMedia: 'Website',
-      link: basics.url.replace(/^https?:\/\//, ''),
+      link: stripProtocol(basics.url),
     })
   }
 
   // Convert work experience back
   const workExperience = (jsonResume.work || []).map((job) => ({
     company: job.name || '',
-    url: job.url?.replace(/^https?:\/\//, '') || '',
+    url: stripProtocol(job.url || ''),
     position: job.position || '',
     description: job.summary || '',
     keyAchievements: (job.highlights || []).join('\n'),
@@ -42,7 +43,7 @@ function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
   // Convert education back
   const education = (jsonResume.education || []).map((edu) => ({
     school: edu.institution || '',
-    url: edu.url?.replace(/^https?:\/\//, '') || '',
+    url: stripProtocol(edu.url || ''),
     degree: edu.studyType || '',
     startYear: edu.startDate || '',
     endYear: edu.endDate || '',
