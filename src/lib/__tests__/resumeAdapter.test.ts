@@ -337,6 +337,29 @@ describe('convertFromJSONResume - Edge Cases', () => {
     })
   })
 
+  describe('Projects', () => {
+    it('should convert project highlights to keyAchievements array', () => {
+      const resume: JSONResume = {
+        projects: [
+          {
+            highlights: [
+              'Project Achievement 1',
+              'Project Achievement 2',
+              'Project Achievement 3',
+            ],
+          },
+        ],
+      } as JSONResume
+
+      const result = convertFromJSONResume(resume)
+      expect(result.projects[0].keyAchievements).toEqual([
+        { text: 'Project Achievement 1' },
+        { text: 'Project Achievement 2' },
+        { text: 'Project Achievement 3' },
+      ])
+    })
+  })
+
   describe('Skills', () => {
     it('should convert skill keywords to skill objects', () => {
       const resume: JSONResume = {
