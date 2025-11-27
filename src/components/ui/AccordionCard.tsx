@@ -87,7 +87,7 @@ export function AccordionHeader({
             )}
           </div>
         </button>
-        {titleExtra}
+        {titleExtra && <div className="mr-1">{titleExtra}</div>}
       </div>
 
       <div className="flex items-center gap-1">
