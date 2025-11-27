@@ -571,7 +571,7 @@ function UnifiedEditor() {
                 {mode === 'resume' && (
                   <>
                     <CollapsibleSection
-                      title="Professional Summary"
+                      title="Summary"
                       icon={<FileText className="h-5 w-5 text-blue-400" />}
                       isExpanded={expandedSection === 'summary'}
                       onToggle={createToggleHandler('summary')}
