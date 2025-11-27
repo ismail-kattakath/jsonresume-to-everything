@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { FormVariant } from './FormInput'
+import { FormVariant, variantClasses } from '@/lib/utils/formVariants'
 
 interface FormTextareaProps {
   label: string
@@ -12,16 +12,6 @@ interface FormTextareaProps {
   showCounter?: boolean
   minHeight?: string
   className?: string
-}
-
-const variantClasses: Record<FormVariant, string> = {
-  teal: 'focus:border-teal-400 focus:ring-teal-400/20',
-  indigo: 'focus:border-indigo-400 focus:ring-indigo-400/20',
-  pink: 'focus:border-pink-400 focus:ring-pink-400/20',
-  purple: 'focus:border-purple-400 focus:ring-purple-400/20',
-  emerald: 'focus:border-emerald-400 focus:ring-emerald-400/20',
-  violet: 'focus:border-violet-400 focus:ring-violet-400/20',
-  blue: 'focus:border-blue-400 focus:ring-blue-400/20',
 }
 
 /**
