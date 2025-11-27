@@ -219,7 +219,7 @@ function SkillsSection() {
                       <div
                         ref={dragProvided.innerRef}
                         {...dragProvided.draggableProps}
-                        className={`space-y-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                        className={`space-y-2 rounded-lg border border-white/10 bg-white/5 p-3 transition-all ${snapshot.isDragging ? 'opacity-50 shadow-lg' : ''}`}
                       >
                         <SkillGroupHeader
                           title={skillGroup.title}
