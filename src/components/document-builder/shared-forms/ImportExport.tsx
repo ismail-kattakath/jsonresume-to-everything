@@ -169,6 +169,10 @@ const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
 
   return (
     <div className="group">
+      <p className="mb-3 text-sm text-white/60">
+        Import or export your resume in JSON Resume format for portability
+        across different resume tools.
+      </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="group/btn inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]">
           <VscJson className="text-lg transition-transform group-hover/btn:rotate-12" />

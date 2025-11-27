@@ -10,6 +10,11 @@ const AISettings: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
+      <p className="text-sm text-white/60">
+        Connect to an OpenAI-compatible API to generate tailored cover letters
+        and professional summaries based on the job description.
+      </p>
+
       {/* API URL and Key - Same line */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormInput
