@@ -26,7 +26,7 @@ const defaultSettings: AISettings = {
   apiKey: DEFAULT_API_KEY,
   model: DEFAULT_MODEL,
   jobDescription: '',
-  rememberCredentials: false,
+  rememberCredentials: true,
 }
 
 export const AISettingsContext = createContext<AISettingsContextType>({
@@ -45,13 +45,9 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
     if (saved) {
       setSettings((prev) => ({
         ...prev,
-        apiUrl: saved.rememberCredentials
-          ? saved.apiUrl || DEFAULT_API_URL
-          : DEFAULT_API_URL,
-        apiKey: saved.rememberCredentials
-          ? saved.apiKey || DEFAULT_API_KEY
-          : DEFAULT_API_KEY,
-        rememberCredentials: saved.rememberCredentials || false,
+        apiUrl: saved.apiUrl || DEFAULT_API_URL,
+        apiKey: saved.apiKey || DEFAULT_API_KEY,
+        rememberCredentials: true,
         jobDescription: saved.lastJobDescription || '',
       }))
     }

@@ -92,28 +92,6 @@ const AISettings: React.FC = () => {
         </div>
       </div>
 
-      {/* Remember credentials checkbox */}
-      <div className="flex items-start gap-2">
-        <input
-          id="ai-remember-credentials"
-          type="checkbox"
-          checked={settings.rememberCredentials}
-          onChange={(e) =>
-            updateSettings({ rememberCredentials: e.target.checked })
-          }
-          className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-2 focus:ring-blue-400/20"
-        />
-        <label
-          htmlFor="ai-remember-credentials"
-          className="cursor-pointer text-sm leading-snug text-white/80"
-        >
-          Remember my API credentials
-          <span className="mt-0.5 block text-xs text-white/50">
-            Stored securely in your browser
-          </span>
-        </label>
-      </div>
-
       {/* Job Description */}
       <div className="space-y-2">
         <label
