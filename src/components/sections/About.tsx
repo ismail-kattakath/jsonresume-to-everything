@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { summary } from '@/lib/data/portfolio'
 import { Award, Users, Rocket, TrendingUp, Code2, Globe } from 'lucide-react'
+import { fadeInUp, scaleIn, fadeInUpWithDelay } from '@/lib/utils/animations'
 
 export default function About() {
   // Parse summary into sentences for better display
@@ -48,19 +49,10 @@ export default function About() {
       <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-[var(--md-sys-color-primary)]/5 blur-3xl"></div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
+        <motion.div {...fadeInUp} className="mb-16 text-center">
           <motion.div
+            {...scaleIn}
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-primary-container)] px-4 py-2"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
           >
             <Globe
               size={16}
@@ -122,10 +114,7 @@ export default function About() {
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                {...fadeInUpWithDelay(index)}
                 whileHover={{ y: -4 }}
                 className="md3-card group cursor-default p-6 text-center"
               >
