@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import CoverLetterContent from '@/components/cover-letter/forms/CoverLetterContent'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -393,6 +393,69 @@ describe('CoverLetterContent Component', () => {
       expect(mockSetResumeData).toHaveBeenLastCalledWith({
         ...mockData,
         content: 'Hello',
+      })
+    })
+  })
+
+  describe('AI Generation Callback', () => {
+    it('updates content when AI generation completes', async () => {
+      const { generateCoverLetter } = require('@/lib/ai/openai-client')
+
+      // Mock successful AI generation
+      const generatedText =
+        'AI-generated cover letter content with compelling narrative and skills alignment'
+      generateCoverLetter.mockImplementation(
+        async (config, data, jobDescription, onChunk) => {
+          // Simulate streaming by calling onChunk
+          onChunk({ content: generatedText })
+          return generatedText
+        }
+      )
+
+      const mockData = createMockResumeData({ content: '' })
+      const mockSetResumeData = jest.fn()
+      const mockAISettings = createMockAISettingsContext({
+        settings: {
+          apiUrl: 'https://api.openai.com',
+          apiKey: 'sk-test-key',
+          model: 'gpt-4o-mini',
+          jobDescription:
+            'Test job description with enough characters to be valid',
+          rememberCredentials: false,
+        },
+        isConfigured: true,
+        connectionStatus: 'valid' as const,
+        jobDescriptionStatus: 'valid' as const,
+      })
+
+      render(
+        <AISettingsContext.Provider value={mockAISettings}>
+          <ResumeContext.Provider
+            value={{
+              resumeData: mockData,
+              setResumeData: mockSetResumeData,
+              handleProfilePicture: jest.fn(),
+              handleChange: jest.fn(),
+            }}
+          >
+            <CoverLetterContent />
+          </ResumeContext.Provider>
+        </AISettingsContext.Provider>
+      )
+
+      mockSetResumeData.mockClear()
+
+      // Click the AI generation button
+      const aiButton = screen.getByRole('button')
+      fireEvent.click(aiButton)
+
+      // Wait for AI generation to complete and setResumeData to be called
+      await waitFor(() => {
+        expect(mockSetResumeData).toHaveBeenCalledWith(
+          expect.objectContaining({
+            content: generatedText,
+          })
+        )
       })
     })
   })
