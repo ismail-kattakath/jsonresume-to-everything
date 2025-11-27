@@ -520,7 +520,7 @@ function UnifiedEditor() {
                 </CollapsibleSection>
 
                 <CollapsibleSection
-                  title="AI Settings"
+                  title="Generative AI Settings"
                   icon={<Sparkles className="h-5 w-5 text-amber-400" />}
                   isExpanded={expandedSection === 'ai-settings'}
                   onToggle={createToggleHandler('ai-settings')}

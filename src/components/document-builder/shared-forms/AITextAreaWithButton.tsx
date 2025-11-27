@@ -79,7 +79,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
     if (!isConfigured) {
       toast.error('AI not configured', {
         description:
-          'Please fill in the API settings and job description in the AI Settings section above.',
+          'Please fill in the API settings and job description in the Generative AI Settings section above.',
       })
       return
     }
