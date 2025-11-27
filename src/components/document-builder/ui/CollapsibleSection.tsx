@@ -130,8 +130,6 @@ const CollapsibleSection = ({
           )}
 
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="h-4 w-1 flex-shrink-0 rounded-full bg-gradient-to-b from-blue-500 to-cyan-500"></div>
-
             {isEditing ? (
               <input
                 ref={inputRef}
