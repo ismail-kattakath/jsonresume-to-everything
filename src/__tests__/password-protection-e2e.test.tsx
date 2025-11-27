@@ -232,7 +232,9 @@ describe('Password Protection - End-to-End Workflows', () => {
       })
 
       // 2. Verify resume mode is active (should see resume-specific sections)
-      expect(screen.getByText('Resume Generator')).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'AI Resume Builder' })
+      ).toBeInTheDocument()
       expect(screen.getAllByText('Work Experience').length).toBeGreaterThan(0)
       expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
 

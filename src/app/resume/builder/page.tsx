@@ -504,7 +504,7 @@ function UnifiedEditor() {
                     </div>
                     <div>
                       <h1 className="text-xl font-bold text-white">
-                        Resume Generator
+                        AI Resume Builder
                       </h1>
                       <p className="text-xs text-white/60">
                         Build your targeted resume and cover letter
