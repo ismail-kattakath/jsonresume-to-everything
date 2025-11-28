@@ -448,11 +448,19 @@ export async function fetchAvailableModels(
   config: Pick<OpenAIConfig, 'baseURL' | 'apiKey'>
 ): Promise<string[]> {
   try {
+    // Validate inputs
+    if (!config.baseURL || !config.apiKey) {
+      return []
+    }
+
     // OpenRouter uses /api/v1/models, others use /v1/models
     const isOpenRouter = config.baseURL.includes('openrouter.ai')
     const endpoint = isOpenRouter
       ? `${config.baseURL}/models`
       : `${config.baseURL}/v1/models`
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
     const response = await fetch(endpoint, {
       method: 'GET',
@@ -465,7 +473,10 @@ export async function fetchAvailableModels(
           'X-Title': 'JSON Resume to Everything',
         }),
       },
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       console.warn(
@@ -488,7 +499,13 @@ export async function fetchAvailableModels(
 
     return []
   } catch (error) {
-    console.error('Failed to fetch available models:', error)
+    // Don't log network errors - they're expected during typing
+    if (error instanceof Error && error.name !== 'AbortError') {
+      console.debug(
+        'Model fetch failed (expected during typing):',
+        error.message
+      )
+    }
     return []
   }
 }

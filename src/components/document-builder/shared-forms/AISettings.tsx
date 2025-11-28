@@ -65,12 +65,20 @@ const AISettings: React.FC = () => {
       // Only fetch if we have both URL and key
       if (!settings.apiUrl.trim() || !settings.apiKey.trim()) {
         setAvailableModels([])
+        setLoadingModels(false)
+        setModelsError(null)
         return
       }
 
-      // Check if provider supports model listing
-      const provider = getProviderByURL(settings.apiUrl)
-      const isCustomProvider = provider === null
+      // Validate URL format before attempting fetch
+      try {
+        new URL(settings.apiUrl) // Throws if invalid URL
+      } catch {
+        setAvailableModels([])
+        setLoadingModels(false)
+        setModelsError(null) // Don't show error for invalid URL - user might be typing
+        return
+      }
 
       // For custom providers, we'll try anyway
       setLoadingModels(true)
