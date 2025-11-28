@@ -41,38 +41,12 @@ export const PROVIDER_PRESETS: ProviderPreset[] = [
     ],
   },
   {
-    name: 'Groq',
-    baseURL: 'https://api.groq.com/openai/v1',
-    description: 'Ultra-fast inference (Llama, Mixtral, Gemma)',
-    supportsModels: true,
-    requiresAuth: true,
-    commonModels: [
-      'llama-3.3-70b-versatile',
-      'llama-3.1-70b-versatile',
-      'mixtral-8x7b-32768',
-      'gemma2-9b-it',
-    ],
-  },
-  {
     name: 'xAI (Grok)',
     baseURL: 'https://api.x.ai/v1',
     description: 'xAI Grok models',
     supportsModels: true,
     requiresAuth: true,
     commonModels: ['grok-beta', 'grok-vision-beta'],
-  },
-  {
-    name: 'Together AI',
-    baseURL: 'https://api.together.xyz/v1',
-    description: 'Open source models',
-    supportsModels: true,
-    requiresAuth: true,
-    commonModels: [
-      'meta-llama/Llama-3.3-70B-Instruct-Turbo',
-      'meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo',
-      'mistralai/Mixtral-8x7B-Instruct-v0.1',
-      'Qwen/Qwen2.5-72B-Instruct-Turbo',
-    ],
   },
   {
     name: 'Local (LM Studio)',
