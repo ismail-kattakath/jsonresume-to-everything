@@ -224,19 +224,21 @@ describe('AITextAreaWithButton Component', () => {
       expect(textarea).toBeInTheDocument()
     })
 
-    it('should have floating button at bottom-right', () => {
-      const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
-      )
-      const button = container.querySelector('.absolute.right-6.bottom-3')
+    it('should have inline generate button at top', () => {
+      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
+      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
     })
 
-    it('should have round floating button', () => {
+    it('should have gradient purple/blue button styling', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AITextAreaWithButton {...defaultProps} />,
+        mockConfiguredAISettings
       )
-      const button = container.querySelector('.rounded-full')
+      const button = container.querySelector(
+        '.from-purple-500\\/20.to-blue-500\\/20'
+      )
       expect(button).toBeInTheDocument()
     })
 
@@ -256,21 +258,13 @@ describe('AITextAreaWithButton Component', () => {
       expect(wrapper).toBeInTheDocument()
     })
 
-    it('should have gradient button when configured', () => {
-      const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />,
-        mockConfiguredAISettings
-      )
-      const button = container.querySelector('.from-amber-500.to-orange-500')
-      expect(button).toBeInTheDocument()
-    })
-
-    it('should have gray button when not configured', () => {
+    it('should have disabled styling when not configured', () => {
       const { container } = renderWithProviders(
         <AITextAreaWithButton {...defaultProps} />
       )
-      const button = container.querySelector('.bg-gray-500\\/50')
+      const button = container.querySelector('.bg-white\\/5')
       expect(button).toBeInTheDocument()
+      expect(button).toHaveClass('cursor-not-allowed')
     })
   })
 

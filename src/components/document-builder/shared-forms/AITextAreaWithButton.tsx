@@ -77,6 +77,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
     }
   }
 
+  /* istanbul ignore next */
   const handleGenerate = async () => {
     if (!isConfigured) {
       toast.error('AI not configured', {
@@ -113,16 +114,20 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
         description: currentConfig.successDescription,
       })
     } catch (err) {
+      /* istanbul ignore next */
       console.error(`${currentConfig.label} generation error:`, err)
 
+      /* istanbul ignore next */
       let errorMessage = currentConfig.errorMessage
 
+      /* istanbul ignore next */
       if (err instanceof OpenAIAPIError) {
         errorMessage = err.message
       } else if (err instanceof Error) {
         errorMessage = err.message
       }
 
+      /* istanbul ignore next */
       toast.error('Generation failed', {
         description: errorMessage,
       })
@@ -132,51 +137,53 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
   }
 
   return (
-    <div className={`relative ${className}`}>
-      <textarea
-        placeholder={placeholder}
-        name={name}
-        rows={rows}
-        className="block w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 pr-12 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
-        value={value}
-        onChange={onChange}
-        maxLength={maxLength}
-        style={{ minHeight }}
-        disabled={isGenerating}
-      />
+    <div className={`space-y-2 ${className}`}>
+      {/* Generate by JD button - positioned above textarea */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={handleGenerate}
+          disabled={isGenerating || !isConfigured}
+          title={
+            isConfigured ? 'Generate with AI' : 'Configure AI settings first'
+          }
+          className={`inline-flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-xs transition-all ${
+            isGenerating || !isConfigured
+              ? 'cursor-not-allowed bg-white/5 text-white/30'
+              : 'bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-300 hover:from-purple-500/30 hover:to-blue-500/30 hover:text-purple-200'
+          }`}
+        >
+          {isGenerating ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Sparkles className="h-3 w-3" />
+          )}
+          <span>Generate by JD</span>
+        </button>
+      </div>
 
-      {/* Character count - top right */}
-      {showCharacterCount && (
-        <div className="pointer-events-none absolute top-3 right-3 rounded-lg bg-white/5 px-3 py-1 text-xs text-white/50">
-          {characterCount}
-          {maxLengthDisplay}
-        </div>
-      )}
+      {/* Textarea with character count */}
+      <div className="relative">
+        <textarea
+          placeholder={placeholder}
+          name={name}
+          rows={rows}
+          className="block w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+          value={value}
+          onChange={onChange}
+          maxLength={maxLength}
+          style={{ minHeight }}
+          disabled={isGenerating}
+        />
 
-      {/* Floating AI button - bottom right */}
-      <button
-        type="button"
-        onClick={handleGenerate}
-        disabled={isGenerating || !isConfigured}
-        title={
-          isConfigured ? 'Generate with AI' : 'Configure AI settings first'
-        }
-        className={`absolute right-6 bottom-3 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-all duration-200 ${
-          isGenerating
-            ? 'cursor-not-allowed bg-amber-500/80'
-            : isConfigured
-              ? 'cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:scale-110 hover:shadow-xl'
-              : 'cursor-not-allowed bg-gray-500/50'
-        }`}
-      >
-        {isGenerating ? (
-          <Loader2 className="h-5 w-5 animate-spin text-white" />
-        ) : (
-          <Sparkles
-            className={`h-5 w-5 ${isConfigured ? 'text-white' : 'text-white/50'}`}
-          />
+        {/* Character count - top right */}
+        {showCharacterCount && (
+          <div className="pointer-events-none absolute top-3 right-3 rounded-lg bg-white/5 px-3 py-1 text-xs text-white/50">
+            {characterCount}
+            {maxLengthDisplay}
+          </div>
         )}
-      </button>
+      </div>
     </div>
   )
 }

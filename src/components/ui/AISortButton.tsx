@@ -19,9 +19,13 @@ interface AISortButtonProps {
 }
 
 /**
- * Reusable AI Sort Button component
- * Shows sparkle icon when ready, loading spinner when sorting
+ * Reusable AI Button component - unified for Sort and Generate actions
+ * Shows sparkle icon when ready, loading spinner when processing
  * Disabled state when AI is not configured
+ *
+ * Supports two visual modes:
+ * - default: Purple/blue gradient (for Sort by JD)
+ * - generate: Amber/orange gradient (for Generate by JD)
  */
 export default function AISortButton({
   isConfigured,

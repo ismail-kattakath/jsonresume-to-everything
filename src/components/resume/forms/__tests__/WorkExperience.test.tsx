@@ -1516,4 +1516,134 @@ describe('WorkExperience Component', () => {
       })
     })
   })
+
+  describe('Sort Buttons', () => {
+    describe('KeyAchievementsSortButton', () => {
+      it('should not render sort button when there is only 1 achievement', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              organization: 'Test Company',
+              url: 'test.com',
+              position: 'Developer',
+              description: 'Test',
+              keyAchievements: ['Single achievement'],
+              startYear: '2020-01-01',
+              endYear: '2023-01-01',
+            },
+          ],
+        })
+
+        renderWithContext(<WorkExperience />, {
+          contextValue: { resumeData: mockData },
+        })
+
+        // Should not show Sort by JD button for Key Achievements
+        const sortButtons = screen.queryAllByText('Sort by JD')
+        expect(sortButtons.length).toBe(0)
+      })
+
+      it('should render sort button when there are 2+ achievements', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              organization: 'Test Company',
+              url: 'test.com',
+              position: 'Developer',
+              description: 'Test',
+              keyAchievements: ['Achievement 1', 'Achievement 2'],
+              startYear: '2020-01-01',
+              endYear: '2023-01-01',
+              technologies: [],
+            },
+          ],
+        })
+
+        renderWithContext(<WorkExperience />, {
+          contextValue: { resumeData: mockData },
+        })
+
+        // Should show Sort by JD button for Key Achievements
+        const sortButtons = screen.queryAllByText('Sort by JD')
+        expect(sortButtons.length).toBeGreaterThan(0)
+      })
+    })
+
+    describe('TechnologiesSortButton', () => {
+      it('should not render sort button when there is only 1 technology', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              organization: 'Test Company',
+              url: 'test.com',
+              position: 'Developer',
+              description: 'Test',
+              keyAchievements: [],
+              startYear: '2020-01-01',
+              endYear: '2023-01-01',
+              technologies: ['React'],
+            },
+          ],
+        })
+
+        renderWithContext(<WorkExperience />, {
+          contextValue: { resumeData: mockData },
+        })
+
+        // Should not show Sort by JD button for Technologies
+        const sortButtons = screen.queryAllByText('Sort by JD')
+        expect(sortButtons.length).toBe(0)
+      })
+
+      it('should render sort button when there are 2+ technologies', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              organization: 'Test Company',
+              url: 'test.com',
+              position: 'Developer',
+              description: 'Test',
+              keyAchievements: [],
+              startYear: '2020-01-01',
+              endYear: '2023-01-01',
+              technologies: ['React', 'Node.js', 'TypeScript'],
+            },
+          ],
+        })
+
+        renderWithContext(<WorkExperience />, {
+          contextValue: { resumeData: mockData },
+        })
+
+        // Should show Sort by JD button for Technologies
+        const sortButtons = screen.queryAllByText('Sort by JD')
+        expect(sortButtons.length).toBeGreaterThan(0)
+      })
+
+      it('should render both sort buttons when there are 2+ of each', () => {
+        const mockData = createMockResumeData({
+          workExperience: [
+            {
+              organization: 'Test Company',
+              url: 'test.com',
+              position: 'Developer',
+              description: 'Test',
+              keyAchievements: ['Achievement 1', 'Achievement 2'],
+              startYear: '2020-01-01',
+              endYear: '2023-01-01',
+              technologies: ['React', 'Node.js'],
+            },
+          ],
+        })
+
+        renderWithContext(<WorkExperience />, {
+          contextValue: { resumeData: mockData },
+        })
+
+        // Should show 2 Sort by JD buttons (one for achievements, one for technologies)
+        const sortButtons = screen.queryAllByText('Sort by JD')
+        expect(sortButtons.length).toBe(2)
+      })
+    })
+  })
 })

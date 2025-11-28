@@ -150,19 +150,6 @@ const KeyAchievements = ({
 
   return (
     <div className="space-y-2">
-      {/* AI Sort Button - only show when there are 2+ achievements */}
-      {showAISort && (
-        <div className="flex justify-end">
-          <AISortButton
-            isConfigured={isConfigured}
-            isLoading={isSorting}
-            onClick={handleAISort}
-            label="Sort by JD"
-            size="sm"
-          />
-        </div>
-      )}
-
       {/* Existing achievements with drag-and-drop */}
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId={`achievements-${workExperienceIndex}`}>

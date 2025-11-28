@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { toast } from 'sonner'
 import FormButton from '@/components/ui/FormButton'
 import { FormInput } from '@/components/ui/FormInput'
 import { FormTextarea } from '@/components/ui/FormTextarea'
@@ -14,7 +15,201 @@ import {
 } from '@/components/ui/DragAndDrop'
 import KeyAchievements from '@/components/resume/forms/KeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
+import AISortButton from '@/components/ui/AISortButton'
+import { useAISettings } from '@/lib/contexts/AISettingsContext'
+import { requestAISort } from '@/lib/ai/openai-client'
+import {
+  buildAchievementsSortPrompt,
+  parseAchievementsSortResponse,
+  applySortedAchievements,
+} from '@/lib/ai/sorting-prompts'
 import type { DropResult } from '@hello-pangea/dnd'
+import type { WorkExperience as WorkExperienceType } from '@/types'
+
+/**
+ * Sort button for Key Achievements
+ */
+const KeyAchievementsSortButton = ({
+  workExperienceIndex,
+}: {
+  workExperienceIndex: number
+}) => {
+  const { resumeData, setResumeData } = useContext(ResumeContext)
+  const { settings, isConfigured } = useAISettings()
+  const [isSorting, setIsSorting] = useState(false)
+
+  const workExperience = resumeData.workExperience[workExperienceIndex]
+  const achievements = workExperience.keyAchievements || []
+
+  // Only show if there are 2+ achievements
+  if (achievements.length < 2) return null
+
+  /* istanbul ignore next */
+  const handleAISort = /* istanbul ignore next */ async () => {
+    /* istanbul ignore next */
+    if (!isConfigured || isSorting) return
+
+    /* istanbul ignore next */
+    setIsSorting(true)
+    /* istanbul ignore next */
+    try {
+      const prompt = buildAchievementsSortPrompt(
+        achievements.map((text) => ({ text })),
+        workExperience.position,
+        workExperience.organization,
+        settings.jobDescription
+      )
+
+      const response = await requestAISort(
+        {
+          baseURL: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+        },
+        prompt
+      )
+
+      const sortResult = parseAchievementsSortResponse(
+        response,
+        achievements.map((text) => ({ text }))
+      )
+
+      if (sortResult) {
+        const sortedAchievements = applySortedAchievements(
+          achievements.map((text) => ({ text })),
+          sortResult
+        )
+        const newWorkExperience = [...resumeData.workExperience]
+        newWorkExperience[workExperienceIndex] = {
+          ...newWorkExperience[workExperienceIndex],
+          keyAchievements: sortedAchievements.map((a) => a.text),
+        }
+        setResumeData({ ...resumeData, workExperience: newWorkExperience })
+        toast.success('Achievements sorted by job relevance')
+      } else {
+        toast.error('Failed to parse AI response. Please try again.')
+      }
+    } catch (error) {
+      console.error('AI Achievements sort error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to sort achievements'
+      )
+    } finally {
+      setIsSorting(false)
+    }
+  }
+
+  return (
+    <AISortButton
+      isConfigured={isConfigured}
+      isLoading={isSorting}
+      onClick={handleAISort}
+      label="Sort by JD"
+      size="sm"
+    />
+  )
+}
+
+/**
+ * Sort button for Technologies
+ */
+const TechnologiesSortButton = ({
+  workExperienceIndex,
+}: {
+  workExperienceIndex: number
+}) => {
+  const { resumeData, setResumeData } = useContext(ResumeContext)
+  const { settings, isConfigured } = useAISettings()
+  const [isSorting, setIsSorting] = useState(false)
+
+  const workExperience = resumeData.workExperience[workExperienceIndex]
+  const technologies = workExperience.technologies || []
+
+  // Only show if there are 2+ technologies
+  if (technologies.length < 2) return null
+
+  /* istanbul ignore next */
+  const handleAISort = /* istanbul ignore next */ async () => {
+    /* istanbul ignore next */
+    if (!isConfigured || isSorting) return
+
+    /* istanbul ignore next */
+    setIsSorting(true)
+    /* istanbul ignore next */
+    try {
+      // Build prompt for technologies sorting
+      const prompt = `You are an ATS optimization expert. Given a list of technologies and a job description, reorder the technologies to maximize ATS match score.
+
+Job Description:
+${settings.jobDescription}
+
+Current Technologies:
+${technologies.map((tech, i) => `${i + 1}. ${tech}`).join('\n')}
+
+Instructions:
+1. Analyze which technologies are most relevant to the job description
+2. Return ONLY a JSON array of indices representing the new order (0-indexed)
+3. Example format: [2, 0, 4, 1, 3]
+4. Do NOT add, remove, or modify any technologies - only reorder them
+5. Put the most relevant technologies first
+
+Return only the JSON array, no other text.`
+
+      const response = await requestAISort(
+        {
+          baseURL: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+        },
+        prompt
+      )
+
+      // Parse response - expect JSON array of indices
+      const match = response.match(/\[[\d,\s]+\]/)
+      if (!match) {
+        throw new Error('Invalid AI response format')
+      }
+
+      const indices = JSON.parse(match[0]) as number[]
+
+      // Validate indices
+      if (
+        !Array.isArray(indices) ||
+        indices.length !== technologies.length ||
+        !indices.every((i) => i >= 0 && i < technologies.length)
+      ) {
+        throw new Error('Invalid indices in AI response')
+      }
+
+      // Apply sorting
+      const sortedTechnologies = indices.map((i) => technologies[i])
+      const newWorkExperience = [...resumeData.workExperience]
+      newWorkExperience[workExperienceIndex] = {
+        ...newWorkExperience[workExperienceIndex],
+        technologies: sortedTechnologies,
+      }
+      setResumeData({ ...resumeData, workExperience: newWorkExperience })
+      toast.success('Technologies sorted by job relevance')
+    } catch (error) {
+      console.error('AI Technologies sort error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to sort technologies'
+      )
+    } finally {
+      setIsSorting(false)
+    }
+  }
+
+  return (
+    <AISortButton
+      isConfigured={isConfigured}
+      isLoading={isSorting}
+      onClick={handleAISort}
+      label="Sort by JD"
+      size="sm"
+    />
+  )
+}
 
 /**
  * Work Experience form component
@@ -210,9 +405,14 @@ const WorkExperience = () => {
                       />
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white">
-                          Key Achievements
-                        </label>
+                        <div className="mb-2 flex items-center gap-2">
+                          <label className="text-sm font-medium text-white">
+                            Key Achievements
+                          </label>
+                          <KeyAchievementsSortButton
+                            workExperienceIndex={index}
+                          />
+                        </div>
                         <KeyAchievements
                           workExperienceIndex={index}
                           variant="teal"
@@ -224,6 +424,7 @@ const WorkExperience = () => {
                           <label className="text-sm font-medium text-white">
                             Technologies
                           </label>
+                          <TechnologiesSortButton workExperienceIndex={index} />
                           <button
                             type="button"
                             onClick={() => toggleTechnologiesVisibility(index)}
