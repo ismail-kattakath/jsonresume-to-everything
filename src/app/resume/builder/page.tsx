@@ -23,6 +23,7 @@ import ATSCheckButton from '@/components/document-builder/ui/ATSCheckButton'
 import CollapsibleSection from '@/components/document-builder/ui/CollapsibleSection'
 import { AccordionCard } from '@/components/ui/AccordionCard'
 import AISettings from '@/components/document-builder/shared-forms/AISettings'
+import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import {
   AISettingsProvider,
@@ -560,7 +561,7 @@ function UnifiedEditor() {
               {/* Floating Action Buttons (Capsule) - Hidden on print */}
               <div
                 id="print-button"
-                className="exclude-print fixed top-8 right-8 z-50 flex animate-pulse flex-row items-center overflow-hidden rounded-full shadow-2xl hover:animate-none"
+                className="exclude-print fixed right-8 bottom-8 z-50 flex flex-row items-center overflow-hidden rounded-full shadow-2xl md:top-8 md:bottom-auto"
               >
                 {mode === 'resume' && (
                   <div className="[&>button]:animate-none [&>button]:rounded-r-none [&>button]:shadow-none">
@@ -610,8 +611,6 @@ function UnifiedEditor() {
                   <div
                     id="mode-switcher"
                     className="flex overflow-hidden rounded-lg bg-white/5"
-                    data-tooltip-id="app-tooltip"
-                    data-tooltip-content={tooltips.navigation.modeSwitcher}
                   >
                     <button
                       type="button"
@@ -776,36 +775,40 @@ function UnifiedEditor() {
                 )}
               </form>
 
-              {/* Preview Section */}
+              {/* Preview Section - Scaled for mobile, fixed width for desktop */}
               <div id="preview-pane" className="flex flex-col md:w-[8.5in]">
-                {/* Both Previews - Toggle visibility with CSS */}
-                <ResumeContext.Provider
-                  value={{
-                    resumeData,
-                    setResumeData,
-                    handleProfilePicture: resumeHandlers.handleProfilePicture,
-                    handleChange: resumeHandlers.handleChange,
-                  }}
-                >
-                  <div className={mode === 'resume' ? 'block' : 'hidden'}>
-                    <Preview />
-                  </div>
-                </ResumeContext.Provider>
-                <ResumeContext.Provider
-                  value={{
-                    resumeData: coverLetterData as ResumeData,
-                    setResumeData: setCoverLetterData as React.Dispatch<
-                      React.SetStateAction<ResumeData>
-                    >,
-                    handleProfilePicture:
-                      coverLetterHandlers.handleProfilePicture,
-                    handleChange: coverLetterHandlers.handleChange,
-                  }}
-                >
-                  <div className={mode === 'coverLetter' ? 'block' : 'hidden'}>
-                    <CoverLetterPreview />
-                  </div>
-                </ResumeContext.Provider>
+                <ScaledPreviewWrapper>
+                  {/* Both Previews - Toggle visibility with CSS */}
+                  <ResumeContext.Provider
+                    value={{
+                      resumeData,
+                      setResumeData,
+                      handleProfilePicture: resumeHandlers.handleProfilePicture,
+                      handleChange: resumeHandlers.handleChange,
+                    }}
+                  >
+                    <div className={mode === 'resume' ? 'block' : 'hidden'}>
+                      <Preview />
+                    </div>
+                  </ResumeContext.Provider>
+                  <ResumeContext.Provider
+                    value={{
+                      resumeData: coverLetterData as ResumeData,
+                      setResumeData: setCoverLetterData as React.Dispatch<
+                        React.SetStateAction<ResumeData>
+                      >,
+                      handleProfilePicture:
+                        coverLetterHandlers.handleProfilePicture,
+                      handleChange: coverLetterHandlers.handleChange,
+                    }}
+                  >
+                    <div
+                      className={mode === 'coverLetter' ? 'block' : 'hidden'}
+                    >
+                      <CoverLetterPreview />
+                    </div>
+                  </ResumeContext.Provider>
+                </ScaledPreviewWrapper>
               </div>
             </div>
           </MainLayout>

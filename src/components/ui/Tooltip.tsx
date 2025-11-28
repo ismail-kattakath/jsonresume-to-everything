@@ -27,8 +27,30 @@
 
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
+import { useState, useEffect } from 'react'
 
 export function Tooltip() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if viewport is mobile (< 768px)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Listen for resize
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Don't render tooltip on mobile
+  if (isMobile) {
+    return null
+  }
+
   return (
     <ReactTooltip
       id="app-tooltip"
@@ -92,6 +114,22 @@ export function CustomTooltip({
   delayShow = 300,
   variant = 'default',
 }: CustomTooltipProps) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Don't render tooltip on mobile
+  if (isMobile) {
+    return null
+  }
+
   const styles = variantStyles[variant]
 
   return (

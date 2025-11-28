@@ -273,11 +273,11 @@ describe('PrintButton Component', () => {
       expect(button).toHaveClass('cursor-pointer')
     })
 
-    it('should have animate-pulse class', () => {
+    it('should not have animate-pulse class', () => {
       render(<PrintButton />)
       const button = screen.getByRole('button', { name: 'Print' })
 
-      expect(button).toHaveClass('animate-pulse')
+      expect(button).not.toHaveClass('animate-pulse')
     })
   })
 

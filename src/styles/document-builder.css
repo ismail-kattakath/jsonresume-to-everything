@@ -140,15 +140,9 @@ textarea::-moz-placeholder {
   font-weight: 700 !important;
 }
 
-/* Hide preview on mobile, show only on desktop and print */
+/* Show preview on all screen sizes (mobile scaling handled by ScaledPreviewWrapper) */
 .preview {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .preview {
-    display: block;
-  }
+  display: block;
 }
 
 @media print {

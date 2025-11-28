@@ -42,13 +42,13 @@ export default function PrintButton({
     <button
       onClick={handlePrint}
       aria-label="Print"
-      className="group hover:shadow-3xl inline-flex animate-pulse cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 text-sm font-medium text-white shadow-2xl transition-all hover:scale-[1.02] hover:animate-none hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
+      className="group hover:shadow-3xl inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-medium text-white shadow-2xl transition-all hover:scale-[1.02] hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] md:px-6"
       data-tooltip-id="app-tooltip"
       data-tooltip-content="Download as PDF or print your document (opens print dialog)"
       data-tooltip-place="bottom"
     >
       <MdPictureAsPdf className="text-lg transition-transform group-hover:scale-110" />
-      <span>Print</span>
+      <span className="hidden md:inline">Print</span>
     </button>
   )
 }

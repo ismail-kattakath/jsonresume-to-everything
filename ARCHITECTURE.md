@@ -1530,3 +1530,50 @@ npm run build && ls -lh out/_next/static/chunks/
 ---
 
 **End of Architecture Documentation**
+
+### Mobile Preview Scaling
+
+**Status:** ✅ Enabled  
+**Added:** 2025-11-28
+
+The resume and cover letter preview panes are now fully functional on mobile devices using proportional CSS transform scaling. Previously hidden on mobile viewports (< 768px), the preview now scales down automatically to fit any viewport while maintaining all aspect ratios, typography, margins, padding, and layout proportions.
+
+#### Implementation
+
+**Custom Hook: `usePreviewScaling`**  
+File: `src/hooks/usePreviewScaling.ts`
+
+Automatically calculates the appropriate scale factor for mobile devices:
+
+- Desktop (≥768px): No scaling (scale = 1)
+- Mobile (<768px): Scale = (viewport-width - 32px) / 816px
+- Responds to window resize events
+
+**Wrapper Component: `ScaledPreviewWrapper`**  
+File: `src/components/document-builder/ui/ScaledPreviewWrapper.tsx`
+
+Wraps preview components with CSS transform scaling on mobile:
+
+- Uses `transform: scale()` for GPU-accelerated scaling
+- Zero overhead on desktop (no wrapper divs)
+- Adjusts container height to match scaled content
+
+**Scale Factor Examples:**
+
+| Viewport Width | Device Example | Scale Factor |
+| -------------- | -------------- | ------------ |
+| 320px          | iPhone SE      | 0.353 (~35%) |
+| 375px          | iPhone         | 0.420 (~42%) |
+| 414px          | iPhone Plus    | 0.468 (~47%) |
+| 768px+         | Desktop/Tablet | 1.0 (100%)   |
+
+**Benefits:**
+
+- ✅ Mobile users can see accurate preview (previously hidden)
+- ✅ All proportions maintained (typography, spacing, margins)
+- ✅ GPU-accelerated performance (CSS transforms)
+- ✅ Zero desktop impact (no wrapper overhead)
+
+**Documentation:** See [docs/MOBILE_PREVIEW.md](./docs/MOBILE_PREVIEW.md) for complete details, testing, and troubleshooting.
+
+---
