@@ -61,6 +61,7 @@ import {
 import type { DropResult } from '@hello-pangea/dnd'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { tooltips } from '@/config/tooltips'
+import { OnboardingTour } from '@/components/onboarding'
 import AISortButton from '@/components/ui/AISortButton'
 import { requestAISort } from '@/lib/ai/openai-client'
 import {
@@ -809,7 +810,9 @@ function UnifiedEditor() {
 export default function ResumeEditPage() {
   return (
     <PasswordProtection>
-      <UnifiedEditor />
+      <OnboardingTour>
+        <UnifiedEditor />
+      </OnboardingTour>
     </PasswordProtection>
   )
 }
