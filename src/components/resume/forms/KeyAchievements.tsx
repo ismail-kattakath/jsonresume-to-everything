@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { GripVertical } from 'lucide-react'
+import { toast } from 'sonner'
 import { useKeyAchievementsForm } from '@/hooks/useKeyAchievementsForm'
 import {
   DnDContext,
@@ -7,6 +8,15 @@ import {
   DnDDraggable,
 } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
+import AISortButton from '@/components/ui/AISortButton'
+import { useAISettings } from '@/lib/contexts/AISettingsContext'
+import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { requestAISort } from '@/lib/ai/openai-client'
+import {
+  buildAchievementsSortPrompt,
+  parseAchievementsSortResponse,
+  applySortedAchievements,
+} from '@/lib/ai/sorting-prompts'
 
 interface KeyAchievementsProps {
   workExperienceIndex: number
@@ -15,17 +25,23 @@ interface KeyAchievementsProps {
 
 /**
  * KeyAchievements form component - displays achievements as a vertical list
- * with inline add, click-to-edit, and drag-to-reorder functionality
+ * with inline add, click-to-edit, drag-to-reorder, and AI-sort functionality
  */
 const KeyAchievements = ({
   workExperienceIndex,
   variant = 'teal',
 }: KeyAchievementsProps) => {
-  const { achievements, add, remove, handleChange, reorder } =
+  const { achievements, add, remove, handleChange, reorder, setAchievements } =
     useKeyAchievementsForm(workExperienceIndex)
   const [inputValue, setInputValue] = useState('')
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editValue, setEditValue] = useState('')
+  const [isSorting, setIsSorting] = useState(false)
+
+  // AI settings and resume context for sorting
+  const { settings, isConfigured } = useAISettings()
+  const context = useContext(ResumeContext)
+  const workExperience = context?.resumeData.workExperience[workExperienceIndex]
 
   const handleAddKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -60,11 +76,61 @@ const KeyAchievements = ({
   }
 
   const handleEditBlur = (index: number) => {
-    if (editValue.trim() && editValue !== achievements[index].text) {
+    const achievement = achievements[index]
+    if (editValue.trim() && achievement && editValue !== achievement.text) {
       handleChange(index, editValue)
     }
     setEditingIndex(null)
     setEditValue('')
+  }
+
+  const handleAISort = async () => {
+    if (
+      !isConfigured ||
+      isSorting ||
+      !workExperience ||
+      achievements.length < 2
+    )
+      return
+
+    setIsSorting(true)
+    try {
+      const prompt = buildAchievementsSortPrompt(
+        achievements,
+        workExperience.position,
+        workExperience.organization,
+        settings.jobDescription
+      )
+
+      const response = await requestAISort(
+        {
+          baseURL: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+        },
+        prompt
+      )
+
+      const sortResult = parseAchievementsSortResponse(response, achievements)
+
+      if (sortResult) {
+        const sortedAchievements = applySortedAchievements(
+          achievements,
+          sortResult
+        )
+        setAchievements(sortedAchievements)
+        toast.success('Achievements sorted by job relevance')
+      } else {
+        toast.error('Failed to parse AI response. Please try again.')
+      }
+    } catch (error) {
+      console.error('AI Achievements sort error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to sort achievements'
+      )
+    } finally {
+      setIsSorting(false)
+    }
   }
 
   const borderColor =
@@ -79,8 +145,24 @@ const KeyAchievements = ({
     reorder(result.source.index, result.destination.index)
   }
 
+  // Only show AI sort button if there are 2+ achievements
+  const showAISort = achievements.length >= 2
+
   return (
     <div className="space-y-2">
+      {/* AI Sort Button - only show when there are 2+ achievements */}
+      {showAISort && (
+        <div className="flex justify-end">
+          <AISortButton
+            isConfigured={isConfigured}
+            isLoading={isSorting}
+            onClick={handleAISort}
+            label="Sort by JD"
+            size="sm"
+          />
+        </div>
+      )}
+
       {/* Existing achievements with drag-and-drop */}
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId={`achievements-${workExperienceIndex}`}>

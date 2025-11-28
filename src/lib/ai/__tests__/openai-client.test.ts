@@ -5,6 +5,7 @@ import {
   saveCredentials,
   loadCredentials,
   clearCredentials,
+  requestAISort,
   OpenAIAPIError,
 } from '@/lib/ai/openai-client'
 import type { ResumeData, StoredCredentials } from '@/types'
@@ -530,6 +531,139 @@ describe('OpenAI Service', () => {
       })
 
       expect(result).toBe(false)
+    })
+  })
+
+  describe('requestAISort', () => {
+    const mockConfig = {
+      baseURL: 'http://localhost:1234',
+      apiKey: 'test-key',
+      model: 'test-model',
+    }
+
+    it('should send sorting prompt and return response', async () => {
+      const mockSortResponse = JSON.stringify({
+        groupOrder: ['Group A', 'Group B'],
+        skillOrder: {
+          'Group A': ['Skill 1', 'Skill 2'],
+          'Group B': ['Skill 3'],
+        },
+      })
+
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: mockSortResponse } }],
+        }),
+      })
+
+      const result = await requestAISort(mockConfig, 'Sort these skills...')
+
+      expect(result).toBe(mockSortResponse)
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:1234/v1/chat/completions',
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer test-key',
+          },
+        })
+      )
+    })
+
+    it('should use low temperature for consistent sorting', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '{"test": true}' } }],
+        }),
+      })
+
+      await requestAISort(mockConfig, 'Sort prompt')
+
+      const fetchCall = (global.fetch as jest.Mock).mock.calls[0]
+      const requestBody = JSON.parse(fetchCall[1].body)
+
+      expect(requestBody.temperature).toBe(0.3)
+    })
+
+    it('should include JSON-only system message', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '{"test": true}' } }],
+        }),
+      })
+
+      await requestAISort(mockConfig, 'Sort prompt')
+
+      const fetchCall = (global.fetch as jest.Mock).mock.calls[0]
+      const requestBody = JSON.parse(fetchCall[1].body)
+
+      expect(requestBody.messages[0].role).toBe('system')
+      expect(requestBody.messages[0].content).toContain('JSON-only')
+    })
+
+    it('should throw error on empty response', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ choices: [] }),
+      })
+
+      await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
+        'empty response'
+      )
+    })
+
+    it('should throw error on empty content', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '' } }],
+        }),
+      })
+
+      await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
+        'empty response'
+      )
+    })
+
+    it('should throw error on whitespace-only content', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '   \n\t  ' } }],
+        }),
+      })
+
+      await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
+        'empty response'
+      )
+    })
+
+    it('should throw error on API error', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => ({
+          error: { message: 'Internal server error' },
+        }),
+      })
+
+      await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
+        'Internal server error'
+      )
+    })
+
+    it('should throw error on network failure', async () => {
+      ;(global.fetch as jest.Mock).mockRejectedValueOnce(
+        new Error('Network error')
+      )
+
+      await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
+        OpenAIAPIError
+      )
     })
   })
 })
