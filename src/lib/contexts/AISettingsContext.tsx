@@ -16,8 +16,8 @@ import {
   validateJobDescription,
 } from '@/lib/ai/openai-client'
 
-const DEFAULT_API_URL = 'http://localhost:1234'
-const DEFAULT_API_KEY = 'DUMMYTOKEN'
+const DEFAULT_API_URL = 'https://api.openai.com/v1'
+const DEFAULT_API_KEY = ''
 const DEFAULT_MODEL = 'gpt-4o-mini'
 const DEFAULT_JOB_DESCRIPTION = `At Supademo, we're reimagining how people experience products. Our AI-powered platform makes it effortless to create conversion-focused interactive demos at scale, with the platform already trusted by 100,000 professionals at top companies for sales, onboarding, and marketing. Since our 2023 launch, we've become G2's #5 fastest-growing software product (2025), hit profitability with 7-figure ARR, and we're just getting started.
 

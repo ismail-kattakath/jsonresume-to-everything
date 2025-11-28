@@ -56,12 +56,14 @@ The AI generation feature is available in multiple locations:
 When clicked, opens a modal with:
 
 1. **API URL** - Enter your OpenAI-compatible endpoint:
-   - OpenAI: `https://api.openai.com` (default)
+   - OpenAI: `https://api.openai.com/v1` (default)
    - Azure OpenAI: `https://your-resource.openai.azure.com`
-   - Local LM Studio: `http://localhost:1234` or custom address
+   - OpenRouter: `https://openrouter.ai/api/v1`
+   - Anthropic: `https://api.anthropic.com/v1`
+   - Local LM Studio: `http://localhost:1234/v1` or custom address
 2. **API Key** - Password field with show/hide toggle (required)
-   - Get from: https://platform.openai.com/api-keys (for OpenAI)
-   - Or your local server's configuration
+   - **Guide**: See [How to Get an API Key](#how-to-get-an-api-key) below for step-by-step instructions
+   - Or use your local server's configuration
 3. **Remember Credentials** - Checkbox to save credentials locally
 4. **Context Input** - Large textarea for providing context:
    - **Cover Letter**: Paste job description
@@ -256,9 +258,44 @@ data: {"id":"chatcmpl-123","choices":[{"index":0,"delta":{"content":" a"},"finis
 data: [DONE]
 ```
 
+## How to Get an API Key
+
+Need an API key? Here's a comprehensive guide for various providers:
+
+**Quick Reference Guide**: [Merge.dev's Guide to Getting LLM API Keys](https://www.merge.dev/blog/llm-api-key) - Covers OpenAI, Anthropic, Google, Cohere, and more with step-by-step instructions.
+
+### Provider-Specific Instructions
+
+| Provider         | Get API Key                                                          | Base URL                                           | Notes                              |
+| ---------------- | -------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------- |
+| **OpenAI**       | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | `https://api.openai.com/v1`                        | Most popular, pay-per-use          |
+| **OpenRouter**   | [openrouter.ai/keys](https://openrouter.ai/keys)                     | `https://openrouter.ai/api/v1`                     | Access 100+ models, single API     |
+| **Anthropic**    | [console.anthropic.com](https://console.anthropic.com/settings/keys) | `https://api.anthropic.com/v1`                     | Claude models                      |
+| **Google AI**    | [aistudio.google.com](https://aistudio.google.com/apikey)            | `https://generativelanguage.googleapis.com/v1beta` | Gemini models, free tier available |
+| **Groq**         | [console.groq.com/keys](https://console.groq.com/keys)               | `https://api.groq.com/openai/v1`                   | Very fast inference, free tier     |
+| **Together AI**  | [api.together.xyz](https://api.together.xyz/settings/api-keys)       | `https://api.together.xyz/v1`                      | Open source models                 |
+| **Fireworks AI** | [fireworks.ai/api-keys](https://fireworks.ai/api-keys)               | `https://api.fireworks.ai/inference/v1`            | Fast open source models            |
+
+### Recommended for Beginners
+
+**OpenRouter** is recommended for beginners because:
+
+- ✅ Single API key for 100+ models (OpenAI, Anthropic, Google, Meta, etc.)
+- ✅ Pay-per-use with no monthly minimums
+- ✅ Free trial credits available
+- ✅ Easy to compare different models
+
+**Steps:**
+
+1. Visit [openrouter.ai](https://openrouter.ai)
+2. Sign up with Google, GitHub, or email
+3. Go to [Keys](https://openrouter.ai/keys) → Create Key
+4. Copy the key (starts with `sk-or-...`)
+5. Use URL: `https://openrouter.ai/api/v1`
+
 ## Setup & Configuration
 
-### Option 1: OpenAI API (Recommended for Most Users)
+### Option 1: OpenAI API (Most Popular)
 
 1. **Get OpenAI API Key**
    - Visit https://platform.openai.com/api-keys
@@ -267,9 +304,9 @@ data: [DONE]
    - Copy the key (starts with `sk-...`)
 
 2. **Configure in Application**
-   - API URL: `https://api.openai.com`
+   - API URL: `https://api.openai.com/v1`
    - API Key: Your OpenAI API key (e.g., `sk-proj-...`)
-   - Model: `gpt-4` or `gpt-3.5-turbo` (automatically configured)
+   - Model: `gpt-4o-mini` (automatically configured)
 
 3. **Costs**
    - Typical cover letter: ~800 tokens (~$0.01-0.03 per generation)
@@ -309,8 +346,8 @@ data: [DONE]
    ```
 
 4. **Configure in Application**
-   - API URL: `http://localhost:1234` or `http://10.237.207.139:1234`
-   - API Key: Your server's API key (or `sk-local` if none required)
+   - API URL: `http://localhost:1234/v1` or your local IP address
+   - API Key: Your server's API key (or `lm-studio` if none required)
    - Model: `openai/gpt-oss-20b` or your model ID
 
 **Local Server Benefits:**
@@ -330,8 +367,8 @@ data: [DONE]
 2. Enter password (if protected)
 3. Click "Generate with AI" button at bottom of content textarea
 4. First time:
-   - Enter API URL (OpenAI: `https://api.openai.com`, Local: `http://localhost:1234`)
-   - Enter API Key (required)
+   - Enter API URL (default: `https://api.openai.com/v1`)
+   - Enter API Key (required - see [How to Get an API Key](#how-to-get-an-api-key))
    - Check "Remember credentials" to save API credentials for next time
    - Paste job description (automatically saved)
 5. Click "Generate Cover Letter"

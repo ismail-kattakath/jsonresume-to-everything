@@ -22,7 +22,7 @@ const AISettings: React.FC = () => {
           name="apiUrl"
           value={settings.apiUrl}
           onChange={(e) => updateSettings({ apiUrl: e.target.value })}
-          placeholder="https://api.openai.com"
+          placeholder="https://api.openai.com/v1"
           variant="blue"
         />
         <FormInput
@@ -31,7 +31,7 @@ const AISettings: React.FC = () => {
           type="password"
           value={settings.apiKey}
           onChange={(e) => updateSettings({ apiKey: e.target.value })}
-          placeholder="sk-proj-..."
+          placeholder="sk-..."
           variant="blue"
         />
       </div>
