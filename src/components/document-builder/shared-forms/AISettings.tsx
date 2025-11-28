@@ -33,6 +33,17 @@ const AISettings: React.FC = () => {
   const [loadingModels, setLoadingModels] = useState(false)
   const [modelsError, setModelsError] = useState<string | null>(null)
 
+  // Sync provider selection when settings.apiUrl changes (e.g., loaded from localStorage)
+  useEffect(() => {
+    const provider = getProviderByURL(settings.apiUrl)
+    const detectedProvider = provider?.name || 'Custom'
+
+    if (detectedProvider !== selectedProvider) {
+      setSelectedProvider(detectedProvider)
+      setCustomURL(provider ? '' : settings.apiUrl)
+    }
+  }, [settings.apiUrl]) // Only depend on apiUrl, not selectedProvider to avoid loops
+
   // Handle provider change
   const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const providerName = e.target.value
@@ -67,36 +78,34 @@ const AISettings: React.FC = () => {
   // Fetch available models when API URL or API Key changes
   useEffect(() => {
     const fetchModels = async () => {
-      console.log('[AISettings] fetchModels triggered:', {
-        apiUrl: settings.apiUrl,
-        hasApiKey: !!settings.apiKey,
-        apiKeyPrefix: settings.apiKey.substring(0, 15),
-      })
+      // Reset state first
+      setModelsError(null)
 
       // Only fetch if we have both URL and key
       if (!settings.apiUrl.trim() || !settings.apiKey.trim()) {
-        console.log('[AISettings] Skipping fetch - missing URL or key')
         setAvailableModels([])
         setLoadingModels(false)
-        setModelsError(null)
         return
       }
 
       // Validate URL format before attempting fetch
       try {
-        new URL(settings.apiUrl) // Throws if invalid URL
+        new URL(settings.apiUrl)
       } catch {
-        console.log('[AISettings] Invalid URL format')
+        // Invalid URL - don't show error, user might be typing
         setAvailableModels([])
         setLoadingModels(false)
-        setModelsError(null) // Don't show error for invalid URL - user might be typing
         return
       }
 
-      // For custom providers, we'll try anyway
-      console.log('[AISettings] Starting model fetch...')
+      // Detect provider mismatch - skip fetch until sync completes
+      const detectedProvider = getProviderByURL(settings.apiUrl)
+      if (detectedProvider && selectedProvider !== detectedProvider.name) {
+        // The sync useEffect will fix this, so skip this fetch
+        return
+      }
+
       setLoadingModels(true)
-      setModelsError(null)
 
       try {
         const models = await fetchAvailableModels({
@@ -104,21 +113,17 @@ const AISettings: React.FC = () => {
           apiKey: settings.apiKey,
         })
 
-        console.log('[AISettings] Fetch complete:', {
-          modelCount: models.length,
-          sampleModels: models.slice(0, 5),
-        })
-
         if (models.length > 0) {
           setAvailableModels(models)
           setModelsError(null)
         } else {
+          setAvailableModels([])
           setModelsError(
             'No models found or API does not support model listing'
           )
         }
       } catch (error) {
-        console.error('[AISettings] Failed to fetch models:', error)
+        console.error('[AISettings] Model fetch error:', error)
         setModelsError('Failed to fetch models from API')
         setAvailableModels([])
       } finally {
@@ -126,10 +131,10 @@ const AISettings: React.FC = () => {
       }
     }
 
-    // Debounce the fetch
+    // Debounce to avoid excessive API calls
     const timeoutId = setTimeout(fetchModels, 500)
     return () => clearTimeout(timeoutId)
-  }, [settings.apiUrl, settings.apiKey])
+  }, [settings.apiUrl, settings.apiKey, selectedProvider])
 
   // Auto-select first model when available models change
   useEffect(() => {

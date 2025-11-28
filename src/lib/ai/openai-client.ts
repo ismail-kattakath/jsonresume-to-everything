@@ -457,14 +457,6 @@ export async function fetchAvailableModels(
     // All providers: baseURL already includes /v1 or /api/v1, just append /models
     const endpoint = `${config.baseURL}/models`
 
-    console.log('[fetchAvailableModels] Debug:', {
-      baseURL: config.baseURL,
-      isOpenRouter,
-      endpoint,
-      hasApiKey: !!config.apiKey,
-      apiKeyPrefix: config.apiKey.substring(0, 10),
-    })
-
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
@@ -485,27 +477,14 @@ export async function fetchAvailableModels(
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error(
-        `Failed to fetch models from ${endpoint}: ${response.status}`,
-        errorText
-      )
       return []
     }
 
     const data = await response.json()
-    console.log('[fetchAvailableModels] Response data:', {
-      hasData: !!data.data,
-      isArray: Array.isArray(data.data),
-      sampleModel: data.data?.[0],
-      totalModels: data.data?.length,
-    })
 
     // OpenAI/most providers format: { data: [{ id: "model-name" }, ...] }
     if (data.data && Array.isArray(data.data)) {
-      const models = data.data.map((model: { id: string }) => model.id).sort()
-      console.log('[fetchAvailableModels] Returning', models.length, 'models')
-      return models
+      return data.data.map((model: { id: string }) => model.id).sort()
     }
 
     // Fallback for other formats
