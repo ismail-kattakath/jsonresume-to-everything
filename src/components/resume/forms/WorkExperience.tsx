@@ -33,6 +33,7 @@ const WorkExperience = () => {
       startYear: '',
       endYear: '',
       technologies: [],
+      showTechnologies: true, // Default to visible
     },
     { urlFields: ['url'] }
   )
@@ -40,34 +41,22 @@ const WorkExperience = () => {
   const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
     useAccordion()
 
-  // Track visibility of Technologies section for each work experience
-  const [technologiesVisible, setTechnologiesVisible] = useState<boolean[]>(
-    data.map(() => true)
-  )
-
   const toggleTechnologiesVisibility = (index: number) => {
-    setTechnologiesVisible((prev) => {
-      const newVisible = [...prev]
-      newVisible[index] = !newVisible[index]
-      return newVisible
-    })
+    const newWorkExperience = [...resumeData.workExperience]
+    newWorkExperience[index] = {
+      ...newWorkExperience[index],
+      showTechnologies: !newWorkExperience[index].showTechnologies,
+    }
+    setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
 
   const handleAdd = () => {
     add()
     expandNew(data.length)
-    // Add visibility state for new entry (default: visible)
-    setTechnologiesVisible((prev) => [...prev, true])
   }
 
   const handleRemove = (index: number) => {
     remove(index)
-    // Remove corresponding visibility state
-    setTechnologiesVisible((prev) => {
-      const newVisible = [...prev]
-      newVisible.splice(index, 1)
-      return newVisible
-    })
   }
 
   const onDragEnd = (result: DropResult) => {
@@ -80,14 +69,6 @@ const WorkExperience = () => {
     const [removed] = newWorkExperience.splice(source.index, 1)
     newWorkExperience.splice(destination.index, 0, removed)
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
-
-    // Reorder visibility state to match
-    setTechnologiesVisible((prev) => {
-      const newVisible = [...prev]
-      const [removedVisible] = newVisible.splice(source.index, 1)
-      newVisible.splice(destination.index, 0, removedVisible)
-      return newVisible
-    })
 
     updateAfterReorder(source.index, destination.index)
   }
@@ -248,19 +229,19 @@ const WorkExperience = () => {
                             onClick={() => toggleTechnologiesVisibility(index)}
                             className="rounded p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white/60"
                             title={
-                              technologiesVisible[index]
-                                ? 'Hide technologies'
-                                : 'Show technologies'
+                              workExperience.showTechnologies !== false
+                                ? 'Hide technologies in preview'
+                                : 'Show technologies in preview'
                             }
                           >
-                            {technologiesVisible[index] ? (
+                            {workExperience.showTechnologies !== false ? (
                               <Eye className="h-4 w-4" />
                             ) : (
                               <EyeOff className="h-4 w-4" />
                             )}
                           </button>
                         </div>
-                        {technologiesVisible[index] && (
+                        {workExperience.showTechnologies !== false && (
                           <SortableTagInput
                             tags={workExperience.technologies || []}
                             onAdd={(tech) => handleAddTechnology(index, tech)}

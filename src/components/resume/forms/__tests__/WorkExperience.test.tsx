@@ -220,6 +220,7 @@ describe('WorkExperience Component', () => {
               startYear: '',
               endYear: '',
               technologies: [],
+              showTechnologies: true,
             },
           ],
         })

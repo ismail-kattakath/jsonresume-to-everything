@@ -22,6 +22,7 @@ export interface WorkExperience {
   startYear: string
   endYear: string
   technologies: string[]
+  showTechnologies?: boolean // Optional: controls visibility of technologies in preview
 }
 
 export interface Education {

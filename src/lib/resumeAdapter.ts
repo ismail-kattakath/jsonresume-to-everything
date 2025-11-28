@@ -40,6 +40,7 @@ function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
     startYear: job.startDate || '',
     endYear: job.endDate || 'Present',
     technologies: job.keywords || [],
+    showTechnologies: true, // Default to visible for imported data
   }))
 
   // Convert education back
