@@ -625,7 +625,10 @@ describe('PasswordProtection Component', () => {
       render(<PasswordProtection>{mockChildren}</PasswordProtection>)
 
       const logoutButton = screen.getByRole('button', { name: /logout/i })
-      expect(logoutButton).toHaveAttribute('title', 'Logout from edit mode')
+      expect(logoutButton).toHaveAttribute(
+        'data-tooltip-content',
+        'End your session and return to the login screen'
+      )
     })
   })
 

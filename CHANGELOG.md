@@ -9,12 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **UX Enhancements**
+  - Interactive tooltip system using react-tooltip (~20KB)
+    - Centralized tooltip content in `src/config/tooltips.ts`
+    - Global tooltip component with consistent dark theme styling
+    - Tooltips on all major UI elements (sections, buttons, actions, drag handles)
+    - Touch-friendly for mobile devices (tap to show)
+    - Zero dependencies, built-in accessibility (ARIA attributes)
+  - Interactive onboarding tour using onborda
+    - 12-step guided tour for first-time users
+    - Spotlight effect highlighting key features
+    - Progress indicator with step counter
+    - Powered by Framer Motion (already in project)
+    - Completion state persisted in localStorage with version tracking
+    - Custom-styled cards with icons and descriptions
+    - Covers: editor overview, dual mode, preview, import/export, AI settings, forms, skills, print, drag-and-drop, auto-save
+  - Comprehensive UX documentation:
+    - docs/TOOLTIP_SYSTEM.md - Tooltip integration guide
+    - docs/ONBOARDING_GUIDE.md - Onboarding tour customization guide
+    - docs/UX_ENHANCEMENTS_PLAN.md - Complete implementation plan with technology decisions
+
 - Comprehensive documentation system:
   - ARCHITECTURE.md - Deep technical reference
   - QUICKSTART.md - User setup guide
   - CLAUDE_CODE_GUIDE.md - Development guide for AI assistants
   - CONTRIBUTING.md - Contribution guidelines
   - CHANGELOG.md - Version history tracking
+
+### Changed
+
+- Updated test infrastructure to mock onborda and react-tooltip libraries (ESM compatibility)
+- Modified PasswordProtection logout button to use tooltip system instead of title attribute
 
 ## [1.0.0] - 2025-01-25
 

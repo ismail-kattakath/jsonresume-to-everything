@@ -207,6 +207,11 @@ echo "NEXT_PUBLIC_EDIT_PASSWORD_HASH=<your-hash>" > .env.local
 - **Password protected** for security
 - **Print ready** - triggers browser print dialog
 - **Cover Letter Mode** - Switch between resume and cover letter editing with a tab interface
+- **Interactive tooltips** - Contextual help on hover for all UI elements (react-tooltip)
+- **Onboarding tour** - 12-step guided walkthrough for first-time users (onborda)
+  - Spotlight effect highlighting key features
+  - Progress indicator showing tour completion
+  - Covers all major features: dual mode, AI settings, import/export, forms, skills, and more
 
 #### 🔗 Calendar Booking (`/book`)
 

@@ -48,6 +48,9 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
         onClick={() => setIsModalOpen(true)}
         aria-label="Check ATS Score"
         className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:from-amber-600 hover:to-orange-600 hover:shadow-xl focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
+        data-tooltip-id="app-tooltip"
+        data-tooltip-content="Analyze your resume for Applicant Tracking System compatibility"
+        data-tooltip-place="bottom"
       >
         <TbFileSearch className="text-lg transition-transform group-hover:scale-110" />
         <span>ATS Score</span>

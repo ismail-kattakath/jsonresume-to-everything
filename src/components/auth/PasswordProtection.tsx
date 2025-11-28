@@ -125,7 +125,9 @@ export default function PasswordProtection({
             <button
               onClick={handleLogout}
               className="cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-sm text-white shadow-lg transition-all hover:bg-red-700"
-              title="Logout from edit mode"
+              data-tooltip-id="app-tooltip"
+              data-tooltip-content="End your session and return to the login screen"
+              data-tooltip-place="bottom"
             >
               Logout
             </button>
