@@ -27,6 +27,7 @@ export default function ScaledPreviewWrapper({
   return (
     <div className="w-full overflow-x-hidden bg-white">
       <div
+        className="print:!w-full print:!transform-none"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: 'top left',
