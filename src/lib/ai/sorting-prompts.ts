@@ -26,10 +26,20 @@ export function buildSkillsSortPrompt(
   skills: SkillGroup[],
   jobDescription: string
 ): string {
+  console.log(
+    '[buildSkillsSortPrompt] Input skills:',
+    JSON.stringify(skills, null, 2)
+  )
+
   const skillsData = skills.map((group) => ({
     title: group.title,
-    skills: group.skills.map((s) => s.text),
+    skills: (group.skills || []).map((s) => s.text),
   }))
+
+  console.log(
+    '[buildSkillsSortPrompt] Processed skillsData:',
+    JSON.stringify(skillsData, null, 2)
+  )
 
   return `You are an expert tech recruiter who optimizes resume skills sections for maximum ATS and recruiter relevance.
 
@@ -78,7 +88,21 @@ export function buildAchievementsSortPrompt(
   organization: string,
   jobDescription: string
 ): string {
-  const achievementTexts = achievements.map((a) => a.text)
+  console.log('[buildAchievementsSortPrompt] Input achievements:', achievements)
+
+  const achievementTexts = (achievements || [])
+    .map((a) => {
+      // Handle both nested and flat structures
+      const text =
+        typeof a?.text === 'string' ? a.text : (a?.text as any)?.text || ''
+      return text
+    })
+    .filter(Boolean)
+
+  console.log(
+    '[buildAchievementsSortPrompt] Extracted achievement texts:',
+    achievementTexts
+  )
 
   return `You are an expert tech recruiter who optimizes resume achievements for maximum ATS and recruiter relevance.
 
@@ -128,45 +152,83 @@ export function parseSkillsSortResponse(
   originalSkills: SkillGroup[]
 ): SkillsSortResult | null {
   try {
+    console.log(
+      '[parseSkillsSortResponse] Raw response:',
+      response.substring(0, 200) + '...'
+    )
+
     // Clean the response - remove markdown code blocks if present
     let cleaned = response.trim()
     if (cleaned.startsWith('```json')) {
       cleaned = cleaned.slice(7)
+      console.log('[parseSkillsSortResponse] Removed ```json prefix')
     } else if (cleaned.startsWith('```')) {
       cleaned = cleaned.slice(3)
+      console.log('[parseSkillsSortResponse] Removed ``` prefix')
     }
     if (cleaned.endsWith('```')) {
       cleaned = cleaned.slice(0, -3)
+      console.log('[parseSkillsSortResponse] Removed ``` suffix')
     }
     cleaned = cleaned.trim()
 
+    console.log(
+      '[parseSkillsSortResponse] Cleaned response:',
+      cleaned.substring(0, 200) + '...'
+    )
     const parsed = JSON.parse(cleaned) as SkillsSortResult
+    console.log('[parseSkillsSortResponse] Successfully parsed JSON')
 
     // Validate structure
     if (!parsed.groupOrder || !Array.isArray(parsed.groupOrder)) {
-      console.error('Invalid groupOrder in AI response')
+      console.error(
+        '[parseSkillsSortResponse] Invalid groupOrder in AI response',
+        parsed
+      )
       return null
     }
+    console.log('[parseSkillsSortResponse] groupOrder is valid')
+
     if (!parsed.skillOrder || typeof parsed.skillOrder !== 'object') {
-      console.error('Invalid skillOrder in AI response')
+      console.error(
+        '[parseSkillsSortResponse] Invalid skillOrder in AI response',
+        parsed
+      )
       return null
     }
+    console.log('[parseSkillsSortResponse] skillOrder is valid')
 
     // Validate all groups are present
     const originalGroupTitles = new Set(originalSkills.map((g) => g.title))
     const responseGroupTitles = new Set(parsed.groupOrder)
 
+    console.log('[parseSkillsSortResponse] Group validation:', {
+      originalCount: originalGroupTitles.size,
+      responseCount: responseGroupTitles.size,
+      original: Array.from(originalGroupTitles),
+      response: Array.from(responseGroupTitles),
+    })
+
     if (originalGroupTitles.size !== responseGroupTitles.size) {
-      console.error('Group count mismatch in AI response')
+      console.error(
+        '[parseSkillsSortResponse] Group count mismatch in AI response',
+        {
+          original: Array.from(originalGroupTitles),
+          response: Array.from(responseGroupTitles),
+        }
+      )
       return null
     }
 
     for (const title of originalGroupTitles) {
       if (!responseGroupTitles.has(title)) {
-        console.error(`Missing group "${title}" in AI response`)
+        console.error(
+          `[parseSkillsSortResponse] Missing group "${title}" in AI response`
+        )
         return null
       }
     }
+    console.log('[parseSkillsSortResponse] All groups validated')
 
     // Validate all skills are present within each group
     for (const group of originalSkills) {
@@ -218,9 +280,16 @@ export function parseSkillsSortResponse(
       }
     }
 
+    console.log(
+      '[parseSkillsSortResponse] ✅ All validations passed, returning result'
+    )
     return parsed
   } catch (error) {
-    console.error('Failed to parse AI skills sort response:', error)
+    console.error(
+      '[parseSkillsSortResponse] ❌ Failed to parse AI skills sort response:',
+      error
+    )
+    console.error('[parseSkillsSortResponse] Response was:', response)
     return null
   }
 }
@@ -234,45 +303,112 @@ export function parseAchievementsSortResponse(
   originalAchievements: Achievement[]
 ): AchievementsSortResult | null {
   try {
+    console.log(
+      '[parseAchievementsSortResponse] Raw response (full):',
+      response
+    )
+    console.log(
+      '[parseAchievementsSortResponse] Raw response (first 200):',
+      response.substring(0, 200) + '...'
+    )
+
     // Clean the response - remove markdown code blocks if present
     let cleaned = response.trim()
     if (cleaned.startsWith('```json')) {
       cleaned = cleaned.slice(7)
+      console.log('[parseAchievementsSortResponse] Removed ```json prefix')
     } else if (cleaned.startsWith('```')) {
       cleaned = cleaned.slice(3)
+      console.log('[parseAchievementsSortResponse] Removed ``` prefix')
     }
     if (cleaned.endsWith('```')) {
       cleaned = cleaned.slice(0, -3)
+      console.log('[parseAchievementsSortResponse] Removed ``` suffix')
     }
     cleaned = cleaned.trim()
 
+    console.log(
+      '[parseAchievementsSortResponse] Cleaned response (full):',
+      cleaned
+    )
+    console.log(
+      '[parseAchievementsSortResponse] Cleaned response (first 200):',
+      cleaned.substring(0, 200) + '...'
+    )
     const parsed = JSON.parse(cleaned) as AchievementsSortResult
+    console.log('[parseAchievementsSortResponse] Successfully parsed JSON')
+    console.log('[parseAchievementsSortResponse] Parsed object:', parsed)
+    console.log(
+      '[parseAchievementsSortResponse] parsed.achievementOrder:',
+      parsed.achievementOrder
+    )
 
     // Validate structure
     if (!parsed.achievementOrder || !Array.isArray(parsed.achievementOrder)) {
-      console.error('Invalid achievementOrder in AI response')
+      console.error(
+        '[parseAchievementsSortResponse] Invalid achievementOrder in AI response',
+        parsed
+      )
       return null
     }
+    console.log(
+      '[parseAchievementsSortResponse] achievementOrder is valid, length:',
+      parsed.achievementOrder.length
+    )
 
     // Validate all achievements are present
-    const originalTexts = new Set(originalAchievements.map((a) => a.text))
+    // Handle both nested and flat structures like in buildAchievementsSortPrompt
+    const originalTexts = new Set(
+      originalAchievements
+        .map((a) => {
+          const text =
+            typeof a?.text === 'string' ? a.text : (a?.text as any)?.text || ''
+          return text
+        })
+        .filter(Boolean)
+    )
     const responseTexts = new Set(parsed.achievementOrder)
 
+    console.log('[parseAchievementsSortResponse] Achievement validation:')
+    console.log('  Original count:', originalTexts.size)
+    console.log('  Response count:', responseTexts.size)
+    console.log('  Original achievements:', Array.from(originalTexts))
+    console.log('  Response achievements:', Array.from(responseTexts))
+
     if (originalTexts.size !== responseTexts.size) {
-      console.error('Achievement count mismatch in AI response')
+      console.error(
+        '[parseAchievementsSortResponse] ❌ Achievement count mismatch!'
+      )
+      console.error('  Expected:', originalTexts.size, 'achievements')
+      console.error('  Received:', responseTexts.size, 'achievements')
+      console.error('  Original:', Array.from(originalTexts))
+      console.error('  Response:', Array.from(responseTexts))
       return null
     }
 
     for (const text of originalTexts) {
       if (!responseTexts.has(text)) {
-        console.error(`Missing achievement in AI response: "${text}"`)
+        console.error(
+          `[parseAchievementsSortResponse] Missing achievement in AI response: "${text}"`,
+          {
+            original: Array.from(originalTexts),
+            response: Array.from(responseTexts),
+          }
+        )
         return null
       }
     }
 
+    console.log(
+      '[parseAchievementsSortResponse] ✅ All validations passed, returning result'
+    )
     return parsed
   } catch (error) {
-    console.error('Failed to parse AI achievements sort response:', error)
+    console.error(
+      '[parseAchievementsSortResponse] ❌ Failed to parse AI achievements sort response:',
+      error
+    )
+    console.error('[parseAchievementsSortResponse] Response was:', response)
     return null
   }
 }
@@ -321,7 +457,14 @@ export function applySortedAchievements(
   sortResult: AchievementsSortResult
 ): Achievement[] {
   // Create a map of original achievements for quick lookup
-  const achievementMap = new Map(originalAchievements.map((a) => [a.text, a]))
+  // Handle both nested and flat structures
+  const achievementMap = new Map(
+    originalAchievements.map((a) => {
+      const text =
+        typeof a?.text === 'string' ? a.text : (a?.text as any)?.text || ''
+      return [text, a]
+    })
+  )
 
   // Build sorted result
   return sortResult.achievementOrder.map((text) => {
