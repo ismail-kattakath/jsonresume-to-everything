@@ -26,7 +26,7 @@ export default function ScaledPreviewWrapper({
   // On mobile (<768px), apply transform scaling
   return (
     <div
-      className="flex w-full justify-center overflow-x-hidden"
+      className="w-full overflow-x-hidden"
       style={{
         // Container height needs to match scaled content height
         // Base height ~11in (1056px) × scale factor
