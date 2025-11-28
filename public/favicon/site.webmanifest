@@ -1,21 +1,62 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Ismail Kattakath - Resume Builder",
+  "short_name": "Resume Builder",
+  "description": "Professional resume builder and portfolio management tool",
+  "start_url": "/resume/builder",
+  "scope": "/resume/builder",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "categories": ["productivity", "utilities", "business"],
+  "shortcuts": [
+    {
+      "name": "Resume Builder",
+      "short_name": "Builder",
+      "description": "Edit your resume",
+      "url": "/resume/builder",
+      "icons": [
+        {
+          "src": "/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Cover Letter",
+      "short_name": "Cover Letter",
+      "description": "Create cover letter",
+      "url": "/cover-letter/edit",
+      "icons": [
+        {
+          "src": "/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
 }

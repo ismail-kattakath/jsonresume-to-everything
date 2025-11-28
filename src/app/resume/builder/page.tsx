@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
+import { registerServiceWorker } from '@/lib/pwa/registerServiceWorker'
 
 // Import components
 import AdditionalSections from '@/components/resume/forms/AdditionalSections'
@@ -538,6 +539,11 @@ function UnifiedEditor() {
         console.error('Error loading saved cover letter data:', error)
       }
     }
+  }, [])
+
+  // Register service worker for PWA functionality
+  useEffect(() => {
+    registerServiceWorker()
   }, [])
 
   return (

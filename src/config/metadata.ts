@@ -130,6 +130,16 @@ export function generateSiteMetadata(): Metadata {
         'max-snippet': -1,
       },
     },
+    // PWA Configuration
+    manifest: '/favicon/site.webmanifest',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default',
+      title: 'Resume Builder',
+    },
+    formatDetection: {
+      telephone: false,
+    },
     // Google Search Console verification handled via DNS (Domain name provider method)
     // No meta tag needed
   }
