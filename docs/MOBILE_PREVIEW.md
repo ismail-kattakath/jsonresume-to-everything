@@ -44,9 +44,8 @@ export function usePreviewScaling() {
       const viewportWidth = window.innerWidth
 
       if (viewportWidth < 768) {
-        // Mobile: Calculate scale factor with padding (32px)
-        const availableWidth = viewportWidth - 32
-        const scaleFactor = Math.min(availableWidth / PREVIEW_BASE_WIDTH, 1)
+        // Mobile: Use full viewport width (no padding)
+        const scaleFactor = Math.min(viewportWidth / PREVIEW_BASE_WIDTH, 1)
         setScale(scaleFactor)
         setIsScaling(true)
       } else {
@@ -213,7 +212,6 @@ File: `src/app/resume/builder/page.tsx`
 
 ```tsx
 import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
-
 ;<div id="preview-pane" className="flex flex-col md:w-[8.5in]">
   <ScaledPreviewWrapper>
     <Preview />
