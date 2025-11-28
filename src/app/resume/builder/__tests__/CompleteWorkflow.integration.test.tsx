@@ -90,14 +90,14 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
         await waitFor(() => {
           const companyInputs = container.querySelectorAll(
-            'input[name="company"]'
+            'input[name="organization"]'
           )
           const lastCompanyInput = companyInputs[
             companyInputs.length - 1
           ] as HTMLInputElement
 
           fireEvent.change(lastCompanyInput, {
-            target: { name: 'company', value: 'Design Studio' },
+            target: { name: 'organization', value: 'Design Studio' },
           })
 
           const positionInputs = container.querySelectorAll(
@@ -461,14 +461,14 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
         await waitFor(() => {
           const companyInputs = container.querySelectorAll(
-            'input[name="company"]'
+            'input[name="organization"]'
           )
           const lastCompanyInput = companyInputs[
             companyInputs.length - 1
           ] as HTMLInputElement
 
           fireEvent.change(lastCompanyInput, {
-            target: { name: 'company', value: 'Tech Solutions Inc' },
+            target: { name: 'organization', value: 'Tech Solutions Inc' },
           })
 
           const positionInputs = container.querySelectorAll(
@@ -682,13 +682,13 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
         await waitFor(() => {
           const companyInputs = container.querySelectorAll(
-            'input[name="company"]'
+            'input[name="organization"]'
           )
           const lastCompanyInput = companyInputs[
             companyInputs.length - 1
           ] as HTMLInputElement
           fireEvent.change(lastCompanyInput, {
-            target: { name: 'company', value: 'Company A' },
+            target: { name: 'organization', value: 'Company A' },
           })
         })
       }
@@ -705,13 +705,13 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
         await waitFor(() => {
           const companyInputs = container.querySelectorAll(
-            'input[name="company"]'
+            'input[name="organization"]'
           )
           const lastCompanyInput = companyInputs[
             companyInputs.length - 1
           ] as HTMLInputElement
           fireEvent.change(lastCompanyInput, {
-            target: { name: 'company', value: 'Company B' },
+            target: { name: 'organization', value: 'Company B' },
           })
         })
       }

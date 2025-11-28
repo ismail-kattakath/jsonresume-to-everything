@@ -30,7 +30,7 @@ function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
 
   // Convert work experience back
   const workExperience = (jsonResume.work || []).map((job) => ({
-    company: job.name || '',
+    organization: job.name || '',
     url: stripProtocol(job.url || ''),
     position: job.position || '',
     description: job.summary || '',

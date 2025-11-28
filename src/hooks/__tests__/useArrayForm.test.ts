@@ -13,7 +13,7 @@ const mockResumeData: ResumeData = {
   profiles: [],
   workExperience: [
     {
-      company: 'Test Company',
+      organization: 'Test Company',
       url: 'https://example.com',
       position: 'Developer',
       description: 'Test',
@@ -62,7 +62,7 @@ describe('useArrayForm', () => {
           useArrayForm(
             'workExperience',
             {
-              company: '',
+              organization: '',
               url: '',
               position: '',
               description: '',
@@ -96,7 +96,7 @@ describe('useArrayForm', () => {
       expect(mockSetResumeData).toHaveBeenCalled()
 
       const newData = mockSetResumeData.mock.calls[0][0]
-      expect(newData.workExperience[0].company).toBe('TEST COMPANY')
+      expect(newData.workExperience[0].organization).toBe('TEST COMPANY')
     })
 
     it('chains transformValue with URL sanitization', () => {
@@ -110,7 +110,7 @@ describe('useArrayForm', () => {
           useArrayForm(
             'workExperience',
             {
-              company: '',
+              organization: '',
               url: '',
               position: '',
               description: '',
@@ -153,7 +153,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -174,14 +174,14 @@ describe('useArrayForm', () => {
       expect(mockSetResumeData).toHaveBeenCalledTimes(1)
       const newData = mockSetResumeData.mock.calls[0][0]
 
-      expect(newData.workExperience[0].company).toBe('New Company Name')
+      expect(newData.workExperience[0].organization).toBe('New Company Name')
     })
 
     it('preserves other fields when using updateField', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -203,7 +203,7 @@ describe('useArrayForm', () => {
 
       expect(newData.workExperience[0].position).toBe('Senior Developer')
       // Other fields should remain unchanged
-      expect(newData.workExperience[0].company).toBe('Test Company')
+      expect(newData.workExperience[0].organization).toBe('Test Company')
       expect(newData.workExperience[0].startYear).toBe('2020')
     })
 
@@ -211,7 +211,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -243,7 +243,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -264,7 +264,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -291,7 +291,7 @@ describe('useArrayForm', () => {
         expect.objectContaining({
           workExperience: expect.arrayContaining([
             expect.objectContaining({
-              company: 'Updated Company',
+              organization: 'Updated Company',
             }),
           ]),
         })
@@ -302,7 +302,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -337,7 +337,7 @@ describe('useArrayForm', () => {
       const { result } = renderHook(
         () =>
           useArrayForm('workExperience', {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',

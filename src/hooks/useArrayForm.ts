@@ -23,7 +23,7 @@ interface UseArrayFormOptions<T> {
  *
  * @example
  * const { data, handleChange, add, remove } = useArrayForm('workExperience', {
- *   company: '',
+ *   organization: '',
  *   position: '',
  *   startYear: '',
  *   endYear: '',

@@ -37,10 +37,21 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
+  /**
+   * Reorder items via drag and drop
+   */
+  const reorder = (startIndex: number, endIndex: number) => {
+    const newData = [...data]
+    const [removed] = newData.splice(startIndex, 1)
+    newData.splice(endIndex, 0, removed)
+    setResumeData({ ...resumeData, [dataKey]: newData })
+  }
+
   return {
     data,
     handleChange,
     add,
     remove,
+    reorder,
   }
 }

@@ -19,7 +19,7 @@ const mockResumeData: ResumeData = {
   education: [],
   workExperience: [
     {
-      company: 'Tech Corp',
+      organization: 'Tech Corp',
       url: 'techcorp.com',
       position: 'Lead Engineer',
       description: 'Leading a team',
@@ -33,7 +33,7 @@ const mockResumeData: ResumeData = {
       technologies: ['React', 'Node.js', 'AWS'],
     },
     {
-      company: 'StartupCo',
+      organization: 'StartupCo',
       url: 'startupco.com',
       position: 'Frontend Developer',
       description: 'Building UI',
@@ -100,7 +100,7 @@ describe('Cover Letter Prompt Engineering', () => {
         workExperience: [
           ...mockResumeData.workExperience,
           {
-            company: 'Company3',
+            organization: 'Company3',
             url: '',
             position: 'Position3',
             description: '',
@@ -110,7 +110,7 @@ describe('Cover Letter Prompt Engineering', () => {
             technologies: [],
           },
           {
-            company: 'Company4',
+            organization: 'Company4',
             url: '',
             position: 'Position4',
             description: '',

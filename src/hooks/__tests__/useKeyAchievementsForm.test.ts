@@ -13,7 +13,7 @@ const mockResumeData: ResumeData = {
   profiles: [],
   workExperience: [
     {
-      company: 'Test Company',
+      organization: 'Test Company',
       position: 'Developer',
       startDate: '2020-01-01',
       endDate: '',
@@ -26,7 +26,7 @@ const mockResumeData: ResumeData = {
       technologies: [],
     },
     {
-      company: 'Another Company',
+      organization: 'Another Company',
       position: 'Engineer',
       startDate: '2018-01-01',
       endDate: '2019-12-31',

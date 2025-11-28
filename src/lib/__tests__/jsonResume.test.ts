@@ -30,7 +30,7 @@ describe('JSON Resume Conversion', () => {
       ],
       workExperience: [
         {
-          company: 'Tech Corp',
+          organization: 'Tech Corp',
           url: 'techcorp.com',
           position: 'Senior Developer',
           description: 'Led development of key features',
@@ -494,7 +494,7 @@ describe('JSON Resume Conversion', () => {
       const result = convertFromJSONResume(mockJSONResume)
 
       expect(result.workExperience).toHaveLength(1)
-      expect(result.workExperience[0].company).toBe('Product Inc')
+      expect(result.workExperience[0].organization).toBe('Product Inc')
       expect(result.workExperience[0].position).toBe('Product Manager')
       expect(result.workExperience[0].url).toBe('productinc.com')
       expect(result.workExperience[0].description).toBe(

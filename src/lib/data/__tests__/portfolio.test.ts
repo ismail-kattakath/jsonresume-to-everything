@@ -93,7 +93,7 @@ describe('Portfolio Data - Experience', () => {
       expect(job).toHaveProperty('duration')
       expect(job).toHaveProperty('description')
       expect(typeof job.title).toBe('string')
-      expect(typeof job.company).toBe('string')
+      expect(typeof job.organization).toBe('string')
       expect(typeof job.duration).toBe('string')
       expect(Array.isArray(job.description)).toBe(true)
     })

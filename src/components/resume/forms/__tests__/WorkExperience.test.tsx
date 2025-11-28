@@ -72,7 +72,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Software Engineer',
             description: 'Test description',
@@ -102,7 +102,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Acme Corp',
+            organization: 'Acme Corp',
             url: 'acme.com',
             position: 'Senior Developer',
             description: 'Leading development team',
@@ -144,7 +144,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -153,7 +153,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -179,7 +179,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Existing Company',
+            organization: 'Existing Company',
             url: 'existing.com',
             position: 'Developer',
             description: 'Test',
@@ -207,7 +207,7 @@ describe('WorkExperience Component', () => {
           workExperience: [
             ...mockData.workExperience,
             {
-              company: '',
+              organization: '',
               url: '',
               position: '',
               description: '',
@@ -227,7 +227,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -260,7 +260,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -290,7 +290,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -299,7 +299,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -340,7 +340,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: '',
+            organization: '',
             url: '',
             position: '',
             description: '',
@@ -374,7 +374,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -409,7 +409,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -443,7 +443,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -479,7 +479,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -513,7 +513,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -548,7 +548,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: 'Test description',
@@ -572,7 +572,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -594,7 +594,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -622,7 +622,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -650,7 +650,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -678,7 +678,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -703,7 +703,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -731,7 +731,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -761,7 +761,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -787,7 +787,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -829,7 +829,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: '',
             position: '',
             description: '',
@@ -864,7 +864,7 @@ describe('WorkExperience Component', () => {
       const specialData = createMockResumeData({
         workExperience: [
           {
-            company: "O'Brien & Associates",
+            organization: "O'Brien & Associates",
             url: 'test.com',
             position: 'Senior Developer (Team Lead)',
             description: 'Leading the "innovation" team',
@@ -902,7 +902,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -911,7 +911,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -943,7 +943,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -952,7 +952,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -984,7 +984,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -993,7 +993,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -1002,7 +1002,7 @@ describe('WorkExperience Component', () => {
             endYear: '2022-01-01',
           },
           {
-            company: 'Company 3',
+            organization: 'Company 3',
             url: 'company3.com',
             position: 'Role 3',
             description: 'Desc 3',
@@ -1041,7 +1041,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -1050,7 +1050,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -1059,7 +1059,7 @@ describe('WorkExperience Component', () => {
             endYear: '2022-01-01',
           },
           {
-            company: 'Company 3',
+            organization: 'Company 3',
             url: 'company3.com',
             position: 'Role 3',
             description: 'Desc 3',
@@ -1098,7 +1098,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -1107,7 +1107,7 @@ describe('WorkExperience Component', () => {
             endYear: '2021-01-01',
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -1116,7 +1116,7 @@ describe('WorkExperience Component', () => {
             endYear: '2022-01-01',
           },
           {
-            company: 'Company 3',
+            organization: 'Company 3',
             url: 'company3.com',
             position: 'Role 3',
             description: 'Desc 3',
@@ -1156,7 +1156,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1181,7 +1181,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1205,7 +1205,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1245,7 +1245,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1284,7 +1284,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1313,7 +1313,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test Company',
+            organization: 'Test Company',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1353,7 +1353,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -1363,7 +1363,7 @@ describe('WorkExperience Component', () => {
             technologies: ['Vue'],
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -1405,7 +1405,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Company 1',
+            organization: 'Company 1',
             url: 'company1.com',
             position: 'Role 1',
             description: 'Desc 1',
@@ -1415,7 +1415,7 @@ describe('WorkExperience Component', () => {
             technologies: ['Vue', 'Nuxt'],
           },
           {
-            company: 'Company 2',
+            organization: 'Company 2',
             url: 'company2.com',
             position: 'Role 2',
             description: 'Desc 2',
@@ -1456,7 +1456,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',
@@ -1489,7 +1489,7 @@ describe('WorkExperience Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Test',
+            organization: 'Test',
             url: 'test.com',
             position: 'Developer',
             description: 'Test',

@@ -46,7 +46,7 @@ const mockResumeData: ResumeData = {
   education: [],
   workExperience: [
     {
-      company: 'Tech Corp',
+      organization: 'Tech Corp',
       url: 'techcorp.com',
       position: 'Senior Developer',
       description: 'Leading development',

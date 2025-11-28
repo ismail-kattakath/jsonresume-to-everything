@@ -31,7 +31,7 @@ export function convertToJSONResume(customData?: ResumeData) {
 
   // Convert work experience
   const work = data.workExperience.map((job: WorkExperience) => ({
-    name: job.company,
+    name: job.organization,
     position: job.position,
     url: job.url ? ensureProtocol(job.url) : undefined,
     startDate: job.startYear,
@@ -172,7 +172,7 @@ export function convertFromJSONResume(
 
     // Convert work experience back
     const workExperience = (jsonResume.work || []).map((job) => ({
-      company: job.name || '',
+      organization: job.name || '',
       url: job.url?.replace(/^https?:\/\//, '') || '',
       position: job.position || '',
       description: job.summary || '',

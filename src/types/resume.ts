@@ -14,7 +14,7 @@ export interface Achievement {
 }
 
 export interface WorkExperience {
-  company: string
+  organization: string
   url: string
   position: string
   description: string

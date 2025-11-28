@@ -61,7 +61,7 @@ function formatDateRange(startDate: string, endDate: string): string {
 export const experience: Experience[] = resumeData.workExperience.map(
   (job) => ({
     title: job.position,
-    company: job.company,
+    company: job.organization,
     location: '', // Not displayed on main website
     duration: formatDateRange(job.startYear, job.endYear),
     summary: job.description, // Company/role description

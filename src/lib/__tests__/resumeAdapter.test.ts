@@ -250,7 +250,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
 
       const result = convertFromJSONResume(resume)
       expect(result.workExperience[0]).toEqual({
-        company: '',
+        organization: '',
         url: '',
         position: '',
         description: '',

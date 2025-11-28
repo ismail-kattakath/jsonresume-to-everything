@@ -12,7 +12,7 @@ import {
   DnDDraggable,
 } from '@/components/ui/DragAndDrop'
 import KeyAchievements from '@/components/resume/forms/KeyAchievements'
-import TagInput from '@/components/ui/TagInput'
+import SortableTagInput from '@/components/ui/SortableTagInput'
 import type { DropResult } from '@hello-pangea/dnd'
 
 /**
@@ -24,7 +24,7 @@ const WorkExperience = () => {
   const { data, handleChange, add, remove } = useArrayForm(
     'workExperience',
     {
-      company: '',
+      organization: '',
       url: '',
       position: '',
       description: '',
@@ -79,6 +79,22 @@ const WorkExperience = () => {
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
 
+  const handleReorderTechnology = (
+    index: number,
+    startIndex: number,
+    endIndex: number
+  ) => {
+    const newWorkExperience = [...resumeData.workExperience]
+    const technologies = [...(newWorkExperience[index].technologies || [])]
+    const [removed] = technologies.splice(startIndex, 1)
+    technologies.splice(endIndex, 0, removed)
+    newWorkExperience[index] = {
+      ...newWorkExperience[index],
+      technologies,
+    }
+    setResumeData({ ...resumeData, workExperience: newWorkExperience })
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <DnDContext onDragEnd={onDragEnd}>
@@ -104,7 +120,7 @@ const WorkExperience = () => {
                       draggableProps={dragProvided.draggableProps}
                       header={
                         <AccordionHeader
-                          title={workExperience.company}
+                          title={workExperience.organization}
                           subtitle={workExperience.position}
                           placeholder="New Experience"
                           isExpanded={isExpanded(index)}
@@ -115,22 +131,48 @@ const WorkExperience = () => {
                         />
                       }
                     >
-                      <FormInput
-                        label="Company Name"
-                        name="company"
-                        value={workExperience.company}
-                        onChange={(e) => handleChange(e, index)}
-                        variant="teal"
-                      />
+                      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                        <FormInput
+                          label="Organization Name"
+                          name="organization"
+                          value={workExperience.organization}
+                          onChange={(e) => handleChange(e, index)}
+                          variant="teal"
+                          className="flex-1"
+                        />
 
-                      <FormInput
-                        label="Company Website URL"
-                        name="url"
-                        type="url"
-                        value={workExperience.url}
-                        onChange={(e) => handleChange(e, index)}
-                        variant="teal"
-                      />
+                        <FormInput
+                          label="Organization Website URL"
+                          name="url"
+                          type="url"
+                          value={workExperience.url}
+                          onChange={(e) => handleChange(e, index)}
+                          variant="teal"
+                          className="flex-1"
+                        />
+                      </div>
+
+                      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                        <FormInput
+                          label="Start Date"
+                          name="startYear"
+                          type="date"
+                          value={workExperience.startYear}
+                          onChange={(e) => handleChange(e, index)}
+                          variant="teal"
+                          className="flex-1"
+                        />
+
+                        <FormInput
+                          label="End Date"
+                          name="endYear"
+                          type="date"
+                          value={workExperience.endYear}
+                          onChange={(e) => handleChange(e, index)}
+                          variant="teal"
+                          className="flex-1"
+                        />
+                      </div>
 
                       <FormInput
                         label="Job Title"
@@ -162,37 +204,18 @@ const WorkExperience = () => {
                         />
                       </div>
 
-                      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-                        <FormInput
-                          label="Start Date"
-                          name="startYear"
-                          type="date"
-                          value={workExperience.startYear}
-                          onChange={(e) => handleChange(e, index)}
-                          variant="teal"
-                          className="flex-1"
-                        />
-
-                        <FormInput
-                          label="End Date"
-                          name="endYear"
-                          type="date"
-                          value={workExperience.endYear}
-                          onChange={(e) => handleChange(e, index)}
-                          variant="teal"
-                          className="flex-1"
-                        />
-                      </div>
-
                       <div>
                         <label className="mb-2 block text-sm font-medium text-white">
                           Technologies
                         </label>
-                        <TagInput
+                        <SortableTagInput
                           tags={workExperience.technologies || []}
                           onAdd={(tech) => handleAddTechnology(index, tech)}
                           onRemove={(techIndex) =>
                             handleRemoveTechnology(index, techIndex)
+                          }
+                          onReorder={(startIndex, endIndex) =>
+                            handleReorderTechnology(index, startIndex, endIndex)
                           }
                           placeholder="Add technology..."
                           variant="teal"

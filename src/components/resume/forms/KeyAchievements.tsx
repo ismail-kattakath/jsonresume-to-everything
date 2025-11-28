@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
 import { useKeyAchievementsForm } from '@/hooks/useKeyAchievementsForm'
+import {
+  DnDContext,
+  DnDDroppable,
+  DnDDraggable,
+} from '@/components/ui/DragAndDrop'
+import type { DropResult } from '@hello-pangea/dnd'
 
 interface KeyAchievementsProps {
   workExperienceIndex: number
@@ -8,13 +14,13 @@ interface KeyAchievementsProps {
 
 /**
  * KeyAchievements form component - displays achievements as a vertical list
- * with inline add and click-to-edit functionality
+ * with inline add, click-to-edit, and drag-to-reorder functionality
  */
 const KeyAchievements = ({
   workExperienceIndex,
   variant = 'teal',
 }: KeyAchievementsProps) => {
-  const { achievements, add, remove, handleChange } =
+  const { achievements, add, remove, handleChange, reorder } =
     useKeyAchievementsForm(workExperienceIndex)
   const [inputValue, setInputValue] = useState('')
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
@@ -65,51 +71,86 @@ const KeyAchievements = ({
   const focusBorderColor =
     variant === 'teal' ? 'focus:border-teal-400' : 'focus:border-pink-400'
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return
+    if (result.destination.index === result.source.index) return
+
+    reorder(result.source.index, result.destination.index)
+  }
+
   return (
     <div className="space-y-2">
-      {/* Existing achievements */}
-      {achievements.map((achievement, index) => (
-        <div
-          key={`ACHIEVEMENT-${workExperienceIndex}-${index}`}
-          className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10`}
-        >
-          {/* Number bullet */}
-          <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-xs text-white/60">
-            {index + 1}
-          </span>
-
-          {/* Achievement text or edit input */}
-          {editingIndex === index ? (
-            <input
-              type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              onKeyDown={(e) => handleEditKeyDown(e, index)}
-              onBlur={() => handleEditBlur(index)}
-              autoFocus
-              className={`flex-1 rounded border ${borderColor} bg-white/5 px-2 py-1 text-sm text-white outline-none ${focusBorderColor}`}
-            />
-          ) : (
-            <p
-              onClick={() => startEditing(index, achievement.text)}
-              className="flex-1 cursor-pointer text-sm leading-relaxed text-white hover:text-white/80"
-              title="Click to edit"
+      {/* Existing achievements with drag-and-drop */}
+      <DnDContext onDragEnd={onDragEnd}>
+        <DnDDroppable droppableId={`achievements-${workExperienceIndex}`}>
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="space-y-2"
             >
-              {achievement.text}
-            </p>
-          )}
+              {achievements.map((achievement, index) => (
+                <DnDDraggable
+                  key={`ACHIEVEMENT-${workExperienceIndex}-${index}`}
+                  draggableId={`ACHIEVEMENT-${workExperienceIndex}-${index}`}
+                  index={index}
+                >
+                  {(dragProvided, snapshot) => (
+                    <div
+                      ref={dragProvided.innerRef}
+                      {...dragProvided.draggableProps}
+                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${
+                        snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
+                      }`}
+                    >
+                      {/* Drag handle + Number bullet */}
+                      <div
+                        {...dragProvided.dragHandleProps}
+                        className="mt-0.5 flex h-6 w-6 flex-shrink-0 cursor-grab items-center justify-center rounded-full bg-white/10 text-xs text-white/60 active:cursor-grabbing"
+                        title="Drag to reorder"
+                      >
+                        {index + 1}
+                      </div>
 
-          {/* Remove button */}
-          <button
-            type="button"
-            onClick={() => remove(index)}
-            className={`flex-shrink-0 cursor-pointer text-white/40 opacity-0 transition-all group-hover:opacity-100 hover:text-red-400`}
-            title="Remove achievement"
-          >
-            ✕
-          </button>
-        </div>
-      ))}
+                      {/* Achievement text or edit input */}
+                      {editingIndex === index ? (
+                        <input
+                          type="text"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={(e) => handleEditKeyDown(e, index)}
+                          onBlur={() => handleEditBlur(index)}
+                          autoFocus
+                          className={`flex-1 rounded border ${borderColor} bg-white/5 px-2 py-1 text-sm text-white outline-none ${focusBorderColor}`}
+                        />
+                      ) : (
+                        <p
+                          onClick={() => startEditing(index, achievement.text)}
+                          className="flex-1 cursor-pointer text-sm leading-relaxed text-white hover:text-white/80"
+                          title="Click to edit"
+                        >
+                          {achievement.text}
+                        </p>
+                      )}
+
+                      {/* Remove button */}
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className={`flex-shrink-0 cursor-pointer text-white/40 opacity-0 transition-all group-hover:opacity-100 hover:text-red-400`}
+                        title="Remove achievement"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </DnDDraggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </DnDDroppable>
+      </DnDContext>
 
       {/* Add new achievement input */}
       <input

@@ -150,14 +150,14 @@ describe('Integration: Form → Preview Synchronization', () => {
         // Fill in the new work experience
         await waitFor(() => {
           const companyInputs = container.querySelectorAll(
-            'input[name="company"]'
+            'input[name="organization"]'
           )
           const lastCompanyInput = companyInputs[
             companyInputs.length - 1
           ] as HTMLInputElement
 
           fireEvent.change(lastCompanyInput, {
-            target: { name: 'company', value: 'New Tech Corp' },
+            target: { name: 'organization', value: 'New Tech Corp' },
           })
 
           const positionInputs = container.querySelectorAll(
@@ -186,13 +186,13 @@ describe('Integration: Form → Preview Synchronization', () => {
 
       // Find the first company input
       const companyInput = container.querySelector(
-        'input[name="company"]'
+        'input[name="organization"]'
       ) as HTMLInputElement
       expect(companyInput).toBeInTheDocument()
 
       // Change the company name
       fireEvent.change(companyInput, {
-        target: { name: 'company', value: 'Updated Company Name' },
+        target: { name: 'organization', value: 'Updated Company Name' },
       })
 
       // Verify the preview updates

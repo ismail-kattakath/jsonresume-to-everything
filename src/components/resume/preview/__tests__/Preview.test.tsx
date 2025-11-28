@@ -288,7 +288,7 @@ describe('Preview Component', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
-            company: 'Tech Corp',
+            organization: 'Tech Corp',
             position: 'Senior Developer',
             url: 'techcorp.com',
             description: 'Led development of key features',
@@ -464,7 +464,7 @@ describe('Preview Component', () => {
         const mockData = createMockResumeData({
           workExperience: [
             {
-              company: 'Company A',
+              organization: 'Company A',
               position: 'Developer',
               startYear: '2020',
               endYear: 'Present',
@@ -499,7 +499,7 @@ describe('Preview Component', () => {
         const mockData = createMockResumeData({
           workExperience: [
             {
-              company: 'Company A',
+              organization: 'Company A',
               position: 'Developer',
               startYear: '2020',
               endYear: 'Present',
@@ -534,7 +534,7 @@ describe('Preview Component', () => {
         const mockData = createMockResumeData({
           workExperience: [
             {
-              company: 'Company A',
+              organization: 'Company A',
               position: 'Developer A',
               startYear: '2020',
               endYear: '2021',
@@ -544,7 +544,7 @@ describe('Preview Component', () => {
               url: '',
             },
             {
-              company: 'Company B',
+              organization: 'Company B',
               position: 'Developer B',
               startYear: '2021',
               endYear: '2022',
@@ -554,7 +554,7 @@ describe('Preview Component', () => {
               url: '',
             },
             {
-              company: 'Company C',
+              organization: 'Company C',
               position: 'Developer C',
               startYear: '2022',
               endYear: 'Present',
@@ -597,7 +597,7 @@ describe('Preview Component', () => {
         const mockData = createMockResumeData({
           workExperience: [
             {
-              company: 'Company A',
+              organization: 'Company A',
               position: 'Developer',
               startYear: '2020',
               endYear: 'Present',
