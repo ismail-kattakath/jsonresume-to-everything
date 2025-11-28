@@ -31,6 +31,7 @@ export type {
   SkillGroup,
   Project,
   Certification,
+  Achievement,
 } from './resume'
 
 // Cover letter types

@@ -89,11 +89,26 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
     }))
   }
 
+  /**
+   * Set achievements directly (used by AI sorting)
+   */
+  const setAchievements = (newAchievements: Achievement[]) => {
+    setResumeData((prevData) => ({
+      ...prevData,
+      workExperience: prevData.workExperience.map((exp, i) =>
+        i === workExperienceIndex
+          ? { ...exp, keyAchievements: newAchievements }
+          : exp
+      ),
+    }))
+  }
+
   return {
     achievements: workExperience.keyAchievements,
     handleChange,
     add,
     remove,
     reorder,
+    setAchievements,
   }
 }

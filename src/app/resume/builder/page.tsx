@@ -28,7 +28,7 @@ import {
   useAISettings,
 } from '@/lib/contexts/AISettingsContext'
 import { CheckCircle, XCircle } from 'lucide-react'
-import { Toaster } from 'sonner'
+import { Toaster, toast } from 'sonner'
 import { useDocumentHandlers } from '@/hooks/useDocumentHandlers'
 import { useSkillGroupsManagement } from '@/hooks/useSkillGroupsManagement'
 import { useAccordion } from '@/hooks/useAccordion'
@@ -61,6 +61,13 @@ import {
 import type { DropResult } from '@hello-pangea/dnd'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { tooltips } from '@/config/tooltips'
+import AISortButton from '@/components/ui/AISortButton'
+import { requestAISort } from '@/lib/ai/openai-client'
+import {
+  buildSkillsSortPrompt,
+  parseSkillsSortResponse,
+  applySortedSkills,
+} from '@/lib/ai/sorting-prompts'
 
 // Default cover letter content
 const DEFAULT_COVER_LETTER_CONTENT =
@@ -241,9 +248,12 @@ function SkillGroupHeader({
  */
 function SkillsSection() {
   const context = useContext(ResumeContext)
+  const { settings, isConfigured } = useAISettings()
+  const [isSorting, setIsSorting] = useState(false)
+
   if (!context) return null
 
-  const { resumeData } = context
+  const { resumeData, setResumeData } = context
   const { addGroup, removeGroup, renameGroup, reorderGroups } =
     useSkillGroupsManagement()
   const [isAdding, setIsAdding] = useState(false)
@@ -278,8 +288,57 @@ function SkillsSection() {
     }
   }
 
+  const handleAISort = async () => {
+    if (!isConfigured || isSorting) return
+
+    setIsSorting(true)
+    try {
+      const prompt = buildSkillsSortPrompt(
+        resumeData.skills,
+        settings.jobDescription
+      )
+
+      const response = await requestAISort(
+        {
+          baseURL: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+        },
+        prompt
+      )
+
+      const sortResult = parseSkillsSortResponse(response, resumeData.skills)
+
+      if (sortResult) {
+        const sortedSkills = applySortedSkills(resumeData.skills, sortResult)
+        setResumeData({ ...resumeData, skills: sortedSkills })
+        toast.success('Skills sorted by job relevance')
+      } else {
+        toast.error('Failed to parse AI response. Please try again.')
+      }
+    } catch (error) {
+      console.error('AI Skills sort error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to sort skills'
+      )
+    } finally {
+      setIsSorting(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {/* AI Sort Button */}
+      <div className="flex justify-end">
+        <AISortButton
+          isConfigured={isConfigured}
+          isLoading={isSorting}
+          onClick={handleAISort}
+          label="Sort Skills by JD"
+          size="sm"
+        />
+      </div>
+
       <DnDContext onDragEnd={handleDragEnd}>
         <DnDDroppable droppableId="skill-groups">
           {(provided) => (

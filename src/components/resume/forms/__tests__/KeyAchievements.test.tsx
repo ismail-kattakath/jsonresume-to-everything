@@ -10,10 +10,44 @@ jest.mock('@/hooks/useKeyAchievementsForm')
 const mockUseKeyAchievementsForm =
   useKeyAchievementsForm as jest.MockedFunction<typeof useKeyAchievementsForm>
 
+// Mock AI settings context
+jest.mock('@/lib/contexts/AISettingsContext', () => ({
+  useAISettings: () => ({
+    settings: {
+      apiUrl: 'http://localhost:1234',
+      apiKey: 'test-key',
+      model: 'test-model',
+      jobDescription: 'Test job description',
+    },
+    isConfigured: false, // Default to not configured
+  }),
+}))
+
+// Mock ResumeContext
+jest.mock('@/lib/contexts/DocumentContext', () => ({
+  ResumeContext: {
+    Provider: ({ children }: { children: React.ReactNode }) => children,
+  },
+}))
+
+// Mock requestAISort
+jest.mock('@/lib/ai/openai-client', () => ({
+  requestAISort: jest.fn(),
+}))
+
+// Mock sorting prompts
+jest.mock('@/lib/ai/sorting-prompts', () => ({
+  buildAchievementsSortPrompt: jest.fn(() => 'mock prompt'),
+  parseAchievementsSortResponse: jest.fn(() => null),
+  applySortedAchievements: jest.fn(),
+}))
+
 describe('KeyAchievements', () => {
   const mockAdd = jest.fn()
   const mockRemove = jest.fn()
   const mockHandleChange = jest.fn()
+  const mockReorder = jest.fn()
+  const mockSetAchievements = jest.fn()
 
   const defaultHookReturn = {
     achievements: [
@@ -24,6 +58,8 @@ describe('KeyAchievements', () => {
     add: mockAdd,
     remove: mockRemove,
     handleChange: mockHandleChange,
+    reorder: mockReorder,
+    setAchievements: mockSetAchievements,
   }
 
   beforeEach(() => {

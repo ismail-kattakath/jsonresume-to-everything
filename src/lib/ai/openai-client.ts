@@ -453,3 +453,50 @@ export function validateJobDescription(text: string): boolean {
   const trimmed = text.trim()
   return trimmed.length >= MIN_JD_LENGTH
 }
+
+/**
+ * Generic AI sorting request - sends a sorting prompt and returns raw response
+ * Used by both skills and achievements sorting
+ */
+export async function requestAISort(
+  config: OpenAIConfig,
+  sortPrompt: string
+): Promise<string> {
+  const request: OpenAIRequest = {
+    model: config.model,
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are a JSON-only response bot. You return valid JSON without any explanation, markdown, or code blocks.',
+      },
+      {
+        role: 'user',
+        content: sortPrompt,
+      },
+    ],
+    temperature: 0.3, // Lower temperature for more consistent sorting
+    max_tokens: 2000, // Sufficient for sorting responses
+    top_p: 0.9,
+  }
+
+  const response = await makeOpenAIRequest(config, request)
+
+  if (!response.choices || response.choices.length === 0) {
+    throw new OpenAIAPIError(
+      'AI generated an empty response. Please try again.',
+      'empty_response'
+    )
+  }
+
+  const content = response.choices[0].message.content
+
+  if (!content || content.trim().length === 0) {
+    throw new OpenAIAPIError(
+      'AI generated an empty response. Please try again.',
+      'empty_content'
+    )
+  }
+
+  return content
+}
