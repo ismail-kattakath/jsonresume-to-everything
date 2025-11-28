@@ -30,18 +30,24 @@ export function FormTextarea({
   minHeight = '100px',
   className = '',
 }: FormTextareaProps) {
+  const textareaId = `textarea-${name}`
+
   return (
     <div className="floating-label-group">
       <textarea
+        id={textareaId}
         placeholder={placeholder || label}
         name={name}
+        aria-label={label}
         className={`w-full resize-y rounded-lg border border-white/20 bg-white/10 px-3 py-2 pb-8 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 ${variantClasses[variant]} ${className}`}
         style={{ minHeight }}
         value={value}
         onChange={onChange}
         maxLength={maxLength}
       />
-      <label className="floating-label">{label}</label>
+      <label htmlFor={textareaId} className="floating-label">
+        {label}
+      </label>
       {showCounter && (
         <div className="pointer-events-none absolute right-2 bottom-2 rounded bg-white/5 px-2 py-1 text-xs text-white/50">
           {maxLength ? `${value.length}/${maxLength}` : `${value.length} chars`}

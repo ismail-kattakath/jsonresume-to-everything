@@ -284,6 +284,7 @@ Need an API key? Here's a comprehensive guide for various providers:
 - ✅ Pay-per-use with no monthly minimums
 - ✅ Free trial credits available
 - ✅ Easy to compare different models
+- ✅ **Access Gemini and Claude** without additional integrations
 
 **Steps:**
 
@@ -292,6 +293,39 @@ Need an API key? Here's a comprehensive guide for various providers:
 3. Go to [Keys](https://openrouter.ai/keys) → Create Key
 4. Copy the key (starts with `sk-or-...`)
 5. Use URL: `https://openrouter.ai/api/v1`
+
+### Popular Models via OpenRouter
+
+Once you have an OpenRouter API key, you can use any of these models by changing the model name:
+
+**Google Gemini:**
+
+- `google/gemini-2.0-flash-exp` - Latest experimental model (free tier!)
+- `google/gemini-2.0-flash-thinking-exp:free` - Experimental thinking model (free)
+- `google/gemini-1.5-pro` - Most capable Gemini model
+- `google/gemini-1.5-flash` - Fast and efficient
+
+**Anthropic Claude:**
+
+- `anthropic/claude-3.5-sonnet` - Best overall quality
+- `anthropic/claude-3-haiku` - Fastest Claude model
+
+**OpenAI:**
+
+- `openai/gpt-4o` - Latest GPT-4 model
+- `openai/gpt-4o-mini` - Cost-effective choice
+
+**Meta Llama:**
+
+- `meta-llama/llama-3.3-70b-instruct` - Latest Llama model
+- `meta-llama/llama-3.1-8b-instruct` - Smaller, faster
+
+**DeepSeek:**
+
+- `deepseek/deepseek-r1` - Reasoning model
+- `deepseek/deepseek-chat` - Chat-optimized
+
+Full model list: https://openrouter.ai/models
 
 ## Setup & Configuration
 
@@ -324,7 +358,58 @@ Need an API key? Here's a comprehensive guide for various providers:
    - API Key: Your Azure API key
    - Model: Your deployment name
 
-### Option 3: Local AI Server (LM Studio)
+### Option 3: Google Gemini
+
+You have **two options** for using Google Gemini models:
+
+#### **Option 3A: Via OpenRouter (Recommended - Works Now)**
+
+The easiest way to use Gemini with this application. OpenRouter provides OpenAI-compatible access to Gemini and 100+ other models.
+
+**Setup:**
+
+1. Create account at https://openrouter.ai
+2. Get API key from https://openrouter.ai/keys (starts with `sk-or-v1-...`)
+3. Configure in application:
+   - API URL: `https://openrouter.ai/api/v1`
+   - API Key: Your OpenRouter key
+   - Model: `google/gemini-2.0-flash-exp` (or any Gemini model)
+
+**Available Gemini Models:**
+
+- `google/gemini-2.0-flash-exp` - Latest experimental (free tier!)
+- `google/gemini-2.0-flash-thinking-exp:free` - Thinking mode (free)
+- `google/gemini-1.5-pro` - Most capable
+- `google/gemini-1.5-flash` - Fast and efficient
+
+**Pros:**
+
+- ✅ Works immediately with existing integration
+- ✅ No code changes needed
+- ✅ Access to 100+ other models (Claude, GPT, Llama, etc.)
+- ✅ Gemini free tier passed through
+- ✅ Still BYOK (you manage your OpenRouter account)
+
+**Cons:**
+
+- ⚠️ Adds OpenRouter as intermediary (still secure and private)
+
+#### **Option 3B: Direct Google API (Coming Soon)**
+
+For users who prefer direct Google API access without intermediaries:
+
+**Future Implementation:**
+
+- Get API key from https://aistudio.google.com/apikey
+- Use `https://generativelanguage.googleapis.com/v1beta` as base URL
+- Native Gemini API support is planned
+
+**Status:**
+
+- 📋 Track progress: See GitHub Issues
+- 🔧 For now, use Option 3A (OpenRouter) for immediate Gemini access
+
+### Option 4: Local AI Server (LM Studio)
 
 **For users who want to run AI locally without cloud APIs:**
 
@@ -366,9 +451,12 @@ Need an API key? Here's a comprehensive guide for various providers:
 1. Navigate to `/cover-letter/edit`
 2. Enter password (if protected)
 3. Click "Generate with AI" button at bottom of content textarea
-4. First time:
-   - Enter API URL (default: `https://api.openai.com/v1`)
+4. First time - choose your AI provider:
+   - **For OpenAI**: Use default `https://api.openai.com/v1` + your OpenAI key
+   - **For Gemini/Claude/etc**: Use `https://openrouter.ai/api/v1` + OpenRouter key
+   - **For local AI**: Use your local server URL (e.g., `http://localhost:1234/v1`)
    - Enter API Key (required - see [How to Get an API Key](#how-to-get-an-api-key))
+   - Enter Model name (e.g., `gpt-4o-mini`, `google/gemini-2.0-flash-exp`, etc.)
    - Check "Remember credentials" to save API credentials for next time
    - Paste job description (automatically saved)
 5. Click "Generate Cover Letter"

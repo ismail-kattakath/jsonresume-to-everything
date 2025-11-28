@@ -44,7 +44,7 @@ async function makeOpenAIRequest(
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
 
   try {
-    const response = await fetch(`${config.baseURL}/v1/chat/completions`, {
+    const response = await fetch(`${config.baseURL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ async function makeOpenAIStreamRequest(
   onProgress: StreamCallback
 ): Promise<string> {
   try {
-    const response = await fetch(`${config.baseURL}/v1/chat/completions`, {
+    const response = await fetch(`${config.baseURL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -373,13 +373,14 @@ export function saveCredentials(credentials: StoredCredentials): void {
   if (credentials.rememberCredentials) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials))
   } else {
-    // Clear credentials but keep job description if it was provided
-    if (credentials.lastJobDescription) {
+    // Clear credentials but keep job description and model if provided
+    if (credentials.lastJobDescription || credentials.model) {
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
           apiUrl: '',
           apiKey: '',
+          model: credentials.model,
           rememberCredentials: false,
           lastJobDescription: credentials.lastJobDescription,
         })
@@ -436,6 +437,72 @@ export async function testConnection(config: OpenAIConfig): Promise<boolean> {
     return true
   } catch {
     return false
+  }
+}
+
+/**
+ * Fetches available models from the API
+ * Uses the standard OpenAI-compatible /models endpoint
+ * Note: baseURL should already include /v1 or /api/v1
+ */
+export async function fetchAvailableModels(
+  config: Pick<OpenAIConfig, 'baseURL' | 'apiKey'>
+): Promise<string[]> {
+  try {
+    // Validate inputs
+    if (!config.baseURL || !config.apiKey) {
+      return []
+    }
+
+    // All providers: baseURL already includes /v1 or /api/v1, just append /models
+    const endpoint = `${config.baseURL}/models`
+    const isOpenRouter = config.baseURL.includes('openrouter.ai')
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        'Content-Type': 'application/json',
+        ...(isOpenRouter && {
+          'HTTP-Referer':
+            'https://github.com/ismail-kattakath/jsonresume-to-everything',
+          'X-Title': 'JSON Resume to Everything',
+        }),
+      },
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeoutId)
+
+    if (!response.ok) {
+      return []
+    }
+
+    const data = await response.json()
+
+    // OpenAI/most providers format: { data: [{ id: "model-name" }, ...] }
+    if (data.data && Array.isArray(data.data)) {
+      return data.data.map((model: { id: string }) => model.id).sort()
+    }
+
+    // Fallback for other formats
+    if (Array.isArray(data)) {
+      return data.map((model: { id: string }) => model.id).sort()
+    }
+
+    return []
+  } catch (error) {
+    // Don't log network errors - they're expected during typing
+    if (error instanceof Error && error.name !== 'AbortError') {
+      console.debug(
+        'Model fetch failed (expected during typing):',
+        error.message
+      )
+    }
+    return []
   }
 }
 

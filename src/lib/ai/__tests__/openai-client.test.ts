@@ -6,6 +6,7 @@ import {
   loadCredentials,
   clearCredentials,
   requestAISort,
+  fetchAvailableModels,
   OpenAIAPIError,
 } from '@/lib/ai/openai-client'
 import type { ResumeData, StoredCredentials } from '@/types'
@@ -108,7 +109,7 @@ describe('OpenAI Service', () => {
 
       expect(result).toContain('generated cover letter')
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:1234/v1/chat/completions',
+        'http://localhost:1234/chat/completions',
         expect.objectContaining({
           method: 'POST',
           headers: {
@@ -371,7 +372,7 @@ describe('OpenAI Service', () => {
 
       expect(result).toContain('Experienced Software Engineer')
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:1234/v1/chat/completions',
+        'http://localhost:1234/chat/completions',
         expect.objectContaining({
           method: 'POST',
         })
@@ -561,7 +562,7 @@ describe('OpenAI Service', () => {
 
       expect(result).toBe(mockSortResponse)
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:1234/v1/chat/completions',
+        'http://localhost:1234/chat/completions',
         expect.objectContaining({
           method: 'POST',
           headers: {
@@ -664,6 +665,200 @@ describe('OpenAI Service', () => {
       await expect(requestAISort(mockConfig, 'Sort prompt')).rejects.toThrow(
         OpenAIAPIError
       )
+    })
+  })
+
+  describe('fetchAvailableModels', () => {
+    it('fetches models successfully from standard provider', async () => {
+      const mockModelsResponse = {
+        data: [{ id: 'gpt-4o' }, { id: 'gpt-4o-mini' }, { id: 'gpt-4-turbo' }],
+      }
+
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockModelsResponse,
+      })
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual(['gpt-4-turbo', 'gpt-4o', 'gpt-4o-mini'])
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.openai.com/v1/models',
+        expect.objectContaining({
+          method: 'GET',
+          headers: expect.objectContaining({
+            Authorization: 'Bearer test-key',
+          }),
+        })
+      )
+    })
+
+    it('fetches models from OpenRouter with special headers', async () => {
+      const mockModelsResponse = {
+        data: [
+          { id: 'google/gemini-2.0-flash-exp' },
+          { id: 'anthropic/claude-3.5-sonnet' },
+        ],
+      }
+
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockModelsResponse,
+      })
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://openrouter.ai/api/v1',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual([
+        'anthropic/claude-3.5-sonnet',
+        'google/gemini-2.0-flash-exp',
+      ])
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://openrouter.ai/api/v1/models',
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'HTTP-Referer':
+              'https://github.com/ismail-kattakath/jsonresume-to-everything',
+            'X-Title': 'JSON Resume to Everything',
+          }),
+        })
+      )
+    })
+
+    it('returns empty array when no API key provided', async () => {
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: '',
+      })
+
+      expect(models).toEqual([])
+      expect(global.fetch).not.toHaveBeenCalled()
+    })
+
+    it('returns empty array when no baseURL provided', async () => {
+      const models = await fetchAvailableModels({
+        baseURL: '',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual([])
+      expect(global.fetch).not.toHaveBeenCalled()
+    })
+
+    it('returns empty array on API error', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+      })
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: 'bad-key',
+      })
+
+      expect(models).toEqual([])
+    })
+
+    it('returns empty array on network error', async () => {
+      ;(global.fetch as jest.Mock).mockRejectedValueOnce(
+        new Error('Network error')
+      )
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual([])
+    })
+
+    it('returns empty array on timeout', async () => {
+      const abortError = new Error('The operation was aborted')
+      abortError.name = 'AbortError'
+      ;(global.fetch as jest.Mock).mockRejectedValueOnce(abortError)
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual([])
+    })
+
+    it('sorts models alphabetically', async () => {
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          data: [
+            { id: 'zebra-model' },
+            { id: 'alpha-model' },
+            { id: 'beta-model' },
+          ],
+        }),
+      })
+
+      const models = await fetchAvailableModels({
+        baseURL: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+      })
+
+      expect(models).toEqual(['alpha-model', 'beta-model', 'zebra-model'])
+    })
+  })
+
+  describe('Credential Management with Model', () => {
+    it('saves model with credentials', () => {
+      const credentials: StoredCredentials = {
+        apiUrl: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+        model: 'gpt-4o-mini',
+        rememberCredentials: true,
+        lastJobDescription: 'Test job',
+      }
+
+      saveCredentials(credentials)
+
+      const stored = localStorage.getItem('ai_cover_letter_credentials')
+      expect(stored).toBeTruthy()
+      const parsed = JSON.parse(stored!)
+      expect(parsed.model).toBe('gpt-4o-mini')
+    })
+
+    it('preserves model when rememberCredentials is false', () => {
+      saveCredentials({
+        apiUrl: 'https://api.openai.com/v1',
+        apiKey: 'test-key',
+        model: 'gpt-4o',
+        rememberCredentials: false,
+        lastJobDescription: 'Job desc',
+      })
+
+      const stored = localStorage.getItem('ai_cover_letter_credentials')
+      expect(stored).toBeTruthy()
+      const parsed = JSON.parse(stored!)
+      expect(parsed.model).toBe('gpt-4o')
+      expect(parsed.apiKey).toBe('')
+      expect(parsed.apiUrl).toBe('')
+    })
+
+    it('loads model with credentials', () => {
+      localStorage.setItem(
+        'ai_cover_letter_credentials',
+        JSON.stringify({
+          apiUrl: 'https://api.openai.com/v1',
+          apiKey: 'test-key',
+          model: 'gpt-4-turbo',
+          rememberCredentials: true,
+        })
+      )
+
+      const loaded = loadCredentials()
+      expect(loaded?.model).toBe('gpt-4-turbo')
     })
   })
 })

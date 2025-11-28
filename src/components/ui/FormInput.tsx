@@ -15,6 +15,7 @@ interface FormInputProps {
   maxLength?: number
   showCounter?: boolean
   className?: string
+  helpText?: string
 }
 
 /**
@@ -33,38 +34,48 @@ export function FormInput({
   maxLength,
   showCounter = false,
   className = '',
+  helpText,
 }: FormInputProps) {
   const [showPassword, setShowPassword] = useState(false)
   const isPassword = type === 'password'
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type
 
+  const inputId = `input-${name}`
+
   return (
-    <div className={`floating-label-group ${className}`}>
-      <input
-        type={inputType}
-        placeholder={placeholder || label}
-        name={name}
-        className={`w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:ring-2 ${isPassword ? 'pr-12' : ''} ${variantClasses[variant]}`}
-        value={value}
-        onChange={onChange}
-        maxLength={maxLength}
-      />
-      <label className="floating-label">{label}</label>
-      {isPassword && (
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-white/60 transition-colors hover:text-white"
-          aria-label={showPassword ? 'Hide password' : 'Show password'}
-        >
-          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
-      )}
-      {showCounter && maxLength && (
-        <div className="pointer-events-none absolute right-2 bottom-2 rounded bg-white/5 px-2 py-1 text-xs text-white/50">
-          {value.length}/{maxLength}
-        </div>
-      )}
+    <div className="space-y-1">
+      <div className={`floating-label-group ${className}`}>
+        <input
+          id={inputId}
+          type={inputType}
+          placeholder={placeholder || label}
+          name={name}
+          aria-label={label}
+          className={`w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:ring-2 ${isPassword ? 'pr-12' : ''} ${variantClasses[variant]}`}
+          value={value}
+          onChange={onChange}
+          maxLength={maxLength}
+        />
+        <label htmlFor={inputId} className="floating-label">
+          {label}
+        </label>
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-white/60 transition-colors hover:text-white"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        )}
+        {showCounter && maxLength && (
+          <div className="pointer-events-none absolute right-2 bottom-2 rounded bg-white/5 px-2 py-1 text-xs text-white/50">
+            {value.length}/{maxLength}
+          </div>
+        )}
+      </div>
+      {helpText && <p className="text-xs text-white/50">{helpText}</p>}
     </div>
   )
 }

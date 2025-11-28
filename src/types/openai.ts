@@ -58,6 +58,8 @@ export interface OpenAIError {
 export interface StoredCredentials {
   apiUrl: string
   apiKey: string
+  model?: string
+  providerName?: string
   rememberCredentials: boolean
   lastJobDescription?: string
 }
