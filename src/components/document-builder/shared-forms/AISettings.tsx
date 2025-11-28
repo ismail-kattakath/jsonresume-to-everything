@@ -14,7 +14,7 @@ import { fetchAvailableModels } from '@/lib/ai/openai-client'
 import { Loader2 } from 'lucide-react'
 
 const AISettings: React.FC = () => {
-  const { settings, updateSettings } = useAISettings()
+  const { settings, updateSettings, connectionStatus } = useAISettings()
 
   // State for provider selection
   const [selectedProvider, setSelectedProvider] = useState<string>(() => {
@@ -185,12 +185,84 @@ const AISettings: React.FC = () => {
   const showModelDropdown = modelOptions.length > 0 && !loadingModels
   const usingFallbackModels = !hasApiModels && hasCommonModels
 
+  // Format status messages
+  const getConnectionStatusMessage = () => {
+    if (!settings.apiKey || !settings.apiUrl) {
+      return { text: 'No credentials configured', color: 'text-white/40' }
+    }
+
+    switch (connectionStatus) {
+      case 'testing':
+        return { text: 'Testing connection...', color: 'text-yellow-400' }
+      case 'valid':
+        return { text: '✓ Connected successfully', color: 'text-green-400' }
+      case 'invalid':
+        return { text: '✗ Connection failed', color: 'text-red-400' }
+      default:
+        return { text: 'Ready to connect', color: 'text-white/60' }
+    }
+  }
+
+  const getModelStatusMessage = () => {
+    if (loadingModels) {
+      return { text: 'Fetching models...', color: 'text-yellow-400' }
+    }
+    if (modelsError) {
+      return { text: `✗ ${modelsError}`, color: 'text-red-400' }
+    }
+    if (hasApiModels) {
+      return {
+        text: `✓ ${availableModels.length} models loaded from API`,
+        color: 'text-green-400',
+      }
+    }
+    if (hasCommonModels) {
+      return {
+        text: `${currentProvider?.commonModels?.length} common models (enter API key for full list)`,
+        color: 'text-blue-400',
+      }
+    }
+    return null
+  }
+
+  const connectionStatusMsg = getConnectionStatusMessage()
+  const modelStatusMsg = getModelStatusMessage()
+
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-white/60">
         Connect to an OpenAI-compatible API to generate tailored cover letters
         and professional summaries based on the job description.
       </p>
+
+      {/* Connection Status Log */}
+      <div className="rounded-lg border border-white/10 bg-white/5 p-3 font-mono text-xs">
+        <div className="mb-1 font-semibold text-white/80">
+          Connection Status
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-white/40">API:</span>
+            <span className={connectionStatusMsg.color}>
+              {connectionStatusMsg.text}
+            </span>
+          </div>
+          {modelStatusMsg && (
+            <div className="flex items-center gap-2">
+              <span className="text-white/40">Models:</span>
+              <span className={modelStatusMsg.color}>
+                {modelStatusMsg.text}
+              </span>
+            </div>
+          )}
+          {settings.model && (
+            <div className="flex items-center gap-2">
+              <span className="text-white/40">Selected:</span>
+              <span className="text-white/60">{settings.model}</span>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Provider Selection */}
       <FormSelect
