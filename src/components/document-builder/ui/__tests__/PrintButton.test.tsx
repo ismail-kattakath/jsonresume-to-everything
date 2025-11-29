@@ -62,6 +62,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(mockPrint).toHaveBeenCalledTimes(1)
     })
@@ -71,6 +72,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(mockPrint).toHaveBeenCalledTimes(1)
     })
@@ -80,6 +82,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('Original Title')
       expect(mockPrint).toHaveBeenCalled()
@@ -92,6 +95,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -101,6 +105,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -110,6 +115,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -119,6 +125,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoeSmithJones-Resume')
     })
@@ -128,6 +135,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('John-Resume')
     })
@@ -137,6 +145,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -146,6 +155,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -155,6 +165,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -166,6 +177,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-Resume')
     })
@@ -175,6 +187,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('JohnDoe-CoverLetter')
     })
@@ -186,10 +199,11 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
 
       expect(document.title).toBe('JohnDoe-Resume')
 
-      // Fast-forward time
+      // Fast-forward time for title restoration
       jest.advanceTimersByTime(100)
 
       expect(document.title).toBe('Original Title')
@@ -200,6 +214,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       jest.advanceTimersByTime(100)
 
@@ -212,12 +227,14 @@ describe('PrintButton Component', () => {
 
       // First click
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
       expect(document.title).toBe('JohnDoe-Resume')
       jest.advanceTimersByTime(100)
       expect(document.title).toBe('Original Title')
 
       // Second click
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
       expect(document.title).toBe('JohnDoe-Resume')
       jest.advanceTimersByTime(100)
       expect(document.title).toBe('Original Title')
@@ -297,6 +314,7 @@ describe('PrintButton Component', () => {
       button.focus()
       fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' })
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(mockPrint).toHaveBeenCalled()
     })
@@ -321,6 +339,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toBe('Original Title')
       expect(mockPrint).toHaveBeenCalled()
@@ -331,6 +350,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       // Should handle the apostrophe as part of the name
       expect(mockPrint).toHaveBeenCalled()
@@ -342,6 +362,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(document.title).toContain('Resume')
       expect(mockPrint).toHaveBeenCalled()
@@ -352,6 +373,7 @@ describe('PrintButton Component', () => {
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run setTimeout(0)
 
       expect(mockPrint).toHaveBeenCalled()
     })
@@ -364,6 +386,7 @@ describe('PrintButton Component', () => {
       fireEvent.click(button)
       fireEvent.click(button)
       fireEvent.click(button)
+      jest.runOnlyPendingTimers() // Run all setTimeout(0) calls
 
       expect(mockPrint).toHaveBeenCalledTimes(3)
     })

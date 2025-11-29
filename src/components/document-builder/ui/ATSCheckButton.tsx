@@ -28,12 +28,23 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
       const originalTitle = document.title
       const formattedName = formatName(name)
       document.title = `${formattedName}-Resume`
-      window.print()
+
+      // Use setTimeout to ensure window.print() is called in next tick
+      // This prevents issues on mobile browsers where synchronous title
+      // manipulation can interfere with the print dialog
       setTimeout(() => {
-        document.title = originalTitle
-      }, 100)
+        window.print()
+
+        // Restore original title after print dialog closes
+        setTimeout(() => {
+          document.title = originalTitle
+        }, 100)
+      }, 0)
     } else {
-      window.print()
+      // Even without title manipulation, use setTimeout for consistency
+      setTimeout(() => {
+        window.print()
+      }, 0)
     }
   }
 
@@ -45,6 +56,7 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
     <>
       {/* Trigger Button */}
       <button
+        type="button"
         onClick={() => setIsModalOpen(true)}
         aria-label="Check ATS Score"
         className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-sm font-medium text-white shadow-lg transition-all hover:scale-[1.02] hover:from-amber-600 hover:to-orange-600 hover:shadow-xl focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] md:px-6"
@@ -67,6 +79,7 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
           <div className="animate-in fade-in zoom-in-95 relative w-full max-w-md rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 shadow-2xl duration-200">
             {/* Close Button */}
             <button
+              type="button"
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 rounded-lg p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
               aria-label="Close modal"
@@ -132,6 +145,7 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
+                type="button"
                 onClick={handlePrintPDF}
                 className="group/btn inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
               >
@@ -140,6 +154,7 @@ export default function ATSCheckButton({ name }: ATSCheckButtonProps) {
               </button>
 
               <button
+                type="button"
                 onClick={handleOpenResumeGo}
                 className="group/btn inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
               >

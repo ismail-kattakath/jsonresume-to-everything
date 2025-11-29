@@ -19,6 +19,13 @@ jest.mock('@/components/document-builder/ui/PrintButton', () => {
   }
 })
 
+// Mock ScaledPreviewWrapper component
+jest.mock('@/components/document-builder/ui/ScaledPreviewWrapper', () => {
+  return function MockScaledPreviewWrapper({ children }: any) {
+    return <div data-testid="scaled-preview-wrapper">{children}</div>
+  }
+})
+
 // Mock resumeAdapter
 jest.mock('@/lib/resumeAdapter', () => ({
   __esModule: true,

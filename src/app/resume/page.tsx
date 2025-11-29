@@ -5,6 +5,7 @@ import Preview from '@/components/resume/preview/Preview'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import defaultResumeData from '@/lib/resumeAdapter'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
+import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
 
@@ -54,15 +55,15 @@ export default function ResumeDownloadPage() {
     >
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
         {/* Floating Print Button - Hidden on print */}
-        <div className="exclude-print fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 md:top-auto md:right-8 md:bottom-8 md:left-auto md:translate-x-0 md:translate-y-0">
+        <div className="exclude-print fixed right-8 bottom-8 z-50">
           <PrintButton name={resumeData.name} documentType="Resume" />
         </div>
 
         {/* Resume Content */}
-        <div className="flex min-h-screen items-start justify-center px-4 py-8 print:px-0 print:py-0">
-          <div className="w-full max-w-4xl">
+        <div className="flex min-h-screen items-start justify-center md:px-4 md:py-8 print:px-0 print:py-0">
+          <ScaledPreviewWrapper>
             <Preview />
-          </div>
+          </ScaledPreviewWrapper>
         </div>
       </div>
     </ResumeContext.Provider>

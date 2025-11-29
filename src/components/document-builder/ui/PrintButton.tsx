@@ -26,20 +26,28 @@ export default function PrintButton({
       const formattedName = formatName(name)
       document.title = `${formattedName}-${documentType}`
 
-      // Print
-      window.print()
-
-      // Restore original title after print dialog closes
+      // Use setTimeout to ensure window.print() is called in next tick
+      // This prevents issues on mobile browsers where synchronous title
+      // manipulation can interfere with the print dialog
       setTimeout(() => {
-        document.title = originalTitle
-      }, 100)
+        window.print()
+
+        // Restore original title after print dialog closes
+        setTimeout(() => {
+          document.title = originalTitle
+        }, 100)
+      }, 0)
     } else {
-      window.print()
+      // Even without title manipulation, use setTimeout for consistency
+      setTimeout(() => {
+        window.print()
+      }, 0)
     }
   }
 
   return (
     <button
+      type="button"
       onClick={handlePrint}
       aria-label="Print"
       className="group hover:shadow-3xl inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-medium text-white shadow-2xl transition-all hover:scale-[1.02] hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] md:px-6"

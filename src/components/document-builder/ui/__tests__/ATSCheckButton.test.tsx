@@ -168,6 +168,7 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0)
       }
 
       expect(mockPrint).toHaveBeenCalledTimes(1)
@@ -198,6 +199,7 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0)
       }
 
       expect(document.title).toBe('JohnDoe-Resume')
@@ -213,6 +215,7 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0)
       }
 
       expect(document.title).toBe('JohnDoe-Resume')
@@ -228,10 +231,11 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
       }
 
       expect(document.title).toBe('JohnDoe-Resume')
-      jest.advanceTimersByTime(100)
+      jest.advanceTimersByTime(100) // Run setTimeout for title restoration
       expect(document.title).toBe('Original Title')
     })
 
@@ -245,6 +249,7 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0)
       }
 
       expect(document.title).toBe('Original Title')
@@ -334,6 +339,7 @@ describe('ATSCheckButton Component', () => {
       )
       if (pdfButton) {
         fireEvent.click(pdfButton)
+        jest.runOnlyPendingTimers() // Run setTimeout(0)
       }
 
       expect(document.title).toBe('Original Title')
