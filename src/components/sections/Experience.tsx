@@ -66,7 +66,7 @@ export default function Experience() {
                 >
                   {/* Header section with gradient background */}
                   <div className="relative border-b border-[var(--md-sys-color-outline-variant)]/30 bg-gradient-to-br from-[var(--md-sys-color-surface-container-low)] to-[var(--md-sys-color-surface-container)] p-6 pb-5">
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                       <div className="min-w-0 flex-1">
                         <h3 className="md3-headline-small mb-1.5 font-semibold break-words text-[var(--md-sys-color-primary)]">
                           {exp.organization}
@@ -74,10 +74,21 @@ export default function Experience() {
                         <h4 className="md3-title-large mb-3 font-normal break-words text-[var(--md-sys-color-on-surface)]">
                           {exp.title}
                         </h4>
+
+                        {/* Mobile: Duration badge below organization/title */}
+                        <div className="inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-surface-container-highest)] px-3 py-2 whitespace-nowrap shadow-sm md:hidden">
+                          <Calendar
+                            size={14}
+                            className="text-[var(--md-sys-color-primary)]"
+                          />
+                          <span className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">
+                            {exp.duration}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Duration badge */}
-                      <div className="flex flex-shrink-0 items-center gap-2 rounded-full bg-[var(--md-sys-color-surface-container-highest)] px-3 py-2 whitespace-nowrap shadow-sm">
+                      {/* Desktop: Duration badge on same row, aligned right */}
+                      <div className="hidden flex-shrink-0 items-center gap-2 rounded-full bg-[var(--md-sys-color-surface-container-highest)] px-3 py-2 whitespace-nowrap shadow-sm md:flex">
                         <Calendar
                           size={14}
                           className="text-[var(--md-sys-color-primary)]"
