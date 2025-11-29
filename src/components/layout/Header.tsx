@@ -34,10 +34,17 @@ export default function Header() {
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('#')) {
-      // Anchor link - scroll to section
-      const element = document.querySelector(href)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
+      // Anchor link - check if we're on homepage
+      const isHomePage = window.location.pathname === '/'
+      if (isHomePage) {
+        // On homepage - scroll to section
+        const element = document.querySelector(href)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      } else {
+        // On other page - navigate to homepage with anchor
+        window.location.href = `/${href}`
       }
     } else {
       // Full page navigation
@@ -79,7 +86,14 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
           <motion.button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => {
+              const isHomePage = window.location.pathname === '/'
+              if (isHomePage) {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              } else {
+                window.location.href = '/'
+              }
+            }}
             className="group flex cursor-pointer items-center gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

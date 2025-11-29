@@ -43,17 +43,19 @@ export default function Footer() {
             className="md:col-span-2"
           >
             <div className="mb-6">
-              <motion.div
-                className="mb-4 h-27 w-48"
+              <motion.button
+                onClick={() => (window.location.href = '/')}
+                className="mb-4 h-27 w-48 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
+                aria-label="Go to homepage"
               >
                 <Logo
                   width={192}
                   height={108}
                   fill="var(--md-sys-color-primary)"
                 />
-              </motion.div>
+              </motion.button>
               <h3 className="md3-title-large mb-2 bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] bg-clip-text font-semibold text-transparent">
                 {resumeData.position}
               </h3>
@@ -153,11 +155,17 @@ export default function Footer() {
                           key={subItem.name}
                           onClick={() => {
                             if (subItem.href.startsWith('#')) {
-                              const element = document.querySelector(
-                                subItem.href
-                              )
-                              if (element) {
-                                element.scrollIntoView({ behavior: 'smooth' })
+                              const isHomePage =
+                                window.location.pathname === '/'
+                              if (isHomePage) {
+                                const element = document.querySelector(
+                                  subItem.href
+                                )
+                                if (element) {
+                                  element.scrollIntoView({ behavior: 'smooth' })
+                                }
+                              } else {
+                                window.location.href = `/${subItem.href}`
                               }
                             } else {
                               window.location.href = subItem.href
@@ -174,9 +182,14 @@ export default function Footer() {
                     <button
                       onClick={() => {
                         if (item.href && item.href.startsWith('#')) {
-                          const element = document.querySelector(item.href)
-                          if (element) {
-                            element.scrollIntoView({ behavior: 'smooth' })
+                          const isHomePage = window.location.pathname === '/'
+                          if (isHomePage) {
+                            const element = document.querySelector(item.href)
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth' })
+                            }
+                          } else {
+                            window.location.href = `/${item.href}`
                           }
                         } else if (item.href) {
                           window.location.href = item.href
