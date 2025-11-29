@@ -14,8 +14,8 @@ import {
 import {
   generateCoverLetterWithGemini,
   generateSummaryWithGemini,
-  GeminiAPIError,
 } from './gemini-documents'
+import { GeminiAPIError } from './gemini-client'
 
 /**
  * Generate cover letter using the appropriate provider

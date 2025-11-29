@@ -6,10 +6,11 @@ import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import {
-  generateCoverLetter,
-  generateSummary,
+  generateCoverLetterWithProvider,
+  generateSummaryWithProvider,
   OpenAIAPIError,
-} from '@/lib/ai/openai-client'
+  GeminiAPIError,
+} from '@/lib/ai/document-generator'
 
 interface AITextAreaWithButtonProps {
   value: string
@@ -52,14 +53,14 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
       successDescription:
         'The AI has crafted your tailored professional summary.',
       errorMessage: 'Failed to generate professional summary',
-      generateFunction: generateSummary,
+      generateFunction: generateSummaryWithProvider,
     },
     coverLetter: {
       label: 'Cover Letter',
       successMessage: 'Cover letter generated successfully!',
       successDescription: 'The AI has crafted your personalized cover letter.',
       errorMessage: 'Failed to generate cover letter',
-      generateFunction: generateCoverLetter,
+      generateFunction: generateCoverLetterWithProvider,
     },
   }
 
@@ -92,13 +93,12 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
 
     try {
       const content = await currentConfig.generateFunction(
-        {
-          baseURL: settings.apiUrl,
-          apiKey: settings.apiKey,
-          model: settings.model,
-        },
         resumeData,
         settings.jobDescription,
+        settings.apiUrl,
+        settings.apiKey,
+        settings.model,
+        settings.providerType,
         (chunk) => {
           if (chunk.content) {
             streamedContent += chunk.content
@@ -121,7 +121,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
       let errorMessage = currentConfig.errorMessage
 
       /* istanbul ignore next */
-      if (err instanceof OpenAIAPIError) {
+      if (err instanceof OpenAIAPIError || err instanceof GeminiAPIError) {
         errorMessage = err.message
       } else if (err instanceof Error) {
         errorMessage = err.message
