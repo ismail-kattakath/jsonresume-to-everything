@@ -2,16 +2,31 @@
 
 ## Overview
 
-The AI Configuration interface allows you to connect to any OpenAI-compatible API provider for generating AI-powered content like cover letters and professional summaries. The interface features a smart provider dropdown system that auto-detects and manages multiple AI providers with minimal configuration.
+The AI Configuration interface allows you to connect to multiple AI providers for generating AI-powered content like cover letters and professional summaries. The interface supports both **native integrations** (Google Gemini) and **OpenAI-compatible APIs**, with a smart provider dropdown system for easy setup.
+
+## Supported AI Providers
+
+### Native Integrations
+
+- **Google Gemini** - Direct API integration with Gemini models (thinking mode, streaming, optimized tokens)
+
+### OpenAI-Compatible APIs
+
+- **OpenAI** - Official GPT models
+- **OpenRouter** - Access to 100+ models
+- **xAI Grok** - Grok models
+- **Local LM Studio** - Self-hosted models
+- **Custom** - Any OpenAI-compatible API
 
 ## Features
 
-- 🎯 **Provider Dropdown**: Pre-configured providers for instant setup (OpenAI, OpenRouter, xAI Grok, Local LM Studio)
+- 🎯 **Provider Dropdown**: Pre-configured providers for instant setup (Google Gemini, OpenAI, OpenRouter, xAI Grok, Local LM Studio)
 - 🔄 **Auto-Fetch Models**: Automatically loads available models from your API provider
 - 💾 **Smart Persistence**: Remembers your provider, model, and credentials across sessions
-- 🔌 **Custom Providers**: Support for any OpenAI-compatible API with custom URL entry
+- 🔌 **Dual Integration**: Native Gemini API + OpenAI-compatible APIs
 - 📊 **Connection Status**: Real-time feedback on API connection and model availability
 - ⚡ **Auto-Selection**: Intelligently selects the first available model when switching providers
+- 🚀 **Streaming Support**: Real-time content generation for all providers
 
 ## Accessing AI Settings
 
@@ -53,20 +68,22 @@ Choose from pre-configured providers or use a custom URL:
 
 #### Pre-configured Providers
 
-| Provider              | Description                                           | Common Models                                                      |
-| --------------------- | ----------------------------------------------------- | ------------------------------------------------------------------ |
-| **OpenAI**            | Official OpenAI API (GPT-4, GPT-4o, GPT-4o-mini)      | gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo             |
-| **OpenRouter**        | Access 100+ models (Gemini, Claude, GPT, Llama, etc.) | gemini-2.0-flash-exp, claude-3.5-sonnet, gpt-4o-mini, deepseek-r1  |
-| **xAI (Grok)**        | xAI Grok models                                       | grok-beta, grok-vision-beta                                        |
-| **Local (LM Studio)** | Local AI server (LM Studio, Ollama, etc.)             | llama-3.1-8b-instruct, llama-3.3-70b-instruct, qwen2.5-7b-instruct |
-| **Custom**            | Any OpenAI-compatible API                             | (Enter your own URL)                                               |
+| Provider              | Type       | Description                                           | Common Models                                                      |
+| --------------------- | ---------- | ----------------------------------------------------- | ------------------------------------------------------------------ |
+| **Google Gemini** ⭐  | Native     | Direct Gemini API with thinking mode support          | gemini-2.5-flash, gemini-2.5-pro, gemini-1.5-flash, gemini-1.5-pro |
+| **OpenAI**            | Compatible | Official OpenAI API (GPT-4, GPT-4o, GPT-4o-mini)      | gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo             |
+| **OpenRouter**        | Compatible | Access 100+ models (Gemini, Claude, GPT, Llama, etc.) | gemini-2.0-flash-exp, claude-3.5-sonnet, gpt-4o-mini, deepseek-r1  |
+| **xAI (Grok)**        | Compatible | xAI Grok models                                       | grok-beta, grok-vision-beta                                        |
+| **Local (LM Studio)** | Compatible | Local AI server (LM Studio, Ollama, etc.)             | llama-3.1-8b-instruct, llama-3.3-70b-instruct, qwen2.5-7b-instruct |
+| **Custom**            | Compatible | Any OpenAI-compatible API                             | (Enter your own URL)                                               |
 
 **How it works:**
 
 1. Select a provider from the dropdown
-2. The API URL is automatically set
-3. Common models are shown immediately (no API key needed yet)
-4. When you add an API key, the full list of available models is fetched
+2. For **Google Gemini**: Native API integration (no URL needed)
+3. For **OpenAI-Compatible**: API URL is automatically set
+4. Common models are shown immediately (no API key needed yet)
+5. When you add an API key, the full list of available models is fetched (OpenAI-compatible only; Gemini shows fixed list)
 
 ### 3. Custom API URL (Custom Provider Only)
 
@@ -178,6 +195,48 @@ Large textarea for context input:
 
 ## Provider Setup Guides
 
+### Google Gemini (Native) ⭐ Recommended
+
+**Recommended for:** Everyone! Free tier, high quality, no credit card required
+
+**Why Choose Gemini:**
+
+- ✅ **Free tier** with generous limits (15 requests/min, 1M tokens/day)
+- ✅ **No credit card required** to start
+- ✅ **High quality** - Excellent for professional writing
+- ✅ **Thinking mode** - Gemini 2.5 models use internal reasoning for better results
+- ✅ **Native integration** - Direct API, no intermediaries
+- ✅ **Optimized** - Automatic handling of thinking mode token consumption
+
+**Setup Steps:**
+
+1. Visit https://aistudio.google.com/apikey
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Copy the key (starts with `AIza...`)
+5. In the application:
+   - Provider: **Google Gemini**
+   - API Key: Paste your key
+   - Model: **gemini-2.5-flash** (recommended) or choose another
+
+**Available Models:**
+
+- `gemini-2.5-flash` - **Recommended** - Fast, high-quality, thinking mode
+- `gemini-2.5-pro` - Most capable, deeper reasoning
+- `gemini-1.5-flash` - Fast and efficient (no thinking mode)
+- `gemini-1.5-pro` - Previous generation, still very capable
+
+**Features:**
+
+- 🚀 **Streaming**: Real-time content generation
+- 🔄 **Auto-retry**: Handles temporary 503/429 errors
+- 📊 **Smart tokens**: Optimized limits (4096-8192) for complete responses
+- ✨ **Thinking mode**: Better quality through internal reasoning
+
+**Cost:** Free tier is very generous. See https://ai.google.dev/pricing for paid tiers.
+
+---
+
 ### OpenAI
 
 **Recommended for:** Users who want the most reliable, high-quality results
@@ -195,9 +254,11 @@ Large textarea for context input:
 
 **Cost:** ~$0.01-0.03 per cover letter generation
 
-### OpenRouter (Recommended for Beginners)
+### OpenRouter
 
-**Recommended for:** Users who want access to multiple AI providers (Gemini, Claude, GPT) with one API key
+**Recommended for:** Users who want access to multiple AI providers (Claude, alternative models) with one API key
+
+**Note:** For Gemini models, use the native **Google Gemini** provider above instead for better performance and features.
 
 **Setup Steps:**
 
