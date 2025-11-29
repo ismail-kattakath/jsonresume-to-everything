@@ -5,6 +5,7 @@ import Preview from '@/components/resume/preview/Preview'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import defaultResumeData from '@/lib/resumeAdapter'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
+import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
 
@@ -59,10 +60,10 @@ export default function ResumeDownloadPage() {
         </div>
 
         {/* Resume Content */}
-        <div className="flex min-h-screen items-start justify-center px-4 py-8 print:px-0 print:py-0">
-          <div className="w-full max-w-4xl">
+        <div className="flex min-h-screen items-start justify-center px-4 py-8 md:px-4 print:px-0 print:py-0">
+          <ScaledPreviewWrapper>
             <Preview />
-          </div>
+          </ScaledPreviewWrapper>
         </div>
       </div>
     </ResumeContext.Provider>
