@@ -285,9 +285,6 @@ describe('GeminiClient', () => {
         temperature: 0.9,
         topP: 0.95,
         maxOutputTokens: 2000,
-        thinkingConfig: {
-          includeThoughts: true,
-        },
       })
     })
   })
