@@ -223,7 +223,8 @@ describe('Preview Component', () => {
       const mockData = createMockResumeData({
         education: [
           {
-            degree: 'Bachelor of Science in Computer Science',
+            studyType: 'Bachelor of Science',
+            area: 'Computer Science',
             school: 'University of Example',
             url: 'university.edu',
             startYear: '2015-09-01',
@@ -257,14 +258,16 @@ describe('Preview Component', () => {
       const mockData = createMockResumeData({
         education: [
           {
-            degree: 'Bachelor of Science',
+            studyType: 'Bachelor of Science',
+            area: 'Computer Science',
             school: 'University A',
             url: '',
             startYear: '2015',
             endYear: '2019',
           },
           {
-            degree: 'Master of Science',
+            studyType: 'Master of Science',
+            area: 'Engineering',
             school: 'University B',
             url: '',
             startYear: '2019',
@@ -276,8 +279,12 @@ describe('Preview Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      expect(screen.getByText('Bachelor of Science')).toBeInTheDocument()
-      expect(screen.getByText('Master of Science')).toBeInTheDocument()
+      expect(
+        screen.getByText('Bachelor of Science in Computer Science')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('Master of Science in Engineering')
+      ).toBeInTheDocument()
       expect(screen.getByText('University A')).toBeInTheDocument()
       expect(screen.getByText('University B')).toBeInTheDocument()
     })
