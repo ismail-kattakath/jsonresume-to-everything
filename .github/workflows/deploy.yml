@@ -35,7 +35,7 @@ jobs:
         run: npm ci --no-fund --loglevel=error
 
       - name: Run tests and collect coverage
-        run: npm run test:coverage -- --coverageThreshold='{}'
+        run: npm run test:coverage -- --coverageThreshold='{}' --maxWorkers=2
         continue-on-error: false
 
       - name: Upload coverage to Codecov
