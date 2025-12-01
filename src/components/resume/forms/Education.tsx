@@ -129,7 +129,7 @@ const Education = () => {
                         variant="indigo"
                       />
 
-                      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                      <div className="flex w-full flex-col gap-3 sm:flex-row">
                         <FormInput
                           label="Start Date"
                           name="startYear"
