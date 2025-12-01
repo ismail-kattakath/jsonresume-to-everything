@@ -338,15 +338,24 @@ describe('Integration: Form → Preview Synchronization', () => {
             target: { name: 'school', value: 'MIT' },
           })
 
-          const degreeInputs = container.querySelectorAll(
-            'input[name="degree"]'
+          const studyTypeInputs = container.querySelectorAll(
+            'input[name="studyType"]'
           )
-          const lastDegreeInput = degreeInputs[
-            degreeInputs.length - 1
+          const lastStudyTypeInput = studyTypeInputs[
+            studyTypeInputs.length - 1
           ] as HTMLInputElement
 
-          fireEvent.change(lastDegreeInput, {
-            target: { name: 'degree', value: 'Master of Science' },
+          fireEvent.change(lastStudyTypeInput, {
+            target: { name: 'studyType', value: "Master's Degree" },
+          })
+
+          const areaInputs = container.querySelectorAll('input[name="area"]')
+          const lastAreaInput = areaInputs[
+            areaInputs.length - 1
+          ] as HTMLInputElement
+
+          fireEvent.change(lastAreaInput, {
+            target: { name: 'area', value: 'Science' },
           })
         })
 
@@ -354,7 +363,7 @@ describe('Integration: Form → Preview Synchronization', () => {
         await waitFor(() => {
           const preview = container.querySelector('.preview')
           expect(preview).toHaveTextContent('MIT')
-          expect(preview).toHaveTextContent('Master of Science')
+          expect(preview).toHaveTextContent("Master's Degree in Science")
         })
       }
     })

@@ -285,15 +285,24 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
             target: { name: 'school', value: 'Stanford University' },
           })
 
-          const degreeInputs = container.querySelectorAll(
-            'input[name="degree"]'
+          const studyTypeInputs = container.querySelectorAll(
+            'input[name="studyType"]'
           )
-          const lastDegreeInput = degreeInputs[
-            degreeInputs.length - 1
+          const lastStudyTypeInput = studyTypeInputs[
+            studyTypeInputs.length - 1
           ] as HTMLInputElement
 
-          fireEvent.change(lastDegreeInput, {
-            target: { name: 'degree', value: 'MBA' },
+          fireEvent.change(lastStudyTypeInput, {
+            target: { name: 'studyType', value: 'MBA' },
+          })
+
+          const areaInputs = container.querySelectorAll('input[name="area"]')
+          const lastAreaInput = areaInputs[
+            areaInputs.length - 1
+          ] as HTMLInputElement
+
+          fireEvent.change(lastAreaInput, {
+            target: { name: 'area', value: 'Business Administration' },
           })
         })
 
@@ -303,7 +312,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
           expect(preview).toHaveTextContent('Charlie Brown')
           expect(preview).toHaveTextContent('Product Co')
           expect(preview).toHaveTextContent('Stanford University')
-          expect(preview).toHaveTextContent('MBA')
+          expect(preview).toHaveTextContent('MBA in Business Administration')
         })
       }
     }, 10000)
@@ -517,15 +526,24 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
             target: { name: 'school', value: 'Tech University' },
           })
 
-          const degreeInputs = container.querySelectorAll(
-            'input[name="degree"]'
+          const studyTypeInputs = container.querySelectorAll(
+            'input[name="studyType"]'
           )
-          const lastDegreeInput = degreeInputs[
-            degreeInputs.length - 1
+          const lastStudyTypeInput = studyTypeInputs[
+            studyTypeInputs.length - 1
           ] as HTMLInputElement
 
-          fireEvent.change(lastDegreeInput, {
-            target: { name: 'degree', value: 'Bachelor of Computer Science' },
+          fireEvent.change(lastStudyTypeInput, {
+            target: { name: 'studyType', value: "Bachelor's Degree" },
+          })
+
+          const areaInputs = container.querySelectorAll('input[name="area"]')
+          const lastAreaInput = areaInputs[
+            areaInputs.length - 1
+          ] as HTMLInputElement
+
+          fireEvent.change(lastAreaInput, {
+            target: { name: 'area', value: 'Computer Science' },
           })
         })
       }
@@ -553,7 +571,9 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
         // Education
         expect(preview).toHaveTextContent('Tech University')
-        expect(preview).toHaveTextContent('Bachelor of Computer Science')
+        expect(preview).toHaveTextContent(
+          "Bachelor's Degree in Computer Science"
+        )
       })
 
       // Step 6: Verify print button is ready
