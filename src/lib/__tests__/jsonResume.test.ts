@@ -406,6 +406,382 @@ describe('JSON Resume Conversion', () => {
       expect(result.projects).toHaveLength(1)
       expect(result.projects[0].url).toBeUndefined()
     })
+
+    // Branch Coverage Tests
+    it('should extract GitHub username from profile link', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        socialMedia: [{ socialMedia: 'Github', link: 'github.com/johndoe' }],
+      }
+
+      const result = convertToJSONResume(mockData)
+      const githubProfile = result.basics.profiles.find(
+        (p: any) => p.network === 'Github'
+      )
+      expect(githubProfile?.username).toBe('johndoe')
+    })
+
+    it('should extract LinkedIn username from profile link', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        socialMedia: [
+          { socialMedia: 'LinkedIn', link: 'linkedin.com/in/johndoe' },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      const linkedinProfile = result.basics.profiles.find(
+        (p: any) => p.network === 'LinkedIn'
+      )
+      expect(linkedinProfile?.username).toBe('johndoe')
+    })
+
+    it('should handle non-GitHub/LinkedIn social media with empty username', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        socialMedia: [{ socialMedia: 'Twitter', link: 'twitter.com/johndoe' }],
+      }
+
+      const result = convertToJSONResume(mockData)
+      const twitterProfile = result.basics.profiles.find(
+        (p: any) => p.network === 'Twitter'
+      )
+      expect(twitterProfile?.username).toBe('')
+    })
+
+    it('should handle work experience with Present end date', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        workExperience: [
+          {
+            organization: 'Current Company',
+            url: 'current.com',
+            position: 'Developer',
+            description: 'Current role',
+            keyAchievements: [],
+            startYear: '2023-01',
+            endYear: 'Present',
+            technologies: ['React'],
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.work[0].endDate).toBe('')
+    })
+
+    it('should handle work experience without technologies array', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        workExperience: [
+          {
+            organization: 'Company',
+            url: 'company.com',
+            position: 'Developer',
+            description: 'Role',
+            keyAchievements: [],
+            startYear: '2020-01',
+            endYear: '2021-12',
+            technologies: undefined as any,
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.work[0].keywords).toEqual([])
+    })
+
+    it('should handle address without postal code pattern', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        address: '123 Main St, Toronto, Ontario',
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.location.postalCode).toBe('')
+      expect(result.basics.location.city).toBe('Toronto')
+    })
+
+    it('should handle address without region pattern', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        address: '123 Main St, Toronto, M5H 2N2',
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.location.region).toBe('ON')
+    })
+
+    it('should handle missing certifications array', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        certifications: undefined as any,
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.certificates).toEqual([])
+    })
+
+    it('should handle certificate with empty URL', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        certifications: [
+          { name: 'Cert', date: '2023', issuer: 'Issuer', url: '   ' },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.certificates[0].url).toBeUndefined()
+    })
+
+    it('should handle missing projects array', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        projects: undefined as any,
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.projects).toEqual([])
+    })
+
+    it('should handle work with normal end date', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        workExperience: [
+          {
+            organization: 'Company',
+            url: 'company.com',
+            position: 'Developer',
+            description: 'Role',
+            keyAchievements: [],
+            startYear: '2020-01',
+            endYear: '2021-12',
+            technologies: ['React'],
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.work[0].endDate).toBe('2021-12')
+    })
+
+    it('should handle address with all parts present', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        address: '456 Elm St, Vancouver, BC V6B 1A1',
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.location.address).toBe('456 Elm St')
+      expect(result.basics.location.city).toBe('Vancouver')
+      expect(result.basics.location.region).toBe('BC')
+      expect(result.basics.location.postalCode).toBe('V6B 1A1')
+    })
+
+    it('should handle certificate with valid URL', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        certifications: [
+          {
+            name: 'AWS Certified',
+            date: '2023',
+            issuer: 'Amazon',
+            url: 'aws.amazon.com/cert',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.certificates[0].url).toBe('https://aws.amazon.com/cert')
+    })
+
+    it('should handle empty address parts with defaults', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        address: '',
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.location.address).toBe('')
+      expect(result.basics.location.city).toBe('')
+      expect(result.basics.location.region).toBe('ON')
+      expect(result.basics.location.postalCode).toBe('')
+    })
+
+    it('should handle education with both studyType and area', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        education: [
+          {
+            school: 'MIT',
+            url: 'mit.edu',
+            studyType: "Master's Degree",
+            area: 'Computer Science',
+            startYear: '2020',
+            endYear: '2022',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.education[0].studyType).toBe("Master's Degree")
+      expect(result.education[0].area).toBe('Computer Science')
+    })
+
+    it('should use default resumeData when customData is undefined', () => {
+      const result = convertToJSONResume()
+      expect(result).toBeDefined()
+      expect(result.basics).toBeDefined()
+    })
+
+    it('should handle profile without network name', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        socialMedia: [{ socialMedia: '', link: 'example.com' }],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.profiles[0].network).toBe('')
+      expect(result.basics.profiles[0].username).toBe('')
+    })
+
+    it('should handle projects array with multiple items', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        projects: [
+          {
+            name: 'Project 1',
+            link: 'github.com/p1',
+            description: 'Desc 1',
+            keyAchievements: [{ text: 'Achievement 1' }],
+            startYear: '2020',
+            endYear: '2021',
+          },
+          {
+            name: 'Project 2',
+            link: '',
+            description: 'Desc 2',
+            keyAchievements: [],
+            startYear: '2021',
+            endYear: '2022',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.projects).toHaveLength(2)
+      expect(result.projects[0].url).toBe('https://github.com/p1')
+      expect(result.projects[1].url).toBeUndefined()
+    })
+
+    it('should handle work experience with all fields populated', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        workExperience: [
+          {
+            organization: 'Tech Corp',
+            url: 'techcorp.com',
+            position: 'Senior Engineer',
+            description: 'Led team',
+            keyAchievements: [
+              { text: 'Built platform' },
+              { text: 'Improved performance' },
+            ],
+            startYear: '2020-01',
+            endYear: '2023-12',
+            technologies: ['React', 'Node.js', 'TypeScript'],
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.work[0].url).toBe('https://techcorp.com')
+      expect(result.work[0].keywords).toHaveLength(3)
+      expect(result.work[0].highlights).toHaveLength(2)
+    })
+
+    it('should handle address with only city and province', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        address: ', Toronto, ON',
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.basics.location.address).toBe('')
+      expect(result.basics.location.city).toBe('Toronto')
+      expect(result.basics.location.region).toBe('ON')
+    })
+
+    it('should handle multiple social media with different username extraction logic', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        socialMedia: [
+          { socialMedia: 'Github', link: 'github.com/user123' },
+          { socialMedia: 'LinkedIn', link: 'linkedin.com/in/user456' },
+          { socialMedia: 'Website', link: 'example.com' },
+          { socialMedia: 'Twitter', link: 'twitter.com/handle' },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      const github = result.basics.profiles.find(
+        (p: any) => p.network === 'Github'
+      )
+      const linkedin = result.basics.profiles.find(
+        (p: any) => p.network === 'LinkedIn'
+      )
+      const website = result.basics.profiles.find(
+        (p: any) => p.network === 'Website'
+      )
+      const twitter = result.basics.profiles.find(
+        (p: any) => p.network === 'Twitter'
+      )
+
+      expect(github?.username).toBe('user123')
+      expect(linkedin?.username).toBe('user456')
+      expect(website?.username).toBe('')
+      expect(twitter?.username).toBe('')
+    })
+
+    it('should handle education with URL present', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        education: [
+          {
+            school: 'Stanford',
+            url: 'stanford.edu',
+            studyType: 'PhD',
+            area: 'AI',
+            startYear: '2018',
+            endYear: '2023',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.education[0].url).toBe('https://stanford.edu')
+    })
+
+    it('should handle work with URL present', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        workExperience: [
+          {
+            organization: 'Google',
+            url: 'google.com',
+            position: 'Engineer',
+            description: 'Work',
+            keyAchievements: [],
+            startYear: '2020',
+            endYear: '2023',
+            technologies: [],
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.work[0].url).toBe('https://google.com')
+    })
   })
 
   describe('convertFromJSONResume', () => {
@@ -869,6 +1245,227 @@ describe('JSON Resume Conversion', () => {
       expect(result?.projects).toHaveLength(1)
       expect(result?.projects[0].link).toBe('example.com/project')
       expect(result?.projects[0].name).toBe('Sample Project')
+    })
+
+    it('should handle JSON Resume with website URL in basics', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        basics: {
+          ...mockJSONResume.basics,
+          url: 'https://example.com',
+          profiles: [],
+        },
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.socialMedia[0].socialMedia).toBe('Website')
+      expect(result?.socialMedia[0].link).toBe('example.com')
+    })
+
+    it('should handle work with Present end date (empty string)', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        work: [
+          {
+            name: 'Company',
+            position: 'Developer',
+            startDate: '2020-01',
+            endDate: '',
+            summary: 'Description',
+            highlights: [],
+            keywords: [],
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.workExperience[0].endYear).toBe('Present')
+    })
+
+    it('should handle language objects with fluency', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        languages: [
+          { language: 'French', fluency: 'Professional' },
+          { language: 'German', fluency: 'Conversational' },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.languages).toContain('French')
+      expect(result?.languages).toContain('German')
+    })
+
+    it('should handle projects with URL stripping', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        projects: [
+          {
+            name: 'Project',
+            url: 'https://github.com/project',
+            description: 'Desc',
+            highlights: [],
+            startDate: '2020',
+            endDate: '2021',
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.projects[0].link).toBe('github.com/project')
+    })
+
+    it('should handle address with only street address', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        basics: {
+          ...mockJSONResume.basics,
+          location: {
+            address: '123 Main St',
+          },
+        },
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.address).toContain('123 Main St')
+    })
+
+    it('should handle JSON Resume without location object', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        basics: {
+          ...mockJSONResume.basics,
+          location: undefined,
+        },
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.address).toBe('')
+    })
+
+    it('should handle work without keywords field', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        work: [
+          {
+            name: 'Company',
+            position: 'Developer',
+            startDate: '2020',
+            endDate: '2021',
+            summary: 'Summary',
+            highlights: [],
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.workExperience[0].technologies).toEqual([])
+    })
+
+    it('should handle skill group without keywords', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        skills: [
+          {
+            name: 'Programming',
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.skills[0].skills).toEqual([])
+    })
+
+    it('should handle empty basics object', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        basics: {},
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result).not.toBeNull()
+      expect(result?.name).toBe('')
+    })
+
+    it('should handle profile without URL', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        basics: {
+          ...mockJSONResume.basics,
+          profiles: [
+            {
+              network: 'Twitter',
+              username: 'user',
+              url: undefined,
+            },
+          ],
+        },
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      const twitterProfile = result?.socialMedia.find(
+        (s) => s.socialMedia === 'Twitter'
+      )
+      expect(twitterProfile?.link).toBe('')
+    })
+
+    it('should handle project without link', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        projects: [
+          {
+            name: 'Internal Project',
+            description: 'Desc',
+            highlights: [],
+            startDate: '2020',
+            endDate: '2021',
+            url: undefined,
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.projects[0].link).toBe('')
+    })
+
+    it('should handle education without URL', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        education: [
+          {
+            institution: 'University',
+            area: 'Computer Science',
+            studyType: "Bachelor's",
+            startDate: '2015',
+            endDate: '2019',
+            url: undefined,
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.education[0].url).toBe('')
+    })
+
+    it('should handle work without URL', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        work: [
+          {
+            name: 'Company',
+            position: 'Developer',
+            startDate: '2020',
+            endDate: '2021',
+            summary: 'Work',
+            highlights: [],
+            keywords: [],
+            url: undefined,
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.workExperience[0].url).toBe('')
     })
   })
 })
