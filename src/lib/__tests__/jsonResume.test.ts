@@ -365,6 +365,47 @@ describe('JSON Resume Conversion', () => {
       // Calendar link is not in JSON Resume standard, so no assertion needed
       expect(result).toBeDefined()
     })
+
+    it('should handle projects with URLs', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        projects: [
+          {
+            name: 'Open Source Project',
+            link: 'github.com/project',
+            description: 'A great project',
+            keyAchievements: [{ text: 'Achievement 1' }],
+            startYear: '2020-01',
+            endYear: '2021-12',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.projects).toHaveLength(1)
+      expect(result.projects[0].url).toBe('https://github.com/project')
+      expect(result.projects[0].name).toBe('Open Source Project')
+    })
+
+    it('should handle projects without URLs', () => {
+      const mockData: ResumeData = {
+        ...mockResumeData,
+        projects: [
+          {
+            name: 'Internal Project',
+            link: '',
+            description: 'Internal project',
+            keyAchievements: [],
+            startYear: '2020-01',
+            endYear: '2021-12',
+          },
+        ],
+      }
+
+      const result = convertToJSONResume(mockData)
+      expect(result.projects).toHaveLength(1)
+      expect(result.projects[0].url).toBeUndefined()
+    })
   })
 
   describe('convertFromJSONResume', () => {
@@ -807,6 +848,27 @@ describe('JSON Resume Conversion', () => {
 
       expect(result).not.toBeNull()
       expect(result.education[0].url).toBe('')
+    })
+
+    it('should convert projects from JSON Resume with URLs', () => {
+      const jsonResume = {
+        ...mockJSONResume,
+        projects: [
+          {
+            name: 'Sample Project',
+            url: 'https://example.com/project',
+            description: 'Description',
+            highlights: ['Highlight 1'],
+            startDate: '2020-01',
+            endDate: '2021-12',
+          },
+        ],
+      }
+
+      const result = convertFromJSONResume(jsonResume)
+      expect(result?.projects).toHaveLength(1)
+      expect(result?.projects[0].link).toBe('example.com/project')
+      expect(result?.projects[0].name).toBe('Sample Project')
     })
   })
 })
