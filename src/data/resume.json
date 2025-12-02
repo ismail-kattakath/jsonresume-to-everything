@@ -8,7 +8,7 @@
     "phone": "+1 (647) 225-2878",
     "url": "https://ismail.kattakath.com",
     "calendar": "https://calendar.app.google/djSRHAdTuSEanoea7",
-    "summary": "Principal Software Engineer with deep expertise in full-stack development and cloud infrastructure, delivering high-impact, scalable systems at scale. Currently architecting and operating production-grade GenAI inference platforms using vLLM, Kubernetes, and multi-GPU clusters, achieving 25% cost reduction and 40% latency improvement. Previously rescued an abandoned healthcare MEAN-stack application and transformed it into a nationally deployed platform with 99.5% uptime; led the AngularJS-to-Next.js modernization, implemented enterprise federated authentication (OAuth 2.0 + SAML 2.0) across 5+ partners, and established DevOps practices that reduced deployment time by 92% and production incidents by 65%. Proven ability to drive end-to-end architecture, performance optimization, security/compliance, and measurable business outcomes in distributed cloud environments.",
+    "summary": "Lead Full Stack Engineer with extensive experience in React/Next.js, TypeScript, and modern web development. Led a Next.js green-field migration at Homewood Health Inc., transforming an abandoned MEAN stack into a production platform with 99.5% uptime, reducing deployment time from 4 hours to 20 minutes through CI/CD automation; served hundreds of thousands of users across multiple federated vendors. At Etuper Technologies Pvt. Ltd., steered cross-functional teams in building micro-frontend solutions, delivering reusable component libraries and shared design systems while maintaining a 65% reduction in production incidents. Currently architecting scalable GenAI inference infrastructure at Silver Creek Insights Inc., yet focused on frontend ownership and stakeholder collaboration. Proven ability to own end-to-end delivery, mentor junior engineers, enforce coding standards, and drive performance optimization. Deep expertise in React.js, Next.js App Router, TypeScript, Tailwind CSS, module federation, Jest, Playwright, GitHub Actions, Docker, and cloud platforms (AWS, GCP).",
     "location": {
       "address": "24-242 John Garland Blvd",
       "postalCode": "M9V 1N8",
@@ -38,10 +38,10 @@
       "endDate": "",
       "summary": "Worked on an AI-as-a-Service platform (aloshy.ai) providing B2B APIs for media manipulation and custom-trained generative AI pipelines tailored to specific business needs.",
       "highlights": [
+        "Built enterprise-grade secured API architecture using centralized gateway/aggregator for serving internal and curated third-party MCP servers/tools.",
         "Architected scalable GenAI inference infrastructure using Kubernetes/Containerization, vLLM etc. supporting multiple Diffusion and LLM models, and deployed on GCP/GKE and AWS/EKS for production.",
         "Implemented advanced techniques such as KV-cache, Distributed Inference, Multi-GPU/Node Scaling, CUDA optimization and memory/load management to reduce inference latency by 40%, and cutting operational costs by 25%.",
-        "Designed and documented GPU cluster management playbooks including model versioning/rollbacks, utilization monitoring, failure recovery, and load balancing strategies.",
-        "Built enterprise-grade secured API architecture using centralized gateway/aggregator for serving internal and curated third-party MCP servers/tools."
+        "Designed and documented GPU cluster management playbooks including model versioning/rollbacks, utilization monitoring, failure recovery, and load balancing strategies."
       ],
       "keywords": [
         "Google Vertex AI",
@@ -66,12 +66,12 @@
       "endDate": "2024-07-01",
       "summary": "Worked on Canada's leading digital mental health platform (homeweb.ca), delivering EFAP and CBT solutions to hundreds of thousands of employees nationwide.",
       "highlights": [
-        "Inherited and revitalized an abandoned, undocumented MEAN stack application, transforming it into a maintainable, production-ready web platform with 99.5% uptime.",
-        "Rebuilt authentication system implementing OAuth 2.0 PKCE flow for SSO integration with Microsoft Identity Platform.",
-        "Collaborated with 15+ federated vendors to configure and troubleshoot SAML 2.0 authentication, enabling seamless user login.",
         "Led complete frontend migration from AngularJS to Next.js upon framework EOL, preserving existing UI/UX and API compatibility.",
         "Established comprehensive DevOps practices including automated testing, CI/CD pipelines (reducing deployment time from 4 hours to 20 minutes), containerization, monitoring, and backup systems.",
-        "Led infrastructure migration from DigitalOcean to AWS, orchestrating transition of EC2, RDS, S3, CloudFront, and VPC components using Terraform for infrastructure-as-code, achieving zero-downtime deployment."
+        "Led infrastructure migration from DigitalOcean to AWS, orchestrating transition of EC2, RDS, S3, CloudFront, and VPC components using Terraform for infrastructure-as-code, achieving zero-downtime deployment.",
+        "Rebuilt authentication system implementing OAuth 2.0 PKCE flow for SSO integration with Microsoft Identity Platform.",
+        "Collaborated with 15+ federated vendors to configure and troubleshoot SAML 2.0 authentication, enabling seamless user login.",
+        "Inherited and revitalized an abandoned, undocumented MEAN stack application, transforming it into a maintainable, production-ready web platform with 99.5% uptime."
       ],
       "keywords": [
         "Next.js",
@@ -97,12 +97,12 @@
       "endDate": "2017-08-01",
       "summary": "Worked on a complete hospitality software suite (Brilliant Rewards)—dashboard, mobile and web apps—featuring loyalty programs, marketing automation, booking integration, and analytics.",
       "highlights": [
-        "Collaborated with stakeholders to gather requirements, create user stories, design wireframes, and develop functional prototypes.",
-        "Managed sprint planning, daily standups, backlog prioritization, and blocker resolution to ensure continuous delivery.",
-        "Designed normalized database schemas, optimized SQL queries and indexing strategies, and implemented stored procedures with comprehensive test coverage.",
         "Led development of scalable microservices architecture with containerized, discoverable APIs following OpenAPI specifications.",
+        "Managed sprint planning, daily standups, backlog prioritization, and blocker resolution to ensure continuous delivery.",
+        "Introduced development standards encompassing coding conventions, linting, code reviews, documentation, and incident management processes, reducing production incidents by 65%.",
+        "Collaborated with stakeholders to gather requirements, create user stories, design wireframes, and develop functional prototypes.",
         "Delivered multiple client applications including AngularJS web platforms and cross-platform mobile solutions.",
-        "Introduced development standards encompassing coding conventions, linting, code reviews, documentation, and incident management processes, reducing production incidents by 65%."
+        "Designed normalized database schemas, optimized SQL queries and indexing strategies, and implemented stored procedures with comprehensive test coverage."
       ],
       "keywords": [
         "AngularJS",
@@ -126,8 +126,8 @@
       "highlights": [
         "Implemented OpenAPI/Swagger bridging layer to modernize legacy SOAP APIs for RESTful client consumption.",
         "Prototyped AngularJS interface to decouple presentation layer from legacy Struts JSP architecture.",
-        "Maintained load-balanced Linux VM clusters hosting distributed web, application, and database tiers.",
-        "Mentored interns and onboarded new team members through technical guidance and knowledge transfer."
+        "Mentored interns and onboarded new team members through technical guidance and knowledge transfer.",
+        "Maintained load-balanced Linux VM clusters hosting distributed web, application, and database tiers."
       ],
       "keywords": [
         "Java",
@@ -308,5 +308,6 @@
   ],
   "interests": [],
   "references": [],
-  "projects": []
+  "projects": [],
+  "content": "I am excited to apply for the Lead Full Stack Software Engineer role where I can leverage my proven track record in leading frontend teams and delivering high-performance web applications. In my recent position as Senior Software Engineer at Homewood Health Inc., I resurrected an abandoned MEAN-stack application, modernized it with AngularJS-to-Next.js migration, and achieved 99.5% uptime while reducing deployment time by 92% and cutting production incidents by 65%. This experience directly aligns with your need for a leader who can \"architect and implement micro frontend solutions that enable independent deployment and team autonomy.\"\n\nMy role as Lead Software Engineer at Etuper Technologies Pvt. Ltd. sharpened my ability to establish coding standards, conduct code reviews, and mentor junior developers—skills you highlighted as essential for driving technical decisions and owning the frontend architecture roadmap. I routinely managed sprint planning, backlog prioritization, and blocker resolution, ensuring continuous delivery and fostering a culture of technical excellence.\n\nI have extensive hands-on experience with React.js and Next.js, having led teams to build responsive, accessible applications that integrate smoothly with backend services. My work on the healthcare platform included implementing OAuth 2.0 PKCE flows for SSO integration and configuring SAML 2.0 authentication across multiple partners, demonstrating a strong grasp of security best practices—an important aspect of your quality & performance expectations.\n\nI am eager to bring my experience in scalable frontend architecture, rigorous testing practices, and cross-functional collaboration to your team. I look forward to discussing how my background can help drive the next generation of micro frontends at your organization."
 }
