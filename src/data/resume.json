@@ -90,6 +90,34 @@
       ]
     },
     {
+      "name": "Scotiabank",
+      "position": "IT Consultant",
+      "url": "https://scotiabank.com",
+      "startDate": "2019-02-01",
+      "endDate": "2019-06-01",
+      "summary": "Contracted for professional scheduled maintenance of business-critical legacy IBM systems, executing upgrades and infrastructure improvements with zero downtime.",
+      "highlights": [
+        "Executed zero-downtime upgrades of 3 IBM OpenPages GRC environments from version 7.3 to 8.0.0.2.",
+        "Migrated 3 Cognos 10 BI environments to Cognos Analytics 11, ensuring business continuity throughout the transition.",
+        "Configured IBM AIX load-balanced cluster using IBM HTTP Server 9 for high availability.",
+        "Developed Bash automation scripts to streamline and standardize the upgrade process across environments.",
+        "Implemented Business Unit Hierarchy user interface using Angular 6.",
+        "Built email notification prototype leveraging OpenPages Java Library for automated alerts."
+      ],
+      "keywords": [
+        "IBM AIX",
+        "IBM HTTP Server",
+        "IBM OpenPages",
+        "Cognos Analytics",
+        "Angular",
+        "Oracle Database",
+        "Java",
+        "Maven",
+        "Bash",
+        "Git"
+      ]
+    },
+    {
       "name": "Etuper Technologies Pvt. Ltd.",
       "position": "Lead Software Engineer",
       "url": "https://facebook.com/com.etuper",
