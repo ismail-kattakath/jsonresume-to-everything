@@ -1,30 +1,22 @@
 import { MdPictureAsPdf } from 'react-icons/md'
+import { generatePDFFilename } from '@/lib/filenameGenerator'
 
 interface PrintButtonProps {
   name?: string
+  position?: string
   documentType?: 'Resume' | 'CoverLetter'
 }
 
 export default function PrintButton({
   name,
+  position,
   documentType = 'Resume',
 }: PrintButtonProps) {
   const handlePrint = () => {
-    // Convert name to ProperCase without spaces or underscores
-    const formatName = (name: string) => {
-      return name
-        .split(/[\s_-]+/) // Split by spaces, underscores, or hyphens
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('')
-    }
-
     // Set document title for PDF filename
-    if (name) {
+    if (name && position) {
       const originalTitle = document.title
-      const formattedName = formatName(name)
-      document.title = `${formattedName}-${documentType}`
+      document.title = generatePDFFilename(name, position, documentType)
 
       // Use setTimeout to ensure window.print() is called in next tick
       // This prevents issues on mobile browsers where synchronous title

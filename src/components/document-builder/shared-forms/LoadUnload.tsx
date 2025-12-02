@@ -5,6 +5,7 @@ import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
 import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import { toast } from 'sonner'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
+import { generateJSONFilename } from '@/lib/filenameGenerator'
 
 const LoadUnload = ({
   hideExportButton = false,
@@ -136,34 +137,6 @@ const LoadUnload = ({
     }
   }
 
-  // Generate consistent filename for JSON download matching PDF title format
-  const generateFilename = () => {
-    const now = new Date()
-    const yearMonth = `${now.getFullYear()}${String(
-      now.getMonth() + 1
-    ).padStart(2, '0')}`
-
-    // Convert to PascalCase: split by spaces, capitalize first letter of each word, join together
-    const toPascalCase = (str) => {
-      return str
-        .split(/\s+/)
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('')
-    }
-
-    // Remove all special characters except spaces, then convert to PascalCase
-    const cleanName = toPascalCase(
-      resumeData.name.replace(/[^a-zA-Z0-9\s]/g, '')
-    )
-    const cleanPosition = toPascalCase(
-      resumeData.position.replace(/[^a-zA-Z0-9\s]/g, '')
-    )
-
-    return `${yearMonth}-${cleanName}-${cleanPosition}-Resume.json`
-  }
-
   return (
     <div
       className={`mx-auto mb-4 grid max-w-3xl gap-3 ${hideExportButton && hidePrintButton ? 'grid-cols-1' : hideExportButton || hidePrintButton ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}`}
@@ -184,7 +157,11 @@ const LoadUnload = ({
           aria-label="Export Json Resume"
           className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
           onClick={(event) =>
-            handleExport(resumeData, generateFilename(), event)
+            handleExport(
+              resumeData,
+              generateJSONFilename(resumeData.name, resumeData.position),
+              event
+            )
           }
         >
           <VscJson className="text-lg transition-transform group-hover:rotate-12" />

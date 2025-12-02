@@ -90,118 +90,169 @@ describe('PrintButton Component', () => {
   })
 
   describe('Document Title Formatting', () => {
-    it('should format name to ProperCase and set document title', () => {
-      render(<PrintButton name="John Doe" documentType="Resume" />)
+    it('should format name and position to PascalCase and set document title', () => {
+      render(
+        <PrintButton
+          name="John Doe"
+          position="Software Engineer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('SoftwareEngineer-JohnDoe-Resume')
     })
 
     it('should handle name with underscores', () => {
-      render(<PrintButton name="john_doe" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="john_doe"
+          position="Developer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-Johndoe-Resume')
     })
 
     it('should handle name with hyphens', () => {
-      render(<PrintButton name="john-doe" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="john-doe"
+          position="Developer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-Johndoe-Resume')
     })
 
     it('should handle name with mixed separators', () => {
-      render(<PrintButton name="john doe_smith-jones" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="john doe_smith-jones"
+          position="Developer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoeSmithJones-Resume')
+      // After removing special chars: "john doesmithjones" -> split by spaces -> ["john", "doesmithjones"]
+      expect(document.title).toBe('Developer-JohnDoesmithjones-Resume')
     })
 
     it('should handle single word name', () => {
-      render(<PrintButton name="John" documentType="Resume" />)
+      render(
+        <PrintButton name="John" position="Developer" documentType="Resume" />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('John-Resume')
+      expect(document.title).toBe('Developer-John-Resume')
     })
 
     it('should handle all lowercase name', () => {
-      render(<PrintButton name="john doe" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="john doe"
+          position="Developer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
     })
 
     it('should handle all uppercase name', () => {
-      render(<PrintButton name="JOHN DOE" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="JOHN DOE"
+          position="DEVELOPER"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
     })
 
     it('should handle name with multiple spaces', () => {
-      render(<PrintButton name="john   doe" documentType="Resume" />)
+      render(
+        <PrintButton
+          name="john   doe"
+          position="Developer"
+          documentType="Resume"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
     })
   })
 
   describe('Document Type', () => {
     it('should use Resume as default document type', () => {
-      render(<PrintButton name="John Doe" />)
+      render(<PrintButton name="John Doe" position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
     })
 
     it('should handle CoverLetter document type', () => {
-      render(<PrintButton name="John Doe" documentType="CoverLetter" />)
+      render(
+        <PrintButton
+          name="John Doe"
+          position="Developer"
+          documentType="CoverLetter"
+        />
+      )
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
-      expect(document.title).toBe('JohnDoe-CoverLetter')
+      expect(document.title).toBe('Developer-JohnDoe-CoverLetter')
     })
   })
 
   describe('Title Restoration', () => {
     it('should restore original title after timeout', async () => {
-      render(<PrintButton name="John Doe" />)
+      render(<PrintButton name="John Doe" position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
 
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
 
       // Fast-forward time for title restoration
       jest.advanceTimersByTime(100)
@@ -222,20 +273,20 @@ describe('PrintButton Component', () => {
     })
 
     it('should handle multiple clicks with proper title restoration', () => {
-      render(<PrintButton name="John Doe" />)
+      render(<PrintButton name="John Doe" position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       // First click
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
       jest.advanceTimersByTime(100)
       expect(document.title).toBe('Original Title')
 
       // Second click
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
-      expect(document.title).toBe('JohnDoe-Resume')
+      expect(document.title).toBe('Developer-JohnDoe-Resume')
       jest.advanceTimersByTime(100)
       expect(document.title).toBe('Original Title')
 
@@ -358,18 +409,19 @@ describe('PrintButton Component', () => {
 
     it('should handle very long names', () => {
       const longName = 'John Jacob Jingleheimer Schmidt Johnson Williams'
-      render(<PrintButton name={longName} />)
+      render(<PrintButton name={longName} position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
 
+      expect(document.title).toContain('Developer')
       expect(document.title).toContain('Resume')
       expect(mockPrint).toHaveBeenCalled()
     })
 
     it('should handle name with numbers', () => {
-      render(<PrintButton name="John Doe 3rd" />)
+      render(<PrintButton name="John Doe 3rd" position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       fireEvent.click(button)
@@ -379,7 +431,7 @@ describe('PrintButton Component', () => {
     })
 
     it('should handle rapid clicks', () => {
-      render(<PrintButton name="John Doe" />)
+      render(<PrintButton name="John Doe" position="Developer" />)
       const button = screen.getByRole('button', { name: 'Print' })
 
       // Click multiple times rapidly

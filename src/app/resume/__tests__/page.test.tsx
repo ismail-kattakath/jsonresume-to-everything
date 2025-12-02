@@ -92,10 +92,10 @@ describe('ResumePage', () => {
     expect(printSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('should set document title with formatted name', () => {
+  it('should set document title with formatted name and position', () => {
     render(<ResumePage />)
 
-    expect(document.title).toBe('JohnDoe-Resume')
+    expect(document.title).toBe('SoftwareEngineer-JohnDoe-Resume')
   })
 
   it('should load resume data from localStorage when available', async () => {
@@ -123,7 +123,7 @@ describe('ResumePage', () => {
     render(<ResumePage />)
 
     await waitFor(() => {
-      expect(document.title).toBe('JaneSmith-Resume')
+      expect(document.title).toBe('Designer-JaneSmith-Resume')
     })
   })
 
@@ -132,7 +132,7 @@ describe('ResumePage', () => {
 
     render(<ResumePage />)
 
-    expect(document.title).toBe('JohnDoe-Resume')
+    expect(document.title).toBe('SoftwareEngineer-JohnDoe-Resume')
   })
 
   it('should provide resume context with editable false', () => {
@@ -173,6 +173,6 @@ describe('ResumePage', () => {
 
     render(<ResumePage />)
 
-    expect(document.title).toBe('MaryJaneWatson-Resume')
+    expect(document.title).toBe('Developer-MaryJaneWatson-Resume')
   })
 })

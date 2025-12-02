@@ -6,6 +6,7 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import defaultResumeData from '@/lib/resumeAdapter'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
 import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
+import { generatePDFFilename } from '@/lib/filenameGenerator'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
 
@@ -22,17 +23,12 @@ export default function ResumeDownloadPage() {
     }
 
     // Set document title for PDF filename
-    const formatName = (name: string) => {
-      return name
-        .split(/[\s_-]+/)
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('')
-    }
-
-    if (loadedData.name) {
-      document.title = `${formatName(loadedData.name)}-Resume`
+    if (loadedData.name && loadedData.position) {
+      document.title = generatePDFFilename(
+        loadedData.name,
+        loadedData.position,
+        'Resume'
+      )
     }
 
     // Auto-trigger print dialog after a short delay
@@ -56,7 +52,11 @@ export default function ResumeDownloadPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
         {/* Floating Print Button - Hidden on print */}
         <div className="exclude-print fixed right-8 bottom-8 z-50">
-          <PrintButton name={resumeData.name} documentType="Resume" />
+          <PrintButton
+            name={resumeData.name}
+            position={resumeData.position}
+            documentType="Resume"
+          />
         </div>
 
         {/* Resume Content */}

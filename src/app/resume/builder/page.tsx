@@ -566,6 +566,11 @@ function UnifiedEditor() {
                   name={
                     mode === 'resume' ? resumeData.name : coverLetterData.name
                   }
+                  position={
+                    mode === 'resume'
+                      ? resumeData.position
+                      : coverLetterData.position
+                  }
                   documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
                 />
               </div>

@@ -5,6 +5,7 @@ import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
 import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import { toast } from 'sonner'
 import { analytics } from '@/lib/analytics'
+import { generateJSONFilename } from '@/lib/filenameGenerator'
 import type { ResumeData } from '@/types/resume'
 
 interface ImportExportProps {
@@ -128,7 +129,7 @@ const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
       const blob = new Blob([jsonData], { type: 'application/json' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      link.download = generateFilename()
+      link.download = generateJSONFilename(resumeData.name, resumeData.position)
       link.click()
 
       toast.success('JSON Resume exported successfully!', {
@@ -146,34 +147,6 @@ const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
         duration: 5000,
       })
     }
-  }
-
-  // Generate consistent filename for JSON download matching PDF title format
-  const generateFilename = () => {
-    const now = new Date()
-    const yearMonth = `${now.getFullYear()}${String(
-      now.getMonth() + 1
-    ).padStart(2, '0')}`
-
-    // Convert to PascalCase: split by spaces, capitalize first letter of each word, join together
-    const toPascalCase = (str: string) => {
-      return str
-        .split(/\s+/)
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join('')
-    }
-
-    // Remove all special characters except spaces, then convert to PascalCase
-    const cleanName = toPascalCase(
-      resumeData.name.replace(/[^a-zA-Z0-9\s]/g, '')
-    )
-    const cleanPosition = toPascalCase(
-      resumeData.position.replace(/[^a-zA-Z0-9\s]/g, '')
-    )
-
-    return `${yearMonth}-${cleanName}-${cleanPosition}-Resume.json`
   }
 
   return (
