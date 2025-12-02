@@ -415,4 +415,9 @@ body {
     height: auto !important;
     position: static !important;
   }
+
+  /* Force system fonts for ATS compatibility - Issue #69 */
+  * {
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
 }
