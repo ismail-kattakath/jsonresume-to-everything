@@ -99,21 +99,21 @@
       "highlights": [
         "Executed zero-downtime upgrades of 3 IBM OpenPages GRC environments from version 7.3 to 8.0.0.2.",
         "Migrated 3 Cognos 10 BI environments to Cognos Analytics 11, ensuring business continuity throughout the transition.",
-        "Configured IBM AIX load-balanced cluster using IBM HTTP Server 9 for high availability.",
         "Developed Bash automation scripts to streamline and standardize the upgrade process across environments.",
+        "Configured IBM AIX load-balanced cluster using IBM HTTP Server 9 for high availability.",
         "Implemented Business Unit Hierarchy user interface using Angular 6.",
         "Built email notification prototype leveraging OpenPages Java Library for automated alerts."
       ],
       "keywords": [
-        "IBM AIX",
-        "IBM HTTP Server",
         "IBM OpenPages",
         "Cognos Analytics",
-        "Angular",
-        "Oracle Database",
-        "Java",
-        "Maven",
+        "IBM AIX",
+        "IBM HTTP Server",
         "Bash",
+        "Angular",
+        "Java",
+        "Oracle Database",
+        "Maven",
         "Git"
       ]
     },
