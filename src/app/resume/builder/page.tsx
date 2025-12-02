@@ -702,6 +702,11 @@ function UnifiedEditor() {
                       : coverLetterData.position
                   }
                   documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
+                  resumeData={
+                    mode === 'resume'
+                      ? resumeData
+                      : (coverLetterData as ResumeData)
+                  }
                 />
               </div>
 

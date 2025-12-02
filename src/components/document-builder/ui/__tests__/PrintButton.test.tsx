@@ -34,7 +34,7 @@ describe('PrintButton Component', () => {
   describe('Rendering', () => {
     it('should render print button', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
       expect(button).toBeInTheDocument()
     })
 
@@ -51,15 +51,23 @@ describe('PrintButton Component', () => {
 
     it('should have aria-label for accessibility', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
-      expect(button).toHaveAttribute('aria-label', 'Print')
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
+      expect(button).toHaveAttribute('aria-label', 'Print to PDF')
+    })
+
+    it('should render dropdown toggle button', () => {
+      render(<PrintButton />)
+      const dropdownButton = screen.getByRole('button', {
+        name: 'Export options',
+      })
+      expect(dropdownButton).toBeInTheDocument()
     })
   })
 
   describe('Print Functionality', () => {
     it('should call window.print when button is clicked without name', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -69,7 +77,7 @@ describe('PrintButton Component', () => {
 
     it('should call window.print when button is clicked with name', () => {
       render(<PrintButton name="John Doe" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -79,7 +87,7 @@ describe('PrintButton Component', () => {
 
     it('should not change document title when name is not provided', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -98,7 +106,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -114,7 +122,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -130,7 +138,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -146,7 +154,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -159,7 +167,7 @@ describe('PrintButton Component', () => {
       render(
         <PrintButton name="John" position="Developer" documentType="Resume" />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -175,7 +183,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -191,7 +199,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -207,7 +215,7 @@ describe('PrintButton Component', () => {
           documentType="Resume"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -219,7 +227,7 @@ describe('PrintButton Component', () => {
   describe('Document Type', () => {
     it('should use Resume as default document type', () => {
       render(<PrintButton name="John Doe" position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -235,7 +243,7 @@ describe('PrintButton Component', () => {
           documentType="CoverLetter"
         />
       )
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -247,7 +255,7 @@ describe('PrintButton Component', () => {
   describe('Title Restoration', () => {
     it('should restore original title after timeout', async () => {
       render(<PrintButton name="John Doe" position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0) for window.print()
@@ -262,7 +270,7 @@ describe('PrintButton Component', () => {
 
     it('should not restore title if name is not provided', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -274,7 +282,7 @@ describe('PrintButton Component', () => {
 
     it('should handle multiple clicks with proper title restoration', () => {
       render(<PrintButton name="John Doe" position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       // First click
       fireEvent.click(button)
@@ -297,7 +305,7 @@ describe('PrintButton Component', () => {
   describe('Styling', () => {
     it('should have gradient background classes', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).toHaveClass('bg-gradient-to-r')
       expect(button).toHaveClass('from-purple-600')
@@ -306,29 +314,29 @@ describe('PrintButton Component', () => {
 
     it('should have hover state classes', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).toHaveClass('hover:from-purple-700')
       expect(button).toHaveClass('hover:to-pink-700')
     })
 
-    it('should have rounded-full class', () => {
+    it('should have rounded-l-full class for combo button', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
-      expect(button).toHaveClass('rounded-full')
+      expect(button).toHaveClass('rounded-l-full')
     })
 
-    it('should have shadow classes', () => {
-      render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+    it('should have parent container with shadow', () => {
+      const { container } = render(<PrintButton />)
+      const wrapper = container.querySelector('.shadow-2xl')
 
-      expect(button).toHaveClass('shadow-2xl')
+      expect(wrapper).toBeInTheDocument()
     })
 
     it('should have focus ring classes', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).toHaveClass('focus:ring-2')
       expect(button).toHaveClass('focus:ring-purple-500')
@@ -336,14 +344,14 @@ describe('PrintButton Component', () => {
 
     it('should have cursor-pointer class', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).toHaveClass('cursor-pointer')
     })
 
     it('should not have animate-pulse class', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).not.toHaveClass('animate-pulse')
     })
@@ -352,7 +360,7 @@ describe('PrintButton Component', () => {
   describe('Accessibility', () => {
     it('should be keyboard accessible', () => {
       render(<PrintButton name="John Doe" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       button.focus()
       expect(button).toHaveFocus()
@@ -360,7 +368,7 @@ describe('PrintButton Component', () => {
 
     it('should be triggerable with Enter key', () => {
       render(<PrintButton name="John Doe" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       button.focus()
       fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' })
@@ -372,12 +380,14 @@ describe('PrintButton Component', () => {
 
     it('should have button role', () => {
       render(<PrintButton />)
-      expect(screen.getByRole('button')).toBeInTheDocument()
+      const buttons = screen.getAllByRole('button')
+      expect(buttons.length).toBeGreaterThanOrEqual(2)
+      expect(buttons[0]).toBeInTheDocument()
     })
 
     it('should have focus outline styling', () => {
       render(<PrintButton />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       expect(button).toHaveClass('focus:outline-none')
       expect(button).toHaveClass('focus:ring-2')
@@ -387,7 +397,7 @@ describe('PrintButton Component', () => {
   describe('Edge Cases', () => {
     it('should handle empty string name', () => {
       render(<PrintButton name="" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -398,7 +408,7 @@ describe('PrintButton Component', () => {
 
     it('should handle name with special characters', () => {
       render(<PrintButton name="John O'Brien" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -410,7 +420,7 @@ describe('PrintButton Component', () => {
     it('should handle very long names', () => {
       const longName = 'John Jacob Jingleheimer Schmidt Johnson Williams'
       render(<PrintButton name={longName} position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -422,7 +432,7 @@ describe('PrintButton Component', () => {
 
     it('should handle name with numbers', () => {
       render(<PrintButton name="John Doe 3rd" position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       fireEvent.click(button)
       jest.runOnlyPendingTimers() // Run setTimeout(0)
@@ -432,7 +442,7 @@ describe('PrintButton Component', () => {
 
     it('should handle rapid clicks', () => {
       render(<PrintButton name="John Doe" position="Developer" />)
-      const button = screen.getByRole('button', { name: 'Print' })
+      const button = screen.getByRole('button', { name: 'Print to PDF' })
 
       // Click multiple times rapidly
       fireEvent.click(button)
