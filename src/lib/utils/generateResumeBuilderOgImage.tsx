@@ -134,7 +134,8 @@ export async function generateResumeBuilderOgImage(
               textShadow: '0 4px 16px rgba(0, 0, 0, 0.7)',
             }}
           >
-            Build JD-tailored resumes with AI - from JSON Resume or start fresh
+            Build JD-tailored ATS resumes with AI - from JSON Resume or start
+            fresh
           </div>
 
           {/* Feature Pills - Glassmorphism with depth */}

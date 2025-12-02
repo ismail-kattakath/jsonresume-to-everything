@@ -41,7 +41,7 @@ export function buildSkillsSortPrompt(
     JSON.stringify(skillsData, null, 2)
   )
 
-  return `You are an expert tech recruiter who optimizes resume skills sections for maximum recruiter relevance.
+  return `You are an expert tech recruiter who optimizes resume skills sections for maximum ATS and recruiter relevance.
 
 TARGET JOB DESCRIPTION:
 ${jobDescription}
@@ -104,7 +104,7 @@ export function buildAchievementsSortPrompt(
     achievementTexts
   )
 
-  return `You are an expert tech recruiter who optimizes resume achievements for maximum recruiter relevance.
+  return `You are an expert tech recruiter who optimizes resume achievements for maximum ATS and recruiter relevance.
 
 TARGET JOB DESCRIPTION:
 ${jobDescription}
