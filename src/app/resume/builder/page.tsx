@@ -538,6 +538,90 @@ function UnifiedEditor() {
     }
   }, [])
 
+  // Synchronize shared fields between resume and cover letter
+  // Shared fields: personal information and social media
+  useEffect(() => {
+    // Sync from resume to cover letter
+    setCoverLetterData((prev) => {
+      const sharedFields = {
+        name: resumeData.name,
+        position: resumeData.position,
+        email: resumeData.email,
+        contactInformation: resumeData.contactInformation,
+        address: resumeData.address,
+        profileImage: resumeData.profileImage,
+        socialMedia: resumeData.socialMedia,
+      }
+
+      // Only update if there are actual changes to avoid infinite loops
+      const hasChanges = Object.keys(sharedFields).some(
+        (key) =>
+          JSON.stringify(sharedFields[key as keyof typeof sharedFields]) !==
+          JSON.stringify(
+            prev[key as keyof typeof sharedFields] as
+              | string
+              | { socialMedia: string; link: string }[]
+          )
+      )
+
+      if (!hasChanges) return prev
+
+      return {
+        ...prev,
+        ...sharedFields,
+      }
+    })
+  }, [
+    resumeData.name,
+    resumeData.position,
+    resumeData.email,
+    resumeData.contactInformation,
+    resumeData.address,
+    resumeData.profileImage,
+    resumeData.socialMedia,
+  ])
+
+  useEffect(() => {
+    // Sync from cover letter to resume
+    setResumeData((prev) => {
+      const sharedFields = {
+        name: coverLetterData.name,
+        position: coverLetterData.position,
+        email: coverLetterData.email,
+        contactInformation: coverLetterData.contactInformation,
+        address: coverLetterData.address,
+        profileImage: coverLetterData.profileImage,
+        socialMedia: coverLetterData.socialMedia,
+      }
+
+      // Only update if there are actual changes to avoid infinite loops
+      const hasChanges = Object.keys(sharedFields).some(
+        (key) =>
+          JSON.stringify(sharedFields[key as keyof typeof sharedFields]) !==
+          JSON.stringify(
+            prev[key as keyof typeof sharedFields] as
+              | string
+              | { socialMedia: string; link: string }[]
+          )
+      )
+
+      if (!hasChanges) return prev
+
+      return {
+        ...prev,
+        ...sharedFields,
+      }
+    })
+  }, [
+    coverLetterData.name,
+    coverLetterData.position,
+    coverLetterData.email,
+    coverLetterData.contactInformation,
+    coverLetterData.address,
+    coverLetterData.profileImage,
+    coverLetterData.socialMedia,
+  ])
+
   // Register service worker for PWA functionality
   useEffect(() => {
     registerServiceWorker()
