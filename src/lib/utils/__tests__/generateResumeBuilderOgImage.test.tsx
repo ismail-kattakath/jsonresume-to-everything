@@ -98,7 +98,7 @@ describe('generateResumeBuilderOgImage', () => {
       const [[element]] = (ImageResponse as unknown as jest.Mock).mock.calls
       const elementString = JSON.stringify(element)
 
-      expect(elementString).toContain('JD-tailored ATS resumes')
+      expect(elementString).toContain('JD-tailored resumes')
     })
 
     it('should include feature pills', async () => {

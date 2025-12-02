@@ -19,7 +19,6 @@ import Summary from '@/components/resume/forms/Summary'
 import Education from '@/components/resume/forms/Education'
 import CoverLetterContent from '@/components/cover-letter/forms/CoverLetterContent'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
-import ATSCheckButton from '@/components/document-builder/ui/ATSCheckButton'
 import CollapsibleSection from '@/components/document-builder/ui/CollapsibleSection'
 import { AccordionCard } from '@/components/ui/AccordionCard'
 import AISettings from '@/components/document-builder/shared-forms/AISettings'
@@ -558,30 +557,17 @@ function UnifiedEditor() {
             excludeFooterFromPrint
           >
             <div className="relative flex flex-1 flex-col md:grid md:grid-cols-[1fr_auto]">
-              {/* Floating Action Buttons (Capsule) - Hidden on print */}
+              {/* Floating Action Button - Hidden on print */}
               <div
                 id="print-button"
                 className="exclude-print fixed right-8 bottom-8 z-50 flex flex-row items-center overflow-hidden rounded-full shadow-2xl md:top-8 md:bottom-auto"
               >
-                {mode === 'resume' && (
-                  <div className="[&>button]:animate-none [&>button]:rounded-r-none [&>button]:shadow-none">
-                    <ATSCheckButton name={resumeData.name} />
-                  </div>
-                )}
-                <div
-                  className={
-                    mode === 'resume'
-                      ? '[&>button]:animate-none [&>button]:rounded-l-none [&>button]:shadow-none'
-                      : ''
+                <PrintButton
+                  name={
+                    mode === 'resume' ? resumeData.name : coverLetterData.name
                   }
-                >
-                  <PrintButton
-                    name={
-                      mode === 'resume' ? resumeData.name : coverLetterData.name
-                    }
-                    documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
-                  />
-                </div>
+                  documentType={mode === 'resume' ? 'Resume' : 'CoverLetter'}
+                />
               </div>
 
               <form
