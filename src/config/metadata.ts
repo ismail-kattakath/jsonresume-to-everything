@@ -135,7 +135,7 @@ export function generateSiteMetadata(): Metadata {
     appleWebApp: {
       capable: true,
       statusBarStyle: 'default',
-      title: 'Resume Builder',
+      title: 'AI Resume Builder',
     },
     formatDetection: {
       telephone: false,
