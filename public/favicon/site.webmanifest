@@ -1,6 +1,6 @@
 {
-  "name": "Ismail Kattakath - Resume Builder",
-  "short_name": "Resume Builder",
+  "name": "Ismail Kattakath - AI Resume Builder",
+  "short_name": "AI Resume Builder",
   "description": "Professional resume builder and portfolio management tool",
   "start_url": "/resume/builder",
   "scope": "/resume/builder",

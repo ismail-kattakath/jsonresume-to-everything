@@ -31,7 +31,7 @@ export default function RootLayout({
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <meta name="apple-mobile-web-app-title" content="Resume Builder" />
+        <meta name="apple-mobile-web-app-title" content="AI Resume Builder" />
         <link rel="icon" href="/favicon/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
