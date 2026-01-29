@@ -192,7 +192,7 @@ export function buildSummaryPrompt(
   const prompt = `Write a 3-4 sentence professional summary following this EXACT format and length.
 
 EXAMPLE (490 chars - use this as your length target):
-"Senior Backend Engineer with 12+ years building distributed systems and AI integrations. Architected scalable inference pipelines achieving 35% latency improvements. Led cloud migrations and CI/CD automation reducing deployment time 80%. Expert in Python, Node.js, Kubernetes, and AWS. Proven track record shipping production ML systems."
+Senior Backend Engineer with 12+ years building distributed systems and AI integrations. Architected scalable inference pipelines achieving 35% latency improvements. Led cloud migrations and CI/CD automation reducing deployment time 80%. Expert in Python, Node.js, Kubernetes, and AWS. Proven track record shipping production ML systems.
 
 NOW WRITE FOR THIS CANDIDATE:
 
@@ -218,7 +218,7 @@ STRICT RULES:
 5. Single paragraph, 3-4 sentences
 6. Lead with a role title that matches the JD
 
-OUTPUT: Return ONLY the summary text, nothing else.`
+OUTPUT: Return ONLY the summary text, no quotes or extra formatting.`
 
   return prompt
 }
