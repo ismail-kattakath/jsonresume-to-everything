@@ -220,10 +220,12 @@ CRITICAL INSTRUCTIONS - READ CAREFULLY:
    • If the job requires something not in the resume, DO NOT claim it—focus on relevant strengths
    • Years of experience: Use "${yearsExperience ? `${yearsExperience}+ years` : 'extensive'}" (never less)
 
-2. JOB ALIGNMENT (Critical):
+2. JOB ALIGNMENT (Critical - This is the PRIMARY goal):
+   • Extract the EXACT job title from the job description and use it or a close variant
    • Study the job description's exact language and mirror it naturally
-   • Identify the TOP 3-4 requirements and lead with matching achievements
-   • Use storytelling: "Led [specific project] at [company], transforming [problem] into [result with metric]"
+   • Identify the TOP 3-4 requirements from the JD and lead with matching achievements
+   • Mirror the JD's terminology, phrases, and keywords throughout the summary
+   • Use storytelling: "Led [specific project] at [company], delivering [result with metric]"
    • Emphasize soft skills mentioned in job description (e.g., "customer-obsessed", "pragmatic", "end-to-end ownership")
 
 3. CONTENT PRIORITIZATION:
@@ -239,8 +241,8 @@ CRITICAL INSTRUCTIONS - READ CAREFULLY:
    • Single paragraph format (semicolons for major transitions, commas for flow)
    • Use active, confident language: "Led", "Architected", "Transformed", "Known for"
    • Balance technical precision with human readability
-   • CRITICAL LENGTH REQUIREMENT: MAXIMUM 1200 characters (HARD LIMIT - will be truncated if exceeded)
-   • Aim for 1150-1200 characters for optimal impact while staying under limit
+   • CRITICAL LENGTH REQUIREMENT: MAXIMUM 600 characters (HARD LIMIT - will be truncated if exceeded)
+   • Aim for 550-600 characters for optimal impact while staying under limit
    • Count characters as you write - every letter, space, and punctuation counts
 
 4b. VOICE/TONE (CRITICAL - Resume Format):
@@ -261,25 +263,14 @@ CRITICAL INSTRUCTIONS - READ CAREFULLY:
    ❌ Over-emphasizing authentication complexity (OAuth 2.0 PKCE/SAML 2.0 technical details) unless job requires it
    ❌ Using absolute metrics when percentage improvements are more impressive (use "92% faster" not "20 minutes")
 
-EXAMPLE STRUCTURE (adapt to candidate's actual data):
-"[Role] with [X]+ years [key specialty matching job]. Led [specific high-impact project] at [company], [transforming context] into [result] serving [100,000+ users or hundreds of thousands] with [reliability metric]. Expert at [job's core requirement]—[specific example with outcome]. [Additional relevant achievement]. [Brief mention of current role if relevant to job]. Deep expertise in [job-critical frontend/full-stack skills]. Known for [soft skills from job description that match resume evidence]."
-
-CRITICAL REMINDERS FOR THIS SPECIFIC JOB:
-• Supademo is a frontend-focused role (React/Next.js) → Lead with frontend migration/UI work
-• Job emphasizes "greenfield", "polished UI", "customer-obsessed", "end-to-end ownership", "scope → design → build → launch"
-• De-emphasize backend infrastructure (GenAI, Kubernetes, vLLM, CUDA) even if recent/impressive
-• De-emphasize authentication complexity (OAuth/SAML) unless job explicitly requires it
-• Emphasize stakeholder collaboration, wireframing, prototyping (matches job's "Partner with customers")
-• Use percentage-based metrics when available (92% deployment reduction > 20-minute cycles)
-• Homewood Health experience is MOST relevant (Next.js migration, 100,000+ users, DevOps excellence)
-• Etuper experience adds value (stakeholder collaboration, wireframes, prototypes)
-• Current role (Silver Creek) should be mentioned briefly but not dominate
+EXAMPLE STRUCTURE (~600 characters, adapt to candidate's actual data):
+"[Role matching JD] with [X]+ years in [specialty from JD]. [One high-impact achievement directly matching JD's top requirement with metric]. [One additional relevant achievement]. Expert in [2-3 skills from JD]. Known for [1-2 soft skills from JD]."
 
 OUTPUT REQUIREMENTS:
 • Return ONLY the professional summary as plain text (no formatting, no code blocks, no preamble)
-• ABSOLUTE MAXIMUM: 1200 characters (this is a HARD limit - anything longer will be truncated)
+• ABSOLUTE MAXIMUM: 600 characters (this is a HARD limit - anything longer will be truncated)
 • Verify character count before returning - count every character including spaces and punctuation
-• If approaching 1200 chars, prioritize most relevant content and remove less critical details`
+• If approaching 600 chars, prioritize most relevant content and remove less critical details`
 
   return prompt
 }
@@ -295,14 +286,14 @@ export function validateSummary(content: string): {
   const errors: string[] = []
 
   // Check minimum length
-  if (content.length < 100) {
-    errors.push('Summary is too short (minimum 100 characters)')
+  if (content.length < 50) {
+    errors.push('Summary is too short (minimum 50 characters)')
   }
 
   // Check maximum length (informational warning only)
-  if (content.length > 1200) {
+  if (content.length > 600) {
     errors.push(
-      `Summary exceeds 1200 character limit (${content.length} chars) - may not fit in resume layout`
+      `Summary exceeds 600 character limit (${content.length} chars) - may not fit in resume layout`
     )
   }
 

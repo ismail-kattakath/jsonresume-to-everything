@@ -322,7 +322,7 @@ export async function generateSummary(
       },
     ],
     temperature: 0.7,
-    max_tokens: 600, // Summaries are typically shorter than cover letters
+    max_tokens: 300, // Summaries are concise (~600 chars max)
     top_p: 0.9,
   }
 

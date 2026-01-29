@@ -19,7 +19,7 @@ const Summary = () => {
         name="summary"
         rows={8}
         minHeight="160px"
-        maxLength={1200}
+        maxLength={600}
         showCharacterCount={true}
         mode="summary"
       />

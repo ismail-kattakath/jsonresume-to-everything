@@ -123,7 +123,7 @@ describe('Summary Component', () => {
 
     it('displays character counter', () => {
       renderWithContext()
-      expect(screen.getByText('12/1200')).toBeInTheDocument()
+      expect(screen.getByText('12/600')).toBeInTheDocument()
     })
   })
 
@@ -185,7 +185,7 @@ describe('Summary Component', () => {
       const textarea = screen.getByPlaceholderText(
         /write a compelling professional summary/i
       )
-      expect(textarea).toHaveAttribute('maxLength', '1200')
+      expect(textarea).toHaveAttribute('maxLength', '600')
     })
 
     it('passes correct rows to textarea', () => {
