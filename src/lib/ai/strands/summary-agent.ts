@@ -29,7 +29,7 @@ export interface SummaryAgentConfig {
  */
 export interface SummaryResult {
   summary: string
-  fabricationsDetected: string[]
+  warnings: string[] // Technologies mentioned that aren't in resume (for human review)
   iterationsUsed: number
   isValid: boolean
 }
@@ -39,69 +39,29 @@ export interface SummaryResult {
  * against the candidate's actual resume skills
  */
 function createValidateSkillsTool(allowedSkills: string[]) {
-  // Normalize skills for comparison
-  const normalizedAllowed = new Set(
-    allowedSkills.map((s) => s.toLowerCase().trim())
-  )
-
   return tool({
     name: 'validate_skills',
     description:
-      'Validates that a generated summary only mentions technologies and skills that are in the candidate resume. Returns any fabrications found.',
+      'Validates that a generated summary only mentions technologies from the allowed skills list. Returns warnings for any terms not found in allowed skills.',
     inputSchema: z.object({
       summary: z.string().describe('The generated summary text to validate'),
     }),
     callback: (input: { summary: string }) => {
-      // Common technologies that might be fabricated from job descriptions
-      const techPatterns = [
-        // AI/ML platforms not in resume
-        'aws bedrock',
-        'bedrock',
-        'langchain',
-        'llamaindex',
-        'llama index',
-        'pinecone',
-        'milvus',
-        'weaviate',
-        'pgvector',
-        'openai',
-        'azure openai',
-        'anthropic',
-        'cohere',
-        // Other common fabrications
-        'grpc',
-        'kafka',
-        'spark',
-        'hadoop',
-        'snowflake',
-        'databricks',
-      ]
+      const result = validateSkillsInSummary(input.summary, allowedSkills)
 
-      const summaryLower = input.summary.toLowerCase()
-      const fabrications: string[] = []
-
-      for (const tech of techPatterns) {
-        if (
-          summaryLower.includes(tech) &&
-          !normalizedAllowed.has(tech.toLowerCase())
-        ) {
-          fabrications.push(tech)
-        }
-      }
-
-      if (fabrications.length === 0) {
+      if (result.valid) {
         return JSON.stringify({
           valid: true,
           message:
-            'No fabrications detected. Summary uses only allowed skills.',
-          fabrications: [],
+            'Summary validated. All mentioned technologies are in the allowed skills list.',
+          warnings: [],
         })
       }
 
       return JSON.stringify({
         valid: false,
-        message: `Found ${fabrications.length} potential fabrication(s): ${fabrications.join(', ')}. Please regenerate without these technologies.`,
-        fabrications,
+        message: `Found ${result.warnings.length} term(s) not in allowed skills: ${result.warnings.join(', ')}. Consider removing or replacing these.`,
+        warnings: result.warnings,
       })
     },
   })
@@ -218,7 +178,7 @@ After generating, use the validate_skills tool to verify, then provide the final
 
     return {
       summary: responseText,
-      fabricationsDetected: validationResult.fabrications,
+      warnings: validationResult.warnings,
       iterationsUsed: 1, // TODO: Track actual iterations
       isValid: validationResult.valid,
     }
@@ -229,48 +189,98 @@ After generating, use the validate_skills tool to verify, then provide the final
 }
 
 /**
+ * Extracts technology/skill mentions from text using common patterns
+ */
+function extractTechMentions(text: string): string[] {
+  // Match capitalized words, acronyms, and common tech patterns
+  const patterns = [
+    /\b[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\b/g, // Capitalized words (e.g., "AWS Bedrock")
+    /\b[A-Z]{2,}\b/g, // Acronyms (e.g., "AWS", "GCP", "RAG")
+    /\b[a-z]+\.[a-z]+\b/gi, // Dotted names (e.g., "Node.js", "Next.js")
+    /\b[a-z]+-[a-z]+\b/gi, // Hyphenated (e.g., "micro-services")
+  ]
+
+  const mentions = new Set<string>()
+  for (const pattern of patterns) {
+    const matches = text.match(pattern) || []
+    matches.forEach((m) => mentions.add(m.toLowerCase()))
+  }
+
+  return Array.from(mentions)
+}
+
+/**
  * Validates skills in a summary against allowed skills list
+ * Uses dynamic comparison - no hardcoded blocklist
  */
 function validateSkillsInSummary(
   summary: string,
   allowedSkills: string[]
-): { valid: boolean; fabrications: string[] } {
-  const normalizedAllowed = new Set(
-    allowedSkills.map((s) => s.toLowerCase().trim())
-  )
+): { valid: boolean; fabrications: string[]; warnings: string[] } {
+  // Normalize allowed skills for comparison
+  const normalizedAllowed = new Set<string>()
+  for (const skill of allowedSkills) {
+    // Add the full skill and individual words
+    normalizedAllowed.add(skill.toLowerCase().trim())
+    skill
+      .toLowerCase()
+      .split(/[\s,/()]+/)
+      .filter((w) => w.length > 2)
+      .forEach((w) => normalizedAllowed.add(w))
+  }
 
-  // Common technologies that might be fabricated
-  const techPatterns = [
-    'aws bedrock',
-    'bedrock',
-    'langchain',
-    'llamaindex',
-    'pinecone',
-    'milvus',
-    'weaviate',
-    'pgvector',
-    'openai',
-    'azure openai',
-    'anthropic',
-    'cohere',
-    'grpc',
-  ]
+  // Extract tech mentions from summary
+  const mentions = extractTechMentions(summary)
 
-  const summaryLower = summary.toLowerCase()
-  const fabrications: string[] = []
+  // Common words to ignore (not technologies)
+  const ignoreWords = new Set([
+    'the',
+    'and',
+    'for',
+    'with',
+    'years',
+    'experience',
+    'senior',
+    'lead',
+    'principal',
+    'engineer',
+    'developer',
+    'building',
+    'systems',
+    'solutions',
+    'production',
+    'infrastructure',
+    'scalable',
+    'distributed',
+    'expertise',
+    'proven',
+    'track',
+    'record',
+  ])
 
-  for (const tech of techPatterns) {
-    if (
-      summaryLower.includes(tech) &&
-      !normalizedAllowed.has(tech.toLowerCase())
-    ) {
-      fabrications.push(tech)
+  const warnings: string[] = []
+
+  // Check each mention against allowed skills
+  for (const mention of mentions) {
+    if (ignoreWords.has(mention)) continue
+    if (mention.length < 3) continue
+
+    // Check if this mention or any part of it is in allowed skills
+    const isAllowed =
+      normalizedAllowed.has(mention) ||
+      Array.from(normalizedAllowed).some(
+        (allowed) => allowed.includes(mention) || mention.includes(allowed)
+      )
+
+    if (!isAllowed) {
+      warnings.push(mention)
     }
   }
 
   return {
-    valid: fabrications.length === 0,
-    fabrications,
+    valid: warnings.length === 0,
+    fabrications: [], // We can't definitively say something is fabricated
+    warnings, // These are potential issues for human review
   }
 }
 
