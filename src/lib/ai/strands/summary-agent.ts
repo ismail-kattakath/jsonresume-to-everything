@@ -168,7 +168,11 @@ After generating, use the validate_skills tool to verify, then provide the final
     const response = await agent.invoke(prompt)
 
     // Extract the summary from the response using toString()
-    const responseText = response.toString()
+    // Strip leading/trailing quotes that some models add
+    const responseText = response
+      .toString()
+      .replace(/^["']|["']$/g, '')
+      .trim()
 
     // Check for fabrications in final output using a simple validation function
     const validationResult = validateSkillsInSummary(
