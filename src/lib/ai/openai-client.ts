@@ -321,8 +321,8 @@ export async function generateSummary(
         content: 'Generate the professional summary now.',
       },
     ],
-    temperature: 0.7,
-    max_tokens: 300, // Summaries are concise (~600 chars max)
+    temperature: 0.5, // Lower temperature for consistent output
+    max_tokens: 150, // Constrained to enforce ~500 char output
     top_p: 0.9,
   }
 

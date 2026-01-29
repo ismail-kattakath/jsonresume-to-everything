@@ -141,13 +141,13 @@ export function postProcessJobTitle(title: string): string {
 
 /**
  * Builds a prompt for AI professional summary generation
- * Combines resume data with job description to create tailored summary
+ * Uses example-based approach for better length control and JD alignment
  */
 export function buildSummaryPrompt(
   resumeData: ResumeData,
   jobDescription: string
 ): string {
-  const { name, position, summary, workExperience, skills } = resumeData
+  const { name, position, workExperience, skills } = resumeData
 
   console.log('Building summary prompt with resume data:', {
     name,
@@ -157,120 +157,68 @@ export function buildSummaryPrompt(
   })
 
   // Calculate total years of experience
-  const firstJobYear = workExperience?.[workExperience.length - 1]?.startDate
-    ? new Date(
-        workExperience[workExperience.length - 1].startDate
-      ).getFullYear()
+  const lastJob = workExperience?.[workExperience.length - 1]
+  const firstJobYear = lastJob?.startYear
+    ? new Date(lastJob.startYear).getFullYear()
     : null
   const yearsExperience = firstJobYear
     ? new Date().getFullYear() - firstJobYear
     : null
 
-  // Build comprehensive work experience with ALL achievements
-  const experienceSummary =
+  // Build flat skills list for anti-fabrication (only use these skills)
+  const allSkills =
+    skills?.flatMap((group) => group.skills.map((s) => s.text)).join(', ') ||
+    'No skills provided'
+
+  // Extract top 3 achievements with metrics from recent experience
+  const topAchievements =
     workExperience
-      ?.map((exp) => {
-        const achievements = exp.keyAchievements
-          ?.map((a) => a.text)
-          .filter(Boolean)
-          .join('\n')
-
-        return `${exp.position} at ${exp.organization} (${exp.startDate} - ${exp.endDate || 'Present'}):\n${achievements}`
-      })
-      .filter(Boolean)
-      .join('\n\n') || 'No work experience provided'
-
-  // Build comprehensive skills list (all skills, organized by category)
-  const skillsList =
-    skills
-      ?.map(
-        (group) =>
-          `${group.name}: ${group.skills.map((s) => s.text).join(', ')}`
+      ?.slice(0, 3)
+      .flatMap((exp) =>
+        exp.keyAchievements
+          ?.filter((a) => /\d+%|\d+ (hours?|minutes?|users?)/.test(a.text))
+          .slice(0, 2)
+          .map((a) => `• ${a.text}`)
       )
-      .join('\n') || 'No skills provided'
+      .filter(Boolean)
+      .slice(0, 4)
+      .join('\n') || 'No achievements provided'
 
-  const prompt = `You are an expert tech recruiter and senior engineer who writes extremely concise, technically accurate, and high-impact professional summaries.
+  // Get current position info
+  const currentRole = workExperience?.[0]
+    ? `${workExperience[0].position} at ${workExperience[0].organization}`
+    : position
 
-CANDIDATE'S COMPLETE JSON RESUME:
+  const prompt = `Write a 3-4 sentence professional summary following this EXACT format and length.
 
-Name: ${name}
-Current Role: ${position}
-Total Experience: ${yearsExperience ? `${yearsExperience}+ years` : 'Not specified'}
+EXAMPLE (490 chars - use this as your length target):
+"Senior Backend Engineer with 12+ years building distributed systems and AI integrations. Architected scalable inference pipelines achieving 35% latency improvements. Led cloud migrations and CI/CD automation reducing deployment time 80%. Expert in Python, Node.js, Kubernetes, and AWS. Proven track record shipping production ML systems."
 
-COMPLETE WORK HISTORY (chronological):
-${experienceSummary}
+NOW WRITE FOR THIS CANDIDATE:
 
-ALL TECHNICAL SKILLS (by category):
-${skillsList}
+CANDIDATE PROFILE:
+- Name: ${name}
+- Experience: ${yearsExperience ? `${yearsExperience}+` : 'extensive'} years
+- Current: ${currentRole}
 
-CURRENT PROFESSIONAL SUMMARY (reference for style and length):
-${summary}
+KEY ACHIEVEMENTS (pick 2-3 most relevant to the JD):
+${topAchievements}
 
-TARGET JOB DESCRIPTION:
-${jobDescription}
+ALLOWED SKILLS (use ONLY these - do NOT invent technologies):
+${allSkills}
 
-YOUR TASK:
-Write a professional summary that positions ${name} as the IDEAL candidate for this specific role.
+TARGET JOB (align summary to this):
+${jobDescription.slice(0, 1500)}
 
-CRITICAL INSTRUCTIONS - READ CAREFULLY:
+STRICT RULES:
+1. 400-550 characters MAXIMUM (count before responding)
+2. Third-person voice only (no "I", "my", "me")
+3. ONLY use skills/technologies from the ALLOWED SKILLS list - this is non-negotiable
+4. If a JD technology isn't in allowed skills, substitute the closest match from allowed skills
+5. Single paragraph, 3-4 sentences
+6. Lead with a role title that matches the JD
 
-1. ACCURACY (Non-negotiable):
-   • Use ONLY information explicitly stated in the resume above
-   • Every achievement, metric, skill, company, and technology MUST appear verbatim in the data
-   • If the job requires something not in the resume, DO NOT claim it—focus on relevant strengths
-   • Years of experience: Use "${yearsExperience ? `${yearsExperience}+ years` : 'extensive'}" (never less)
-
-2. JOB ALIGNMENT (Critical - This is the PRIMARY goal):
-   • Extract the EXACT job title from the job description and use it or a close variant
-   • Study the job description's exact language and mirror it naturally
-   • Identify the TOP 3-4 requirements from the JD and lead with matching achievements
-   • Mirror the JD's terminology, phrases, and keywords throughout the summary
-   • Use storytelling: "Led [specific project] at [company], delivering [result with metric]"
-   • Emphasize soft skills mentioned in job description (e.g., "customer-obsessed", "pragmatic", "end-to-end ownership")
-
-3. CONTENT PRIORITIZATION:
-   • Lead with career span and strongest technical fit matching the job (e.g., "15+ years delivering full-stack React/Next.js solutions")
-   • Feature 2-3 narrative achievements that DIRECTLY align with job requirements
-   • Prioritize achievements by relevance: Frontend/UI work > Full-stack projects > Backend/Infrastructure
-   • Use impressive user-scale metrics: "100,000+ users" or "hundreds of thousands" (never "thousands")
-   • De-emphasize or omit impressive but irrelevant work (e.g., GPU clusters for a frontend role)
-   • End with forward-looking capabilities that directly address job needs
-
-4. WRITING STYLE:
-   • Natural, flowing prose with personality—NOT a tech-spec list
-   • Single paragraph format (semicolons for major transitions, commas for flow)
-   • Use active, confident language: "Led", "Architected", "Transformed", "Known for"
-   • Balance technical precision with human readability
-   • CRITICAL LENGTH REQUIREMENT: MAXIMUM 600 characters (HARD LIMIT - will be truncated if exceeded)
-   • Aim for 550-600 characters for optimal impact while staying under limit
-   • Count characters as you write - every letter, space, and punctuation counts
-
-4b. VOICE/TONE (CRITICAL - Resume Format):
-   • ALWAYS use third-person or implied third-person voice (professional resume style)
-   • NEVER use first-person pronouns: NO "I", "my", "me", "I'm"
-   • ✅ CORRECT: "Led team of 5 engineers", "Architected scalable systems", "Known for customer focus"
-   • ❌ WRONG: "I led a team", "I architect systems", "I'm known for customer focus"
-   • This is a RESUME summary, not a LinkedIn bio—maintain professional detachment
-
-5. WHAT TO AVOID:
-   ❌ First-person pronouns (I, my, me, I'm) - ALWAYS use third-person voice
-   ❌ Opening with generic role titles without context
-   ❌ Listing technologies in comma-separated lists at the end
-   ❌ Emphasizing irrelevant achievements (even if impressive—e.g., GPU/CUDA optimization for a UI role)
-   ❌ Robotic, resume-speak tone ("proficient in", "skilled at")
-   ❌ Backend/infrastructure focus when job emphasizes frontend/UI (de-prioritize vLLM, Kubernetes, CUDA)
-   ❌ Underselling user scale (say "100,000+" or "hundreds of thousands", not "thousands")
-   ❌ Over-emphasizing authentication complexity (OAuth 2.0 PKCE/SAML 2.0 technical details) unless job requires it
-   ❌ Using absolute metrics when percentage improvements are more impressive (use "92% faster" not "20 minutes")
-
-EXAMPLE STRUCTURE (~600 characters, adapt to candidate's actual data):
-"[Role matching JD] with [X]+ years in [specialty from JD]. [One high-impact achievement directly matching JD's top requirement with metric]. [One additional relevant achievement]. Expert in [2-3 skills from JD]. Known for [1-2 soft skills from JD]."
-
-OUTPUT REQUIREMENTS:
-• Return ONLY the professional summary as plain text (no formatting, no code blocks, no preamble)
-• ABSOLUTE MAXIMUM: 600 characters (this is a HARD limit - anything longer will be truncated)
-• Verify character count before returning - count every character including spaces and punctuation
-• If approaching 600 chars, prioritize most relevant content and remove less critical details`
+OUTPUT: Return ONLY the summary text, nothing else.`
 
   return prompt
 }
