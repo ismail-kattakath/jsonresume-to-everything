@@ -17,14 +17,14 @@ import KeyAchievements from '@/components/resume/forms/KeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
 import AISortButton from '@/components/ui/AISortButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { requestAISort } from '@/lib/ai/openai-client'
 import {
   buildAchievementsSortPrompt,
   parseAchievementsSortResponse,
   applySortedAchievements,
 } from '@/lib/ai/sorting-prompts'
+import { requestAISortWithProvider } from '@/lib/ai/sorting'
 import type { DropResult } from '@hello-pangea/dnd'
-import type { WorkExperience as WorkExperienceType } from '@/types'
+import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
 
 /**
  * Sort button for Key Achievements
@@ -60,11 +60,12 @@ const KeyAchievementsSortButton = ({
         settings.jobDescription
       )
 
-      const response = await requestAISort(
+      const response = await requestAISortWithProvider(
         {
-          baseURL: settings.apiUrl,
+          apiUrl: settings.apiUrl,
           apiKey: settings.apiKey,
           model: settings.model,
+          providerType: settings.providerType,
         },
         prompt
       )
@@ -155,13 +156,18 @@ Instructions:
 
 Return only the JSON array, no other text.`
 
-      const response = await requestAISort(
+      const response = await requestAISortWithProvider(
         {
-          baseURL: settings.apiUrl,
+          apiUrl: settings.apiUrl,
           apiKey: settings.apiKey,
           model: settings.model,
+          providerType: settings.providerType,
         },
-        prompt
+        prompt,
+        {
+          type: 'array',
+          items: { type: 'number' },
+        }
       )
 
       // Parse response - expect JSON array of indices

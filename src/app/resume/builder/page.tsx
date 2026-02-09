@@ -65,12 +65,12 @@ import { tooltips } from '@/config/tooltips'
 import { OnboardingTour } from '@/components/onboarding'
 import AISortButton from '@/components/ui/AISortButton'
 import { FormTextarea } from '@/components/ui/FormTextarea'
-import { requestAISort } from '@/lib/ai/openai-client'
 import {
   buildSkillsSortPrompt,
   parseSkillsSortResponse,
   applySortedSkills,
 } from '@/lib/ai/sorting-prompts'
+import { requestAISortWithProvider } from '@/lib/ai/sorting'
 import { DEFAULT_COVER_LETTER_CONTENT } from '@/data/cover-letter'
 import { generateSkillsToHighlightWithProvider } from '@/lib/ai/document-generator'
 
@@ -304,11 +304,12 @@ function SkillsSection() {
         settings.jobDescription
       )
 
-      const response = await requestAISort(
+      const response = await requestAISortWithProvider(
         {
-          baseURL: settings.apiUrl,
+          apiUrl: settings.apiUrl,
           apiKey: settings.apiKey,
           model: settings.model,
+          providerType: settings.providerType,
         },
         prompt
       )
