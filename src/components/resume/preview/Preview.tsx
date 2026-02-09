@@ -508,7 +508,7 @@ const Preview = () => {
                                 item.technologies.length > 0 && (
                                   <div className="mt-1">
                                     <span className="content i-bold italic">
-                                      Technologies:{' '}
+                                      Tech Stack:{' '}
                                     </span>
                                     <span className="content italic select-all">
                                       <Highlight

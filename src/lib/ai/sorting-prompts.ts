@@ -1,4 +1,4 @@
-import type { ResumeData, SkillGroup, Achievement } from '@/types'
+import type { ResumeData, SkillGroup, Achievement, Skill } from '@/types'
 
 /**
  * Sorting result for skills - contains sorted group order and skill order within groups
@@ -50,27 +50,32 @@ CURRENT SKILLS DATA (JSON format):
 ${JSON.stringify(skillsData, null, 2)}
 
 YOUR TASK:
-Sort the skill groups and skills within each group by relevance to the target job description.
+1. Sort the skill groups and skills within each group by relevance to the target job description.
+2. IDENTIFY MISSING SKILLS: Look for key technologies, frameworks, or skills mentioned in the JOB DESCRIPTION that are NOT present in the CURRENT SKILLS DATA.
+3. ADD MISSING SKILLS: Include these missing skills in the most appropriate existing categories. 
+4. NEW CATEGORIES: If a missing skill doesn't fit into any existing category, you may suggest a new category (e.g., "Recommended Skills").
 
 CRITICAL RULES:
-1. DO NOT add, remove, or modify any skills or groups
-2. Every skill MUST remain in its original group
-3. Sort GROUPS so most job-relevant groups appear first
-4. Sort SKILLS within each group so most job-relevant skills appear first
-5. Use exact skill names as provided (case-sensitive)
+1. DO NOT remove or modify existing skills.
+2. Every existing skill MUST remain in its original group.
+3. NO DUPLICATES: Do not add a skill that already exists in any category in the CURRENT SKILLS DATA.
+4. Sort GROUPS so most job-relevant groups appear first.
+5. Sort SKILLS within each group so most job-relevant skills (including newly added ones) appear first.
+6. Use exact skill names for existing ones (case-sensitive).
+7. For NEW skills, use standard industry naming (e.g., "Next.js", "GraphQL").
 
 SORTING STRATEGY:
-- Identify key technologies, frameworks, and skills mentioned in the job description
-- Prioritize groups containing those skills
-- Within each group, prioritize skills explicitly mentioned or closely related to job requirements
-- Skills not relevant to the job should be at the end, but NEVER removed
+- Identify key technologies, frameworks, and skills mentioned in the job description.
+- Prioritize groups containing those skills.
+- Within each group, prioritize skills explicitly mentioned or closely related to job requirements.
+- Skills not relevant to the job should be at the end, but NEVER removed.
 
 OUTPUT FORMAT (JSON only, no explanation):
 {
   "groupOrder": ["Group Title 1", "Group Title 2", ...],
   "skillOrder": {
-    "Group Title 1": ["skill1", "skill2", ...],
-    "Group Title 2": ["skill1", "skill2", ...],
+    "Group Title 1": ["skill1", "skill2", "new_skill_A", ...],
+    "Group Title 2": ["skill1", "skill2", "new_skill_B", ...],
     ...
   }
 }
@@ -198,7 +203,7 @@ export function parseSkillsSortResponse(
     }
     console.log('[parseSkillsSortResponse] skillOrder is valid')
 
-    // Validate all groups are present
+    // Validate all ORIGINAL groups are present
     const originalGroupTitles = new Set(originalSkills.map((g) => g.title))
     const responseGroupTitles = new Set(parsed.groupOrder)
 
@@ -209,9 +214,10 @@ export function parseSkillsSortResponse(
       response: Array.from(responseGroupTitles),
     })
 
-    if (originalGroupTitles.size !== responseGroupTitles.size) {
+    // Now we allow more groups than original (AI can suggest new categories)
+    if (responseGroupTitles.size < originalGroupTitles.size) {
       console.error(
-        '[parseSkillsSortResponse] Group count mismatch in AI response',
+        '[parseSkillsSortResponse] AI response missing some original groups',
         {
           original: Array.from(originalGroupTitles),
           response: Array.from(responseGroupTitles),
@@ -228,9 +234,9 @@ export function parseSkillsSortResponse(
         return null
       }
     }
-    console.log('[parseSkillsSortResponse] All groups validated')
+    console.log('[parseSkillsSortResponse] All original groups validated')
 
-    // Validate all skills are present within each group
+    // Validate all ORIGINAL skills are present within each original group
     for (const group of originalSkills) {
       const originalSkillTexts = new Set(group.skills.map((s) => s.text))
       const responseSkillTexts = parsed.skillOrder[group.title]
@@ -244,7 +250,7 @@ export function parseSkillsSortResponse(
       const responseSkillSet = new Set(responseSkillTexts)
       if (responseSkillSet.size !== responseSkillTexts.length) {
         console.error(
-          `Duplicate skills found in AI response for group "${group.title}". Expected ${responseSkillTexts.length} unique skills but got ${responseSkillSet.size}.`,
+          `Duplicate skills found in AI response for group "${group.title}".`,
           {
             original: Array.from(originalSkillTexts),
             response: responseSkillTexts,
@@ -253,10 +259,10 @@ export function parseSkillsSortResponse(
         return null
       }
 
-      // Validate count matches
-      if (originalSkillTexts.size !== responseSkillSet.size) {
+      // Now we allow more skills than original (AI adds missing ones)
+      if (responseSkillSet.size < originalSkillTexts.size) {
         console.error(
-          `Skill count mismatch for group "${group.title}". Expected ${originalSkillTexts.size} skills but got ${responseSkillSet.size}.`,
+          `Skill count mismatch for group "${group.title}". AI removed some original skills.`,
           {
             original: Array.from(originalSkillTexts),
             response: responseSkillTexts,
@@ -265,11 +271,11 @@ export function parseSkillsSortResponse(
         return null
       }
 
-      // Validate all original skills are present in response
+      // Validate all original skills are present in response for this group
       for (const skillText of originalSkillTexts) {
         if (!responseSkillSet.has(skillText)) {
           console.error(
-            `Missing skill "${skillText}" in group "${group.title}"`,
+            `Missing original skill "${skillText}" in group "${group.title}" in AI response`,
             {
               original: Array.from(originalSkillTexts),
               response: responseSkillTexts,
@@ -416,6 +422,8 @@ export function parseAchievementsSortResponse(
 /**
  * Applies the skills sort result to create reordered skill groups
  * Returns new array with sorted groups and sorted skills within groups
+ * Includes any new skills or groups added by the AI
+ * Ensures no duplicate skills are added across groups
  */
 export function applySortedSkills(
   originalSkills: SkillGroup[],
@@ -424,28 +432,78 @@ export function applySortedSkills(
   // Create a map of original groups for quick lookup
   const groupMap = new Map(originalSkills.map((g) => [g.title, g]))
 
-  // Build sorted result
-  return sortResult.groupOrder.map((groupTitle) => {
-    const originalGroup = groupMap.get(groupTitle)
-    if (!originalGroup) {
-      throw new Error(`Group "${groupTitle}" not found`)
-    }
+  // Track all seen skills to prevent duplicates across groups
+  const seenSkillTexts = new Set<string>()
 
-    // Create skill map for ordering
-    const skillMap = new Map(originalGroup.skills.map((s) => [s.text, s]))
-    const sortedSkillTexts = sortResult.skillOrder[groupTitle] || []
-
-    return {
-      ...originalGroup,
-      skills: sortedSkillTexts.map((text) => {
-        const skill = skillMap.get(text)
-        if (!skill) {
-          throw new Error(`Skill "${text}" not found in group "${groupTitle}"`)
-        }
-        return skill
-      }),
-    }
+  // Pre-populate seen skills from original data (normalize to lowercase for case-insensitive check)
+  originalSkills.forEach((group) => {
+    group.skills.forEach((s) => seenSkillTexts.add(s.text.toLowerCase().trim()))
   })
+
+  // Build sorted result
+  return sortResult.groupOrder
+    .map((groupTitle) => {
+      const originalGroup = groupMap.get(groupTitle)
+
+      if (originalGroup) {
+        // Create skill map for ordering existing skills within this group
+        const skillMap = new Map(originalGroup.skills.map((s) => [s.text, s]))
+        // Case-insensitive map for finding original skills even if AI messed up casing
+        const ciSkillMap = new Map(
+          originalGroup.skills.map((s) => [s.text.toLowerCase(), s])
+        )
+
+        const sortedSkillTexts = sortResult.skillOrder[groupTitle] || []
+
+        const newSkills: Skill[] = []
+        sortedSkillTexts.forEach((text) => {
+          const originalSkill =
+            skillMap.get(text) || ciSkillMap.get(text.toLowerCase())
+
+          if (originalSkill) {
+            newSkills.push(originalSkill)
+          } else {
+            // It's a new skill suggested by AI
+            const normalizedText = text.toLowerCase().trim()
+            if (!seenSkillTexts.has(normalizedText)) {
+              newSkills.push({ text, highlight: true })
+              seenSkillTexts.add(normalizedText)
+            } else {
+              console.log(
+                `[applySortedSkills] Skipping duplicate skill: "${text}" added by AI to group "${groupTitle}"`
+              )
+            }
+          }
+        })
+
+        return {
+          ...originalGroup,
+          skills: newSkills,
+        }
+      } else {
+        // It's a new group suggested by AI
+        const sortedSkillTexts = sortResult.skillOrder[groupTitle] || []
+        const newGroupSkills: Skill[] = []
+
+        sortedSkillTexts.forEach((text) => {
+          const normalizedText = text.toLowerCase().trim()
+          if (!seenSkillTexts.has(normalizedText)) {
+            newGroupSkills.push({ text, highlight: true })
+            seenSkillTexts.add(normalizedText)
+          } else {
+            console.log(
+              `[applySortedSkills] Skipping duplicate skill: "${text}" added by AI to new group "${groupTitle}"`
+            )
+          }
+        })
+
+        return {
+          title: groupTitle,
+          skills: newGroupSkills,
+        }
+      }
+    })
+    .filter((group) => group.skills.length > 0) // Remove empty groups if all their skills were duplicates
 }
 
 /**

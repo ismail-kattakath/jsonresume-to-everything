@@ -102,7 +102,7 @@ describe('txtExporter', () => {
       expect(result).toContain('2020 - Present')
       expect(result).toContain('Led development of core platform features')
       expect(result).toContain('• Improved performance by 40%')
-      expect(result).toContain('Technologies: React, Node.js, TypeScript')
+      expect(result).toContain('Tech Stack: React, Node.js, TypeScript')
     })
 
     it('should format education correctly', () => {
@@ -186,7 +186,7 @@ describe('txtExporter', () => {
 
       const result = convertResumeToText(dataWithHiddenTech)
 
-      expect(result).not.toContain('Technologies:')
+      expect(result).not.toContain('Tech Stack:')
     })
 
     it('should format education with URL', () => {

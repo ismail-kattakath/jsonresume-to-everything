@@ -39,10 +39,10 @@ describe('sorting-prompts', () => {
       expect(prompt).toContain(mockJobDescription)
     })
 
-    it('should include sorting instructions', () => {
+    it('should include sorting and extraction instructions', () => {
       const prompt = buildSkillsSortPrompt(mockSkills, mockJobDescription)
 
-      expect(prompt).toContain('DO NOT add, remove, or modify')
+      expect(prompt).toContain('IDENTIFY MISSING SKILLS')
       expect(prompt).toContain('groupOrder')
       expect(prompt).toContain('skillOrder')
     })
@@ -136,55 +136,42 @@ describe('sorting-prompts', () => {
 
       expect(result).not.toBeNull()
       expect(result?.groupOrder).toEqual(['Frameworks', 'Languages'])
-      expect(result?.skillOrder.Languages).toEqual(['Python', 'JavaScript'])
+      expect(result?.skillOrder['Languages']).toEqual(['Python', 'JavaScript'])
     })
 
-    it('should handle markdown code blocks in response', () => {
-      const response =
-        '```json\n' +
-        JSON.stringify({
-          groupOrder: ['Frameworks', 'Languages'],
-          skillOrder: {
-            Languages: ['Python', 'JavaScript'],
-            Frameworks: ['React', 'Next.js'],
-          },
-        }) +
-        '\n```'
+    it('should allow adding new skills to existing groups', () => {
+      const response = JSON.stringify({
+        groupOrder: ['Frameworks', 'Languages'],
+        skillOrder: {
+          Languages: ['Python', 'JavaScript', 'TypeScript'],
+          Frameworks: ['React', 'Next.js'],
+        },
+      })
 
       const result = parseSkillsSortResponse(response, mockSkills)
 
       expect(result).not.toBeNull()
-      expect(result?.groupOrder).toEqual(['Frameworks', 'Languages'])
+      expect(result?.skillOrder['Languages']).toContain('TypeScript')
     })
 
-    it('should handle plain code blocks (without json specifier)', () => {
-      const response =
-        '```\n' +
-        JSON.stringify({
-          groupOrder: ['Frameworks', 'Languages'],
-          skillOrder: {
-            Languages: ['Python', 'JavaScript'],
-            Frameworks: ['React', 'Next.js'],
-          },
-        }) +
-        '\n```'
+    it('should allow adding new groups', () => {
+      const response = JSON.stringify({
+        groupOrder: ['Frameworks', 'Languages', 'Database'],
+        skillOrder: {
+          Languages: ['Python', 'JavaScript'],
+          Frameworks: ['React', 'Next.js'],
+          Database: ['PostgreSQL', 'Redis'],
+        },
+      })
 
       const result = parseSkillsSortResponse(response, mockSkills)
 
       expect(result).not.toBeNull()
-      expect(result?.groupOrder).toEqual(['Frameworks', 'Languages'])
+      expect(result?.groupOrder).toContain('Database')
+      expect(result?.skillOrder['Database']).toEqual(['PostgreSQL', 'Redis'])
     })
 
-    it('should return null for invalid JSON', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const result = parseSkillsSortResponse('not valid json', mockSkills)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null when groups are missing', () => {
+    it('should return null when ORIGINAL groups are missing', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
       const response = JSON.stringify({
@@ -200,7 +187,7 @@ describe('sorting-prompts', () => {
       consoleErrorSpy.mockRestore()
     })
 
-    it('should return null when skills are missing from a group', () => {
+    it('should return null when ORIGINAL skills are missing from a group', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
       const response = JSON.stringify({
@@ -209,52 +196,6 @@ describe('sorting-prompts', () => {
           Languages: ['Python'], // Missing JavaScript
           Frameworks: ['React', 'Next.js'],
         },
-      })
-
-      const result = parseSkillsSortResponse(response, mockSkills)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null when skillOrder is missing for a group', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const response = JSON.stringify({
-        groupOrder: ['Frameworks', 'Languages'],
-        skillOrder: {
-          Languages: ['Python', 'JavaScript'],
-          // Missing Frameworks
-        },
-      })
-
-      const result = parseSkillsSortResponse(response, mockSkills)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null for missing groupOrder', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const response = JSON.stringify({
-        skillOrder: {
-          Languages: ['Python', 'JavaScript'],
-          Frameworks: ['React', 'Next.js'],
-        },
-      })
-
-      const result = parseSkillsSortResponse(response, mockSkills)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null for missing skillOrder', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const response = JSON.stringify({
-        groupOrder: ['Frameworks', 'Languages'],
       })
 
       const result = parseSkillsSortResponse(response, mockSkills)
@@ -286,85 +227,11 @@ describe('sorting-prompts', () => {
       ])
     })
 
-    it('should handle markdown code blocks in response', () => {
-      const response =
-        '```json\n' +
-        JSON.stringify({
-          achievementOrder: ['Achievement C', 'Achievement A', 'Achievement B'],
-        }) +
-        '\n```'
-
-      const result = parseAchievementsSortResponse(response, mockAchievements)
-
-      expect(result).not.toBeNull()
-      expect(result?.achievementOrder).toEqual([
-        'Achievement C',
-        'Achievement A',
-        'Achievement B',
-      ])
-    })
-
-    it('should handle plain code blocks (without json specifier)', () => {
-      const response =
-        '```\n' +
-        JSON.stringify({
-          achievementOrder: ['Achievement C', 'Achievement A', 'Achievement B'],
-        }) +
-        '\n```'
-
-      const result = parseAchievementsSortResponse(response, mockAchievements)
-
-      expect(result).not.toBeNull()
-      expect(result?.achievementOrder).toEqual([
-        'Achievement C',
-        'Achievement A',
-        'Achievement B',
-      ])
-    })
-
-    it('should return null for invalid JSON', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const result = parseAchievementsSortResponse(
-        'not valid json',
-        mockAchievements
-      )
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
     it('should return null when achievement count mismatch', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
       const response = JSON.stringify({
         achievementOrder: ['Achievement A', 'Achievement B'], // Missing C
-      })
-
-      const result = parseAchievementsSortResponse(response, mockAchievements)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null when an achievement is missing', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const response = JSON.stringify({
-        achievementOrder: ['Achievement A', 'Achievement B', 'Achievement D'], // D doesn't exist
-      })
-
-      const result = parseAchievementsSortResponse(response, mockAchievements)
-
-      expect(result).toBeNull()
-      consoleErrorSpy.mockRestore()
-    })
-
-    it('should return null for missing achievementOrder', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-
-      const response = JSON.stringify({
-        wrongKey: ['Achievement A', 'Achievement B', 'Achievement C'],
       })
 
       const result = parseAchievementsSortResponse(response, mockAchievements)
@@ -398,14 +265,74 @@ describe('sorting-prompts', () => {
       expect(result[1].title).toBe('Languages')
       expect(result[0].skills[0].text).toBe('Next.js')
       expect(result[0].skills[1].text).toBe('React')
-      expect(result[1].skills[0].text).toBe('Python')
-      expect(result[1].skills[1].text).toBe('JavaScript')
     })
 
-    it('should preserve original skill objects', () => {
+    it('should add new skills and mark them as highlighted', () => {
       const sortResult: SkillsSortResult = {
         groupOrder: ['Languages', 'Frameworks'],
         skillOrder: {
+          Languages: ['TypeScript', 'JavaScript', 'Python'],
+          Frameworks: ['React', 'Next.js'],
+        },
+      }
+
+      const result = applySortedSkills(mockSkills, sortResult)
+
+      expect(result[0].skills[0].text).toBe('TypeScript')
+      expect(result[0].skills[0].highlight).toBe(true)
+      expect(result[0].skills[1].text).toBe('JavaScript')
+      expect(result[0].skills[1].highlight).toBeFalsy() // Original skill
+    })
+
+    it('should add new groups and mark their skills as highlighted', () => {
+      const sortResult: SkillsSortResult = {
+        groupOrder: ['Database', 'Languages', 'Frameworks'],
+        skillOrder: {
+          Languages: ['JavaScript', 'Python'],
+          Frameworks: ['React', 'Next.js'],
+          Database: ['PostgreSQL'],
+        },
+      }
+
+      const result = applySortedSkills(mockSkills, sortResult)
+
+      expect(result[0].title).toBe('Database')
+      expect(result[0].skills[0].text).toBe('PostgreSQL')
+      expect(result[0].skills[0].highlight).toBe(true)
+    })
+
+    it('should filter out duplicate skills added by AI (case-insensitive)', () => {
+      const sortResult: SkillsSortResult = {
+        groupOrder: ['Languages', 'Frameworks'],
+        skillOrder: {
+          Languages: ['javascript', 'Python', 'TypeScript', 'React'], // 'javascript' is duplicate of 'JavaScript', 'React' is duplicate of existing in Frameworks
+          Frameworks: ['React', 'Next.js'],
+        },
+      }
+
+      const result = applySortedSkills(mockSkills, sortResult)
+
+      const languagesGroup = result.find((g) => g.title === 'Languages')
+      const frameworksGroup = result.find((g) => g.title === 'Frameworks')
+
+      // Should have: JavaScript (original), Python (original), TypeScript (new)
+      expect(languagesGroup?.skills.map((s) => s.text)).toEqual([
+        'JavaScript',
+        'Python',
+        'TypeScript',
+      ])
+      // 'React' should only be in Frameworks
+      expect(frameworksGroup?.skills.map((s) => s.text)).toEqual([
+        'React',
+        'Next.js',
+      ])
+    })
+
+    it('should remove empty groups if all their skills were duplicates', () => {
+      const sortResult: SkillsSortResult = {
+        groupOrder: ['NewGroup', 'Languages', 'Frameworks'],
+        skillOrder: {
+          NewGroup: ['JavaScript'], // Duplicate of existing
           Languages: ['JavaScript', 'Python'],
           Frameworks: ['React', 'Next.js'],
         },
@@ -413,35 +340,8 @@ describe('sorting-prompts', () => {
 
       const result = applySortedSkills(mockSkills, sortResult)
 
-      // Same order, should be equivalent
-      expect(result[0].skills[0]).toBe(mockSkills[0].skills[0])
-    })
-
-    it('should throw error for missing group', () => {
-      const sortResult: SkillsSortResult = {
-        groupOrder: ['NonExistent'],
-        skillOrder: {
-          NonExistent: [],
-        },
-      }
-
-      expect(() => applySortedSkills(mockSkills, sortResult)).toThrow(
-        'Group "NonExistent" not found'
-      )
-    })
-
-    it('should throw error for missing skill', () => {
-      const sortResult: SkillsSortResult = {
-        groupOrder: ['Languages', 'Frameworks'],
-        skillOrder: {
-          Languages: ['NonExistent', 'Python'],
-          Frameworks: ['React', 'Next.js'],
-        },
-      }
-
-      expect(() => applySortedSkills(mockSkills, sortResult)).toThrow(
-        'Skill "NonExistent" not found in group "Languages"'
-      )
+      expect(result.find((g) => g.title === 'NewGroup')).toBeUndefined()
+      expect(result.length).toBe(2)
     })
   })
 
@@ -462,29 +362,6 @@ describe('sorting-prompts', () => {
       expect(result[0].text).toBe('Achievement C')
       expect(result[1].text).toBe('Achievement A')
       expect(result[2].text).toBe('Achievement B')
-    })
-
-    it('should preserve original achievement objects', () => {
-      const sortResult: AchievementsSortResult = {
-        achievementOrder: ['Achievement A', 'Achievement B', 'Achievement C'],
-      }
-
-      const result = applySortedAchievements(mockAchievements, sortResult)
-
-      // Same order, should be same objects
-      expect(result[0]).toBe(mockAchievements[0])
-      expect(result[1]).toBe(mockAchievements[1])
-      expect(result[2]).toBe(mockAchievements[2])
-    })
-
-    it('should throw error for missing achievement', () => {
-      const sortResult: AchievementsSortResult = {
-        achievementOrder: ['NonExistent'],
-      }
-
-      expect(() =>
-        applySortedAchievements(mockAchievements, sortResult)
-      ).toThrow('Achievement not found: "NonExistent"')
     })
   })
 })

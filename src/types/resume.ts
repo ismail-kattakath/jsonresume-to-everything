@@ -21,7 +21,7 @@ export interface WorkExperience {
   keyAchievements: Achievement[]
   startYear: string
   endYear: string
-  technologies: string[]
+  technologies?: string[]
   showTechnologies?: boolean // Optional: controls visibility of technologies in preview
 }
 

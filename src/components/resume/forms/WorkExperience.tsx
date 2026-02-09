@@ -111,9 +111,9 @@ const KeyAchievementsSortButton = ({
 }
 
 /**
- * Sort button for Technologies
+ * Sort button for Tech Stack
  */
-const TechnologiesSortButton = ({
+const TechStackSortButton = ({
   workExperienceIndex,
 }: {
   workExperienceIndex: number
@@ -138,12 +138,12 @@ const TechnologiesSortButton = ({
     /* istanbul ignore next */
     try {
       // Build prompt for technologies sorting
-      const prompt = `You are an ATS optimization expert. Given a list of technologies and a job description, reorder the technologies to maximize ATS match score.
+      const prompt = `You are an ATS optimization expert. Given a tech stack (list of technologies) and a job description, reorder the technologies to maximize ATS match score.
 
 Job Description:
 ${settings.jobDescription}
 
-Current Technologies:
+Current Tech Stack:
 ${technologies.map((tech, i) => `${i + 1}. ${tech}`).join('\n')}
 
 Instructions:
@@ -189,11 +189,11 @@ Return only the JSON array, no other text.`
         technologies: sortedTechnologies,
       }
       setResumeData({ ...resumeData, workExperience: newWorkExperience })
-      toast.success('Technologies sorted by job relevance')
+      toast.success('Tech stack sorted by job relevance')
     } catch (error) {
       console.error('AI Technologies sort error:', error)
       toast.error(
-        error instanceof Error ? error.message : 'Failed to sort technologies'
+        error instanceof Error ? error.message : 'Failed to sort tech stack'
       )
     } finally {
       setIsSorting(false)
@@ -210,7 +210,6 @@ Return only the JSON array, no other text.`
     />
   )
 }
-
 /**
  * Work Experience form component
  * Card-based layout with collapsible entries
@@ -422,9 +421,9 @@ const WorkExperience = () => {
                       <div>
                         <div className="mb-2 flex items-center gap-2">
                           <label className="text-sm font-medium text-white">
-                            Technologies
+                            Tech Stack
                           </label>
-                          <TechnologiesSortButton workExperienceIndex={index} />
+                          <TechStackSortButton workExperienceIndex={index} />
                           <button
                             type="button"
                             onClick={() => toggleTechnologiesVisibility(index)}
@@ -456,7 +455,7 @@ const WorkExperience = () => {
                                 endIndex
                               )
                             }
-                            placeholder="Add technology..."
+                            placeholder="Add tech stack..."
                             variant="teal"
                           />
                         )}

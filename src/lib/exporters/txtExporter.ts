@@ -75,7 +75,7 @@ export function convertResumeToText(data: ResumeData): string {
         job.showTechnologies !== false
       ) {
         lines.push('')
-        lines.push(`Technologies: ${job.technologies.join(', ')}`)
+        lines.push(`Tech Stack: ${job.technologies.join(', ')}`)
       }
     })
     lines.push('')

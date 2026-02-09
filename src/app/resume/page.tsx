@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Preview from '@/components/resume/preview/Preview'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { AISettingsProvider } from '@/lib/contexts/AISettingsContext'
 import defaultResumeData from '@/lib/resumeAdapter'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
 import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
@@ -49,23 +50,25 @@ export default function ResumeDownloadPage() {
         editable: false,
       }}
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
-        {/* Floating Print Button - Hidden on print */}
-        <div className="exclude-print fixed right-8 bottom-8 z-50">
-          <PrintButton
-            name={resumeData.name}
-            position={resumeData.position}
-            documentType="Resume"
-          />
-        </div>
+      <AISettingsProvider>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
+          {/* Floating Print Button - Hidden on print */}
+          <div className="exclude-print fixed right-8 bottom-8 z-50">
+            <PrintButton
+              name={resumeData.name}
+              position={resumeData.position}
+              documentType="Resume"
+            />
+          </div>
 
-        {/* Resume Content */}
-        <div className="flex min-h-screen items-start justify-center md:px-4 md:py-8 print:px-0 print:py-0">
-          <ScaledPreviewWrapper>
-            <Preview />
-          </ScaledPreviewWrapper>
+          {/* Resume Content */}
+          <div className="flex min-h-screen items-start justify-center md:px-4 md:py-8 print:px-0 print:py-0">
+            <ScaledPreviewWrapper>
+              <Preview />
+            </ScaledPreviewWrapper>
+          </div>
         </div>
-      </div>
+      </AISettingsProvider>
     </ResumeContext.Provider>
   )
 }

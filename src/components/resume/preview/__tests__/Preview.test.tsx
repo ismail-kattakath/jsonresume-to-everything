@@ -345,7 +345,7 @@ describe('Preview Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      expect(screen.getByText('Technologies:')).toBeInTheDocument()
+      expect(screen.getByText('Tech Stack:')).toBeInTheDocument()
       expect(
         screen.getByText('React, Node.js, TypeScript, Docker')
       ).toBeInTheDocument()
@@ -371,7 +371,7 @@ describe('Preview Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      expect(screen.queryByText('Technologies:')).not.toBeInTheDocument()
+      expect(screen.queryByText('Tech Stack:')).not.toBeInTheDocument()
       expect(screen.queryByText('React, Node.js')).not.toBeInTheDocument()
     })
 
@@ -394,7 +394,7 @@ describe('Preview Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      expect(screen.queryByText('Technologies:')).not.toBeInTheDocument()
+      expect(screen.queryByText('Tech Stack:')).not.toBeInTheDocument()
     })
 
     it('should apply select-all class to technologies text', () => {

@@ -1183,7 +1183,7 @@ describe('WorkExperience Component', () => {
       expect(screen.getByText('Node.js')).toBeInTheDocument()
     })
 
-    it('should render Technologies label', () => {
+    it('should render Tech Stack label', () => {
       const mockData = createMockResumeData({
         workExperience: [
           {
@@ -1203,7 +1203,7 @@ describe('WorkExperience Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      expect(screen.getByText('Technologies')).toBeInTheDocument()
+      expect(screen.getByText('Tech Stack')).toBeInTheDocument()
     })
 
     it('should add technology when TagInput onAdd is called', () => {
@@ -1230,7 +1230,7 @@ describe('WorkExperience Component', () => {
         },
       })
 
-      const input = screen.getByPlaceholderText('Add technology...')
+      const input = screen.getByPlaceholderText('Add tech stack...')
 
       fireEvent.change(input, { target: { value: 'TypeScript' } })
       fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
@@ -1306,7 +1306,7 @@ describe('WorkExperience Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      const input = screen.getByPlaceholderText('Add technology...')
+      const input = screen.getByPlaceholderText('Add tech stack...')
       expect(input).toBeInTheDocument()
 
       // Should not render any remove buttons for technologies
@@ -1338,7 +1338,7 @@ describe('WorkExperience Component', () => {
         },
       })
 
-      const input = screen.getByPlaceholderText('Add technology...')
+      const input = screen.getByPlaceholderText('Add tech stack...')
 
       fireEvent.change(input, { target: { value: 'React' } })
       fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
@@ -1388,7 +1388,7 @@ describe('WorkExperience Component', () => {
         },
       })
 
-      const inputs = screen.getAllByPlaceholderText('Add technology...')
+      const inputs = screen.getAllByPlaceholderText('Add tech stack...')
 
       // Add technology to second entry
       fireEvent.change(inputs[1], { target: { value: 'TypeScript' } })
@@ -1444,7 +1444,7 @@ describe('WorkExperience Component', () => {
       const removeButtons = screen.getAllByTitle('Remove')
 
       // Remove "Next.js" from second entry (index would be after Vue, Nuxt, React)
-      fireEvent.click(removeButtons[3]) // Vue=0, Nuxt=1, React=2, Next.js=3
+      fireEvent.click(removeButtons[3]) // Vue=0, Nuxt=1, React=2, Tech Stack=3
 
       expect(mockSetResumeData).toHaveBeenCalledWith({
         ...mockData,
@@ -1478,7 +1478,7 @@ describe('WorkExperience Component', () => {
         contextValue: { resumeData: mockData },
       })
 
-      const input = screen.getByPlaceholderText('Add technology...')
+      const input = screen.getByPlaceholderText('Add tech stack...')
       expect(input).toHaveClass('border-teal-400/30')
     })
 
@@ -1569,7 +1569,7 @@ describe('WorkExperience Component', () => {
       })
     })
 
-    describe('TechnologiesSortButton', () => {
+    describe('TechStackSortButton', () => {
       it('should not render sort button when there is only 1 technology', () => {
         const mockData = createMockResumeData({
           workExperience: [
@@ -1590,7 +1590,7 @@ describe('WorkExperience Component', () => {
           contextValue: { resumeData: mockData },
         })
 
-        // Should not show Sort by JD button for Technologies
+        // Should show Sort by JD button for Tech Stack
         const sortButtons = screen.queryAllByText('Sort by JD')
         expect(sortButtons.length).toBe(0)
       })
@@ -1615,7 +1615,7 @@ describe('WorkExperience Component', () => {
           contextValue: { resumeData: mockData },
         })
 
-        // Should show Sort by JD button for Technologies
+        // Should show Sort by JD button for Tech Stack
         const sortButtons = screen.queryAllByText('Sort by JD')
         expect(sortButtons.length).toBeGreaterThan(0)
       })
@@ -1640,7 +1640,7 @@ describe('WorkExperience Component', () => {
           contextValue: { resumeData: mockData },
         })
 
-        // Should show 2 Sort by JD buttons (one for achievements, one for technologies)
+        // Should show 2 Sort by JD buttons (one for achievements, one for tech stack)
         const sortButtons = screen.queryAllByText('Sort by JD')
         expect(sortButtons.length).toBe(2)
       })
