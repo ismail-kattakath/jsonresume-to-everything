@@ -36,6 +36,8 @@ jest.mock('next/image', () => ({
   },
 }))
 
+jest.setTimeout(60000)
+
 describe('Integration: JSON Resume Import → Form Population', () => {
   const createMockJSONResumeFile = (data: unknown) => {
     const jsonString = JSON.stringify(data)

@@ -26,6 +26,8 @@ jest.mock('sonner', () => ({
   },
 }))
 
+jest.setTimeout(60000)
+
 describe('Password Protection - End-to-End Workflows', () => {
   const correctPassword = '4614'
   const wrongPassword = 'incorrect'

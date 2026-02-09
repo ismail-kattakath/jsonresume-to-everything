@@ -51,9 +51,7 @@ global.performance.getEntriesByName = jest.fn(() => [])
 
 // Mock DragAndDrop wrapper components for testing
 jest.mock('@/components/ui/DragAndDrop', () => ({
-  DnDContext: ({ children, onDragEnd }) => (
-    <div data-ondragend={onDragEnd}>{children}</div>
-  ),
+  DnDContext: ({ children }) => <div>{children}</div>,
   DnDDroppable: ({ children }) =>
     children({
       draggableProps: {},

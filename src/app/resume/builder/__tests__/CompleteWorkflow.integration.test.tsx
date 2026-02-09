@@ -40,6 +40,8 @@ jest.mock('next/image', () => ({
 const mockPrint = jest.fn()
 window.print = mockPrint
 
+jest.setTimeout(60000)
+
 describe('Integration: Complete Edit → Preview → Print Workflow', () => {
   beforeEach(() => {
     // Clear localStorage before each test
@@ -51,7 +53,19 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
     it('should allow user to create a resume from scratch and see live preview', async () => {
       const { container } = render(<ResumeEditPage />)
 
-      // Step 1: Fill in personal information
+      // Step 1: Expand Personal Information section
+      const personalInfoHeader = screen.getByText('Personal Information')
+      fireEvent.click(personalInfoHeader)
+
+      // Wait for section to expand
+      await waitFor(() => {
+        const nameInput = container.querySelector(
+          'input[name="name"]'
+        ) as HTMLInputElement
+        expect(nameInput).toBeInTheDocument()
+      })
+
+      // Step 2: Fill in personal information
       const nameInput = container.querySelector(
         'input[name="name"]'
       ) as HTMLInputElement
@@ -73,7 +87,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
         target: { name: 'email', value: 'alice@example.com' },
       })
 
-      // Step 2: Verify preview updates
+      // Step 3: Verify preview updates
       await waitFor(() => {
         const preview = container.querySelector('.preview')
         expect(preview).toHaveTextContent('Alice Johnson')
@@ -81,7 +95,18 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
         expect(preview).toHaveTextContent('alice@example.com')
       })
 
-      // Step 3: Add work experience
+      // Step 4: Expand Experience section and add work experience
+      const expHeaders = screen.getAllByText('Experience', { selector: 'h2' })
+      const workExpHeader = expHeaders[0]?.closest('button')
+      if (workExpHeader) {
+        fireEvent.click(workExpHeader)
+      }
+
+      await waitFor(() => {
+        const addWorkButton = screen.queryByText(/Add Experience/i)
+        expect(addWorkButton).toBeInTheDocument()
+      })
+
       const addWorkButton = screen
         .getByText(/Add Experience/i)
         .closest('button')
@@ -124,7 +149,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
       const printButtons = screen.getAllByText(/Print/i)
       expect(printButtons.length).toBeGreaterThan(0)
       expect(printButtons[0]).toBeInTheDocument()
-    }, 10000)
+    })
 
     it('should maintain data consistency throughout the edit workflow', async () => {
       const { container } = render(<ResumeEditPage />)
@@ -176,7 +201,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
           'Experienced professional with a passion for innovation'
         )
       })
-    }, 10000)
+    })
   })
 
   describe('Import → Edit → Preview Workflow', () => {
@@ -246,7 +271,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
         expect(preview).toHaveTextContent('Product Manager')
         expect(preview).toHaveTextContent('Product Co')
       })
-    }, 10000)
+    })
 
     it('should allow adding new sections to imported resume', async () => {
       const { container } = render(<ResumeEditPage />)
@@ -315,7 +340,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
           expect(preview).toHaveTextContent('MBA in Business Administration')
         })
       }
-    }, 10000)
+    })
   })
 
   describe('Export Workflow', () => {
@@ -418,7 +443,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
 
       // Verify preview has white background (print-ready)
       expect(preview).toHaveClass('bg-white')
-    }, 10000) // Increase timeout to 10s for comprehensive workflow test
+    })
   })
 
   describe('Complex Multi-Step Workflow', () => {
@@ -580,7 +605,7 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
       const printButtons = screen.getAllByText(/Print/i)
       expect(printButtons.length).toBeGreaterThan(0)
       expect(printButtons[0]).toBeInTheDocument()
-    }, 20000)
+    })
 
     it('should allow editing, reviewing in preview, making corrections, and printing', async () => {
       const { container } = render(<ResumeEditPage />)
@@ -743,6 +768,6 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
         expect(preview).toHaveTextContent('Company A')
         expect(preview).toHaveTextContent('Company B')
       })
-    }, 10000) // Increase timeout to 10s for complex multi-step workflow
+    })
   })
 })

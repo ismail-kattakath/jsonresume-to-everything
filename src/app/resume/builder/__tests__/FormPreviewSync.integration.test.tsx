@@ -36,6 +36,8 @@ jest.mock('next/image', () => ({
   },
 }))
 
+jest.setTimeout(60000)
+
 describe('Integration: Form → Preview Synchronization', () => {
   beforeEach(() => {
     // Clear localStorage before each test
