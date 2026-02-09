@@ -26,9 +26,10 @@
   ],
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run download-resume && next dev",
     "dev:reload": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true && rm -rf .next && npm run dev",
-    "build": "next build",
+    "build": "npm run download-resume && next build",
+    "download-resume": "if [ -f .env.local ]; then node --env-file=.env.local scripts/download-resume.mjs; else node scripts/download-resume.mjs; fi",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
