@@ -548,10 +548,25 @@ function UnifiedEditor() {
           handleChange: coverLetterHandlers.handleChange,
         }
 
-  // Migrate skills data on mount if needed (resume only)
+  // Load saved data on mount
   useEffect(() => {
-    if (resumeData.skills && resumeData.skills.length > 0) {
-      const needsMigration = resumeData.skills.some((skillCategory) =>
+    // 1. Load resume data
+    const savedResumeData = localStorage.getItem('resumeData')
+    let initialResumeData = resumeData
+
+    if (savedResumeData) {
+      try {
+        const parsedResume = JSON.parse(savedResumeData)
+        initialResumeData = parsedResume
+        setResumeData(parsedResume)
+      } catch (error) {
+        console.error('Error loading saved resume data:', error)
+      }
+    }
+
+    // 2. Migrate skills data if needed
+    if (initialResumeData.skills && initialResumeData.skills.length > 0) {
+      const needsMigration = initialResumeData.skills.some((skillCategory) =>
         skillCategory.skills.some(
           (skill) =>
             typeof skill === 'string' ||
@@ -561,14 +576,13 @@ function UnifiedEditor() {
 
       if (needsMigration) {
         const migratedData = {
-          ...resumeData,
-          skills: resumeData.skills.map((skillCategory) => ({
+          ...initialResumeData,
+          skills: initialResumeData.skills.map((skillCategory) => ({
             ...skillCategory,
             skills: skillCategory.skills.map((skill) => {
               if (typeof skill === 'string') {
                 return { text: skill, highlight: false }
               }
-              // Handle old 'underline' property
               if ('underline' in skill && skill.highlight === undefined) {
                 return {
                   text: skill.text,
@@ -580,21 +594,19 @@ function UnifiedEditor() {
           })),
         }
         setResumeData(migratedData)
+        // Keep initialResumeData in sync for CL sync below
+        initialResumeData = migratedData
       }
     }
-  }, [])
 
-  // Load saved cover letter data on mount
-  useEffect(() => {
-    const savedData = localStorage.getItem('coverLetterData')
-    if (savedData) {
+    // 3. Load saved cover letter data
+    const savedCLData = localStorage.getItem('coverLetterData')
+    if (savedCLData) {
       try {
-        const parsedData = JSON.parse(savedData)
-        // Always merge with default data to ensure all fields exist
+        const parsedData = JSON.parse(savedCLData)
         setCoverLetterData({
           ...defaultResumeData,
           ...parsedData,
-          // Ensure content is never empty - use default if saved content or current is empty
           content:
             parsedData.content && parsedData.content.trim()
               ? parsedData.content
@@ -605,6 +617,27 @@ function UnifiedEditor() {
       }
     }
   }, [])
+
+  // Save resume data on change
+  useEffect(() => {
+    if (resumeData !== defaultResumeData) {
+      localStorage.setItem('resumeData', JSON.stringify(resumeData))
+    }
+  }, [resumeData])
+
+  // Save cover letter data on change
+  useEffect(() => {
+    // Check if it's different from the initial default state (which has default content)
+    const isDefaultContent =
+      coverLetterData.content === DEFAULT_COVER_LETTER_CONTENT
+    const isDefaultData =
+      JSON.stringify({ ...coverLetterData, content: '' }) ===
+      JSON.stringify({ ...defaultResumeData, content: '' })
+
+    if (!(isDefaultContent && isDefaultData)) {
+      localStorage.setItem('coverLetterData', JSON.stringify(coverLetterData))
+    }
+  }, [coverLetterData])
 
   // Synchronize shared fields between resume and cover letter
   // Use refs to track the last synced values and prevent infinite loops
