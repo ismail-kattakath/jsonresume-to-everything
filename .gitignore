@@ -4,8 +4,9 @@ out/
 *.log
 .DS_Store
 
+src/data/resume.json
 # Environment variables (ignore all except example)
-.env*
+.env*.local
 !.env.example
 
 # Test coverage

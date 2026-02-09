@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      RESUME_GIST_URL: ${{ secrets.RESUME_GIST_URL || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/e9e0f5319b0dff5120cda5ad6169c8455a7aa179/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

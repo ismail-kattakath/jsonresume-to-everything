@@ -29,6 +29,8 @@
     "dev": "next dev",
     "dev:reload": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true && rm -rf .next && npm run dev",
     "build": "next build",
+    "download-resume": "if [ -f .env.local ]; then node --env-file=.env.local scripts/download-resume.mjs; else node scripts/download-resume.mjs; fi",
+    "postinstall": "npm run download-resume",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint",
