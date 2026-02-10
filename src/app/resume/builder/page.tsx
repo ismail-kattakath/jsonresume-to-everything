@@ -354,7 +354,6 @@ function SkillsSection() {
     setIsExtractingSkills(true)
     toast.promise(
       generateSkillsToHighlightWithProvider(
-        context.resumeData,
         settings.jobDescription,
         settings.apiUrl,
         settings.apiKey,

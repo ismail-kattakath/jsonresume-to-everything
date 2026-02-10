@@ -452,12 +452,11 @@ export async function generateJobTitle(
  */
 export async function generateSkillsToHighlight(
   config: OpenAIConfig,
-  resumeData: ResumeData,
   jobDescription: string,
   onProgress?: StreamCallback
 ): Promise<string> {
   // Build the prompt
-  const prompt = buildSkillsToHighlightPrompt(resumeData, jobDescription)
+  const prompt = buildSkillsToHighlightPrompt(jobDescription)
 
   // Prepare the request
   const request: OpenAIRequest = {

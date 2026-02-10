@@ -241,7 +241,6 @@ export async function testGeminiConnection(
  * Generates skills to highlight based on JD using Gemini
  */
 export async function generateSkillsToHighlightWithGemini(
-  resumeData: ResumeData,
   jobDescription: string,
   apiKey: string,
   model: string,
@@ -254,7 +253,7 @@ export async function generateSkillsToHighlightWithGemini(
   })
 
   // Build the prompt
-  const prompt = buildSkillsToHighlightPrompt(resumeData, jobDescription)
+  const prompt = buildSkillsToHighlightPrompt(jobDescription)
 
   // Prepare the request
   const messages: AIMessage[] = [
