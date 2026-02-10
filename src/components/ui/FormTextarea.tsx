@@ -20,6 +20,7 @@ interface FormTextareaProps {
   aiButtonTitle?: string
   isAIConfigured?: boolean
   aiShowLabel?: boolean
+  disabled?: boolean
 }
 
 /**
@@ -43,6 +44,7 @@ export function FormTextarea({
   aiButtonTitle = 'Generate by JD',
   isAIConfigured = true,
   aiShowLabel = false,
+  disabled = false,
 }: FormTextareaProps) {
   const textareaId = `textarea-${name}`
 
@@ -59,6 +61,7 @@ export function FormTextarea({
           value={value}
           onChange={onChange}
           maxLength={maxLength}
+          disabled={disabled}
         />
         <label htmlFor={textareaId} className="floating-label">
           {label}

@@ -12,9 +12,14 @@ import {
 } from '@/lib/ai/providers'
 import { fetchAvailableModels } from '@/lib/ai/openai-client'
 import { Loader2 } from 'lucide-react'
+import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
+import { toast } from 'sonner'
 
 const AISettings: React.FC = () => {
-  const { settings, updateSettings, connectionStatus } = useAISettings()
+  const { settings, updateSettings, connectionStatus, isConfigured } =
+    useAISettings()
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   // State for provider selection
   const [selectedProvider, setSelectedProvider] = useState<string>(() => {
@@ -143,6 +148,56 @@ const AISettings: React.FC = () => {
     const timeoutId = setTimeout(fetchModels, 500)
     return () => clearTimeout(timeoutId)
   }, [settings.apiUrl, settings.apiKey, selectedProvider])
+
+  const handleRefineJD = async () => {
+    if (!isConfigured) {
+      toast.error('AI not configured', {
+        description: 'Please complete the API settings above first.',
+      })
+      return
+    }
+
+    if (!settings.jobDescription || settings.jobDescription.length < 50) {
+      toast.error('Job description too short', {
+        description: 'Please provide more details to analyze.',
+      })
+      return
+    }
+
+    setIsAnalyzing(true)
+
+    const refinementPromise = async () => {
+      try {
+        const refinedJD = await analyzeJobDescriptionGraph(
+          settings.jobDescription,
+          {
+            apiUrl: settings.apiUrl,
+            apiKey: settings.apiKey,
+            model: settings.model,
+          },
+          (chunk) => {
+            if (chunk.content) {
+              console.log('[Strands Graph]', chunk.content)
+            }
+          }
+        )
+        updateSettings({ jobDescription: refinedJD })
+        return refinedJD
+      } catch (error) {
+        console.error('[AISettings] JD analysis error:', error)
+        throw error
+      } finally {
+        setIsAnalyzing(false)
+      }
+    }
+
+    toast.promise(refinementPromise(), {
+      loading: 'Refining job description with multi-agent flow...',
+      success: 'Job description refined successfully!',
+      error: (err) =>
+        `Analysis failed: ${err.message || 'Unknown error occurred'}`,
+    })
+  }
 
   // Auto-select first model when available models change
   useEffect(() => {
@@ -401,6 +456,12 @@ const AISettings: React.FC = () => {
         placeholder="Paste the job description here to tailor your resume and cover letter..."
         variant="blue"
         minHeight="160px"
+        onAIAction={handleRefineJD}
+        isAILoading={isAnalyzing}
+        isAIConfigured={isConfigured}
+        aiButtonTitle="Refine with AI"
+        aiShowLabel={true}
+        disabled={isAnalyzing}
       />
     </div>
   )
