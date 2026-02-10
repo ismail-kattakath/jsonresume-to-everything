@@ -13,12 +13,9 @@ import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
 import ContactInfo from '@/components/document-builder/shared-preview/ContactInfo'
 import { formatUrl } from '@/lib/utils/formatUrl'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import type { ResumeData, SocialMediaLink } from '@/types/resume'
-import { Highlight } from '@/components/ui/Highlight'
 
 const ProfileHeader = () => {
-  const { settings } = useAISettings()
   const context = useContext(ResumeContext)
 
   if (!context) {
@@ -81,15 +78,15 @@ const ProfileHeader = () => {
               const handleSocialMediaBlur = (
                 e: React.FocusEvent<HTMLAnchorElement>
               ) => {
-                if (!resumeData) return
-                const newSocialMedia = [
-                  ...(resumeData as ResumeData).socialMedia,
-                ]
-                newSocialMedia[index].link = e.target.innerText
+                const newSocialMedia = [...resumeData.socialMedia]
+                newSocialMedia[index] = {
+                  ...newSocialMedia[index]!,
+                  link: (e.target as HTMLElement).innerText,
+                }
                 setResumeData({
                   ...resumeData,
                   socialMedia: newSocialMedia,
-                } as ResumeData)
+                })
               }
 
               return (
@@ -105,11 +102,12 @@ const ProfileHeader = () => {
                   suppressContentEditableWarning
                   onBlur={handleSocialMediaBlur}
                 >
-                  {icons.map((icon, iconIndex) => {
-                    if (icon.name === socialMedia.socialMedia.toLowerCase()) {
-                      return <span key={iconIndex}>{icon.icon}</span>
-                    }
-                  })}
+                  {(() => {
+                    const icon = icons.find(
+                      (i) => i.name === socialMedia.socialMedia.toLowerCase()
+                    )
+                    return icon ? <span>{icon.icon}</span> : null
+                  })()}
                   {socialMedia.link}
                 </a>
               )

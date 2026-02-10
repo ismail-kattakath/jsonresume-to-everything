@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { Highlight } from '@/components/ui/Highlight'
@@ -20,12 +20,11 @@ const Skills = ({ title, skills }: SkillsProps) => {
   const { resumeData, setResumeData, editable = true } = context
 
   const handleTitleChange = (e: React.FocusEvent<HTMLHeadingElement>) => {
-    if (!resumeData) return
-    const newSkills = [...(resumeData as ResumeData).skills]
+    const newSkills = [...resumeData.skills]
     const group = newSkills.find((skillType) => skillType.title === title)
     if (group) {
-      group.title = e.target.innerText
-      setResumeData({ ...resumeData, skills: newSkills } as ResumeData)
+      group.title = (e.target as HTMLElement).innerText
+      setResumeData({ ...resumeData, skills: newSkills })
     }
   }
 
@@ -33,25 +32,27 @@ const Skills = ({ title, skills }: SkillsProps) => {
     e: React.FocusEvent<HTMLSpanElement>,
     skillIndex: number
   ) => {
-    if (!resumeData) return
-    const newSkills = [...(resumeData as ResumeData).skills]
+    const newSkills = [...resumeData.skills]
     const skillTypeIndex = newSkills.findIndex(
       (skillType) => skillType.title === title
     )
 
-    if (skillTypeIndex === -1) return
+    if (skillTypeIndex === -1 || !newSkills[skillTypeIndex]) return
 
-    const newText = e.target.innerText.trim()
+    const newText = (e.target as HTMLElement).innerText.trim()
 
     if (newText === '') {
       // Remove the skill from array if text is empty
-      newSkills[skillTypeIndex].skills.splice(skillIndex, 1)
+      newSkills[skillTypeIndex]!.skills.splice(skillIndex, 1)
     } else {
       // Update the skill text
-      newSkills[skillTypeIndex].skills[skillIndex].text = newText
+      const skill = newSkills[skillTypeIndex]!.skills[skillIndex]
+      if (skill) {
+        skill.text = newText
+      }
     }
 
-    setResumeData({ ...resumeData, skills: newSkills } as ResumeData)
+    setResumeData({ ...resumeData, skills: newSkills })
   }
 
   if (skills.length === 0) {
