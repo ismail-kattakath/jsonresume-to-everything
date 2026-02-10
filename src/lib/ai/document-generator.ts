@@ -122,7 +122,6 @@ export async function generateJobTitleWithProvider(
  * Generate skills to highlight using the appropriate provider
  */
 export async function generateSkillsToHighlightWithProvider(
-  resumeData: ResumeData,
   jobDescription: string,
   apiUrl: string,
   apiKey: string,
@@ -132,7 +131,6 @@ export async function generateSkillsToHighlightWithProvider(
 ): Promise<string> {
   if (providerType === 'gemini') {
     return generateSkillsToHighlightWithGemini(
-      resumeData,
       jobDescription,
       apiKey,
       model,
@@ -143,7 +141,6 @@ export async function generateSkillsToHighlightWithProvider(
   // OpenAI-compatible
   return generateSkillsToHighlightOpenAI(
     { baseURL: apiUrl, apiKey, model },
-    resumeData,
     jobDescription,
     onProgress
   )

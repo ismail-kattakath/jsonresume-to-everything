@@ -6,6 +6,7 @@ import {
   buildJobTitlePrompt,
   validateJobTitle,
   postProcessJobTitle,
+  buildSkillsToHighlightPrompt,
 } from '@/lib/ai/document-prompts'
 import type { ResumeData } from '@/types'
 
@@ -569,6 +570,33 @@ describe('Job Title Prompt Engineering', () => {
       const result = postProcessJobTitle(title)
 
       expect(result).toBe('Senior Full Stack Engineer')
+    })
+  })
+})
+
+describe('Skills to Highlight Prompt Engineering', () => {
+  describe('buildSkillsToHighlightPrompt', () => {
+    it('includes target job description', () => {
+      const jobDesc = 'Looking for a Senior React Engineer with Node.js and AWS'
+      const prompt = buildSkillsToHighlightPrompt(jobDesc)
+
+      expect(prompt).toContain(jobDesc)
+    })
+
+    it('contains instruction to extract ONLY from JD', () => {
+      const prompt = buildSkillsToHighlightPrompt('Job description')
+
+      expect(prompt).toContain('Extract ONLY skills')
+      expect(prompt).toContain(
+        'DO NOT include any skills that are NOT mentioned'
+      )
+    })
+
+    it('contains formatting instructions', () => {
+      const prompt = buildSkillsToHighlightPrompt('Job description')
+
+      expect(prompt).toContain('comma-separated list')
+      expect(prompt).toContain('proper professional branding')
     })
   })
 })
