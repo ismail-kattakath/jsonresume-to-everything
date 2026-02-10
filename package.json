@@ -41,16 +41,7 @@
     "test:coverage": "jest --coverage",
     "export": "next build && next export",
     "deploy": "npm run build && npx gh-pages -d out -t true",
-    "deploy-auto": "nohup npm run deploy > /tmp/deploy.log 2>&1 &",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write"
-    ],
-    "*.{json,md,mdx,css,html,yml,yaml}": [
-      "prettier --write"
-    ]
+    "deploy-auto": "nohup npm run deploy > /tmp/deploy.log 2>&1 &"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -78,8 +69,6 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
@@ -97,11 +86,9 @@
     "eslint-plugin-jsdoc": "^61.4.1",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "eslint-plugin-security": "^3.0.1",
-    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^30.2.0",
-    "lint-staged": "^16.2.7",
     "next-sitemap": "^4.2.3",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
