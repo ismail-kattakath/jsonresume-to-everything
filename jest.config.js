@@ -12,7 +12,9 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  transformIgnorePatterns: ['node_modules/(?!(onborda|react-tooltip)/)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(onborda|react-tooltip|@strands-agents)/)',
+  ],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',

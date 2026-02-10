@@ -35,13 +35,13 @@ jest.mock(
 
 // Mock IntersectionObserver for framer-motion
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  constructor() { }
+  disconnect() { }
+  observe() { }
   takeRecords() {
     return []
   }
-  unobserve() {}
+  unobserve() { }
 }
 
 // Mock performance API for Next.js third-party scripts (Google Analytics)
@@ -82,6 +82,18 @@ jest.mock('@/components/ui/DragAndDrop', () => ({
 // Mock react-tooltip to avoid ESM issues in tests
 jest.mock('react-tooltip', () => ({
   Tooltip: () => null,
+}))
+
+// Mock @strands-agents/sdk to avoid ESM issues in integration tests
+jest.mock('@strands-agents/sdk', () => ({
+  Agent: jest.fn().mockImplementation(() => ({
+    invoke: jest.fn(),
+    stream: jest.fn(),
+  })),
+}))
+
+jest.mock('@strands-agents/sdk/openai', () => ({
+  OpenAIModel: jest.fn().mockImplementation(() => ({})),
 }))
 
 // Suppress React act() warnings and intentional test console.errors

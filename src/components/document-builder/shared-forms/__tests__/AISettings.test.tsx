@@ -4,10 +4,26 @@ import AISettings from '../AISettings'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { fetchAvailableModels } from '@/lib/ai/openai-client'
 import { PROVIDER_PRESETS, getProviderByURL } from '@/lib/ai/providers'
+import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
+import { toast } from 'sonner'
 
 // Mock dependencies
 jest.mock('@/lib/contexts/AISettingsContext')
 jest.mock('@/lib/ai/openai-client')
+jest.mock('@/lib/ai/strands/agent')
+jest.mock('@strands-agents/sdk', () => ({
+  Agent: jest.fn(),
+}))
+jest.mock('@strands-agents/sdk/openai', () => ({
+  OpenAIModel: jest.fn(),
+}))
+jest.mock('sonner', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    promise: jest.fn(),
+  },
+}))
 
 const mockUseAISettings = useAISettings as jest.MockedFunction<
   typeof useAISettings
@@ -440,7 +456,6 @@ describe('AISettings Component', () => {
 
       // LM Studio (identified by URL) does not require API key, so should show common models text
       await waitFor(() => {
-        screen.debug()
         expect(
           screen.getByText(/Showing common Local \(LM Studio\) models/i)
         ).toBeInTheDocument()
@@ -473,6 +488,84 @@ describe('AISettings Component', () => {
         expect(
           screen.getByText(/3 models available from API/i)
         ).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('Job Description Refinement', () => {
+    it('shows error toast if AI not configured', async () => {
+      mockUseAISettings.mockReturnValue({
+        settings: {
+          apiUrl: '',
+          apiKey: '',
+          model: '',
+          jobDescription: 'Too short',
+          providerType: 'openai-compatible',
+          providerKeys: {},
+          rememberCredentials: true,
+          skillsToHighlight: '',
+        },
+        updateSettings: mockUpdateSettings,
+        isConfigured: false,
+        connectionStatus: 'idle',
+        jobDescriptionStatus: 'idle',
+        validateAll: jest.fn(),
+      })
+
+      render(<AISettings />)
+      const refineButton = screen.getByText('Refine with AI').closest('button')
+      expect(refineButton).toBeDisabled()
+    })
+
+    it('triggers refinement flow and disables textarea', async () => {
+      const longJD =
+        'This is a sufficiently long job description for testing purposes.'.repeat(
+          5
+        )
+      mockUseAISettings.mockReturnValue({
+        settings: {
+          apiUrl: 'http://localhost:1234/v1',
+          apiKey: 'key',
+          model: 'model',
+          jobDescription: longJD,
+          providerType: 'openai-compatible',
+          providerKeys: {},
+          rememberCredentials: true,
+          skillsToHighlight: '',
+        },
+        updateSettings: mockUpdateSettings,
+        isConfigured: true,
+        connectionStatus: 'valid',
+        jobDescriptionStatus: 'idle',
+        validateAll: jest.fn(),
+      })
+      ;(analyzeJobDescriptionGraph as jest.Mock).mockResolvedValue(
+        '# position-title\nRefined'
+      )
+
+      render(<AISettings />)
+      const refineButton = screen.getByText('Refine with AI')
+      fireEvent.click(refineButton)
+
+      // Check if toast.promise was called
+      expect(toast.promise).toHaveBeenCalled()
+
+      // Check if textarea is disabled while isAnalyzing would be true
+      // isAnalyzing is local state in AISettings, driven by refinementPromise execution
+      // We can check if the textarea in the DOM is disabled
+      const textarea = screen.getByLabelText('Job Description')
+      expect(textarea).toBeDisabled()
+
+      await waitFor(() => {
+        expect(analyzeJobDescriptionGraph).toHaveBeenCalled()
+        expect(mockUpdateSettings).toHaveBeenCalledWith({
+          jobDescription: '# position-title\nRefined',
+        })
+      })
+
+      // After refinement, it should be enabled again
+      await waitFor(() => {
+        expect(textarea).not.toBeDisabled()
       })
     })
   })
