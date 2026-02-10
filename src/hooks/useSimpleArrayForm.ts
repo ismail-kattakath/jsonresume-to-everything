@@ -8,7 +8,7 @@ import type { ResumeData } from '@/types'
  */
 export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
   const { resumeData, setResumeData } = useContext(ResumeContext)
-  const data = resumeData[dataKey] as string[]
+  const data = (resumeData[dataKey] as string[]) || []
 
   /**
    * Handle value change at specific index
@@ -43,7 +43,9 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
   const reorder = (startIndex: number, endIndex: number) => {
     const newData = [...data]
     const [removed] = newData.splice(startIndex, 1)
-    newData.splice(endIndex, 0, removed)
+    if (removed !== undefined) {
+      newData.splice(endIndex, 0, removed)
+    }
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 

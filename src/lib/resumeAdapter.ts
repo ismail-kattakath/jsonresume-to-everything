@@ -1,6 +1,6 @@
 import jsonResumeData from '@/data/resume.json'
 import { stripProtocol } from '@/lib/utils/urlHelpers'
-import type { JSONResume, ResumeData } from '@/types'
+import type { JSONResume, ResumeData, JSONResumeBasics } from '@/types'
 
 /**
  * Converts JSON Resume format to internal resume data format

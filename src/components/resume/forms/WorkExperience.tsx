@@ -24,7 +24,7 @@ import {
   applySortedAchievements,
 } from '@/lib/ai/sorting-prompts'
 import type { DropResult } from '@hello-pangea/dnd'
-import type { WorkExperience as WorkExperienceType } from '@/types'
+import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
 
 /**
  * Sort button for Key Achievements
@@ -39,6 +39,8 @@ const KeyAchievementsSortButton = ({
   const [isSorting, setIsSorting] = useState(false)
 
   const workExperience = resumeData.workExperience[workExperienceIndex]
+  if (!workExperience) return null
+
   const achievements = workExperience.keyAchievements || []
 
   // Only show if there are 2+ achievements
@@ -54,7 +56,7 @@ const KeyAchievementsSortButton = ({
     /* istanbul ignore next */
     try {
       const prompt = buildAchievementsSortPrompt(
-        achievements.map((text) => ({ text })),
+        achievements,
         workExperience.position,
         workExperience.organization,
         settings.jobDescription
@@ -69,20 +71,17 @@ const KeyAchievementsSortButton = ({
         prompt
       )
 
-      const sortResult = parseAchievementsSortResponse(
-        response,
-        achievements.map((text) => ({ text }))
-      )
+      const sortResult = parseAchievementsSortResponse(response, achievements)
 
       if (sortResult) {
         const sortedAchievements = applySortedAchievements(
-          achievements.map((text) => ({ text })),
+          achievements,
           sortResult
         )
         const newWorkExperience = [...resumeData.workExperience]
         newWorkExperience[workExperienceIndex] = {
-          ...newWorkExperience[workExperienceIndex],
-          keyAchievements: sortedAchievements.map((a) => a.text),
+          ...workExperience,
+          keyAchievements: sortedAchievements,
         }
         setResumeData({ ...resumeData, workExperience: newWorkExperience })
         toast.success('Achievements sorted by job relevance')
@@ -123,6 +122,8 @@ const TechStackSortButton = ({
   const [isSorting, setIsSorting] = useState(false)
 
   const workExperience = resumeData.workExperience[workExperienceIndex]
+  if (!workExperience) return null
+
   const technologies = workExperience.technologies || []
 
   // Only show if there are 2+ technologies
@@ -182,10 +183,10 @@ Return only the JSON array, no other text.`
       }
 
       // Apply sorting
-      const sortedTechnologies = indices.map((i) => technologies[i])
+      const sortedTechnologies = indices.map((i) => technologies[i]!)
       const newWorkExperience = [...resumeData.workExperience]
       newWorkExperience[workExperienceIndex] = {
-        ...newWorkExperience[workExperienceIndex],
+        ...workExperience,
         technologies: sortedTechnologies,
       }
       setResumeData({ ...resumeData, workExperience: newWorkExperience })
@@ -216,17 +217,17 @@ Return only the JSON array, no other text.`
  */
 const WorkExperience = () => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
-  const { data, handleChange, add, remove } = useArrayForm(
+  const { data, handleChange, add, remove } = useArrayForm<WorkExperienceType>(
     'workExperience',
     {
       organization: '',
       url: '',
       position: '',
       description: '',
-      keyAchievements: [],
+      keyAchievements: [] as Achievement[],
       startYear: '',
       endYear: '',
-      technologies: [],
+      technologies: [] as string[],
       showTechnologies: true, // Default to visible
     },
     { urlFields: ['url'] }
@@ -236,10 +237,13 @@ const WorkExperience = () => {
     useAccordion()
 
   const toggleTechnologiesVisibility = (index: number) => {
+    const workExperience = resumeData.workExperience[index]
+    if (!workExperience) return
+
     const newWorkExperience = [...resumeData.workExperience]
     newWorkExperience[index] = {
-      ...newWorkExperience[index],
-      showTechnologies: !newWorkExperience[index].showTechnologies,
+      ...workExperience,
+      showTechnologies: !workExperience.showTechnologies,
     }
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
@@ -261,28 +265,35 @@ const WorkExperience = () => {
 
     const newWorkExperience = [...resumeData.workExperience]
     const [removed] = newWorkExperience.splice(source.index, 1)
-    newWorkExperience.splice(destination.index, 0, removed)
-    setResumeData({ ...resumeData, workExperience: newWorkExperience })
-
-    updateAfterReorder(source.index, destination.index)
+    if (removed) {
+      newWorkExperience.splice(destination.index, 0, removed)
+      setResumeData({ ...resumeData, workExperience: newWorkExperience })
+      updateAfterReorder(source.index, destination.index)
+    }
   }
 
   const handleAddTechnology = (index: number, technology: string) => {
+    const workExperience = resumeData.workExperience[index]
+    if (!workExperience) return
+
     const newWorkExperience = [...resumeData.workExperience]
-    const technologies = newWorkExperience[index].technologies || []
+    const technologies = workExperience.technologies || []
     newWorkExperience[index] = {
-      ...newWorkExperience[index],
+      ...workExperience,
       technologies: [...technologies, technology],
     }
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
 
   const handleRemoveTechnology = (index: number, techIndex: number) => {
+    const workExperience = resumeData.workExperience[index]
+    if (!workExperience) return
+
     const newWorkExperience = [...resumeData.workExperience]
-    const technologies = [...(newWorkExperience[index].technologies || [])]
+    const technologies = [...(workExperience.technologies || [])]
     technologies.splice(techIndex, 1)
     newWorkExperience[index] = {
-      ...newWorkExperience[index],
+      ...workExperience,
       technologies,
     }
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
@@ -293,15 +304,20 @@ const WorkExperience = () => {
     startIndex: number,
     endIndex: number
   ) => {
+    const workExperience = resumeData.workExperience[index]
+    if (!workExperience) return
+
     const newWorkExperience = [...resumeData.workExperience]
-    const technologies = [...(newWorkExperience[index].technologies || [])]
+    const technologies = [...(workExperience.technologies || [])]
     const [removed] = technologies.splice(startIndex, 1)
-    technologies.splice(endIndex, 0, removed)
-    newWorkExperience[index] = {
-      ...newWorkExperience[index],
-      technologies,
+    if (removed) {
+      technologies.splice(endIndex, 0, removed)
+      newWorkExperience[index] = {
+        ...workExperience,
+        technologies,
+      }
+      setResumeData({ ...resumeData, workExperience: newWorkExperience })
     }
-    setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
 
   return (

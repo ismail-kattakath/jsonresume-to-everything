@@ -25,10 +25,12 @@ describe('Resume Adapter', () => {
   })
 
   it('should convert basics fields from JSON Resume', () => {
-    expect(resumeData.name).toBe(jsonResumeData.basics.name)
-    expect(resumeData.position).toBe(jsonResumeData.basics.label)
-    expect(resumeData.email).toBe(jsonResumeData.basics.email)
-    expect(resumeData.contactInformation).toBe(jsonResumeData.basics.phone)
+    expect(resumeData.name).toBe((jsonResumeData as any).basics.name)
+    expect(resumeData.position).toBe((jsonResumeData as any).basics.label)
+    expect(resumeData.email).toBe((jsonResumeData as any).basics.email)
+    expect(resumeData.contactInformation).toBe(
+      (jsonResumeData as any).basics.phone
+    )
   })
 
   it('should have socialMedia as an array', () => {
@@ -47,7 +49,7 @@ describe('Resume Adapter', () => {
 
   it('should convert work experience with all fields', () => {
     if (resumeData.workExperience.length > 0) {
-      const firstJob = resumeData.workExperience[0]
+      const firstJob = resumeData.workExperience[0] as any
       expect(firstJob).toHaveProperty('organization')
       expect(firstJob).toHaveProperty('position')
       expect(firstJob).toHaveProperty('description')
@@ -77,21 +79,21 @@ describe('Resume Adapter', () => {
   it('should have skills as an array of skill groups', () => {
     expect(Array.isArray(resumeData.skills)).toBe(true)
     if (resumeData.skills.length > 0) {
-      const firstSkillGroup = resumeData.skills[0]
+      const firstSkillGroup = resumeData.skills[0] as any
       expect(firstSkillGroup).toHaveProperty('title')
       expect(firstSkillGroup).toHaveProperty('skills')
-      expect(Array.isArray(firstSkillGroup.skills)).toBe(true)
+      expect(Array.isArray((firstSkillGroup as any).skills)).toBe(true)
     }
   })
 
   it('should have skill objects with text field', () => {
     if (
       resumeData.skills.length > 0 &&
-      resumeData.skills[0].skills.length > 0
+      (resumeData.skills[0] as any).skills.length > 0
     ) {
-      const firstSkill = resumeData.skills[0].skills[0]
+      const firstSkill = (resumeData.skills[0] as any).skills[0]
       expect(firstSkill).toHaveProperty('text')
-      expect(typeof firstSkill.text).toBe('string')
+      expect(typeof (firstSkill as any).text).toBe('string')
     }
   })
 
@@ -116,7 +118,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
   describe('Empty/Missing Data', () => {
     it('should handle completely empty JSON Resume', () => {
       const emptyResume: JSONResume = {} as JSONResume
-      const result = convertFromJSONResume(emptyResume)
+      const result = convertFromJSONResume(emptyResume) as any
 
       expect(result.name).toBe('')
       expect(result.position).toBe('')
@@ -139,7 +141,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         education: [],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.name).toBe('')
       expect(result.socialMedia).toEqual([])
     })
@@ -157,7 +159,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         certificates: [],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.name).toBe('Test User')
       expect(result.socialMedia).toEqual([])
       expect(result.workExperience).toEqual([])
@@ -179,7 +181,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.socialMedia[0].link).toBe('github.com/user')
       expect(result.socialMedia[1].link).toBe('linkedin.com/in/user')
     })
@@ -191,7 +193,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.socialMedia[0].socialMedia).toBe('')
       expect(result.socialMedia[0].link).toBe('example.com')
     })
@@ -203,7 +205,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.socialMedia[0].socialMedia).toBe('GitHub')
       expect(result.socialMedia[0].link).toBe('')
     })
@@ -216,7 +218,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.socialMedia[0].socialMedia).toBe('Website')
       expect(result.socialMedia[0].link).toBe('example.com')
       expect(result.socialMedia[1].socialMedia).toBe('GitHub')
@@ -233,11 +235,11 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
 
       // Verify at least one Website entry exists
       const websiteCount = result?.socialMedia.filter(
-        (sm) => sm.socialMedia === 'Website'
+        (sm: any) => sm.socialMedia === 'Website'
       ).length
       expect(websiteCount).toBeGreaterThan(0)
     })
@@ -249,7 +251,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         work: [{}],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.workExperience[0]).toEqual({
         organization: '',
         url: '',
@@ -272,7 +274,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.workExperience[0].url).toBe('company.com')
     })
 
@@ -285,7 +287,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.workExperience[0].keyAchievements).toEqual([
         { text: 'Achievement 1' },
         { text: 'Achievement 2' },
@@ -302,7 +304,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.workExperience[0].endYear).toBe('Present')
     })
   })
@@ -313,7 +315,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         education: [{}],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.education[0]).toEqual({
         school: '',
         url: '',
@@ -334,7 +336,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.education[0].url).toBe('university.edu')
     })
   })
@@ -353,7 +355,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.projects[0].keyAchievements).toEqual([
         { text: 'Project Achievement 1' },
         { text: 'Project Achievement 2' },
@@ -373,7 +375,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.skills[0].title).toBe('Programming')
       expect(result.skills[0].skills).toEqual([
         { text: 'JavaScript' },
@@ -391,7 +393,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.skills[0].title).toBe('Skills')
     })
 
@@ -405,7 +407,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.skills[0].skills).toEqual([])
     })
 
@@ -414,7 +416,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         skills: [],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.skills).toEqual([{ title: 'Skills', skills: [] }])
     })
   })
@@ -426,7 +428,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         languages: [{ language: 'English' }, { language: 'Spanish' }],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result?.languages).toEqual(['English', 'Spanish'])
     })
 
@@ -440,7 +442,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       // The function may or may not filter empty strings, just verify it handles the structure
       expect(Array.isArray(result?.languages)).toBe(true)
       expect(result?.languages.length).toBeGreaterThan(0)
@@ -458,8 +460,8 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
-      expect(result?.certifications[0].name).toBe('Test Cert')
+      const result = convertFromJSONResume(resume) as any
+      expect((result?.certifications[0] as any).name).toBe('Test Cert')
       // Other fields may be undefined or empty, just verify the structure exists
       expect(result?.certifications.length).toBe(1)
     })
@@ -475,8 +477,8 @@ describe('convertFromJSONResume - Edge Cases', () => {
         ],
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
-      expect(result?.certifications[0].url).toBe(
+      const result = convertFromJSONResume(resume) as any
+      expect((result?.certifications[0] as any).url).toBe(
         'https://cert.example.com/verify/123'
       )
     })
@@ -495,7 +497,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.address).toBe('123 Main St, San Francisco, CA 94105')
     })
 
@@ -509,7 +511,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.address).toBe('San Francisco, CA')
     })
 
@@ -522,7 +524,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.address).toBe('San Francisco')
     })
 
@@ -533,7 +535,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         },
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.address).toBe('')
     })
 
@@ -542,7 +544,7 @@ describe('convertFromJSONResume - Edge Cases', () => {
         basics: {},
       } as JSONResume
 
-      const result = convertFromJSONResume(resume)
+      const result = convertFromJSONResume(resume) as any
       expect(result.address).toBe('')
     })
   })

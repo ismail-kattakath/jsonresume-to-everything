@@ -6,11 +6,13 @@ import React from 'react'
 
 const mockResumeData: ResumeData = {
   name: 'Test User',
-  label: 'Developer',
+  position: 'Developer',
+  contactInformation: '123-456-7890',
   email: 'test@example.com',
+  address: 'Test Address, Test City, TS',
+  profilePicture: '',
+  socialMedia: [],
   summary: 'Test summary',
-  location: { city: 'Test City', countryCode: 'US' },
-  profiles: [],
   workExperience: [
     {
       organization: 'Test Company',
@@ -39,7 +41,14 @@ describe('useArrayForm', () => {
     return ({ children }: { children: React.ReactNode }) =>
       React.createElement(
         ResumeContext.Provider,
-        { value: { resumeData, setResumeData: mockSetResumeData } },
+        {
+          value: {
+            resumeData,
+            setResumeData: mockSetResumeData,
+            handleChange: jest.fn(),
+            handleProfilePicture: jest.fn(),
+          },
+        },
         children
       )
   }
@@ -69,7 +78,7 @@ describe('useArrayForm', () => {
               keyAchievements: [],
               startYear: '',
               endYear: '',
-              technologies: [],
+              technologies: [] as string[],
             },
             { transformValue }
           ),
@@ -117,7 +126,7 @@ describe('useArrayForm', () => {
               keyAchievements: [],
               startYear: '',
               endYear: '',
-              technologies: [],
+              technologies: [] as string[],
             },
             { urlFields: ['url'], transformValue }
           ),
@@ -160,7 +169,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -188,7 +197,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -218,7 +227,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -250,7 +259,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -271,7 +280,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -309,7 +318,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),
@@ -344,7 +353,7 @@ describe('useArrayForm', () => {
             keyAchievements: [],
             startYear: '',
             endYear: '',
-            technologies: [],
+            technologies: [] as string[],
           }),
         {
           wrapper: createWrapper(mockResumeData),

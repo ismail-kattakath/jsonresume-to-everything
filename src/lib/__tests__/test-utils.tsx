@@ -65,6 +65,9 @@ export const createMockAISettingsContext = (
       apiKey: '',
       model: 'gpt-4o-mini',
       jobDescription: '',
+      providerType: 'openai-compatible',
+      skillsToHighlight: '',
+      rememberCredentials: true,
     },
     updateSettings: jest.fn(),
     isConfigured: false,
@@ -87,6 +90,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
     jobDescription: string
     providerType: 'openai-compatible' | 'gemini'
     rememberCredentials: boolean
+    skillsToHighlight: string
   }
 }
 

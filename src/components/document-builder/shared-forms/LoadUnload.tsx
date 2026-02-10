@@ -6,46 +6,62 @@ import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import { toast } from 'sonner'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
 import { generateJSONFilename } from '@/lib/filenameGenerator'
+import type { ResumeData, SkillGroup } from '@/types'
+
+interface LoadUnloadProps {
+  hideExportButton?: boolean
+  preserveContent?: boolean
+  hidePrintButton?: boolean
+}
 
 const LoadUnload = ({
   hideExportButton = false,
   preserveContent = false,
   hidePrintButton = false,
-}) => {
+}: LoadUnloadProps) => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
   // migrate old skills format to new format
-  const migrateSkillsData = (data) => {
+  const migrateSkillsData = (data: any): ResumeData => {
     const migratedData = { ...data }
     if (migratedData.skills) {
-      migratedData.skills = migratedData.skills.map((skillCategory) => ({
-        ...skillCategory,
-        skills: skillCategory.skills.map((skill) => {
-          if (typeof skill === 'string') {
-            return { text: skill, highlight: false }
-          }
-          // Handle old 'underline' property
-          if (skill.underline !== undefined && skill.highlight === undefined) {
-            return { text: skill.text, highlight: skill.underline }
-          }
-          return skill
-        }),
-      }))
+      migratedData.skills = migratedData.skills.map(
+        (skillCategory: SkillGroup) => ({
+          ...skillCategory,
+          skills: (skillCategory.skills || []).map((skill: any) => {
+            if (typeof skill === 'string') {
+              return { text: skill, highlight: false }
+            }
+            // Handle old 'underline' property
+            if (
+              skill.underline !== undefined &&
+              skill.highlight === undefined
+            ) {
+              return { text: skill.text, highlight: skill.underline }
+            }
+            return skill
+          }),
+        })
+      )
     }
-    return migratedData
+    return migratedData as ResumeData
   }
 
   // import resume data - supports both internal format and JSON Resume format
-  const handleImport = (event) => {
-    const file = event.target.files[0]
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (event) => {
+    reader.onload = (e) => {
       try {
         toast.loading('Processing resume data...', { id: 'import-resume' })
 
-        const loadedData = JSON.parse(event.target.result)
+        if (!e.target?.result) {
+          throw new Error('Failed to read file content')
+        }
+
+        const loadedData = JSON.parse(e.target.result as string)
 
         // Check if it's JSON Resume format (has $schema or basics field)
         const isJSONResume =
@@ -97,10 +113,13 @@ const LoadUnload = ({
           })
         }
       } catch (error) {
-        toast.error(`Failed to import resume: ${error.message}`, {
-          id: 'import-resume',
-          duration: 5000,
-        })
+        toast.error(
+          `Failed to import resume: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          {
+            id: 'import-resume',
+            duration: 5000,
+          }
+        )
       }
     }
 
@@ -112,7 +131,11 @@ const LoadUnload = ({
   }
 
   // export resume data in JSON Resume format
-  const handleExport = (data, filename, event) => {
+  const handleExport = (
+    data: ResumeData,
+    filename: string,
+    event: React.MouseEvent
+  ) => {
     event.preventDefault()
 
     try {
@@ -130,10 +153,13 @@ const LoadUnload = ({
         id: 'export-resume',
       })
     } catch (error) {
-      toast.error(`Failed to export resume: ${error.message}`, {
-        id: 'export-resume',
-        duration: 5000,
-      })
+      toast.error(
+        `Failed to export resume: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        {
+          id: 'export-resume',
+          duration: 5000,
+        }
+      )
     }
   }
 
