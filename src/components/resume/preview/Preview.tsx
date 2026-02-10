@@ -268,7 +268,7 @@ const Preview = () => {
               {resumeData.position}
             </h2>
             <ContactInfo
-              mainclass="flex flex-row gap-1 mb-1 contact"
+              mainclass="flex flex-row gap-4 mb-1 contact"
               linkclass="inline-flex items-center gap-1"
               teldata={resumeData.contactInformation}
               emaildata={resumeData.email}
@@ -277,7 +277,7 @@ const Preview = () => {
               emailicon={<MdEmail />}
               addressicon={<MdLocationOn />}
             />
-            <div className="grid grid-cols-3 gap-1">
+            <div className="social-media-container flex flex-row gap-4 mb-1">
               {resumeData.socialMedia.map((socialMedia, index) => {
                 const handleSocialMediaBlur = (
                   e: React.FocusEvent<HTMLAnchorElement>
