@@ -277,7 +277,7 @@ const Preview = () => {
               emailicon={<MdEmail />}
               addressicon={<MdLocationOn />}
             />
-            <div className="flex flex-row gap-4 mb-1">
+            <div className="social-media-container flex flex-row gap-4 mb-1">
               {resumeData.socialMedia.map((socialMedia, index) => {
                 const handleSocialMediaBlur = (
                   e: React.FocusEvent<HTMLAnchorElement>

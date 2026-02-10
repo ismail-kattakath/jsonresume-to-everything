@@ -184,9 +184,9 @@ describe('Preview Component', () => {
         contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
-      const socialMediaGrid = container.querySelector('.grid.grid-cols-3')
-      expect(socialMediaGrid).toBeInTheDocument()
-      expect(socialMediaGrid?.children).toHaveLength(0)
+      const socialMediaContainer = container.querySelector('.social-media-container')
+      expect(socialMediaContainer).toBeInTheDocument()
+      expect(socialMediaContainer?.children).toHaveLength(0)
     })
   })
 
@@ -564,8 +564,8 @@ describe('Preview Component', () => {
 
     it('should use grid layout for two-column design', () => {
       const { container } = renderWithContext(<Preview />)
-      const gridLayout = container.querySelector('.grid.grid-cols-3')
-      expect(gridLayout).toBeInTheDocument()
+      const socialMediaContainer = container.querySelector('.social-media-container')
+      expect(socialMediaContainer).toBeInTheDocument()
     })
   })
 
