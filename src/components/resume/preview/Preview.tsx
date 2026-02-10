@@ -265,10 +265,7 @@ const Preview = () => {
               contentEditable={editable}
               suppressContentEditableWarning
             >
-              <Highlight
-                text={resumeData.position}
-                keywords={settings.skillsToHighlight}
-              />
+              {resumeData.position}
             </h2>
             <ContactInfo
               mainclass="flex flex-row gap-1 mb-1 contact"
@@ -308,9 +305,9 @@ const Preview = () => {
                     contentEditable={editable}
                     suppressContentEditableWarning
                     onBlur={handleSocialMediaBlur}
-                    // Prevent text overflowing, If the socialMedia.link string is longer than 32 characters, apply the wordWrap and display styles to this <a> tag.
-                    // wordWrap: "break-word" breaks the text onto the next line if it's too long,
-                    // display: "inline-block" is necessary for wordWrap to work on an inline element like <a>.
+                  // Prevent text overflowing, If the socialMedia.link string is longer than 32 characters, apply the wordWrap and display styles to this <a> tag.
+                  // wordWrap: "break-word" breaks the text onto the next line if it's too long,
+                  // display: "inline-block" is necessary for wordWrap to work on an inline element like <a>.
                   >
                     {icons.map((icon, index) => {
                       if (icon.name === socialMedia.socialMedia.toLowerCase()) {
@@ -361,10 +358,9 @@ const Preview = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`mb-1 cursor-grab active:cursor-grabbing ${
-                              snapshot.isDragging &&
+                            className={`mb-1 cursor-grab active:cursor-grabbing ${snapshot.isDragging &&
                               'bg-white outline-2 outline-gray-400 outline-dashed'
-                            }`}
+                              }`}
                           >
                             <Skills title={skill.title} skills={skill.skills} />
                           </div>
@@ -450,14 +446,12 @@ const Preview = () => {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className={`mb-2 cursor-grab active:cursor-grabbing ${
-                                index !== resumeData.workExperience.length - 1
-                                  ? 'border-b-2 border-dashed border-gray-300 pb-1'
-                                  : ''
-                              } ${
-                                snapshot.isDragging &&
+                              className={`mb-2 cursor-grab active:cursor-grabbing ${index !== resumeData.workExperience.length - 1
+                                ? 'border-b-2 border-dashed border-gray-300 pb-1'
+                                : ''
+                                } ${snapshot.isDragging &&
                                 'bg-white outline-2 outline-gray-400 outline-dashed'
-                              }`}
+                                }`}
                             >
                               <div className="flex flex-row justify-between space-y-1">
                                 <a
@@ -522,16 +516,17 @@ const Preview = () => {
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
-                                                className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${
-                                                  snapshot.isDragging &&
+                                                className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${snapshot.isDragging &&
                                                   'bg-white outline-2 outline-gray-400 outline-dashed'
-                                                }`}
+                                                  }`}
                                               >
-                                                <div
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: achievement.text,
-                                                  }}
+                                                <Highlight
+                                                  text={achievement.text}
+                                                  keywords={settings.skillsToHighlight}
+                                                  isHTML={true}
+                                                  className="editable-block"
                                                   contentEditable={editable}
+                                                  suppressContentEditableWarning
                                                 />
                                               </li>
                                             )}

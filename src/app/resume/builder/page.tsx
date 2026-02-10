@@ -28,6 +28,7 @@ import {
   analyzeJobDescription,
   analyzeJobDescriptionGraph,
   sortSkillsGraph,
+  extractSkillsGraph,
 } from '@/lib/ai/strands/agent'
 import {
   AISettingsProvider,
@@ -365,27 +366,35 @@ function SkillsSection() {
     }
 
     setIsExtractingSkills(true)
-    toast.promise(
-      generateSkillsToHighlightWithProvider(
-        settings.jobDescription,
-        settings.apiUrl,
-        settings.apiKey,
-        settings.model,
-        settings.providerType
-      ),
+    const extractPromise = extractSkillsGraph(
+      settings.jobDescription,
+      resumeData,
       {
-        loading: 'Extracting key skills from JD...',
-        success: (skills) => {
-          updateSettings({ skillsToHighlight: skills })
-          setIsExtractingSkills(false)
-          return 'Skills extracted successfully!'
-        },
-        error: (err) => {
-          setIsExtractingSkills(false)
-          return `Failed: ${err.message || 'Unknown error'}`
-        },
+        apiUrl: settings.apiUrl,
+        apiKey: settings.apiKey,
+        model: settings.model,
+      },
+      (chunk: { content?: string; done: boolean }) => {
+        if (chunk.content) {
+          console.log('[Skills Extraction Graph]', chunk.content)
+        }
       }
     )
+
+    toast.promise(extractPromise, {
+      loading: 'Extracting and aligning key skills...',
+      success: (skills) => {
+        updateSettings({ skillsToHighlight: skills })
+        setIsExtractingSkills(false)
+        return 'Skills extracted and aligned with your resume!'
+      },
+      error: (err) => {
+        setIsExtractingSkills(false)
+        return `Failed: ${err.message || 'Unknown error'}`
+      },
+    })
+
+    await extractPromise
   }
 
   return (

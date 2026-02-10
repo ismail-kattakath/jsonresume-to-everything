@@ -19,6 +19,10 @@ import AISortButton from '@/components/ui/AISortButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { requestAISort } from '@/lib/ai/openai-client'
 import {
+  sortSkillsGraph,
+  sortTechStackGraph,
+} from '@/lib/ai/strands/agent'
+import {
   buildAchievementsSortPrompt,
   parseAchievementsSortResponse,
   applySortedAchievements,
@@ -130,75 +134,45 @@ const TechStackSortButton = ({
   if (technologies.length < 2) return null
 
   /* istanbul ignore next */
-  const handleAISort = /* istanbul ignore next */ async () => {
-    /* istanbul ignore next */
+  const handleAISort = async () => {
     if (!isConfigured || isSorting) return
 
-    /* istanbul ignore next */
     setIsSorting(true)
-    /* istanbul ignore next */
-    try {
-      // Build prompt for technologies sorting
-      const prompt = `You are an ATS optimization expert. Given a tech stack (list of technologies) and a job description, reorder the technologies to maximize ATS match score.
 
-Job Description:
-${settings.jobDescription}
-
-Current Tech Stack:
-${technologies.map((tech, i) => `${i + 1}. ${tech}`).join('\n')}
-
-Instructions:
-1. Analyze which technologies are most relevant to the job description
-2. Return ONLY a JSON array of indices representing the new order (0-indexed)
-3. Example format: [2, 0, 4, 1, 3]
-4. Do NOT add, remove, or modify any technologies - only reorder them
-5. Put the most relevant technologies first
-
-Return only the JSON array, no other text.`
-
-      const response = await requestAISort(
-        {
-          baseURL: settings.apiUrl,
-          apiKey: settings.apiKey,
-          model: settings.model,
-        },
-        prompt
-      )
-
-      // Parse response - expect JSON array of indices
-      const match = response.match(/\[[\d,\s]+\]/)
-      if (!match) {
-        throw new Error('Invalid AI response format')
+    const sortPromise = sortTechStackGraph(
+      technologies,
+      settings.jobDescription,
+      {
+        apiUrl: settings.apiUrl,
+        apiKey: settings.apiKey,
+        model: settings.model,
+      },
+      (chunk) => {
+        if (chunk.content) {
+          console.log('[Tech Stack Sort Graph]', chunk.content)
+        }
       }
+    )
 
-      const indices = JSON.parse(match[0]) as number[]
+    toast.promise(sortPromise, {
+      loading: 'Sorting tech stack by relevance...',
+      success: (sortedTechnologies) => {
+        const newWorkExperience = [...resumeData.workExperience]
+        newWorkExperience[workExperienceIndex] = {
+          ...workExperience,
+          technologies: sortedTechnologies,
+        }
+        setResumeData({ ...resumeData, workExperience: newWorkExperience })
+        setIsSorting(false)
+        return 'Tech stack sorted by job relevance'
+      },
+      error: (err: Error) => {
+        setIsSorting(false)
+        return `Failed: ${err.message || 'Unknown error'}`
+      },
+    })
 
-      // Validate indices
-      if (
-        !Array.isArray(indices) ||
-        indices.length !== technologies.length ||
-        !indices.every((i) => i >= 0 && i < technologies.length)
-      ) {
-        throw new Error('Invalid indices in AI response')
-      }
-
-      // Apply sorting
-      const sortedTechnologies = indices.map((i) => technologies[i]!)
-      const newWorkExperience = [...resumeData.workExperience]
-      newWorkExperience[workExperienceIndex] = {
-        ...workExperience,
-        technologies: sortedTechnologies,
-      }
-      setResumeData({ ...resumeData, workExperience: newWorkExperience })
-      toast.success('Tech stack sorted by job relevance')
-    } catch (error) {
-      console.error('AI Technologies sort error:', error)
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to sort tech stack'
-      )
-    } finally {
-      setIsSorting(false)
-    }
+    await sortPromise
   }
 
   return (
