@@ -44,8 +44,9 @@ describe('AISettingsContext', () => {
         apiKey: '',
         model: 'gpt-4o-mini',
         providerType: 'openai-compatible',
-        jobDescription: expect.any(String),
         rememberCredentials: true,
+        skillsToHighlight: '',
+        jobDescription: expect.any(String),
       })
     })
 

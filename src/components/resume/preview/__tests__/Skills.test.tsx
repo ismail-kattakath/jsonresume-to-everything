@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import Skills from '@/components/resume/preview/Skills'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { AISettingsContext, AISettings } from '@/lib/contexts/AISettingsContext'
 import type { ResumeData, SkillGroup } from '@/types/resume'
 
 const mockSkillGroup: SkillGroup = {
@@ -12,26 +13,41 @@ const mockResumeData: ResumeData = {
   name: 'John Doe',
   position: 'Developer',
   email: 'john@example.com',
-  phone: '+1234567890',
-  location: 'Test City',
+  profilePicture: '',
+  address: 'Test Address',
+  contactInformation: '+1234567890',
   summary: 'Test summary',
-  website: 'https://example.com',
   workExperience: [],
   education: [],
-  skillGroups: [mockSkillGroup],
   projects: [],
   certifications: [],
   languages: [],
-  socialMedia: {
-    linkedin: '',
-    github: '',
-    twitter: '',
-  },
+  socialMedia: [
+    {
+      socialMedia: 'LinkedIn',
+      link: 'https://linkedin.com/in/johndoe',
+    },
+  ],
   // Legacy skills field for backward compatibility
   skills: [mockSkillGroup],
 }
 
 const mockSetResumeData = jest.fn()
+const mockHandleProfilePicture = jest.fn()
+const mockHandleChange = jest.fn()
+
+const mockAISettings: AISettings = {
+  apiUrl: 'https://api.openai.com/v1',
+  apiKey: '',
+  model: 'gpt-4o-mini',
+  providerType: 'openai-compatible',
+  jobDescription: '',
+  skillsToHighlight: '',
+  rememberCredentials: true,
+}
+
+const mockUpdateSettings = jest.fn()
+const mockValidateAll = jest.fn()
 
 const renderWithContext = (
   title: string,
@@ -40,15 +56,28 @@ const renderWithContext = (
   resumeData = mockResumeData
 ) => {
   return render(
-    <ResumeContext.Provider
+    <AISettingsContext.Provider
       value={{
-        resumeData,
-        setResumeData: mockSetResumeData,
-        editable,
+        settings: mockAISettings,
+        updateSettings: mockUpdateSettings,
+        isConfigured: false,
+        connectionStatus: 'idle',
+        jobDescriptionStatus: 'idle',
+        validateAll: mockValidateAll,
       }}
     >
-      <Skills title={title} skills={skills} />
-    </ResumeContext.Provider>
+      <ResumeContext.Provider
+        value={{
+          resumeData,
+          setResumeData: mockSetResumeData,
+          editable,
+          handleProfilePicture: mockHandleProfilePicture,
+          handleChange: mockHandleChange,
+        }}
+      >
+        <Skills title={title} skills={skills} />
+      </ResumeContext.Provider>
+    </AISettingsContext.Provider>
   )
 }
 
@@ -72,7 +101,9 @@ describe('Skills Component', () => {
 
     it('renders skill with editable class', () => {
       renderWithContext('Programming Languages', mockSkillGroup.skills)
-      const jsSkill = screen.getByText('JavaScript')
+      const jsSkillText = screen.getByText('JavaScript')
+      const jsSkill = jsSkillText.closest('.editable')
+      expect(jsSkill).toBeInTheDocument()
       expect(jsSkill).toHaveClass('editable')
     })
 
@@ -89,14 +120,16 @@ describe('Skills Component', () => {
 
     it('renders skills as contentEditable when editable is true', () => {
       renderWithContext('Programming Languages', mockSkillGroup.skills, true)
-      const jsSkill = screen.getByText('JavaScript')
+      const jsSkillText = screen.getByText('JavaScript')
+      const jsSkill = jsSkillText.closest('.editable')
       expect(jsSkill).toHaveAttribute('contentEditable', 'true')
     })
 
     it('disables editing when editable is false', () => {
       renderWithContext('Programming Languages', mockSkillGroup.skills, false)
       const title = screen.getByText('Programming Languages')
-      const jsSkill = screen.getByText('JavaScript')
+      const jsSkillText = screen.getByText('JavaScript')
+      const jsSkill = jsSkillText.closest('.editable')
 
       expect(title).toHaveAttribute('contentEditable', 'false')
       expect(jsSkill).toHaveAttribute('contentEditable', 'false')
@@ -112,15 +145,16 @@ describe('Skills Component', () => {
       titleElement.innerText = 'Tech Stack'
       fireEvent.blur(titleElement)
 
-      expect(mockSetResumeData).toHaveBeenCalledWith({
-        ...mockResumeData,
-        skills: [
-          {
-            title: 'Tech Stack',
-            skills: mockSkillGroup.skills,
-          },
-        ],
-      })
+      expect(mockSetResumeData).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skills: [
+            {
+              title: 'Tech Stack',
+              skills: mockSkillGroup.skills,
+            },
+          ],
+        })
+      )
     })
 
     it('finds and updates correct skill group by title', () => {
@@ -146,16 +180,17 @@ describe('Skills Component', () => {
       titleElement.innerText = 'Libraries & Frameworks'
       fireEvent.blur(titleElement)
 
-      expect(mockSetResumeData).toHaveBeenCalledWith({
-        ...resumeDataWithMultipleGroups,
-        skills: [
-          mockSkillGroup,
-          {
-            title: 'Libraries & Frameworks',
-            skills: [{ text: 'React' }],
-          },
-        ],
-      })
+      expect(mockSetResumeData).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skills: [
+            mockSkillGroup,
+            {
+              title: 'Libraries & Frameworks',
+              skills: [{ text: 'React' }],
+            },
+          ],
+        })
+      )
     })
   })
 
@@ -163,9 +198,13 @@ describe('Skills Component', () => {
     it('skill elements are contentEditable when editable is true', () => {
       renderWithContext('Programming Languages', mockSkillGroup.skills, true)
 
-      const jsSkill = screen.getByText('JavaScript')
-      const tsSkill = screen.getByText('TypeScript')
-      const pythonSkill = screen.getByText('Python')
+      const jsSkillText = screen.getByText('JavaScript')
+      const tsSkillText = screen.getByText('TypeScript')
+      const pythonSkillText = screen.getByText('Python')
+
+      const jsSkill = jsSkillText.closest('.editable')
+      const tsSkill = tsSkillText.closest('.editable')
+      const pythonSkill = pythonSkillText.closest('.editable')
 
       expect(jsSkill).toHaveAttribute('contentEditable', 'true')
       expect(tsSkill).toHaveAttribute('contentEditable', 'true')

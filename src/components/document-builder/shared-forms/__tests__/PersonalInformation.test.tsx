@@ -329,7 +329,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate with ai/i })
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
       expect(aiButton).toBeInTheDocument()
     })
 
@@ -368,7 +368,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate with ai/i })
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {
@@ -393,6 +393,9 @@ describe('PersonalInformation Component', () => {
             apiKey: '',
             model: '',
             jobDescription: '',
+            providerType: 'openai-compatible',
+            rememberCredentials: false,
+            skillsToHighlight: '',
           },
         },
       })
@@ -421,7 +424,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate with ai/i })
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
 
       // Verify button is initially enabled
       expect(aiButton).not.toBeDisabled()
@@ -455,7 +458,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate with ai/i })
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {
@@ -489,7 +492,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate with ai/i })
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {

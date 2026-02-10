@@ -283,13 +283,13 @@ describe('AIInputWithButton Component', () => {
 
       generateJobTitleWithProvider.mockImplementation(
         (
-          _resumeData,
-          _jobDescription,
-          _apiUrl,
-          _apiKey,
-          _model,
-          _providerType,
-          onProgress
+          _resumeData: any,
+          _jobDescription: any,
+          _apiUrl: any,
+          _apiKey: any,
+          _model: any,
+          _providerType: any,
+          onProgress: any
         ) => {
           return new Promise((resolve) => {
             // Simulate streaming
@@ -335,7 +335,7 @@ describe('AIInputWithButton Component', () => {
       )
 
       const button = container.querySelector('button')
-      expect(button).toHaveClass('absolute', 'right-2')
+      expect(button?.parentElement).toHaveClass('absolute', 'right-2')
     })
 
     it('should apply gradient styling to enabled button', () => {
@@ -400,7 +400,7 @@ describe('AIInputWithButton Component', () => {
       })
 
       const button = screen.getByRole('button')
-      expect(button).toHaveAttribute('title', 'Generate with AI')
+      expect(button).toHaveAttribute('title', 'Generate by JD')
     })
 
     it('should have proper input attributes', () => {

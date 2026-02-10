@@ -32,18 +32,13 @@ jest.mock('sonner', () => ({
 
 const mockResumeData: ResumeData = {
   name: 'Test User',
-  role: 'Developer',
+  position: 'Developer',
   summary: '',
   email: 'test@example.com',
-  phone: '',
-  website: '',
-  linkedin: '',
-  github: '',
-  twitter: '',
-  location: '',
+  contactInformation: '',
+  address: '',
+  socialMedia: [],
   profilePicture: '',
-  showProfilePicture: false,
-  showSummary: true,
   workExperience: [],
   education: [],
   skills: [],
@@ -57,10 +52,15 @@ const mockAISettings = {
     apiKey: '',
     model: 'gpt-4o-mini',
     jobDescription: '',
+    providerType: 'openai-compatible' as const,
     rememberCredentials: false,
+    skillsToHighlight: '',
   },
   updateSettings: jest.fn(),
   isConfigured: false,
+  connectionStatus: 'idle' as const,
+  jobDescriptionStatus: 'idle' as const,
+  validateAll: jest.fn(),
 }
 
 const mockConfiguredAISettings = {
@@ -69,10 +69,15 @@ const mockConfiguredAISettings = {
     apiKey: 'sk-test-key',
     model: 'gpt-4o-mini',
     jobDescription: 'Test job description',
+    providerType: 'openai-compatible' as const,
     rememberCredentials: false,
+    skillsToHighlight: '',
   },
   updateSettings: jest.fn(),
   isConfigured: true,
+  connectionStatus: 'valid' as const,
+  jobDescriptionStatus: 'valid' as const,
+  validateAll: jest.fn(),
 }
 
 const mockResumeContext = {
@@ -84,7 +89,7 @@ const mockResumeContext = {
 
 const renderWithProviders = (
   ui: React.ReactElement,
-  aiSettings = mockAISettings
+  aiSettings: any = mockAISettings
 ) => {
   return render(
     <AISettingsContext.Provider value={aiSettings}>
@@ -171,7 +176,8 @@ describe('AITextAreaWithButton Component', () => {
         mockConfiguredAISettings
       )
       const button = screen.getByRole('button')
-      expect(button).toHaveAttribute('title', 'Generate with AI')
+      expect(button).toBeInTheDocument()
+      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
     })
   })
 
@@ -313,7 +319,9 @@ describe('AITextAreaWithButton Component', () => {
       )
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
-      expect(button).toHaveAttribute('title', 'Generate with AI')
+      // Title is only shown when disabled or label is hidden. Since label is shown, title is undefined.
+      expect(button).not.toHaveAttribute('title')
+      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
     })
 
     it('should have button type set to button', () => {

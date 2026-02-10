@@ -2,27 +2,45 @@ import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { Highlight } from '@/components/ui/Highlight'
+import type { ResumeData, Skill } from '@/types/resume'
 
-const Skills = ({ title, skills }) => {
+interface SkillsProps {
+  title: string
+  skills: Skill[]
+}
+
+const Skills = ({ title, skills }: SkillsProps) => {
   const { settings } = useAISettings()
-  const {
-    resumeData,
-    setResumeData,
-    editable = true,
-  } = useContext(ResumeContext)
+  const context = useContext(ResumeContext)
 
-  const handleTitleChange = (e) => {
-    const newSkills = [...resumeData.skills]
-    newSkills.find((skillType) => skillType.title === title).title =
-      e.target.innerText
-    setResumeData({ ...resumeData, skills: newSkills })
+  if (!context) {
+    return null
   }
 
-  const handleSkillChange = (e, skillIndex) => {
-    const newSkills = [...resumeData.skills]
+  const { resumeData, setResumeData, editable = true } = context
+
+  const handleTitleChange = (e: React.FocusEvent<HTMLHeadingElement>) => {
+    if (!resumeData) return
+    const newSkills = [...(resumeData as ResumeData).skills]
+    const group = newSkills.find((skillType) => skillType.title === title)
+    if (group) {
+      group.title = e.target.innerText
+      setResumeData({ ...resumeData, skills: newSkills } as ResumeData)
+    }
+  }
+
+  const handleSkillChange = (
+    e: React.FocusEvent<HTMLSpanElement>,
+    skillIndex: number
+  ) => {
+    if (!resumeData) return
+    const newSkills = [...(resumeData as ResumeData).skills]
     const skillTypeIndex = newSkills.findIndex(
       (skillType) => skillType.title === title
     )
+
+    if (skillTypeIndex === -1) return
+
     const newText = e.target.innerText.trim()
 
     if (newText === '') {
@@ -33,40 +51,42 @@ const Skills = ({ title, skills }) => {
       newSkills[skillTypeIndex].skills[skillIndex].text = newText
     }
 
-    setResumeData({ ...resumeData, skills: newSkills })
+    setResumeData({ ...resumeData, skills: newSkills } as ResumeData)
+  }
+
+  if (skills.length === 0) {
+    return null
   }
 
   return (
-    skills.length > 0 && (
-      <>
-        <h2
-          className="section-title editable mb-1 border-b-2 border-dashed border-gray-300"
-          contentEditable={editable}
-          suppressContentEditableWarning
-          onBlur={handleTitleChange}
-        >
-          {title}
-        </h2>
-        <p className="content">
-          {skills.map((skill, index) => (
-            <span key={index}>
-              {index > 0 && ', '}
-              <span
-                className="editable"
-                contentEditable={editable}
-                suppressContentEditableWarning
-                onBlur={(e) => handleSkillChange(e, index)}
-              >
-                <Highlight
-                  text={skill.text}
-                  keywords={settings.skillsToHighlight}
-                />
-              </span>
+    <>
+      <h2
+        className="section-title editable mb-1 border-b-2 border-dashed border-gray-300"
+        contentEditable={editable}
+        suppressContentEditableWarning
+        onBlur={handleTitleChange}
+      >
+        {title}
+      </h2>
+      <p className="content">
+        {skills.map((skill, index) => (
+          <span key={index}>
+            {index > 0 && ', '}
+            <span
+              className="editable"
+              contentEditable={editable}
+              suppressContentEditableWarning
+              onBlur={(e) => handleSkillChange(e, index)}
+            >
+              <Highlight
+                text={skill.text}
+                keywords={settings.skillsToHighlight}
+              />
             </span>
-          ))}
-        </p>
-      </>
-    )
+          </span>
+        ))}
+      </p>
+    </>
   )
 }
 

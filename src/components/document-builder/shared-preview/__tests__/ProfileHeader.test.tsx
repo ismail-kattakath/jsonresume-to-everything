@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import ProfileHeader from '@/components/document-builder/shared-preview/ProfileHeader'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
 import type { ResumeData } from '@/types/resume'
 
 // Mock Next.js Image component
@@ -16,16 +17,13 @@ const mockResumeData: ResumeData = {
   name: 'John Doe',
   position: 'Senior Developer',
   email: 'john@example.com',
-  phone: '+1234567890',
-  location: 'Test City',
-  summary: 'Test summary',
-  website: 'https://example.com',
   contactInformation: '+1234567890',
-  address: '123 Test Street, Test City',
+  address: 'Test City',
+  summary: 'Test summary',
+  skills: [],
   profilePicture: '',
   workExperience: [],
   education: [],
-  skillGroups: [],
   projects: [],
   certifications: [],
   languages: [],
@@ -38,20 +36,41 @@ const mockResumeData: ResumeData = {
 
 const mockSetResumeData = jest.fn()
 
+const mockAISettings = {
+  settings: {
+    apiUrl: 'https://api.openai.com',
+    apiKey: '',
+    model: 'gpt-4o-mini',
+    jobDescription: '',
+    providerType: 'openai-compatible' as const,
+    rememberCredentials: false,
+    skillsToHighlight: '',
+  },
+  updateSettings: jest.fn(),
+  isConfigured: false,
+  connectionStatus: 'idle' as const,
+  jobDescriptionStatus: 'idle' as const,
+  validateAll: jest.fn(),
+}
+
 const renderWithContext = (
   resumeData: ResumeData = mockResumeData,
   editable = true
 ) => {
   return render(
-    <ResumeContext.Provider
-      value={{
-        resumeData,
-        setResumeData: mockSetResumeData,
-        editable,
-      }}
-    >
-      <ProfileHeader />
-    </ResumeContext.Provider>
+    <AISettingsContext.Provider value={mockAISettings}>
+      <ResumeContext.Provider
+        value={{
+          resumeData,
+          setResumeData: mockSetResumeData,
+          editable,
+          handleChange: jest.fn(),
+          handleProfilePicture: jest.fn(),
+        }}
+      >
+        <ProfileHeader />
+      </ResumeContext.Provider>
+    </AISettingsContext.Provider>
   )
 }
 

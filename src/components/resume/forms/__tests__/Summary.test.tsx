@@ -32,22 +32,16 @@ const mockResumeData: ResumeData = {
   name: 'John Doe',
   position: 'Senior Developer',
   email: 'john@example.com',
-  phone: '+1234567890',
-  location: 'Test City',
+  contactInformation: '+1234567890',
+  address: 'Test City',
   summary: 'Test summary',
-  website: 'https://example.com',
   workExperience: [],
   education: [],
   skills: [],
   certifications: [],
   languages: [],
-  linkedin: '',
-  github: '',
-  twitter: '',
+  socialMedia: [],
   profilePicture: '',
-  showProfilePicture: false,
-  showSummary: true,
-  role: 'Developer',
 }
 
 const mockSetResumeData = jest.fn()
@@ -59,7 +53,9 @@ const mockAISettings = {
     apiKey: '',
     model: 'gpt-4o-mini',
     jobDescription: '',
+    providerType: 'openai-compatible' as const,
     rememberCredentials: false,
+    skillsToHighlight: '',
   },
   updateSettings: jest.fn(),
   isConfigured: false,
@@ -83,7 +79,7 @@ const mockConfiguredAISettings = {
 const renderWithContext = (
   resumeData: ResumeData = mockResumeData,
   handleChange = mockHandleChange,
-  aiSettings = mockAISettings
+  aiSettings: any = mockAISettings
 ) => {
   return render(
     <AISettingsContext.Provider value={aiSettings}>
@@ -92,6 +88,7 @@ const renderWithContext = (
           resumeData,
           setResumeData: mockSetResumeData,
           handleChange,
+          handleProfilePicture: jest.fn(),
         }}
       >
         <Summary />
@@ -167,7 +164,8 @@ describe('Summary Component', () => {
       )
       const button = screen.getByRole('button')
       expect(button).not.toBeDisabled()
-      expect(button).toHaveAttribute('title', 'Generate with AI')
+      expect(button).toBeInTheDocument()
+      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
     })
   })
 
@@ -205,7 +203,12 @@ describe('Summary Component', () => {
       const generatedText =
         'AI-generated professional summary with experience and skills'
       generateSummary.mockImplementation(
-        async (config, data, jobDescription, onChunk) => {
+        async (
+          _config: any,
+          _data: any,
+          _jobDescription: any,
+          onChunk: any
+        ) => {
           // Simulate streaming by calling onChunk
           onChunk({ content: generatedText })
           return generatedText

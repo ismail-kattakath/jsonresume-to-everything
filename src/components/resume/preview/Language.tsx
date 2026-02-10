@@ -1,22 +1,30 @@
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { Highlight } from '@/components/ui/Highlight'
 
-const Language = ({ title, languages }) => {
+interface LanguageProps {
+  title: string
+  languages: string[]
+}
+
+const Language = ({ title, languages }: LanguageProps) => {
   const { settings } = useAISettings()
+
+  if (languages.length === 0) {
+    return null
+  }
+
   return (
-    languages.length > 0 && (
-      <div>
-        <h2 className="section-title mb-1 border-b-2 border-dashed border-gray-300">
-          {title}
-        </h2>
-        <p className="content">
-          <Highlight
-            text={languages.join(', ')}
-            keywords={settings.skillsToHighlight}
-          />
-        </p>
-      </div>
-    )
+    <div>
+      <h2 className="section-title mb-1 border-b-2 border-dashed border-gray-300">
+        {title}
+      </h2>
+      <p className="content">
+        <Highlight
+          text={languages.join(', ')}
+          keywords={settings.skillsToHighlight}
+        />
+      </p>
+    </div>
   )
 }
 
