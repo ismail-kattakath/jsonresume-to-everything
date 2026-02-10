@@ -229,8 +229,8 @@ describe('Integration: Complete Edit → Preview → Print Workflow', () => {
         {
           name: 'Product Co',
           position: 'Senior PM',
-          startDate: '2021-01-01',
-          endDate: '2023-12-31',
+          startYear: '2021-01-01',
+          endYear: '2023-12-31',
           summary: 'Led product development',
           highlights: ['Launched 3 major features'],
         },

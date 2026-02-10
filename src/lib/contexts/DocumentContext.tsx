@@ -1,12 +1,12 @@
 'use client'
 
-import { createContext, ChangeEvent } from 'react'
+import React, { createContext, ChangeEvent } from 'react'
 import resumeData from '@/lib/resumeAdapter'
 import type { ResumeData } from '@/types'
 
 export type DocumentContextType = {
   resumeData: ResumeData
-  setResumeData: (data: ResumeData) => void
+  setResumeData: React.Dispatch<React.SetStateAction<ResumeData>>
   handleProfilePicture: (e: ChangeEvent<HTMLInputElement>) => void
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   editable?: boolean

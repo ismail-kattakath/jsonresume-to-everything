@@ -146,7 +146,7 @@ const KeyAchievements = ({
   }
 
   // Only show AI sort button if there are 2+ achievements
-  const showAISort = achievements.length >= 2
+  const showAISort = (achievements || []).length >= 2
 
   return (
     <div className="space-y-2">
@@ -159,7 +159,7 @@ const KeyAchievements = ({
               {...provided.droppableProps}
               className="space-y-2"
             >
-              {achievements.map((achievement, index) => (
+              {(achievements || []).map((achievement, index) => (
                 <DnDDraggable
                   key={`ACHIEVEMENT-${workExperienceIndex}-${index}`}
                   draggableId={`ACHIEVEMENT-${workExperienceIndex}-${index}`}

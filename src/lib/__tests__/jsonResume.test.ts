@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
 import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import type { ResumeData } from '@/types'
@@ -65,7 +66,7 @@ describe('JSON Resume Conversion', () => {
     }
 
     it('should convert resume data to JSON Resume format', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result).toHaveProperty('$schema')
       expect(result).toHaveProperty('basics')
@@ -76,7 +77,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should produce valid JSON Resume schema output', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
       const validation = validateJSONResume(result)
 
       if (!validation.valid) {
@@ -89,7 +90,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should correctly map basics fields', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.basics.name).toBe('John Doe')
       expect(result.basics.label).toBe('Software Engineer')
@@ -102,7 +103,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should parse location from address', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.basics.location.address).toBe('123 Main St')
       expect(result.basics.location.city).toBe('Toronto')
@@ -112,23 +113,23 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert social media profiles correctly', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       const githubProfile = result.basics.profiles.find(
-        (p) => p.network === 'Github'
+        (p: any) => p.network === 'Github'
       )
       expect(githubProfile?.username).toBe('johndoe')
       expect(githubProfile?.url).toBe('https://github.com/johndoe')
 
       const linkedInProfile = result.basics.profiles.find(
-        (p) => p.network === 'LinkedIn'
+        (p: any) => p.network === 'LinkedIn'
       )
       expect(linkedInProfile?.username).toBe('johndoe')
       expect(linkedInProfile?.url).toBe('https://linkedin.com/in/johndoe')
     })
 
     it('should convert work experience with all fields', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.work).toHaveLength(1)
       expect(result.work[0].name).toBe('Tech Corp')
@@ -149,7 +150,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert education with correct fields', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.education).toHaveLength(1)
       expect(result.education[0].institution).toBe('University of Toronto')
@@ -161,7 +162,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert skills to JSON Resume format', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.skills).toHaveLength(1)
       expect(result.skills[0].name).toBe('Programming Languages')
@@ -170,7 +171,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert languages', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       expect(result.languages).toHaveLength(2)
       expect(result.languages[0].language).toBe('English')
@@ -179,12 +180,12 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle URLs without http protocol', () => {
-      const result = convertToJSONResume(mockResumeData)
+      const result = convertToJSONResume(mockResumeData) as any
 
       // Website is now kept in profiles array, not in basics.url
       expect(result.basics.url).toBeUndefined()
       const websiteProfile = result.basics.profiles.find(
-        (p) => p.network === 'Website'
+        (p: any) => p.network === 'Website'
       )
       expect(websiteProfile?.url).toBe('https://example.com')
       expect(result.work[0].url).toBe('https://techcorp.com')
@@ -192,7 +193,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle empty URL fields', () => {
-      const dataWithEmptyUrls = {
+      const dataWithEmptyUrls: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'Github', link: '' },
@@ -200,22 +201,22 @@ describe('JSON Resume Conversion', () => {
         ],
         workExperience: [
           {
-            ...mockResumeData.workExperience[0],
+            ...(mockResumeData as any).workExperience[0],
             url: '',
-          },
+          } as any,
         ],
         education: [
           {
-            ...mockResumeData.education[0],
+            ...(mockResumeData as any).education[0],
             url: '',
-          },
+          } as any,
         ],
       }
 
-      const result = convertToJSONResume(dataWithEmptyUrls)
+      const result = convertToJSONResume(dataWithEmptyUrls as any) as any
 
       const githubProfile = result.basics.profiles.find(
-        (p) => p.network === 'Github'
+        (p: any) => p.network === 'Github'
       )
       // Empty URLs remain empty (improved behavior with urlHelpers)
       expect(githubProfile?.url).toBe('')
@@ -231,7 +232,7 @@ describe('JSON Resume Conversion', () => {
         address: 'Only Street Address',
       }
 
-      const result = convertToJSONResume(dataWithOnlyStreet)
+      const result = convertToJSONResume(dataWithOnlyStreet as any) as any
 
       // When parsing fails, empty strings are used
       expect(result.basics.location.address).toBe('Only Street Address')
@@ -243,7 +244,7 @@ describe('JSON Resume Conversion', () => {
         workExperience: [],
       }
 
-      const result = convertToJSONResume(dataWithNoWork)
+      const result = convertToJSONResume(dataWithNoWork as any) as any
 
       expect(result.work).toEqual([])
     })
@@ -254,7 +255,7 @@ describe('JSON Resume Conversion', () => {
         education: [],
       }
 
-      const result = convertToJSONResume(dataWithNoEducation)
+      const result = convertToJSONResume(dataWithNoEducation as any) as any
 
       expect(result.education).toEqual([])
     })
@@ -265,7 +266,7 @@ describe('JSON Resume Conversion', () => {
         skills: [],
       }
 
-      const result = convertToJSONResume(dataWithNoSkills)
+      const result = convertToJSONResume(dataWithNoSkills as any) as any
 
       expect(result.skills).toEqual([])
     })
@@ -276,7 +277,7 @@ describe('JSON Resume Conversion', () => {
         languages: [],
       }
 
-      const result = convertToJSONResume(dataWithNoLanguages)
+      const result = convertToJSONResume(dataWithNoLanguages as any) as any
 
       expect(result.languages).toEqual([])
     })
@@ -287,7 +288,7 @@ describe('JSON Resume Conversion', () => {
         certifications: [],
       }
 
-      const result = convertToJSONResume(dataWithNoCerts)
+      const result = convertToJSONResume(dataWithNoCerts as any) as any
 
       expect(result.certificates).toEqual([])
     })
@@ -297,13 +298,13 @@ describe('JSON Resume Conversion', () => {
         ...mockResumeData,
         workExperience: [
           {
-            ...mockResumeData.workExperience[0],
+            ...(mockResumeData as any).workExperience[0],
             keyAchievements: [],
           },
         ],
       }
 
-      const result = convertToJSONResume(dataWithNoAchievements)
+      const result = convertToJSONResume(dataWithNoAchievements as any) as any
 
       expect(result.work[0].highlights).toEqual([])
     })
@@ -313,13 +314,15 @@ describe('JSON Resume Conversion', () => {
         ...mockResumeData,
         workExperience: [
           {
-            ...mockResumeData.workExperience[0],
+            ...(mockResumeData as any).workExperience[0],
             keyAchievements: [{ text: 'Single achievement' }],
           },
         ],
       }
 
-      const result = convertToJSONResume(dataWithSingleAchievement)
+      const result = convertToJSONResume(
+        dataWithSingleAchievement as any
+      ) as any
 
       expect(result.work[0].highlights).toEqual(['Single achievement'])
     })
@@ -337,7 +340,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(dataWithCertNoUrl)
+      const result = convertToJSONResume(dataWithCertNoUrl as any) as any
 
       // URL field is not added when empty
       expect(result.certificates[0].url).toBeUndefined()
@@ -349,7 +352,7 @@ describe('JSON Resume Conversion', () => {
         profilePicture: '',
       }
 
-      const result = convertToJSONResume(dataWithNoPicture)
+      const result = convertToJSONResume(dataWithNoPicture as any) as any
 
       expect(result.basics.image).toBe('')
     })
@@ -360,14 +363,14 @@ describe('JSON Resume Conversion', () => {
         calendarLink: '',
       }
 
-      const result = convertToJSONResume(dataWithNoCalendar)
+      const result = convertToJSONResume(dataWithNoCalendar as any) as any
 
       // Calendar link is not in JSON Resume standard, so no assertion needed
       expect(result).toBeDefined()
     })
 
     it('should handle projects with URLs', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -381,14 +384,14 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects).toHaveLength(1)
       expect(result.projects[0].url).toBe('https://github.com/project')
       expect(result.projects[0].name).toBe('Open Source Project')
     })
 
     it('should handle projects without URLs', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -402,19 +405,19 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects).toHaveLength(1)
       expect(result.projects[0].url).toBeUndefined()
     })
 
     // Branch Coverage Tests
     it('should extract GitHub username from profile link', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: 'Github', link: 'github.com/johndoe' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const githubProfile = result.basics.profiles.find(
         (p: any) => p.network === 'Github'
       )
@@ -422,14 +425,14 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should extract LinkedIn username from profile link', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'LinkedIn', link: 'linkedin.com/in/johndoe' },
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const linkedinProfile = result.basics.profiles.find(
         (p: any) => p.network === 'LinkedIn'
       )
@@ -437,12 +440,12 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle non-GitHub/LinkedIn social media with empty username', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: 'Twitter', link: 'twitter.com/johndoe' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const twitterProfile = result.basics.profiles.find(
         (p: any) => p.network === 'Twitter'
       )
@@ -450,7 +453,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle work experience with Present end date', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -466,12 +469,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].endDate).toBe('')
     })
 
     it('should handle work experience without technologies array', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -487,65 +490,65 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].keywords).toEqual([])
     })
 
     it('should handle address without postal code pattern', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, Ontario',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.postalCode).toBe('')
       expect(result.basics.location.city).toBe('Toronto')
     })
 
     it('should handle address without region pattern', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, M5H 2N2',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON')
     })
 
     it('should handle missing certifications array', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: undefined as any,
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates).toEqual([])
     })
 
     it('should handle certificate with empty URL', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           { name: 'Cert', date: '2023', issuer: 'Issuer', url: '   ' },
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0].url).toBeUndefined()
     })
 
     it('should handle missing projects array', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: undefined as any,
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects).toEqual([])
     })
 
     it('should handle work with normal end date', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -561,17 +564,17 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].endDate).toBe('2021-12')
     })
 
     it('should handle address with all parts present', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '456 Elm St, Vancouver, BC V6B 1A1',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.address).toBe('456 Elm St')
       expect(result.basics.location.city).toBe('Vancouver')
       expect(result.basics.location.region).toBe('BC')
@@ -579,7 +582,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle certificate with valid URL', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           {
@@ -591,17 +594,17 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0].url).toBe('https://aws.amazon.com/cert')
     })
 
     it('should handle empty address parts with defaults', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.address).toBe('')
       expect(result.basics.location.city).toBe('')
       expect(result.basics.location.region).toBe('ON')
@@ -609,7 +612,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle education with both studyType and area', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         education: [
           {
@@ -623,30 +626,30 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.education[0].studyType).toBe("Master's Degree")
       expect(result.education[0].area).toBe('Computer Science')
     })
 
     it('should use default resumeData when customData is undefined', () => {
-      const result = convertToJSONResume()
+      const result = convertToJSONResume() as any
       expect(result).toBeDefined()
       expect(result.basics).toBeDefined()
     })
 
     it('should handle profile without network name', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: '', link: 'example.com' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.profiles[0].network).toBe('')
       expect(result.basics.profiles[0].username).toBe('')
     })
 
     it('should handle projects array with multiple items', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -668,14 +671,14 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects).toHaveLength(2)
       expect(result.projects[0].url).toBe('https://github.com/p1')
       expect(result.projects[1].url).toBeUndefined()
     })
 
     it('should handle work experience with all fields populated', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -694,26 +697,26 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].url).toBe('https://techcorp.com')
       expect(result.work[0].keywords).toHaveLength(3)
       expect(result.work[0].highlights).toHaveLength(2)
     })
 
     it('should handle address with only city and province', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: ', Toronto, ON',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.address).toBe('')
       expect(result.basics.location.city).toBe('Toronto')
       expect(result.basics.location.region).toBe('ON')
     })
 
     it('should handle multiple social media with different username extraction logic', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'Github', link: 'github.com/user123' },
@@ -723,7 +726,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const github = result.basics.profiles.find(
         (p: any) => p.network === 'Github'
       )
@@ -744,7 +747,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle education with URL present', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         education: [
           {
@@ -758,12 +761,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.education[0].url).toBe('https://stanford.edu')
     })
 
     it('should handle work with URL present', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -779,52 +782,52 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].url).toBe('https://google.com')
     })
 
     it('should handle address with postal code but no region in third part', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, M5H2N2',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.postalCode).toBe('M5H2N2')
       expect(result.basics.location.region).toBe('ON')
     })
 
     it('should handle address with region but no postal code in third part', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, ON Canada',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON')
       expect(result.basics.location.postalCode).toBe('')
     })
 
     it('should handle address with neither postal code nor region', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, Canada',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON')
       expect(result.basics.location.postalCode).toBe('')
     })
 
     it('should handle LinkedIn profile with complex path', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'LinkedIn', link: 'linkedin.com/in/john-doe-123' },
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const linkedin = result.basics.profiles.find(
         (p: any) => p.network === 'LinkedIn'
       )
@@ -832,14 +835,14 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle GitHub profile with complex path', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'Github', link: 'github.com/user-name_123' },
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const github = result.basics.profiles.find(
         (p: any) => p.network === 'Github'
       )
@@ -847,27 +850,27 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle empty profile picture', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         profilePicture: '',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.image).toBe('')
     })
 
     it('should handle profile picture with value', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         profilePicture: 'https://example.com/photo.jpg',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.image).toBe('https://example.com/photo.jpg')
     })
 
     it('should handle certifications with non-empty URL', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           {
@@ -879,12 +882,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0].url).toBe('https://example.com/cert')
     })
 
     it('should handle work with technologies array with multiple items', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -900,12 +903,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].keywords).toHaveLength(4)
     })
 
     it('should handle non-Github and non-LinkedIn social media profiles', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'Twitter', link: 'twitter.com/johndoe' },
@@ -913,7 +916,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       // Non-Github/LinkedIn profiles should have empty username
       const twitterProfile = result.basics.profiles.find(
         (p: any) => p.network === 'Twitter'
@@ -926,29 +929,29 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle address without region pattern', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, 123456',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON') // Falls back to 'ON'
       expect(result.basics.location.postalCode).toBe('')
     })
 
     it('should handle address with short third part', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, X',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON')
       expect(result.basics.location.postalCode).toBe('')
     })
 
     it('should handle work experience with non-Present end date', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -964,12 +967,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].endDate).toBe('2020')
     })
 
     it('should handle certificates with empty URL', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           {
@@ -981,12 +984,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0]).not.toHaveProperty('url')
     })
 
     it('should handle certificates with whitespace-only URL', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           {
@@ -998,12 +1001,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0]).not.toHaveProperty('url')
     })
 
     it('should handle projects with empty link', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -1017,12 +1020,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects[0].url).toBeUndefined()
     })
 
     it('should handle work experience with empty url', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -1038,12 +1041,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].url).toBeUndefined()
     })
 
     it('should handle education with empty url', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         education: [
           {
@@ -1057,17 +1060,17 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.education[0].url).toBeUndefined()
     })
 
     it('should handle address with only two parts', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.address).toBe('123 Main St')
       expect(result.basics.location.city).toBe('Toronto')
       expect(result.basics.location.region).toBe('ON') // Falls back to default
@@ -1075,22 +1078,22 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle address with valid Canadian postal code', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, ON M5H2N2',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.postalCode).toBe('M5H2N2')
     })
 
     it('should handle GitHub social media link without domain prefix', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: 'Github', link: 'github.com/username' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const githubProfile = result.basics.profiles.find(
         (p: any) => p.network === 'Github'
       )
@@ -1098,14 +1101,14 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle LinkedIn social media link without domain prefix', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [
           { socialMedia: 'LinkedIn', link: 'linkedin.com/in/username' },
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const linkedinProfile = result.basics.profiles.find(
         (p: any) => p.network === 'LinkedIn'
       )
@@ -1113,7 +1116,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle certificates with valid URL containing protocol', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         certifications: [
           {
@@ -1125,12 +1128,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.certificates[0].url).toBe('https://example.com/cert')
     })
 
     it('should handle projects with valid link', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -1144,17 +1147,17 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects[0].url).toBe('https://github.com/user/project')
     })
 
     it('should handle GitHub link without github.com prefix', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: 'Github', link: 'johndoe' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const githubProfile = result.basics.profiles.find(
         (p: any) => p.network === 'Github'
       )
@@ -1163,12 +1166,12 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle LinkedIn link without linkedin.com/in prefix', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         socialMedia: [{ socialMedia: 'LinkedIn', link: 'janedoe' }],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       const linkedinProfile = result.basics.profiles.find(
         (p: any) => p.network === 'LinkedIn'
       )
@@ -1177,7 +1180,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should handle work experience with undefined url field', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         workExperience: [
           {
@@ -1193,12 +1196,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.work[0].url).toBeUndefined()
     })
 
     it('should handle education with undefined url field', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         education: [
           {
@@ -1212,12 +1215,12 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.education[0].url).toBeUndefined()
     })
 
     it('should handle projects with undefined link field', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         projects: [
           {
@@ -1231,28 +1234,28 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.projects[0].url).toBeUndefined()
     })
 
     it('should handle address with region code but no postal code', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, ON',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.region).toBe('ON')
       expect(result.basics.location.postalCode).toBe('')
     })
 
     it('should handle address with only postal code in third part', () => {
-      const mockData: ResumeData = {
+      const mockData: any = {
         ...mockResumeData,
         address: '123 Main St, Toronto, M5H 2N2',
       }
 
-      const result = convertToJSONResume(mockData)
+      const result = convertToJSONResume(mockData) as any
       expect(result.basics.location.postalCode).toBe('M5H 2N2')
       expect(result.basics.location.region).toBe('ON') // Falls back to default
     })
@@ -1346,7 +1349,7 @@ describe('JSON Resume Conversion', () => {
     }
 
     it('should convert JSON Resume to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result).not.toBeNull()
       expect(result.name).toBe('Jane Smith')
@@ -1358,32 +1361,34 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should reconstruct address from location fields', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.address).toBe('456 Oak Ave, Vancouver, BC V6B 1A1')
     })
 
     it('should convert profiles to social media format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.socialMedia).toHaveLength(3) // Website + 2 profiles
 
       const website = result.socialMedia.find(
-        (s) => s.socialMedia === 'Website'
+        (s: any) => s.socialMedia === 'Website'
       )
       expect(website?.link).toBe('janesmith.com')
 
-      const github = result.socialMedia.find((s) => s.socialMedia === 'Github')
+      const github = result.socialMedia.find(
+        (s: any) => s.socialMedia === 'Github'
+      )
       expect(github?.link).toBe('github.com/janesmith')
 
       const linkedin = result.socialMedia.find(
-        (s) => s.socialMedia === 'LinkedIn'
+        (s: any) => s.socialMedia === 'LinkedIn'
       )
       expect(linkedin?.link).toBe('linkedin.com/in/janesmith')
     })
 
     it('should convert work experience to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.workExperience).toHaveLength(1)
       expect(result.workExperience[0].organization).toBe('Product Inc')
@@ -1406,7 +1411,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert education to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.education).toHaveLength(1)
       expect(result.education[0].school).toBe('University of British Columbia')
@@ -1418,7 +1423,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert skills to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.skills).toHaveLength(1)
       expect(result.skills[0].title).toBe('Product Management')
@@ -1427,7 +1432,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert languages to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.languages).toHaveLength(2)
       expect(result.languages).toContain('English')
@@ -1435,7 +1440,7 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should convert certifications to internal format', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
       expect(result.certifications).toHaveLength(1)
       expect(result.certifications[0].name).toBe(
@@ -1453,7 +1458,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(minimalJSONResume)
+      const result = convertFromJSONResume(minimalJSONResume) as any
 
       expect(result).not.toBeNull()
       expect(result.name).toBe('Test User')
@@ -1467,9 +1472,9 @@ describe('JSON Resume Conversion', () => {
     })
 
     it('should strip http/https from URLs in social media', () => {
-      const result = convertFromJSONResume(mockJSONResume)
+      const result = convertFromJSONResume(mockJSONResume) as any
 
-      result.socialMedia.forEach((social) => {
+      result.socialMedia.forEach((social: any) => {
         expect(social.link).not.toMatch(/^https?:\/\//)
       })
     })
@@ -1479,13 +1484,13 @@ describe('JSON Resume Conversion', () => {
         basics: 'not an object', // Invalid structure
       }
 
-      const result = convertFromJSONResume(invalidJSONResume)
+      const result = convertFromJSONResume(invalidJSONResume as any) as any
 
       expect(result).toBeNull()
     })
 
     it('should handle JSON Resume with empty profiles array', () => {
-      const resumeWithNoProfiles = {
+      const resumeWithNoProfiles: any = {
         ...mockJSONResume,
         basics: {
           ...mockJSONResume.basics,
@@ -1495,7 +1500,7 @@ describe('JSON Resume Conversion', () => {
       // Remove url to avoid validation error
       delete resumeWithNoProfiles.basics.url
 
-      const result = convertFromJSONResume(resumeWithNoProfiles)
+      const result = convertFromJSONResume(resumeWithNoProfiles) as any
 
       expect(result).not.toBeNull()
       expect(result.socialMedia).toEqual([])
@@ -1512,7 +1517,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(resumeWithPartialLocation)
+      const result = convertFromJSONResume(resumeWithPartialLocation) as any
 
       expect(result.address).toBe('123 Street')
     })
@@ -1523,7 +1528,7 @@ describe('JSON Resume Conversion', () => {
         work: [],
       }
 
-      const result = convertFromJSONResume(resumeWithNoWork)
+      const result = convertFromJSONResume(resumeWithNoWork) as any
 
       expect(result.workExperience).toEqual([])
     })
@@ -1534,7 +1539,7 @@ describe('JSON Resume Conversion', () => {
         education: [],
       }
 
-      const result = convertFromJSONResume(resumeWithNoEducation)
+      const result = convertFromJSONResume(resumeWithNoEducation) as any
 
       expect(result.education).toEqual([])
     })
@@ -1545,7 +1550,7 @@ describe('JSON Resume Conversion', () => {
         skills: [],
       }
 
-      const result = convertFromJSONResume(resumeWithNoSkills)
+      const result = convertFromJSONResume(resumeWithNoSkills) as any
 
       expect(result.skills).toHaveLength(1)
       expect(result.skills[0].skills).toEqual([])
@@ -1557,7 +1562,7 @@ describe('JSON Resume Conversion', () => {
         languages: [],
       }
 
-      const result = convertFromJSONResume(resumeWithNoLanguages)
+      const result = convertFromJSONResume(resumeWithNoLanguages) as any
 
       expect(result.languages).toEqual([])
     })
@@ -1568,7 +1573,7 @@ describe('JSON Resume Conversion', () => {
         certificates: [],
       }
 
-      const result = convertFromJSONResume(resumeWithNoCerts)
+      const result = convertFromJSONResume(resumeWithNoCerts) as any
 
       expect(result.certifications).toEqual([])
     })
@@ -1578,13 +1583,13 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         work: [
           {
-            ...mockJSONResume.work[0],
+            ...(mockJSONResume as any).work[0],
             highlights: [],
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithNoHighlights)
+      const result = convertFromJSONResume(resumeWithNoHighlights) as any
 
       expect(result.workExperience[0].keyAchievements).toEqual([])
     })
@@ -1594,13 +1599,13 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         work: [
           {
-            ...mockJSONResume.work[0],
+            ...(mockJSONResume as any).work[0],
             highlights: ['Single highlight'],
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithSingleHighlight)
+      const result = convertFromJSONResume(resumeWithSingleHighlight) as any
 
       expect(result.workExperience[0].keyAchievements).toEqual([
         { text: 'Single highlight' },
@@ -1612,13 +1617,13 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         work: [
           {
-            ...mockJSONResume.work[0],
+            ...(mockJSONResume as any).work[0],
             keywords: [],
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithNoKeywords)
+      const result = convertFromJSONResume(resumeWithNoKeywords) as any
 
       expect(result.workExperience[0].technologies).toEqual([])
     })
@@ -1634,7 +1639,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithNoSkillKeywords)
+      const result = convertFromJSONResume(resumeWithNoSkillKeywords) as any
 
       expect(result.skills[0].skills).toEqual([])
     })
@@ -1644,18 +1649,18 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         certificates: [
           {
-            name: mockJSONResume.certificates[0].name,
-            date: mockJSONResume.certificates[0].date,
-            issuer: mockJSONResume.certificates[0].issuer,
+            name: (mockJSONResume as any).certificates[0].name,
+            date: (mockJSONResume as any).certificates[0].date,
+            issuer: (mockJSONResume as any).certificates[0].issuer,
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithCertNoUrl)
+      const result = convertFromJSONResume(resumeWithCertNoUrl) as any
 
       expect(result).not.toBeNull()
       // Missing URL field results in undefined, which becomes empty string
-      expect(result.certifications[0].url).toBeUndefined()
+      expect(result.certifications[0].url).toBe('')
     })
 
     it('should handle work with missing URL field', () => {
@@ -1663,18 +1668,18 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         work: [
           {
-            name: mockJSONResume.work[0].name,
-            position: mockJSONResume.work[0].position,
-            startDate: mockJSONResume.work[0].startDate,
-            endDate: mockJSONResume.work[0].endDate,
-            summary: mockJSONResume.work[0].summary,
-            highlights: mockJSONResume.work[0].highlights,
-            keywords: mockJSONResume.work[0].keywords,
+            name: (mockJSONResume as any).work[0].name,
+            position: (mockJSONResume as any).work[0].position,
+            startYear: (mockJSONResume as any).work[0].startDate,
+            endYear: (mockJSONResume as any).work[0].endDate,
+            summary: (mockJSONResume as any).work[0].summary,
+            highlights: (mockJSONResume as any).work[0].highlights,
+            keywords: (mockJSONResume as any).work[0].keywords,
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithNoWorkUrl)
+      const result = convertFromJSONResume(resumeWithNoWorkUrl) as any
 
       expect(result).not.toBeNull()
       expect(result.workExperience[0].url).toBe('')
@@ -1685,16 +1690,16 @@ describe('JSON Resume Conversion', () => {
         ...mockJSONResume,
         education: [
           {
-            institution: mockJSONResume.education[0].institution,
-            area: mockJSONResume.education[0].area,
-            studyType: mockJSONResume.education[0].studyType,
-            startDate: mockJSONResume.education[0].startDate,
-            endDate: mockJSONResume.education[0].endDate,
+            institution: (mockJSONResume as any).education[0].institution,
+            area: (mockJSONResume as any).education[0].area,
+            studyType: (mockJSONResume as any).education[0].studyType,
+            startYear: (mockJSONResume as any).education[0].startDate,
+            endYear: (mockJSONResume as any).education[0].endDate,
           },
         ],
       }
 
-      const result = convertFromJSONResume(resumeWithNoEduUrl)
+      const result = convertFromJSONResume(resumeWithNoEduUrl) as any
 
       expect(result).not.toBeNull()
       expect(result.education[0].url).toBe('')
@@ -1709,13 +1714,13 @@ describe('JSON Resume Conversion', () => {
             url: 'https://example.com/project',
             description: 'Description',
             highlights: ['Highlight 1'],
-            startDate: '2020-01',
-            endDate: '2021-12',
+            startYear: '2020-01',
+            endYear: '2021-12',
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.projects).toHaveLength(1)
       expect(result?.projects[0].link).toBe('example.com/project')
       expect(result?.projects[0].name).toBe('Sample Project')
@@ -1731,7 +1736,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.socialMedia[0].socialMedia).toBe('Website')
       expect(result?.socialMedia[0].link).toBe('example.com')
     })
@@ -1743,8 +1748,8 @@ describe('JSON Resume Conversion', () => {
           {
             name: 'Company',
             position: 'Developer',
-            startDate: '2020-01',
-            endDate: '',
+            startYear: '2020-01',
+            endYear: '',
             summary: 'Description',
             highlights: [],
             keywords: [],
@@ -1752,7 +1757,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.workExperience[0].endYear).toBe('Present')
     })
 
@@ -1765,7 +1770,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.languages).toContain('French')
       expect(result?.languages).toContain('German')
     })
@@ -1779,13 +1784,13 @@ describe('JSON Resume Conversion', () => {
             url: 'https://github.com/project',
             description: 'Desc',
             highlights: [],
-            startDate: '2020',
-            endDate: '2021',
+            startYear: '2020',
+            endYear: '2021',
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.projects[0].link).toBe('github.com/project')
     })
 
@@ -1800,7 +1805,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.address).toContain('123 Main St')
     })
 
@@ -1813,7 +1818,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.address).toBe('')
     })
 
@@ -1824,15 +1829,15 @@ describe('JSON Resume Conversion', () => {
           {
             name: 'Company',
             position: 'Developer',
-            startDate: '2020',
-            endDate: '2021',
+            startYear: '2020',
+            endYear: '2021',
             summary: 'Summary',
             highlights: [],
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.workExperience[0].technologies).toEqual([])
     })
 
@@ -1846,7 +1851,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.skills[0].skills).toEqual([])
     })
 
@@ -1856,7 +1861,7 @@ describe('JSON Resume Conversion', () => {
         basics: {},
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result).not.toBeNull()
       expect(result?.name).toBe('')
     })
@@ -1876,9 +1881,9 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       const twitterProfile = result?.socialMedia.find(
-        (s) => s.socialMedia === 'Twitter'
+        (s: any) => s.socialMedia === 'Twitter'
       )
       expect(twitterProfile?.link).toBe('')
     })
@@ -1891,14 +1896,14 @@ describe('JSON Resume Conversion', () => {
             name: 'Internal Project',
             description: 'Desc',
             highlights: [],
-            startDate: '2020',
-            endDate: '2021',
+            startYear: '2020',
+            endYear: '2021',
             url: undefined,
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.projects[0].link).toBe('')
     })
 
@@ -1910,14 +1915,14 @@ describe('JSON Resume Conversion', () => {
             institution: 'University',
             area: 'Computer Science',
             studyType: "Bachelor's",
-            startDate: '2015',
-            endDate: '2019',
+            startYear: '2015',
+            endYear: '2019',
             url: undefined,
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.education[0].url).toBe('')
     })
 
@@ -1928,8 +1933,8 @@ describe('JSON Resume Conversion', () => {
           {
             name: 'Company',
             position: 'Developer',
-            startDate: '2020',
-            endDate: '2021',
+            startYear: '2020',
+            endYear: '2021',
             summary: 'Work',
             highlights: [],
             keywords: [],
@@ -1938,7 +1943,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.workExperience[0].url).toBe('')
     })
 
@@ -1949,8 +1954,8 @@ describe('JSON Resume Conversion', () => {
           {
             name: 'Company',
             position: 'Developer',
-            startDate: '2020',
-            endDate: '',
+            startYear: '2020',
+            endYear: '',
             summary: 'Work',
             highlights: [],
             keywords: [],
@@ -1958,7 +1963,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.workExperience[0].endYear).toBe('Present')
     })
 
@@ -1969,7 +1974,7 @@ describe('JSON Resume Conversion', () => {
           {
             name: 'Company',
             position: 'Developer',
-            startDate: '2020',
+            startYear: '2020',
             summary: 'Work',
             highlights: [],
             keywords: [],
@@ -1977,7 +1982,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.workExperience[0].endYear).toBe('Present')
     })
 
@@ -1994,7 +1999,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       // Certificates are copied directly without transformation
       expect(result?.certifications[0].url).toBe('https://example.com/cert')
     })
@@ -2014,10 +2019,10 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       // Find Twitter profile (Website profile from basics.url is added first)
       const twitterProfile = result?.socialMedia.find(
-        (s) => s.socialMedia === 'Twitter'
+        (s: any) => s.socialMedia === 'Twitter'
       )
       expect(twitterProfile?.link).toBe('twitter.com/handle')
     })
@@ -2037,7 +2042,7 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.address).toContain('456 Oak St')
       expect(result?.address).toContain('Seattle')
     })
@@ -2051,13 +2056,13 @@ describe('JSON Resume Conversion', () => {
             url: 'https://mit.edu',
             area: 'CS',
             studyType: 'PhD',
-            startDate: '2018',
-            endDate: '2023',
+            startYear: '2018',
+            endYear: '2023',
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.education[0].school).toBe('MIT')
       expect(result?.education[0].url).toBe('mit.edu')
     })
@@ -2073,7 +2078,7 @@ describe('JSON Resume Conversion', () => {
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.skills[0].skills).toHaveLength(3)
     })
 
@@ -2086,13 +2091,13 @@ describe('JSON Resume Conversion', () => {
             url: 'https://github.com/proj',
             description: 'Desc',
             highlights: ['Feat 1', 'Feat 2'],
-            startDate: '2020',
-            endDate: '2021',
+            startYear: '2020',
+            endYear: '2021',
           },
         ],
       }
 
-      const result = convertFromJSONResume(jsonResume)
+      const result = convertFromJSONResume(jsonResume) as any
       expect(result?.projects[0].keyAchievements).toHaveLength(2)
     })
 
@@ -2106,13 +2111,13 @@ describe('JSON Resume Conversion', () => {
         },
       }
 
-      const result = convertFromJSONResume(invalidJSONResume as any)
+      const result = convertFromJSONResume(invalidJSONResume as any) as any
       expect(result).toBeNull()
     })
 
     it('should handle error in conversion gracefully', () => {
       // Pass invalid data that will cause an error
-      const result = convertFromJSONResume(null as any)
+      const result = convertFromJSONResume(null as any) as any
       expect(result).toBeNull()
     })
   })

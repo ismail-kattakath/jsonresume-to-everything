@@ -61,8 +61,10 @@ const AdditionalSections = () => {
 
     const newSections = [...sections]
     const [removed] = newSections.splice(source.index, 1)
-    newSections.splice(destination.index, 0, removed)
-    setSections(newSections)
+    if (removed) {
+      newSections.splice(destination.index, 0, removed)
+      setSections(newSections)
+    }
     updateAfterReorder(source.index, destination.index)
   }
 

@@ -34,8 +34,9 @@ export function useArrayForm<T extends Record<string, any>>(
   initialItem: T,
   options: UseArrayFormOptions<T> = {}
 ) {
-  const { resumeData, setResumeData } = useContext(ResumeContext)
-  const data = (resumeData[dataKey] as T[]) || []
+  const context = useContext(ResumeContext)
+  const { resumeData, setResumeData } = context
+  const data = (resumeData[dataKey] as unknown as T[]) || []
 
   /**
    * Handle input change for array items
@@ -59,12 +60,12 @@ export function useArrayForm<T extends Record<string, any>>(
       processedValue = options.transformValue(
         name as keyof T,
         processedValue,
-        newData[index],
+        newData[index]!,
         index
       )
     }
 
-    newData[index] = { ...newData[index], [name]: processedValue }
+    newData[index] = { ...newData[index], [name]: processedValue } as T
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
@@ -95,7 +96,7 @@ export function useArrayForm<T extends Record<string, any>>(
     value: T[K]
   ) => {
     const newData = [...data]
-    newData[index] = { ...newData[index], [fieldName]: value }
+    newData[index] = { ...newData[index], [fieldName]: value } as T
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 

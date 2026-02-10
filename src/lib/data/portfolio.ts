@@ -16,8 +16,8 @@ const websiteProfile = resumeData.socialMedia.find(
 const extractLocation = (address: string): string => {
   const match = address.match(/,\s*([^,]+),\s*([A-Z]{2})/)
   if (match) {
-    const city = match[1].trim()
-    const province = match[2].trim()
+    const city = (match[1] || '').trim()
+    const province = (match[2] || '').trim()
     return `${city}, ${province} 🇨🇦`
   }
   return 'Toronto, ON 🇨🇦' // Fallback

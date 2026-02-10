@@ -65,6 +65,9 @@ export const createMockAISettingsContext = (
       apiKey: '',
       model: 'gpt-4o-mini',
       jobDescription: '',
+      providerType: 'openai-compatible',
+      skillsToHighlight: '',
+      rememberCredentials: true,
     },
     updateSettings: jest.fn(),
     isConfigured: false,
@@ -87,6 +90,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
     jobDescription: string
     providerType: 'openai-compatible' | 'gemini'
     rememberCredentials: boolean
+    skillsToHighlight: string
   }
 }
 
@@ -208,7 +212,7 @@ export const mockFormData = {
   ],
   workExperience: [
     {
-      company: 'Tech Corp',
+      organization: 'Tech Corp',
       url: 'techcorp.com',
       position: 'Senior Developer',
       description: 'Led development projects',
@@ -222,7 +226,7 @@ export const mockFormData = {
     {
       school: 'University of Toronto',
       url: 'utoronto.ca',
-      degree: "Bachelor's Degree in Computer Science",
+      studyType: "Bachelor's Degree in Computer Science",
       startYear: '2015-09-01',
       endYear: '2019-06-01',
     },

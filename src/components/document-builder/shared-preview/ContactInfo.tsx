@@ -1,16 +1,27 @@
 import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 
+interface ContactInfoProps {
+  mainclass?: string
+  linkclass?: string
+  teldata?: string
+  emaildata?: string
+  addressdata?: string
+  telicon?: React.ReactNode
+  emailicon?: React.ReactNode
+  addressicon?: React.ReactNode
+}
+
 const ContactInfo = ({
-  mainclass,
-  linkclass,
-  teldata,
-  emaildata,
-  addressdata,
+  mainclass = '',
+  linkclass = '',
+  teldata = '',
+  emaildata = '',
+  addressdata = '',
   telicon,
   emailicon,
   addressicon,
-}) => {
+}: ContactInfoProps) => {
   const {
     resumeData,
     setResumeData,
@@ -18,20 +29,23 @@ const ContactInfo = ({
   } = useContext(ResumeContext)
 
   // Helper function to strip formatting from phone number for tel: link
-  const getCleanPhoneNumber = (phone) => {
+  const getCleanPhoneNumber = (phone: string) => {
     return phone.replace(/[\s\-\(\)]/g, '')
   }
 
-  const handlePhoneBlur = (e) => {
-    setResumeData({ ...resumeData, contactInformation: e.target.innerText })
+  const handlePhoneBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+    setResumeData({
+      ...resumeData,
+      contactInformation: e.currentTarget.innerText,
+    })
   }
 
-  const handleEmailBlur = (e) => {
-    setResumeData({ ...resumeData, email: e.target.innerText })
+  const handleEmailBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+    setResumeData({ ...resumeData, email: e.currentTarget.innerText })
   }
 
-  const handleAddressBlur = (e) => {
-    setResumeData({ ...resumeData, address: e.target.innerText })
+  const handleAddressBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+    setResumeData({ ...resumeData, address: e.currentTarget.innerText })
   }
 
   return (

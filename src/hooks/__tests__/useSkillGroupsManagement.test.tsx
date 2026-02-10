@@ -56,7 +56,12 @@ describe('useSkillGroupsManagement', () => {
 
     return (
       <ResumeContext.Provider
-        value={{ resumeData: mockResumeData, setResumeData }}
+        value={{
+          resumeData: mockResumeData as any,
+          setResumeData,
+          handleProfilePicture: jest.fn(),
+          handleChange: jest.fn(),
+        }}
       >
         {children}
       </ResumeContext.Provider>

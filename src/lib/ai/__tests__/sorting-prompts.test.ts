@@ -261,10 +261,10 @@ describe('sorting-prompts', () => {
 
       const result = applySortedSkills(mockSkills, sortResult)
 
-      expect(result[0].title).toBe('Frameworks')
-      expect(result[1].title).toBe('Languages')
-      expect(result[0].skills[0].text).toBe('Next.js')
-      expect(result[0].skills[1].text).toBe('React')
+      expect(result![0]!.title).toBe('Frameworks')
+      expect(result![1]!.title).toBe('Languages')
+      expect(result![0]!.skills[0]!.text).toBe('Next.js')
+      expect(result![0]!.skills[1]!.text).toBe('React')
     })
 
     it('should add new skills and mark them as highlighted', () => {
@@ -278,10 +278,10 @@ describe('sorting-prompts', () => {
 
       const result = applySortedSkills(mockSkills, sortResult)
 
-      expect(result[0].skills[0].text).toBe('TypeScript')
-      expect(result[0].skills[0].highlight).toBe(true)
-      expect(result[0].skills[1].text).toBe('JavaScript')
-      expect(result[0].skills[1].highlight).toBeFalsy() // Original skill
+      expect(result![0]!.skills[0]!.text).toBe('TypeScript')
+      expect(result![0]!.skills[0]!.highlight).toBe(true)
+      expect(result![0]!.skills[1]!.text).toBe('JavaScript')
+      expect(result![0]!.skills[1]!.highlight).toBeFalsy() // Original skill
     })
 
     it('should add new groups and mark their skills as highlighted', () => {
@@ -296,9 +296,9 @@ describe('sorting-prompts', () => {
 
       const result = applySortedSkills(mockSkills, sortResult)
 
-      expect(result[0].title).toBe('Database')
-      expect(result[0].skills[0].text).toBe('PostgreSQL')
-      expect(result[0].skills[0].highlight).toBe(true)
+      expect(result![0]!.title).toBe('Database')
+      expect(result![0]!.skills[0]!.text).toBe('PostgreSQL')
+      expect(result![0]!.skills[0]!.highlight).toBe(true)
     })
 
     it('should filter out duplicate skills added by AI (case-insensitive)', () => {
@@ -359,9 +359,9 @@ describe('sorting-prompts', () => {
 
       const result = applySortedAchievements(mockAchievements, sortResult)
 
-      expect(result[0].text).toBe('Achievement C')
-      expect(result[1].text).toBe('Achievement A')
-      expect(result[2].text).toBe('Achievement B')
+      expect(result![0]!.text).toBe('Achievement C')
+      expect(result![1]!.text).toBe('Achievement A')
+      expect(result![2]!.text).toBe('Achievement B')
     })
   })
 })

@@ -47,7 +47,12 @@ describe('useSkillsForm', () => {
 
     return (
       <ResumeContext.Provider
-        value={{ resumeData: mockResumeData, setResumeData }}
+        value={{
+          resumeData: mockResumeData as any,
+          setResumeData,
+          handleProfilePicture: jest.fn(),
+          handleChange: jest.fn(),
+        }}
       >
         {children}
       </ResumeContext.Provider>
@@ -77,9 +82,9 @@ describe('useSkillsForm', () => {
     })
 
     expect(result.current.skills).toHaveLength(3)
-    expect(result.current.skills[0].text).toBe('JavaScript')
-    expect(result.current.skills[1].text).toBe('TypeScript')
-    expect(result.current.skills[2].text).toBe('Python')
+    expect(result.current.skills[0]!.text).toBe('JavaScript')
+    expect(result.current.skills[1]!.text).toBe('TypeScript')
+    expect(result.current.skills[2]!.text).toBe('Python')
   })
 
   it('should handle text change for a skill', () => {
@@ -97,8 +102,8 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
-    expect(programmingSkills.skills[0].text).toBe('JavaScript ES2024')
+    )!
+    expect(programmingSkills.skills[0]!.text).toBe('JavaScript ES2024')
   })
 
   it('should preserve other skill groups when changing text', () => {
@@ -116,8 +121,8 @@ describe('useSkillsForm', () => {
     expect(newData.skills).toHaveLength(2)
     const databaseSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Databases'
-    )
-    expect(databaseSkills.skills[0].text).toBe('PostgreSQL')
+    )!
+    expect(databaseSkills.skills[0]!.text).toBe('PostgreSQL')
   })
 
   it('should add new skill to the group with specified text', () => {
@@ -134,7 +139,7 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
+    )!
     expect(programmingSkills.skills).toHaveLength(4)
     expect(programmingSkills.skills[3]).toEqual({ text: 'Rust' })
   })
@@ -177,7 +182,7 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
+    )!
     expect(programmingSkills.skills[3]).toEqual({ text: 'Go' })
   })
 
@@ -195,10 +200,10 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
+    )!
     expect(programmingSkills.skills).toHaveLength(2)
-    expect(programmingSkills.skills[0].text).toBe('JavaScript')
-    expect(programmingSkills.skills[1].text).toBe('Python')
+    expect(programmingSkills.skills[0]!.text).toBe('JavaScript')
+    expect(programmingSkills.skills[1]!.text).toBe('Python')
   })
 
   it('should remove last skill', () => {
@@ -215,10 +220,10 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
+    )!
     expect(programmingSkills.skills).toHaveLength(2)
-    expect(programmingSkills.skills[0].text).toBe('JavaScript')
-    expect(programmingSkills.skills[1].text).toBe('TypeScript')
+    expect(programmingSkills.skills[0]!.text).toBe('JavaScript')
+    expect(programmingSkills.skills[1]!.text).toBe('TypeScript')
   })
 
   it('should reorder skills via drag and drop', () => {
@@ -235,10 +240,10 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
-    expect(programmingSkills.skills[0].text).toBe('TypeScript')
-    expect(programmingSkills.skills[1].text).toBe('Python')
-    expect(programmingSkills.skills[2].text).toBe('JavaScript')
+    )!
+    expect(programmingSkills.skills[0]!.text).toBe('TypeScript')
+    expect(programmingSkills.skills[1]!.text).toBe('Python')
+    expect(programmingSkills.skills[2]!.text).toBe('JavaScript')
   })
 
   it('should reorder skills from end to beginning', () => {
@@ -255,10 +260,10 @@ describe('useSkillsForm', () => {
 
     const programmingSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Programming'
-    )
-    expect(programmingSkills.skills[0].text).toBe('Python')
-    expect(programmingSkills.skills[1].text).toBe('JavaScript')
-    expect(programmingSkills.skills[2].text).toBe('TypeScript')
+    )!
+    expect(programmingSkills.skills[0]!.text).toBe('Python')
+    expect(programmingSkills.skills[1]!.text).toBe('JavaScript')
+    expect(programmingSkills.skills[2]!.text).toBe('TypeScript')
   })
 
   it('should work with different skill group (Databases)', () => {
@@ -267,7 +272,7 @@ describe('useSkillsForm', () => {
     })
 
     expect(result.current.skills).toHaveLength(1)
-    expect(result.current.skills[0].text).toBe('PostgreSQL')
+    expect(result.current.skills[0]!.text).toBe('PostgreSQL')
 
     act(() => {
       result.current.add('MySQL')
@@ -278,8 +283,8 @@ describe('useSkillsForm', () => {
 
     const databaseSkills = newData.skills.find(
       (s: SkillGroup) => s.title === 'Databases'
-    )
+    )!
     expect(databaseSkills.skills).toHaveLength(2)
-    expect(databaseSkills.skills[1].text).toBe('MySQL')
+    expect(databaseSkills.skills[1]!.text).toBe('MySQL')
   })
 })

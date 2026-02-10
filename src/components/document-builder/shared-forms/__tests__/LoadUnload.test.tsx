@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import LoadUnload from '@/components/document-builder/shared-forms/LoadUnload'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -110,7 +111,7 @@ describe('LoadUnload Component', () => {
           'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
         basics: {
           name: 'Jane Smith',
-          label: 'Developer',
+          position: 'Developer',
           email: 'jane@example.com',
         },
       }

@@ -22,7 +22,10 @@ export function useSkillsForm(title: string) {
    */
   const handleChange = (index: number, value: string) => {
     const newSkills = [...skillType.skills]
-    newSkills[index] = { ...newSkills[index], text: value }
+    const currentSkill = newSkills[index]
+    if (currentSkill) {
+      newSkills[index] = { ...currentSkill, text: value }
+    }
 
     setResumeData((prevData) => ({
       ...prevData,
@@ -68,7 +71,9 @@ export function useSkillsForm(title: string) {
   const reorder = (startIndex: number, endIndex: number) => {
     const newSkills = [...skillType.skills]
     const [removed] = newSkills.splice(startIndex, 1)
-    newSkills.splice(endIndex, 0, removed)
+    if (removed) {
+      newSkills.splice(endIndex, 0, removed)
+    }
 
     setResumeData((prevData) => ({
       ...prevData,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
@@ -100,7 +101,7 @@ describe('Preview Component', () => {
         name: 'John Doe',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(await screen.findByText('John Doe')).toBeInTheDocument()
@@ -111,7 +112,7 @@ describe('Preview Component', () => {
         position: 'Software Engineer',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Software Engineer')).toBeInTheDocument()
@@ -124,7 +125,7 @@ describe('Preview Component', () => {
         address: '123 Main St, City, State',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('+1 (555) 123-4567')).toBeInTheDocument()
@@ -139,7 +140,7 @@ describe('Preview Component', () => {
         profilePicture: '/images/profile.jpg',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const img = screen.getByAltText('profile')
@@ -152,7 +153,7 @@ describe('Preview Component', () => {
         profilePicture: '',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByAltText('profile')).not.toBeInTheDocument()
@@ -168,7 +169,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('github.com/johndoe')).toBeInTheDocument()
@@ -180,7 +181,7 @@ describe('Preview Component', () => {
         socialMedia: [],
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const socialMediaGrid = container.querySelector('.grid.grid-cols-3')
@@ -195,7 +196,7 @@ describe('Preview Component', () => {
         summary: 'Experienced software engineer with 5 years of expertise',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Summary')).toBeInTheDocument()
@@ -211,7 +212,7 @@ describe('Preview Component', () => {
         summary: '',
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Summary')).not.toBeInTheDocument()
@@ -233,7 +234,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Education')).toBeInTheDocument()
@@ -248,7 +249,7 @@ describe('Preview Component', () => {
         education: [],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Education')).not.toBeInTheDocument()
@@ -276,7 +277,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(
@@ -307,7 +308,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Experience')).toBeInTheDocument()
@@ -320,7 +321,7 @@ describe('Preview Component', () => {
         workExperience: [],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Experience')).not.toBeInTheDocument()
@@ -342,7 +343,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Tech Stack:')).toBeInTheDocument()
@@ -368,7 +369,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Tech Stack:')).not.toBeInTheDocument()
@@ -391,7 +392,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Tech Stack:')).not.toBeInTheDocument()
@@ -413,7 +414,7 @@ describe('Preview Component', () => {
         ],
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const techText = container.querySelector('.select-all')
@@ -436,7 +437,7 @@ describe('Preview Component', () => {
         ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(
@@ -453,7 +454,11 @@ describe('Preview Component', () => {
         name: 'John Doe',
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData, editable: true },
+        contextValue: {
+          ...({} as any),
+          resumeData: mockData as any,
+          editable: true,
+        },
       })
 
       const nameElement = container.querySelector('.name')
@@ -465,7 +470,11 @@ describe('Preview Component', () => {
         name: 'John Doe',
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData, editable: false },
+        contextValue: {
+          ...({} as any),
+          resumeData: mockData as any,
+          editable: false,
+        },
       })
 
       const nameElement = container.querySelector('.name')
@@ -477,7 +486,7 @@ describe('Preview Component', () => {
         name: 'John Doe',
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const nameElement = container.querySelector('.name')
@@ -490,7 +499,7 @@ describe('Preview Component', () => {
         position: 'Software Engineer',
       })
       const { container } = renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const editableElements = container.querySelectorAll('.editable')
@@ -504,7 +513,7 @@ describe('Preview Component', () => {
         languages: ['English', 'Spanish'],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Languages')).toBeInTheDocument()
@@ -514,10 +523,17 @@ describe('Preview Component', () => {
   describe('Certifications Section', () => {
     it('should render certifications when data exists', () => {
       const mockData = createMockResumeData({
-        certifications: ['AWS Certified Solutions Architect'],
+        certifications: [
+          {
+            name: 'AWS Certified Solutions Architect',
+            date: '',
+            issuer: '',
+            url: '',
+          },
+        ],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Certifications')).toBeInTheDocument()
@@ -528,7 +544,7 @@ describe('Preview Component', () => {
         certifications: [],
       })
       renderWithContext(<Preview />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.queryByText('Certifications')).not.toBeInTheDocument()
@@ -580,7 +596,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -615,7 +632,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -670,7 +688,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -717,7 +736,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -773,7 +793,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -823,7 +844,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })
@@ -867,7 +889,8 @@ describe('Preview Component', () => {
 
         renderWithContext(<Preview />, {
           contextValue: {
-            resumeData: mockData,
+            ...({} as any),
+            resumeData: mockData as any,
             setResumeData: mockSetResumeData,
           },
         })

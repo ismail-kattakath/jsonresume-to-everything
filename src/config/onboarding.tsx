@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+// @ts-ignore - onborda types may be missing Tour
 import type { Tour } from 'onborda'
 import { Sparkles, ArrowDownUp } from 'lucide-react'
 

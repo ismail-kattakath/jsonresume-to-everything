@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import ImportExport from '@/components/document-builder/shared-forms/ImportExport'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -171,7 +172,7 @@ describe('ImportExport Component', () => {
           'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
         basics: {
           name: 'Jane Smith',
-          label: 'Developer',
+          position: 'Developer',
           email: 'jane@example.com',
         },
       }

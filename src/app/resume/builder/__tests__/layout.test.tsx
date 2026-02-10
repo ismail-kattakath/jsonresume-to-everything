@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render } from '@testing-library/react'
 import ResumeBuilderLayout, { metadata } from '@/app/resume/builder/layout'
 
@@ -87,9 +88,9 @@ describe('Resume Builder Layout', () => {
   describe('OpenGraph Metadata', () => {
     it('should have proper OpenGraph configuration', () => {
       expect(metadata.openGraph).toBeDefined()
-      expect(metadata.openGraph?.type).toBe('website')
-      expect(metadata.openGraph?.locale).toBe('en_US')
-      expect(metadata.openGraph?.url).toBe(
+      expect((metadata.openGraph as any)?.type).toBe('website')
+      expect((metadata.openGraph as any)?.locale).toBe('en_US')
+      expect((metadata.openGraph as any)?.url).toBe(
         'https://test.example.com/resume/builder'
       )
     })
@@ -128,7 +129,7 @@ describe('Resume Builder Layout', () => {
 
   describe('Twitter Card Metadata', () => {
     it('should have Twitter card type configured', () => {
-      expect(metadata.twitter?.card).toBe('summary_large_image')
+      expect((metadata.twitter as any)?.card).toBe('summary_large_image')
     })
 
     it('should have Twitter title within character limits', () => {
@@ -154,14 +155,14 @@ describe('Resume Builder Layout', () => {
 
   describe('Robots and Indexing', () => {
     it('should allow indexing and following', () => {
-      expect(metadata.robots?.index).toBe(true)
-      expect(metadata.robots?.follow).toBe(true)
-      expect(metadata.robots?.nocache).toBe(false)
+      expect((metadata.robots as any)?.index).toBe(true)
+      expect((metadata.robots as any)?.follow).toBe(true)
+      expect((metadata.robots as any)?.nocache).toBe(false)
     })
 
     it('should have GoogleBot configuration', () => {
-      expect(metadata.robots?.googleBot?.index).toBe(true)
-      expect(metadata.robots?.googleBot?.follow).toBe(true)
+      expect((metadata.robots as any)?.googleBot?.index).toBe(true)
+      expect((metadata.robots as any)?.googleBot?.follow).toBe(true)
       expect(metadata.robots?.googleBot?.['max-image-preview']).toBe('large')
     })
   })

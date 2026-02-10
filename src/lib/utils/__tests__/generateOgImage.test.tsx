@@ -27,7 +27,7 @@ describe('generateOgImage', () => {
       logoHeight: 300,
     })
     expect(result).toBeDefined()
-    expect(result.config).toEqual({ width: 1200, height: 630 })
+    expect((result as any).config).toEqual({ width: 1200, height: 630 })
   })
 
   it('generates OG image with different dimensions', async () => {
@@ -38,6 +38,6 @@ describe('generateOgImage', () => {
       logoHeight: 360,
     })
     expect(result).toBeDefined()
-    expect(result.config).toEqual({ width: 1280, height: 720 })
+    expect((result as any).config).toEqual({ width: 1280, height: 720 })
   })
 })

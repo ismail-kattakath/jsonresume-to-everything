@@ -29,7 +29,9 @@ export function useDragAndDrop<T>(
       // Reorder items
       const newItems = [...items]
       const [removed] = newItems.splice(source.index, 1)
-      newItems.splice(destination.index, 0, removed)
+      if (removed !== undefined) {
+        newItems.splice(destination.index, 0, removed)
+      }
 
       onReorder(newItems)
     },

@@ -27,20 +27,23 @@ describe('Document Generator', () => {
     education: [
       {
         school: 'University of Example',
-        degree: 'Bachelor in Computer Science',
-        startDate: '2016-09-01',
-        endDate: '2020-05-01',
-        grade: '',
+        url: '',
+        area: '',
+        studyType: 'Bachelor in Computer Science',
+        startYear: '2016-09-01',
+        endYear: '2020-05-01',
+        // grade: '',
       },
     ],
     workExperience: [
       {
-        title: 'Senior Engineer',
-        company: 'Tech Corp',
-        startDate: '2020-01-01',
-        endDate: 'Present',
+        position: 'Senior Engineer',
+        organization: 'Tech Corp',
+        startYear: '2020-01-01',
+        endYear: 'Present',
         description: 'Led development team',
-        achievements: [
+        url: '',
+        keyAchievements: [
           { text: 'Built microservices' },
           { text: 'Improved performance by 50%' },
         ],

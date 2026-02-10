@@ -1,21 +1,38 @@
 import { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import type { ResumeData } from '@/types'
+import type { Certification } from '@/types'
 
 /**
- * Hook for managing simple string array fields (certifications, languages)
- * Simpler than useArrayForm since items are just strings, not objects
+ * Hook for managing simple array fields (certifications, languages)
+ * Handles mapping between UI strings and underlying objects for certifications
  */
 export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
   const { resumeData, setResumeData } = useContext(ResumeContext)
-  const data = resumeData[dataKey] as string[]
+  const rawData = resumeData[dataKey] || []
+
+  // Map to strings for the UI
+  const data = (
+    dataKey === 'certifications'
+      ? (rawData as Certification[]).map((c) => c.name)
+      : (rawData as string[])
+  ) as string[]
 
   /**
    * Handle value change at specific index
    */
   const handleChange = (index: number, value: string) => {
-    const newData = [...data]
-    newData[index] = value
+    const newData = [...rawData] as any[]
+    if (dataKey === 'certifications') {
+      const current = (newData[index] as Certification) || {
+        name: '',
+        date: '',
+        issuer: '',
+        url: '',
+      }
+      newData[index] = { ...current, name: value }
+    } else {
+      newData[index] = value
+    }
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
@@ -23,9 +40,13 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
    * Add new item (empty or with value)
    */
   const add = (value: string = '') => {
+    const newItem =
+      dataKey === 'certifications'
+        ? { name: value, date: '', issuer: '', url: '' }
+        : value
     setResumeData({
       ...resumeData,
-      [dataKey]: [...data, value],
+      [dataKey]: [...rawData, newItem],
     })
   }
 
@@ -33,7 +54,7 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
    * Remove item by index
    */
   const remove = (index: number) => {
-    const newData = data.filter((_, i) => i !== index)
+    const newData = rawData.filter((_, i) => i !== index)
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
@@ -41,9 +62,11 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
    * Reorder items via drag and drop
    */
   const reorder = (startIndex: number, endIndex: number) => {
-    const newData = [...data]
+    const newData = [...rawData]
     const [removed] = newData.splice(startIndex, 1)
-    newData.splice(endIndex, 0, removed)
+    if (removed !== undefined) {
+      newData.splice(endIndex, 0, removed)
+    }
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 

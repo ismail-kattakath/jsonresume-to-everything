@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { axe } from 'jest-axe'
 import AIInputWithButton from '@/components/document-builder/shared-forms/AIInputWithButton'

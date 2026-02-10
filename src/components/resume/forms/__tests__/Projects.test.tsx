@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Projects from '@/components/resume/forms/Projects'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'

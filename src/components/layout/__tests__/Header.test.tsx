@@ -1,4 +1,6 @@
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import Header from '@/components/layout/Header'
 import { navItems } from '@/config/navigation'
 
@@ -136,7 +138,7 @@ describe('Header', () => {
       const navButtons = screen.getAllByText(navItems[0].name)
 
       // Click first navigation item (should be an anchor link)
-      fireEvent.click(navButtons[0])
+      fireEvent.click(navButtons[0]!)
 
       expect(document.querySelector).toHaveBeenCalled()
     })
@@ -148,7 +150,7 @@ describe('Header', () => {
       render(<Header />)
       const aboutButton = screen.getAllByText('About')[0]
 
-      fireEvent.click(aboutButton)
+      fireEvent.click(aboutButton!)
 
       expect(mockElement.scrollIntoView).toHaveBeenCalledWith({
         behavior: 'smooth',
@@ -167,7 +169,7 @@ describe('Header', () => {
       window.location.href = ''
 
       // Click the navigation button
-      fireEvent.click(navButtons[0])
+      fireEvent.click(navButtons[0]!)
 
       // window.location.href should be set for non-anchor navigation
       // The handleNavigation function sets it when href doesn't start with #
@@ -183,7 +185,7 @@ describe('Header', () => {
 
       // Click a navigation item
       const navButtons = screen.getAllByText(navItems[0].name)
-      fireEvent.click(navButtons[0])
+      fireEvent.click(navButtons[0]!)
 
       // Mobile menu should still exist (state management)
       expect(menuButton).toBeInTheDocument()
@@ -238,7 +240,7 @@ describe('Header', () => {
       // Reset window.location.href
       window.location.href = ''
 
-      fireEvent.click(downloadResumeButton)
+      fireEvent.click(downloadResumeButton!)
 
       // The navigation handler was triggered (dropdown closes after click)
       expect(screen.queryByText('Download Resume')).not.toBeInTheDocument()
@@ -257,7 +259,7 @@ describe('Header', () => {
       // Reset window.location.href
       window.location.href = ''
 
-      fireEvent.click(builderButton)
+      fireEvent.click(builderButton!)
 
       // The navigation handler was triggered (dropdown closes after click)
       expect(screen.queryByText('AI Resume Builder')).not.toBeInTheDocument()

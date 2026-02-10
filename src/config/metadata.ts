@@ -33,7 +33,7 @@ export function generateSiteMetadata(): Metadata {
         // If too short, try adding second sentence
         const sentences = summary.split(/[.!?]/).filter((s) => s.trim())
         if (sentences.length > 1) {
-          siteDescription = `${sentences[0].trim()}. ${sentences[1].trim()}`
+          siteDescription = `${sentences[0]?.trim() ?? ''}. ${sentences[1]?.trim() ?? ''}`
         }
       }
 

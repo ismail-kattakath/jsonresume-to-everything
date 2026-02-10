@@ -58,15 +58,17 @@ const Projects = () => {
     )
       return
 
-    const newProjects = [...resumeData.projects]
+    const newProjects = [...(resumeData.projects || [])]
     const [removed] = newProjects.splice(source.index, 1)
-    newProjects.splice(destination.index, 0, removed)
-    setResumeData({ ...resumeData, projects: newProjects })
+    if (removed) {
+      newProjects.splice(destination.index, 0, removed)
+      setResumeData({ ...resumeData, projects: newProjects })
+    }
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <SectionHeader title="Projects" variant="purple" />
+      <SectionHeader title="Projects" variant="teal" />
 
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="projects">
@@ -98,7 +100,7 @@ const Projects = () => {
                         name="name"
                         value={project.name}
                         onChange={(e) => handleChange(e, index)}
-                        variant="purple"
+                        variant="teal"
                       />
 
                       <FormInput
@@ -107,7 +109,7 @@ const Projects = () => {
                         type="url"
                         value={project.link}
                         onChange={(e) => handleChange(e, index)}
-                        variant="purple"
+                        variant="teal"
                       />
 
                       <FormTextarea
@@ -115,7 +117,7 @@ const Projects = () => {
                         name="description"
                         value={project.description}
                         onChange={(e) => handleChange(e, index)}
-                        variant="purple"
+                        variant="teal"
                         maxLength={250}
                         showCounter
                         minHeight="120px"
@@ -127,7 +129,7 @@ const Projects = () => {
                         </label>
                         <ProjectAchievements
                           projectIndex={index}
-                          variant="purple"
+                          variant="teal"
                         />
                       </div>
 
@@ -138,7 +140,7 @@ const Projects = () => {
                           type="date"
                           value={project.startYear}
                           onChange={(e) => handleChange(e, index)}
-                          variant="purple"
+                          variant="teal"
                           className="flex-1"
                         />
 
@@ -148,7 +150,7 @@ const Projects = () => {
                           type="date"
                           value={project.endYear}
                           onChange={(e) => handleChange(e, index)}
-                          variant="purple"
+                          variant="teal"
                           className="flex-1"
                         />
 

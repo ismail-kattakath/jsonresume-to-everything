@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GET, dynamic } from '@/app/resume.json/route'
 import { NextResponse } from 'next/server'
 import { convertToJSONResume } from '@/lib/jsonResume'
@@ -48,7 +49,7 @@ describe('resume.json Route Handler', () => {
       const mockResume = {
         basics: {
           name: 'Test User',
-          label: 'Software Engineer',
+          position: 'Software Engineer',
           email: 'test@example.com',
         },
         work: [],

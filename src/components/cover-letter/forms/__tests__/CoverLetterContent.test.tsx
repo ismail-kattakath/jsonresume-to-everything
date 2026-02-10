@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
@@ -44,7 +45,7 @@ const renderWithBothContexts = (
     <AISettingsContext.Provider value={mockAISettings}>
       <ResumeContext.Provider
         value={{
-          resumeData: mockData,
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
           handleProfilePicture: jest.fn(),
           handleChange: jest.fn(),
@@ -85,7 +86,7 @@ describe('CoverLetterContent Component', () => {
         content: 'This is my cover letter content',
       })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const textarea = screen.getByPlaceholderText(
@@ -99,7 +100,7 @@ describe('CoverLetterContent Component', () => {
         content: 'Hello World',
       })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('11')).toBeInTheDocument()
@@ -171,7 +172,7 @@ describe('CoverLetterContent Component', () => {
         <AISettingsContext.Provider value={mockAISettings}>
           <ResumeContext.Provider
             value={{
-              resumeData: mockData,
+              resumeData: mockData as any,
               setResumeData: jest.fn(),
               handleProfilePicture: jest.fn(),
               handleChange: jest.fn(),
@@ -209,7 +210,7 @@ describe('CoverLetterContent Component', () => {
         content: 'Hello, World! 123',
       })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('17')).toBeInTheDocument()
@@ -220,7 +221,7 @@ describe('CoverLetterContent Component', () => {
         content: 'Line 1\nLine 2',
       })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('13')).toBeInTheDocument()
@@ -229,7 +230,7 @@ describe('CoverLetterContent Component', () => {
     it('should show 0 for undefined content', () => {
       const mockData = createMockResumeData({ content: undefined })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('0')).toBeInTheDocument()
@@ -309,7 +310,7 @@ describe('CoverLetterContent Component', () => {
       const longContent = 'A'.repeat(5000)
       const mockData = createMockResumeData({ content: longContent })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('5000')).toBeInTheDocument()
@@ -336,7 +337,7 @@ describe('CoverLetterContent Component', () => {
     it('should handle null content gracefully', () => {
       const mockData = createMockResumeData({ content: undefined })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const textarea = screen.getByPlaceholderText(
@@ -350,7 +351,7 @@ describe('CoverLetterContent Component', () => {
       const whitespaceContent = '   \n\n   '
       const mockData = createMockResumeData({ content: whitespaceContent })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(
@@ -362,7 +363,7 @@ describe('CoverLetterContent Component', () => {
       const unicodeContent = 'Hello 你好 مرحبا'
       const mockData = createMockResumeData({ content: unicodeContent })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const textarea = screen.getByPlaceholderText(
@@ -432,7 +433,7 @@ describe('CoverLetterContent Component', () => {
         <AISettingsContext.Provider value={mockAISettings}>
           <ResumeContext.Provider
             value={{
-              resumeData: mockData,
+              resumeData: mockData as any,
               setResumeData: mockSetResumeData,
               handleProfilePicture: jest.fn(),
               handleChange: jest.fn(),

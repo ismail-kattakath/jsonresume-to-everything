@@ -33,16 +33,17 @@ export function getPasswordHash(): string | undefined {
 
   // Get from environment variable (works in dev and build time)
   if (!isBrowser()) {
-    return process.env.NEXT_PUBLIC_EDIT_PASSWORD_HASH || undefined
+    return process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH'] || undefined
   }
 
   // Browser environment but no window hash - check if we have process.env (build time)
   // This handles the case where we're in a browser-like test environment
   if (
     typeof process !== 'undefined' &&
-    process.env?.NEXT_PUBLIC_EDIT_PASSWORD_HASH
+    process.env &&
+    process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
   ) {
-    return process.env.NEXT_PUBLIC_EDIT_PASSWORD_HASH
+    return process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
   }
 
   // No fallback - if not set, auth is disabled

@@ -21,7 +21,8 @@ declare global {
 /**
  * Google Analytics Measurement ID from environment variables
  */
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''
+export const GA_MEASUREMENT_ID =
+  process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID'] || ''
 
 /**
  * Check if Google Analytics is enabled and available

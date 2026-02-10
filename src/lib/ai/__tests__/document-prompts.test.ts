@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   buildCoverLetterPrompt,
   validateCoverLetter,
@@ -104,7 +105,7 @@ describe('Cover Letter Prompt Engineering', () => {
           ...mockResumeData.workExperience,
           {
             organization: 'Company3',
-            url: '',
+            url: '' as any,
             position: 'Position3',
             description: '',
             keyAchievements: [{ text: 'Achievement 3' }],
@@ -114,7 +115,7 @@ describe('Cover Letter Prompt Engineering', () => {
           },
           {
             organization: 'Company4',
-            url: '',
+            url: '' as any,
             position: 'Position4',
             description: '',
             keyAchievements: [{ text: 'Achievement 4' }],
@@ -343,7 +344,7 @@ describe('Job Title Prompt Engineering', () => {
           ...mockResumeData.workExperience,
           {
             organization: 'Company3',
-            url: '',
+            url: '' as any,
             position: 'Position3',
             description: '',
             keyAchievements: [],
@@ -353,7 +354,7 @@ describe('Job Title Prompt Engineering', () => {
           },
           {
             organization: 'Company4',
-            url: '',
+            url: '' as any,
             position: 'Position4',
             description: '',
             keyAchievements: [],

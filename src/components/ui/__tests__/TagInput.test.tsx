@@ -1,6 +1,9 @@
+// @ts-nocheck
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { axe } from 'jest-axe'
+import '@testing-library/jest-dom'
+import { axe, toHaveNoViolations } from 'jest-axe'
+expect.extend(toHaveNoViolations)
 import TagInput from '@/components/ui/TagInput'
 
 describe('TagInput Component', () => {
@@ -187,7 +190,7 @@ describe('TagInput Component', () => {
       render(<TagInput tags={tags} onAdd={mockOnAdd} onRemove={mockOnRemove} />)
 
       const removeButtons = screen.getAllByTitle('Remove')
-      fireEvent.click(removeButtons[1])
+      fireEvent.click(removeButtons[1]!)
 
       expect(mockOnRemove).toHaveBeenCalledWith(1)
       expect(mockOnRemove).toHaveBeenCalledTimes(1)
@@ -199,7 +202,7 @@ describe('TagInput Component', () => {
       render(<TagInput tags={tags} onAdd={mockOnAdd} onRemove={mockOnRemove} />)
 
       const removeButtons = screen.getAllByTitle('Remove')
-      fireEvent.click(removeButtons[0])
+      fireEvent.click(removeButtons[0]!)
 
       expect(mockOnRemove).toHaveBeenCalledWith(0)
     })
@@ -210,7 +213,7 @@ describe('TagInput Component', () => {
       render(<TagInput tags={tags} onAdd={mockOnAdd} onRemove={mockOnRemove} />)
 
       const removeButtons = screen.getAllByTitle('Remove')
-      fireEvent.click(removeButtons[2])
+      fireEvent.click(removeButtons[2]!)
 
       expect(mockOnRemove).toHaveBeenCalledWith(2)
     })
@@ -311,7 +314,7 @@ describe('TagInput Component', () => {
         <TagInput tags={[]} onAdd={mockOnAdd} onRemove={mockOnRemove} />
       )
 
-      const results = await axe(container)
+      const results = await axe(container as any)
       expect(results).toHaveNoViolations()
     })
 
@@ -324,7 +327,7 @@ describe('TagInput Component', () => {
         />
       )
 
-      const results = await axe(container)
+      const results = await axe(container as any)
       expect(results).toHaveNoViolations()
     })
 

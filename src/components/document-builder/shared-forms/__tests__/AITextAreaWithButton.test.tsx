@@ -81,7 +81,7 @@ const mockConfiguredAISettings = {
 }
 
 const mockResumeContext = {
-  resumeData: mockResumeData,
+  resumeData: mockResumeData as any,
   setResumeData: jest.fn(),
   handleProfilePicture: jest.fn(),
   handleChange: jest.fn(),

@@ -36,7 +36,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Check for inputs
@@ -52,7 +52,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const platformInput = container.querySelector(
@@ -79,7 +79,7 @@ describe('SocialMedia Component', () => {
       })
 
       renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // The title should be displayed in the AccordionHeader
@@ -96,7 +96,8 @@ describe('SocialMedia Component', () => {
 
       renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -124,7 +125,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const deleteButton = container.querySelector(
@@ -149,7 +150,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -182,7 +184,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -206,7 +209,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -231,7 +235,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Fast-forward past debounce delay
@@ -258,7 +262,7 @@ describe('SocialMedia Component', () => {
       })
 
       renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       await act(async () => {
@@ -284,7 +288,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       await act(async () => {
@@ -313,7 +317,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -337,7 +342,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const floatingLabelGroups = container.querySelectorAll(
@@ -354,7 +359,7 @@ describe('SocialMedia Component', () => {
       })
 
       renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Platform Name')).toBeInTheDocument()
@@ -369,7 +374,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should have expand/collapse button
@@ -385,7 +390,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should have drag handle (cursor-grab class)
@@ -401,7 +406,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       await act(async () => {
@@ -418,7 +423,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const deleteButton = container.querySelector(
@@ -440,7 +445,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should render 3 platform inputs
@@ -466,7 +471,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -499,7 +505,7 @@ describe('SocialMedia Component', () => {
       })
 
       renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText(/Add Social Media/i)).toBeInTheDocument()
@@ -515,7 +521,7 @@ describe('SocialMedia Component', () => {
       })
 
       const { container } = renderWithContext(<SocialMedia />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const platformInputs = container.querySelectorAll(
@@ -532,7 +538,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -557,7 +564,8 @@ describe('SocialMedia Component', () => {
 
       const { container } = renderWithContext(<SocialMedia />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })

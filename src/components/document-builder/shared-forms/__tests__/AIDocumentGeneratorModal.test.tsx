@@ -76,7 +76,7 @@ describe('AIDocumentGeneratorModal', () => {
     isOpen: true,
     onClose: jest.fn(),
     onGenerate: jest.fn(),
-    resumeData: mockResumeData as any,
+    resumeData: mockResumeData as any as any,
     mode: 'coverLetter' as const,
   }
 

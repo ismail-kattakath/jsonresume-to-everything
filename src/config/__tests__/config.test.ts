@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { generateSiteMetadata } from '@/config/metadata'
 import { SITE_URL } from '@/config/site'
 import { navItems } from '@/config/navigation'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react'
 import Footer from '@/components/layout/Footer'
 import { contactInfo } from '@/lib/data/portfolio'

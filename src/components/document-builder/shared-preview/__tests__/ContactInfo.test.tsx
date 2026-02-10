@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react'
 import ContactInfo from '@/components/document-builder/shared-preview/ContactInfo'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'

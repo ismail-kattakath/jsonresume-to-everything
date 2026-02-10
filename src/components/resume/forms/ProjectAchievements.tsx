@@ -53,7 +53,11 @@ const ProjectAchievements = ({
   }
 
   const handleEditBlur = (index: number) => {
-    if (editValue.trim() && editValue !== achievements[index].text) {
+    if (
+      editValue.trim() &&
+      achievements[index] &&
+      editValue !== achievements[index].text
+    ) {
       handleChange(index, editValue)
     }
     setEditingIndex(null)
@@ -68,7 +72,7 @@ const ProjectAchievements = ({
   return (
     <div className="space-y-2">
       {/* Existing achievements */}
-      {achievements.map((achievement, index) => (
+      {(achievements || []).map((achievement, index) => (
         <div
           key={`PROJECT-ACHIEVEMENT-${projectIndex}-${index}`}
           className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10`}

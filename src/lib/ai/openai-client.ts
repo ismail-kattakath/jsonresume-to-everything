@@ -267,21 +267,19 @@ export async function generateCoverLetter(
     const response = await makeOpenAIRequest(config, request)
 
     // Extract the generated text
-    if (!response.choices || response.choices.length === 0) {
-      throw new OpenAIAPIError(
-        'AI generated an empty response. Please try again.',
-        'empty_response'
-      )
-    }
-
-    generatedContent = response.choices[0].message.content
-
-    if (!generatedContent || generatedContent.trim().length === 0) {
+    const choice = response.choices[0]
+    if (
+      !choice ||
+      !choice.message.content ||
+      choice.message.content.trim().length === 0
+    ) {
       throw new OpenAIAPIError(
         'AI generated an empty response. Please try rephrasing the job description.',
         'empty_content'
       )
     }
+
+    generatedContent = choice.message.content
   }
 
   // Post-process the content
@@ -341,21 +339,19 @@ export async function generateSummary(
     const response = await makeOpenAIRequest(config, request)
 
     // Extract the generated text
-    if (!response.choices || response.choices.length === 0) {
-      throw new OpenAIAPIError(
-        'AI generated an empty response. Please try again.',
-        'empty_response'
-      )
-    }
-
-    generatedContent = response.choices[0].message.content
-
-    if (!generatedContent || generatedContent.trim().length === 0) {
+    const choice = response.choices[0]
+    if (
+      !choice ||
+      !choice.message.content ||
+      choice.message.content.trim().length === 0
+    ) {
       throw new OpenAIAPIError(
         'AI generated an empty response. Please try rephrasing the job description.',
         'empty_content'
       )
     }
+
+    generatedContent = choice.message.content
   }
 
   // Validate the content (informational only - do not modify AI output)
@@ -413,21 +409,19 @@ export async function generateJobTitle(
     const response = await makeOpenAIRequest(config, request)
 
     // Extract the generated text
-    if (!response.choices || response.choices.length === 0) {
-      throw new OpenAIAPIError(
-        'AI generated an empty response. Please try again.',
-        'empty_response'
-      )
-    }
-
-    generatedContent = response.choices[0].message.content
-
-    if (!generatedContent || generatedContent.trim().length === 0) {
+    const choice = response.choices[0]
+    if (
+      !choice ||
+      !choice.message.content ||
+      choice.message.content.trim().length === 0
+    ) {
       throw new OpenAIAPIError(
         'AI generated an empty response. Please try again.',
         'empty_content'
       )
     }
+
+    generatedContent = choice.message.content
   }
 
   // Post-process the content
@@ -479,19 +473,18 @@ export async function generateSkillsToHighlight(
     return await makeOpenAIStreamRequest(config, request, onProgress)
   } else {
     const response = await makeOpenAIRequest(config, request)
-    if (!response.choices || response.choices.length === 0) {
-      throw new OpenAIAPIError(
-        'AI generated an empty response. Please try again.',
-        'empty_response'
-      )
-    }
-    const content = response.choices[0].message.content
-    if (!content || content.trim().length === 0) {
+    const choice = response.choices[0]
+    if (
+      !choice ||
+      !choice.message.content ||
+      choice.message.content.trim().length === 0
+    ) {
       throw new OpenAIAPIError(
         'AI generated an empty response. Please try again.',
         'empty_content'
       )
     }
+    const content = choice.message.content
     return content.trim()
   }
 }
@@ -681,21 +674,19 @@ export async function requestAISort(
 
   const response = await makeOpenAIRequest(config, request)
 
-  if (!response.choices || response.choices.length === 0) {
-    throw new OpenAIAPIError(
-      'AI generated an empty response. Please try again.',
-      'empty_response'
-    )
-  }
-
-  const content = response.choices[0].message.content
-
-  if (!content || content.trim().length === 0) {
+  const choice = response.choices[0]
+  if (
+    !choice ||
+    !choice.message.content ||
+    choice.message.content.trim().length === 0
+  ) {
     throw new OpenAIAPIError(
       'AI generated an empty response. Please try again.',
       'empty_content'
     )
   }
+
+  const content = choice.message.content
 
   return content
 }

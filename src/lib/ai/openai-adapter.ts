@@ -11,8 +11,8 @@ import type {
 } from '@/types/ai-provider'
 import type { StreamCallback, OpenAIConfig } from '@/types/openai'
 import {
-  generateCoverLetterWithAI,
-  generateSummaryWithAI,
+  generateCoverLetter,
+  generateSummary,
   testConnection as testOpenAIConnection,
   fetchAvailableModels,
   OpenAIAPIError,
@@ -95,12 +95,15 @@ export async function generateCoverLetterWithProvider(
   jobDescription: string,
   onProgress: StreamCallback
 ): Promise<string> {
-  return generateCoverLetterWithAI(
+  const openAIConfig: OpenAIConfig = {
+    baseURL: config.baseURL,
+    apiKey: config.apiKey,
+    model: config.model,
+  }
+  return generateCoverLetter(
+    openAIConfig,
     resumeData,
     jobDescription,
-    config.baseURL,
-    config.apiKey,
-    config.model,
     onProgress
   )
 }
@@ -114,12 +117,10 @@ export async function generateSummaryWithProvider(
   jobDescription: string,
   onProgress: StreamCallback
 ): Promise<string> {
-  return generateSummaryWithAI(
-    resumeData,
-    jobDescription,
-    config.baseURL,
-    config.apiKey,
-    config.model,
-    onProgress
-  )
+  const openAIConfig: OpenAIConfig = {
+    baseURL: config.baseURL,
+    apiKey: config.apiKey,
+    model: config.model,
+  }
+  return generateSummary(openAIConfig, resumeData, jobDescription, onProgress)
 }

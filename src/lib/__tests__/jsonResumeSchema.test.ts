@@ -6,7 +6,7 @@ describe('JSON Resume Schema Validation', () => {
       'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
     basics: {
       name: 'John Doe',
-      label: 'Software Engineer',
+      position: 'Software Engineer',
       email: 'john@example.com',
       phone: '+1 (555) 123-4567',
       url: 'https://example.com',
@@ -89,7 +89,7 @@ describe('JSON Resume Schema Validation', () => {
           {
             institution: 'University of Toronto',
             area: 'Computer Science',
-            studyType: "Bachelor's Degree",
+            degree: "Bachelor's Degree",
             startDate: '2015-09-01',
             endDate: '2019-06-01',
             score: '3.8',
@@ -245,7 +245,7 @@ describe('JSON Resume Schema Validation', () => {
         ...validJSONResume,
         volunteer: [
           {
-            organization: 'Non-Profit Org',
+            company: 'Non-Profit Org',
             position: 'Volunteer',
             startDate: '2021-01-01',
             endDate: '2022-01-01',

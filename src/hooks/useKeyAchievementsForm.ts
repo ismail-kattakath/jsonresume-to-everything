@@ -19,10 +19,16 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
    * Handle text change for a specific achievement
    */
   const handleChange = (achievementIndex: number, value: string) => {
+    if (!workExperience) return
+
     const newAchievements = [...workExperience.keyAchievements]
-    newAchievements[achievementIndex] = {
-      ...newAchievements[achievementIndex],
-      text: value,
+    const currentAchievement = newAchievements[achievementIndex]
+
+    if (currentAchievement) {
+      newAchievements[achievementIndex] = {
+        ...currentAchievement,
+        text: value,
+      }
     }
 
     setResumeData((prevData) => ({
@@ -39,7 +45,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
    * Add new achievement with specified text
    */
   const add = (text: string) => {
-    if (!text.trim()) return
+    if (!text.trim() || !workExperience) return
     const newAchievement: Achievement = { text: text.trim() }
     const newAchievements = [...workExperience.keyAchievements, newAchievement]
 
@@ -57,6 +63,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
    * Remove achievement by index
    */
   const remove = (achievementIndex: number) => {
+    if (!workExperience) return
     const newAchievements = workExperience.keyAchievements.filter(
       (_, i) => i !== achievementIndex
     )
@@ -75,9 +82,12 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
    * Reorder achievements via drag and drop
    */
   const reorder = (startIndex: number, endIndex: number) => {
+    if (!workExperience) return
     const newAchievements = [...workExperience.keyAchievements]
     const [removed] = newAchievements.splice(startIndex, 1)
-    newAchievements.splice(endIndex, 0, removed)
+    if (removed) {
+      newAchievements.splice(endIndex, 0, removed)
+    }
 
     setResumeData((prevData) => ({
       ...prevData,

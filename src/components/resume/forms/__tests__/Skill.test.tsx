@@ -20,7 +20,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Technical Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('JavaScript')).toBeInTheDocument()
@@ -38,7 +38,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Languages" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const input = screen.getByPlaceholderText('Add languages...')
@@ -56,7 +56,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Languages" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should display text as label (not editable input for existing skills)
@@ -83,7 +83,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -115,7 +116,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -145,7 +147,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -169,7 +172,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -194,7 +198,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -219,7 +224,8 @@ describe('Skill Component', () => {
 
       renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -247,7 +253,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const removeButton = container.querySelector('button[title="Remove"]')
@@ -269,7 +275,8 @@ describe('Skill Component', () => {
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -303,7 +310,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText('Skill 1')).toBeInTheDocument()
@@ -323,7 +330,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const flexContainer = container.querySelector('.flex.flex-wrap')
@@ -341,7 +348,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const skillTag = container.querySelector('.rounded-full')
@@ -359,7 +366,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const input = container.querySelector('input.border-dashed')
@@ -379,7 +386,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Technical Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Check for skills displayed as text
@@ -398,7 +405,7 @@ describe('Skill Component', () => {
       })
 
       const { container } = renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const removeButton = container.querySelector('button[title="Remove"]')
@@ -417,7 +424,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Frameworks" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       const input = screen.getByPlaceholderText('Add frameworks...')
@@ -441,7 +448,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Languages" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should display JavaScript but not React
@@ -466,7 +473,8 @@ describe('Skill Component', () => {
 
       const { container } = renderWithContext(<Skill title="Languages" />, {
         contextValue: {
-          resumeData: mockData,
+          ...({} as any),
+          resumeData: mockData as any,
           setResumeData: mockSetResumeData,
         },
       })
@@ -497,7 +505,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       // Should still render the add input
@@ -516,7 +524,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: specialData },
+        contextValue: { ...({} as any), resumeData: specialData },
       })
 
       expect(screen.getByText('C++/C#')).toBeInTheDocument()
@@ -535,7 +543,7 @@ describe('Skill Component', () => {
       })
 
       renderWithContext(<Skill title="Skills" />, {
-        contextValue: { resumeData: mockData },
+        contextValue: { ...({} as any), resumeData: mockData as any },
       })
 
       expect(screen.getByText(longSkillText)).toBeInTheDocument()

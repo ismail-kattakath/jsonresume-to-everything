@@ -47,8 +47,10 @@ const Education = () => {
 
     const newEducation = [...resumeData.education]
     const [removed] = newEducation.splice(source.index, 1)
-    newEducation.splice(destination.index, 0, removed)
-    setResumeData({ ...resumeData, education: newEducation })
+    if (removed) {
+      newEducation.splice(destination.index, 0, removed)
+      setResumeData({ ...resumeData, education: newEducation })
+    }
 
     updateAfterReorder(source.index, destination.index)
   }
