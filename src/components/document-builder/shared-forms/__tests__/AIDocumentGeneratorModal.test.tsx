@@ -98,8 +98,8 @@ describe('AIDocumentGeneratorModal', () => {
     ).toBeInTheDocument()
   })
 
-  it('loads saved credentials on mount', () => {
-    ;(loadCredentials as jest.Mock).mockReturnValue({
+  it('loads saved credentials on mount', async () => {
+    ;(loadCredentials as jest.Mock).mockResolvedValue({
       apiUrl: 'https://custom-api.com',
       apiKey: 'saved-key',
       rememberCredentials: true,
@@ -108,13 +108,15 @@ describe('AIDocumentGeneratorModal', () => {
 
     render(<AIDocumentGeneratorModal {...defaultProps} />)
 
-    expect(screen.getByLabelText(/API URL/i)).toHaveValue(
-      'https://custom-api.com'
-    )
-    expect(screen.getByLabelText(/^API Key/i)).toHaveValue('saved-key')
-    expect(screen.getByLabelText(/^Job Description$/)).toHaveValue(
-      'Saved job description'
-    )
+    await waitFor(() => {
+      expect(screen.getByLabelText(/API URL/i)).toHaveValue(
+        'https://custom-api.com'
+      )
+      expect(screen.getByLabelText(/^API Key/i)).toHaveValue('saved-key')
+      expect(screen.getByLabelText(/^Job Description$/)).toHaveValue(
+        'Saved job description'
+      )
+    })
   })
 
   it('validates form fields correctly', () => {
