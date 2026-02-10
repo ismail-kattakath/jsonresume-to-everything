@@ -202,7 +202,7 @@ describe('Preview Component', () => {
       expect(screen.getByText('Summary')).toBeInTheDocument()
       expect(
         screen.getByText(
-          'Experienced software engineer with 5 years of expertise'
+          '⦿ Experienced software engineer with 5 years of expertise'
         )
       ).toBeInTheDocument()
     })

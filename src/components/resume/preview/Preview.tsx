@@ -337,10 +337,17 @@ const Preview = () => {
                     contentEditable={editable}
                     suppressContentEditableWarning
                   >
-                    <Highlight
-                      text={resumeData.summary}
-                      keywords={settings.skillsToHighlight}
-                    />
+                    {resumeData.summary
+                      .split(/(?<=[.!?])\s+/)
+                      .map((sentence, index, array) => (
+                        <React.Fragment key={index}>
+                          <Highlight
+                            text={`⦿ ${sentence}`}
+                            keywords={settings.skillsToHighlight}
+                          />
+                          {index < array.length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
                   </p>
                 </div>
               )}
