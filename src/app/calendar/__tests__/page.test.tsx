@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import BookPage from '@/app/book/page'
+import CalendarPage from '@/app/calendar/page'
 
 // Mock ExternalRedirect
 jest.mock('@/components/ui/ExternalRedirect', () => ({
@@ -7,10 +7,10 @@ jest.mock('@/components/ui/ExternalRedirect', () => ({
     default: ({ label }: { label: string }) => <div data-testid="external-redirect">{label}</div>,
 }))
 
-describe('BookPage', () => {
+describe('CalendarPage', () => {
     it('should render ExternalRedirect with correct label', () => {
-        const { getByTestId, getByText } = render(<BookPage />)
+        const { getByTestId, getByText } = render(<CalendarPage />)
         expect(getByTestId('external-redirect')).toBeInTheDocument()
-        expect(getByText('booking page')).toBeInTheDocument()
+        expect(getByText('calendar')).toBeInTheDocument()
     })
 })

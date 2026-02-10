@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@lottiefiles/dotlottie-react": "^0.17.14",
     "@next/third-parties": "^16.0.5",
     "@strands-agents/sdk": "^0.2.1",
     "ajv": "^8.17.1",
