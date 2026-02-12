@@ -25,7 +25,7 @@ jest.mock('@strands-agents/sdk/gemini', () => {
 })
 
 describe('Skills Sorting', () => {
-    const mockConfig = {
+    const mockConfig: any = {
         apiUrl: 'http://localhost:1234/v1',
         apiKey: 'test-key',
         model: 'test-model',

@@ -20,6 +20,7 @@ interface FormTextareaProps {
   aiButtonTitle?: string
   isAIConfigured?: boolean
   aiShowLabel?: boolean
+  aiVariant?: 'primary' | 'amber' | 'ghost'
   disabled?: boolean
 }
 
@@ -44,6 +45,7 @@ export function FormTextarea({
   aiButtonTitle = 'Generate by JD',
   isAIConfigured = true,
   aiShowLabel = false,
+  aiVariant = 'primary',
   disabled = false,
 }: FormTextareaProps) {
   const textareaId = `textarea-${name}`
@@ -56,12 +58,12 @@ export function FormTextarea({
           placeholder={placeholder || label}
           name={name}
           aria-label={label}
-          className={`w-full resize-y rounded-lg border border-white/20 bg-white/10 px-3 py-2 pb-8 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 ${variantClasses[variant]}`}
+          className={`w-full resize-y rounded-lg border border-white/20 bg-white/10 px-3 py-2 pb-8 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 ${variantClasses[variant]} disabled:cursor-not-allowed disabled:opacity-50`}
           style={{ minHeight }}
           value={value}
           onChange={onChange}
           maxLength={maxLength}
-          disabled={disabled}
+          disabled={disabled || isAILoading}
         />
         <label htmlFor={textareaId} className="floating-label">
           {label}
@@ -84,6 +86,7 @@ export function FormTextarea({
               label={aiButtonTitle}
               showLabel={aiShowLabel}
               size="sm"
+              variant={aiVariant}
             />
           </div>
         )}

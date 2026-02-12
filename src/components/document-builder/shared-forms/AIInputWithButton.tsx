@@ -6,12 +6,9 @@ import AISortButton from '@/components/ui/AISortButton'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import {
-  generateJobTitleWithProvider,
-  OpenAIAPIError,
-  GeminiAPIError,
-} from '@/lib/ai/document-generator'
+import { generateJobTitleGraph } from '@/lib/ai/strands/agent'
 import { analytics } from '@/lib/analytics'
+import { AILoadingToast } from '@/components/ui/AILoadingToast'
 
 interface AIInputWithButtonProps {
   value: string
@@ -59,29 +56,42 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
     }
 
     setIsGenerating(true)
-    let streamedContent = ''
     const startTime = Date.now()
+    let toastId: string | number | undefined
 
     // Track generation start
     analytics.aiGenerationStart(settings.providerType, settings.model)
 
     try {
-      const content = await generateJobTitleWithProvider(
+      const content = await generateJobTitleGraph(
         resumeData,
         settings.jobDescription,
-        settings.apiUrl,
-        settings.apiKey,
-        settings.model,
-        settings.providerType,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+          providerType: settings.providerType,
+        },
         (chunk) => {
           if (chunk.content) {
-            streamedContent += chunk.content
-            updateValue(streamedContent)
+            // Filter out internal critique messages
+            const isCritique = chunk.content.includes('CRITIQUE:') ||
+              chunk.content.includes('❌') ||
+              chunk.content.startsWith('**CRITIQUE:**')
+
+            if (!isCritique) {
+              if (!toastId) {
+                toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+              } else {
+                toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+              }
+            }
           }
         }
       )
+      if (toastId) toast.dismiss(toastId)
 
-      // Final update with complete content
+      // Final update with complete content (already cleaned by graph)
       updateValue(content)
 
       // Track generation success
@@ -100,17 +110,8 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
       console.error('Job title generation error:', err)
 
       /* istanbul ignore next */
-      let errorMessage = 'Failed to generate job title'
-      let errorType = 'unknown'
-
-      /* istanbul ignore next */
-      if (err instanceof OpenAIAPIError || err instanceof GeminiAPIError) {
-        errorMessage = err.message
-        errorType = err.constructor.name
-      } else if (err instanceof Error) {
-        errorMessage = err.message
-        errorType = err.name
-      }
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate job title'
+      const errorType = err instanceof Error ? err.name : 'unknown'
 
       /* istanbul ignore next */
       // Track generation error
@@ -132,7 +133,7 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
           type="text"
           placeholder={placeholder}
           name={name}
-          className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 pr-10 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+          className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 pr-10 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 disabled:cursor-not-allowed disabled:opacity-50"
           value={value}
           onChange={onChange}
           disabled={isGenerating}
@@ -145,6 +146,7 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
             label="Generate by JD"
             showLabel={false}
             size="sm"
+            variant="amber"
           />
         </div>
       </div>

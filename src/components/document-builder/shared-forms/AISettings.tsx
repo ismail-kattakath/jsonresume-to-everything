@@ -1,120 +1,79 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { FormInput } from '@/components/ui/FormInput'
-import { FormSelect } from '@/components/ui/FormSelect'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import {
+  Loader2,
+} from 'lucide-react'
+import { toast } from 'sonner'
 import { FormTextarea } from '@/components/ui/FormTextarea'
+import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useAISettings } from '@/lib/contexts/AISettingsContext'
+import { fetchAvailableModels } from '@/lib/ai/openai-client'
 import {
   PROVIDER_PRESETS,
-  CUSTOM_PROVIDER,
   getProviderByURL,
+  CUSTOM_PROVIDER,
 } from '@/lib/ai/providers'
-import { fetchAvailableModels } from '@/lib/ai/openai-client'
-import { Loader2 } from 'lucide-react'
-import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
-import { toast } from 'sonner'
+import { runAIGenerationPipeline, analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
 
-const AISettings: React.FC = () => {
-  const { settings, updateSettings, connectionStatus, isConfigured } =
-    useAISettings()
+// Sub-components
+import ConnectionStatusIndicator from './ai-settings/ConnectionStatusIndicator'
+import ProviderSelector from './ai-settings/ProviderSelector'
+import APIKeyInput from './ai-settings/APIKeyInput'
+import ModelSelector from './ai-settings/ModelSelector'
+import AIPipelineButton from './ai-settings/AIPipelineButton'
 
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+const AISettings = () => {
+  const { resumeData, setResumeData } = React.useContext(ResumeContext)
+  const {
+    settings,
+    updateSettings,
+    isConfigured,
+    connectionStatus,
+    jobDescriptionStatus,
+  } = useAISettings()
 
-  // State for provider selection
-  const [selectedProvider, setSelectedProvider] = useState<string>(() => {
-    const provider = getProviderByURL(settings.apiUrl)
-    return provider?.name || 'Custom'
-  })
-
-  // State for custom URL input
-  const [customURL, setCustomURL] = useState<string>(() => {
-    const provider = getProviderByURL(settings.apiUrl)
-    return provider ? '' : settings.apiUrl
-  })
-
-  // State for available models
   const [availableModels, setAvailableModels] = useState<string[]>([])
   const [loadingModels, setLoadingModels] = useState(false)
   const [modelsError, setModelsError] = useState<string | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isPipelineRunning, setIsPipelineRunning] = useState(false)
 
-  // Sync provider selection when settings.apiUrl changes (e.g., loaded from localStorage)
+  // Initialize selected provider from URL
+  const [selectedProvider, setSelectedProvider] = useState<string>(() => {
+    const p = getProviderByURL(settings.apiUrl)
+    return p ? p.name : CUSTOM_PROVIDER.name
+  })
+
+  const [customURL, setCustomURL] = useState(settings.apiUrl)
+
+  // Sync selected provider when apiUrl changes externally (e.g., from loading saved settings)
   useEffect(() => {
-    const provider = getProviderByURL(settings.apiUrl)
-    const detectedProvider = provider?.name || 'OpenAI Compatible'
-
-    if (detectedProvider !== selectedProvider) {
-      setSelectedProvider(detectedProvider)
-      setCustomURL(provider ? '' : settings.apiUrl)
+    const detectedProvider = getProviderByURL(settings.apiUrl)
+    if (detectedProvider && detectedProvider.name !== selectedProvider) {
+      setSelectedProvider(detectedProvider.name)
     }
-  }, [settings.apiUrl]) // Only depend on apiUrl, not selectedProvider to avoid loops
+  }, [settings.apiUrl])
 
-  // Handle provider change
-  const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const providerName = e.target.value
-    setSelectedProvider(providerName)
+  // Get current provider for common models fallback
+  const currentProvider = useMemo(() =>
+    PROVIDER_PRESETS.find((p) => p.name === selectedProvider) ||
+    (selectedProvider === CUSTOM_PROVIDER.name ? CUSTOM_PROVIDER : null)
+    , [selectedProvider])
 
-    if (providerName === 'OpenAI Compatible') {
-      // User selected custom - clear models and don't change URL yet
-      setAvailableModels([])
-      setModelsError(null)
-      return
-    }
+  const requiresKey = currentProvider ? currentProvider.requiresAuth : true
 
-    // Find the preset and update URL
-    const preset = PROVIDER_PRESETS.find((p) => p.name === providerName)
-    if (preset) {
-      updateSettings({
-        apiUrl: preset.baseURL,
-        providerType: preset.providerType,
-      })
-      setCustomURL('')
-      setAvailableModels([]) // Clear models when changing provider
-
-      // Auto-select first common model if available (will be updated when API models are fetched)
-      if (preset.commonModels && preset.commonModels.length > 0) {
-        updateSettings({ model: preset.commonModels[0] })
-      }
-    }
-  }
-
-  // Handle custom URL change
-  const handleCustomURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value
-    setCustomURL(url)
-    updateSettings({ apiUrl: url })
-  }
-
-  // Fetch available models when API URL or API Key changes
+  // Fetch models logic
   useEffect(() => {
     const fetchModels = async () => {
-      // Reset state first
       setModelsError(null)
 
       const provider = getProviderByURL(settings.apiUrl)
       const requiresKey = provider ? provider.requiresAuth : true
 
-      // Only fetch if we have URL AND (either key or no key needed)
       if (!settings.apiUrl.trim() || (requiresKey && !settings.apiKey.trim())) {
         setAvailableModels([])
         setLoadingModels(false)
-        return
-      }
-
-      // Validate URL format before attempting fetch
-      try {
-        new URL(settings.apiUrl)
-      } catch {
-        // Invalid URL - don't show error, user might be typing
-        setAvailableModels([])
-        setLoadingModels(false)
-        return
-      }
-
-      // Detect provider mismatch - skip fetch until sync completes
-      const detectedProvider = getProviderByURL(settings.apiUrl)
-      if (detectedProvider && selectedProvider !== detectedProvider.name) {
-        // The sync useEffect will fix this, so skip this fetch
         return
       }
 
@@ -131,9 +90,7 @@ const AISettings: React.FC = () => {
           setModelsError(null)
         } else {
           setAvailableModels([])
-          setModelsError(
-            'No models found or API does not support model listing'
-          )
+          setModelsError('No models found or API does not support model listing')
         }
       } catch (error) {
         console.error('[AISettings] Model fetch error:', error)
@@ -144,326 +101,194 @@ const AISettings: React.FC = () => {
       }
     }
 
-    // Debounce to avoid excessive API calls
     const timeoutId = setTimeout(fetchModels, 500)
     return () => clearTimeout(timeoutId)
   }, [settings.apiUrl, settings.apiKey, selectedProvider])
 
-  const handleRefineJD = async () => {
-    if (!isConfigured) {
-      toast.error('AI not configured', {
-        description: 'Please complete the API settings above first.',
-      })
-      return
-    }
+  const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const providerName = e.target.value
+    setSelectedProvider(providerName)
 
-    if (!settings.jobDescription || settings.jobDescription.length < 50) {
-      toast.error('Job description too short', {
-        description: 'Please provide more details to analyze.',
+    const preset = PROVIDER_PRESETS.find((p) => p.name === providerName)
+    if (preset) {
+      updateSettings({
+        apiUrl: preset.baseURL,
+        providerType: preset.providerType,
       })
+      if (preset.commonModels && preset.commonModels.length > 0) {
+        updateSettings({ model: preset.commonModels[0] })
+      }
+    }
+  }
+
+  const handleCustomURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value
+    setCustomURL(url)
+    updateSettings({ apiUrl: url })
+  }
+
+  const handleRefineJD = async () => {
+    if (!isConfigured || !settings.jobDescription || settings.jobDescription.length < 50) {
+      toast.error('Add more detail to your job description first (min 50 chars)')
       return
     }
 
     setIsAnalyzing(true)
+    const toastId = toast.loading('Refining job description...')
 
-    const refinementPromise = async () => {
-      try {
-        const refinedJD = await analyzeJobDescriptionGraph(
-          settings.jobDescription,
-          {
-            apiUrl: settings.apiUrl,
-            apiKey: settings.apiKey,
-            model: settings.model,
-            providerType: settings.providerType,
-          },
-          (chunk) => {
-            if (chunk.content) {
-              console.log('[Strands Graph]', chunk.content)
-            }
-          }
-        )
-        updateSettings({ jobDescription: refinedJD })
-        return refinedJD
-      } catch (error) {
-        console.error('[AISettings] JD analysis error:', error)
-        throw error
-      } finally {
-        setIsAnalyzing(false)
-      }
-    }
+    try {
+      const refinedJD = await analyzeJobDescriptionGraph(
+        settings.jobDescription,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model || 'gpt-4o-mini',
+          providerType: 'openai-compatible',
+        }
+      )
 
-    toast.promise(refinementPromise(), {
-      loading: 'Refining job description with multi-agent flow...',
-      success: 'Job description refined successfully!',
-      error: (err) =>
-        `Analysis failed: ${err.message || 'Unknown error occurred'}`,
-    })
-  }
-
-  // Auto-select first model when available models change
-  useEffect(() => {
-    if (availableModels.length > 0) {
-      // Check if current model is in the list, if not, select the first one
-      if (!availableModels.includes(settings.model)) {
-        console.log(
-          '[AISettings] Auto-selecting first model:',
-          availableModels[0]
-        )
-        updateSettings({ model: availableModels[0] })
-      }
-    }
-  }, [availableModels, settings.model, updateSettings])
-
-  // Provider dropdown options
-  const providerOptions = [
-    ...PROVIDER_PRESETS.map((p) => ({
-      value: p.name,
-      label: p.name,
-      description: p.description,
-    })),
-    {
-      value: CUSTOM_PROVIDER.name,
-      label: CUSTOM_PROVIDER.name,
-      description: CUSTOM_PROVIDER.description,
-    },
-  ]
-
-  // Get current provider for common models fallback
-  const currentProvider =
-    PROVIDER_PRESETS.find((p) => p.name === selectedProvider) ||
-    (selectedProvider === CUSTOM_PROVIDER.name ? CUSTOM_PROVIDER : null)
-
-  // Model dropdown options - use API models or fallback to common models
-  const hasApiModels = availableModels.length > 0
-  const hasCommonModels =
-    currentProvider?.commonModels && currentProvider.commonModels.length > 0
-
-  // For providers that support dynamic model fetching, don't use fallback models
-  const shouldUseFallback =
-    hasCommonModels && (!hasApiModels || !currentProvider?.supportsModels)
-
-  const modelOptions = hasApiModels
-    ? availableModels.map((model) => ({
-      value: model,
-      label: model,
-    }))
-    : shouldUseFallback
-      ? currentProvider.commonModels!.map((model) => ({
-        value: model,
-        label: model,
-      }))
-      : []
-
-  const showCustomURL = selectedProvider === 'OpenAI Compatible'
-  const showModelDropdown = modelOptions.length > 0 && !loadingModels
-  const usingFallbackModels = !hasApiModels && shouldUseFallback
-  const requiresKey = currentProvider ? currentProvider.requiresAuth : true
-
-  // Check if provider is unreachable (has supportsModels but fetch failed)
-  const isProviderUnreachable =
-    currentProvider?.supportsModels &&
-    !hasApiModels &&
-    !loadingModels &&
-    modelsError !== null
-
-  // Format status messages
-  const getConnectionStatusMessage = () => {
-    if (requiresKey && !settings.apiKey && settings.apiUrl) {
-      return { text: 'API Key required', color: 'text-yellow-400' }
-    }
-    if (!settings.apiUrl) {
-      return { text: 'No URL configured', color: 'text-white/40' }
-    }
-
-    switch (connectionStatus) {
-      case 'testing':
-        return { text: 'Testing...', color: 'text-yellow-400' }
-      case 'valid':
-        return { text: '✓ Connected', color: 'text-green-400' }
-      case 'invalid':
-        return { text: '✗ Failed', color: 'text-red-400' }
-      default:
-        return { text: 'Ready', color: 'text-white/60' }
+      updateSettings({ jobDescription: refinedJD })
+      toast.success('Job description refined successfully!', { id: toastId })
+    } catch (error) {
+      console.error('[AISettings] Refinement error:', error)
+      toast.error(`Refinement failed: ${(error as Error).message}`, { id: toastId })
+    } finally {
+      setIsAnalyzing(false)
     }
   }
 
-  const getModelStatusMessage = () => {
-    if (loadingModels) {
-      return { text: 'Fetching...', color: 'text-yellow-400' }
+  const handleRunPipeline = async () => {
+    if (!isConfigured || !settings.jobDescription) return
+
+    setIsPipelineRunning(true)
+    const toastId = toast.loading('Running AI optimization pipeline...')
+
+    try {
+      const result = await runAIGenerationPipeline(
+        resumeData,
+        settings.jobDescription,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model || 'gpt-4o-mini',
+          providerType: 'openai-compatible',
+        }
+      )
+
+      // Update resume with results
+      setResumeData({
+        ...resumeData,
+        summary: result.summary,
+        workExperience: result.workExperiences,
+      })
+      toast.success('Resume optimized successfully!', { id: toastId })
+    } catch (error) {
+      console.error('[AISettings] Pipeline error:', error)
+      toast.error(`Optimization failed: ${(error as Error).message}`, { id: toastId })
+    } finally {
+      setIsPipelineRunning(false)
     }
-    if (modelsError) {
-      return { text: `✗ ${modelsError}`, color: 'text-red-400' }
-    }
+  }
+
+  const providerOptions = useMemo(() => [
+    ...PROVIDER_PRESETS.map((p) => ({ value: p.name, label: p.name })),
+    { value: CUSTOM_PROVIDER.name, label: CUSTOM_PROVIDER.name },
+  ], [])
+
+  const modelOptions = useMemo(() => {
+    const hasApiModels = availableModels.length > 0
+    const hasCommonModels = currentProvider?.commonModels && currentProvider.commonModels.length > 0
+    const shouldUseFallback = hasCommonModels && (!hasApiModels || !currentProvider?.supportsModels)
+
     if (hasApiModels) {
-      return {
-        text: `✓ ${availableModels.length} models`,
-        color: 'text-green-400',
-      }
+      return availableModels.map(m => ({ value: m, label: m }))
     }
-    return null
-  }
+    if (shouldUseFallback) {
+      return currentProvider!.commonModels!.map(m => ({ value: m, label: m }))
+    }
+    return []
+  }, [availableModels, currentProvider])
 
-  const connectionStatusMsg = getConnectionStatusMessage()
-  const modelStatusMsg = getModelStatusMessage()
+  const connectionStatusMsg = useMemo(() => {
+    switch (connectionStatus) {
+      case 'valid': return { text: '✓ Connected', color: 'text-green-400' }
+      case 'invalid': return { text: '✗ Invalid Credentials', color: 'text-red-400' }
+      default: return { text: '○ Not Configured', color: 'text-white/20' }
+    }
+  }, [connectionStatus])
+
+  const isProviderUnreachable = connectionStatus === 'invalid' && !isConfigured // Simplified for now
+  const usingFallbackModels = availableModels.length === 0 && modelOptions.length > 0
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm text-white/60">
-        Choose an AI provider to generate tailored content. For local or custom
-        endpoints, use the OpenAI Compatible option.
-      </p>
-
-      {/* Connection Status Log */}
-      <div className="rounded-lg border border-white/10 bg-white/5 p-3 font-mono text-xs">
-        <div className="mb-1 font-semibold text-white/80">
-          Connection Status
-        </div>
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-white/40">Provider:</span>
-            <span className="text-white/80">{selectedProvider}</span>
-          </div>
-          {settings.model && (
-            <div className="flex items-center gap-2">
-              <span className="text-white/40">Model:</span>
-              <span className="text-white/60">{settings.model}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <span className="text-white/40">Status:</span>
-            <span className={connectionStatusMsg.color}>
-              {connectionStatusMsg.text}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Provider Selection */}
-      <FormSelect
-        label="AI Provider"
-        name="provider"
-        value={selectedProvider}
-        onChange={handleProviderChange}
-        options={providerOptions}
-        variant="blue"
-        helpText="Select a preset or enter a custom OpenAI-compatible URL"
+    <div className="space-y-6">
+      <ConnectionStatusIndicator
+        providerName={selectedProvider}
+        model={settings.model}
+        statusText={connectionStatusMsg.text}
+        statusColor={connectionStatusMsg.color}
       />
 
-      {/* API URL (only show if Custom is selected) */}
-      {showCustomURL && (
-        <FormInput
-          label="API URL"
-          name="customApiUrl"
-          value={customURL}
-          onChange={handleCustomURLChange}
-          placeholder="http://localhost:1234/v1"
-          variant="blue"
-          helpText="Enter the base URL for your OpenAI-compatible API"
-        />
-      )}
+      <ProviderSelector
+        selectedProvider={selectedProvider}
+        onProviderChange={handleProviderChange}
+        providerOptions={providerOptions}
+        showCustomURL={selectedProvider === CUSTOM_PROVIDER.name}
+        customURL={customURL}
+        onCustomURLChange={handleCustomURLChange}
+      />
 
-      {/* API Key */}
       {requiresKey && (
-        <FormInput
-          label="API Key"
-          name="apiKey"
-          type="password"
-          value={settings.apiKey}
-          onChange={(e) => updateSettings({ apiKey: e.target.value })}
-          placeholder="sk-..."
-          variant="blue"
-          helpText={
-            currentProvider?.apiKeyURL ? (
-              <span>
-                Get from{' '}
-                <a
-                  href={currentProvider.apiKeyURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 underline hover:text-blue-300"
-                >
-                  {currentProvider.name}
-                </a>{' '}
-                (required for model fetching)
-              </span>
-            ) : (
-              'Enter key from your AI provider'
-            )
-          }
+        <APIKeyInput
+          apiKey={settings.apiKey}
+          onAPIKeyChange={(e) => updateSettings({ apiKey: e.target.value })}
+          currentProvider={currentProvider}
         />
       )}
 
-      {/* Model Selection */}
-      {showModelDropdown ? (
-        <FormSelect
-          label="Model"
-          name="model"
-          value={settings.model}
-          onChange={(e) => updateSettings({ model: e.target.value })}
-          options={modelOptions}
-          variant="blue"
-          disabled={usingFallbackModels && !loadingModels && requiresKey}
-          helpText={
-            usingFallbackModels
-              ? requiresKey
-                ? 'Enter API key to fetch available models'
-                : `Showing common ${selectedProvider} models`
-              : `${availableModels.length} models available from API`
-          }
-        />
-      ) : (
-        <FormInput
-          label="Model"
-          name="model"
-          value={settings.model}
-          onChange={(e) => updateSettings({ model: e.target.value })}
-          placeholder={requiresKey ? 'gpt-4o-mini' : ''}
-          variant="blue"
-          disabled={
-            loadingModels ||
-            isProviderUnreachable ||
-            (requiresKey &&
-              !settings.apiKey.trim() &&
-              selectedProvider !== 'OpenAI Compatible')
-          }
-          helpText={
-            loadingModels
-              ? 'Loading models from API...'
-              : isProviderUnreachable
-                ? `✗ ${currentProvider?.name} is unreachable. Please start the server and refresh.`
-                : modelsError
-                  ? 'Enter model name manually'
-                  : requiresKey
-                    ? 'Enter API key to load available models'
-                    : 'Enter model name manually if not detected'
-          }
-        />
-      )}
+      <ModelSelector
+        showModelDropdown={modelOptions.length > 0 && !loadingModels}
+        model={settings.model}
+        onModelChange={(model) => updateSettings({ model })}
+        modelOptions={modelOptions}
+        availableModels={availableModels}
+        usingFallbackModels={usingFallbackModels}
+        loadingModels={loadingModels}
+        requiresKey={requiresKey}
+        isProviderUnreachable={isProviderUnreachable}
+        currentProvider={currentProvider}
+        modelsError={modelsError}
+      />
 
-      {/* Loading indicator for models */}
       {loadingModels && (
         <div className="flex items-center gap-2 text-xs text-white/50">
           <Loader2 className="h-3 w-3 animate-spin" />
-          <span>Fetching available models from API...</span>
+          <span>Fetching models...</span>
         </div>
       )}
 
-      {/* Job Description */}
       <FormTextarea
         label="Job Description"
         name="jobDescription"
         value={settings.jobDescription}
         onChange={(e) => updateSettings({ jobDescription: e.target.value })}
-        placeholder="Paste the job description here to tailor your resume and cover letter..."
+        placeholder="Paste the job description here..."
         variant="blue"
         minHeight="160px"
         onAIAction={handleRefineJD}
         isAILoading={isAnalyzing}
         isAIConfigured={isConfigured}
         aiButtonTitle="Refine with AI"
-        aiShowLabel={true}
-        disabled={isAnalyzing}
+        aiShowLabel={false}
+        aiVariant="amber"
+        disabled={isAnalyzing || isPipelineRunning}
         showCounter={false}
+      />
+
+      <AIPipelineButton
+        onRun={handleRunPipeline}
+        disabled={!isConfigured || !settings.jobDescription || isPipelineRunning || isAnalyzing}
+        isLoading={isPipelineRunning}
       />
     </div>
   )

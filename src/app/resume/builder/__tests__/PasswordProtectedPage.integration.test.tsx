@@ -62,7 +62,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
 
   describe('Authentication Flow', () => {
     it('should show resume editor after successful authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 
@@ -81,7 +81,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should render all resume form sections after authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 
@@ -106,7 +106,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should render preview panel after authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       const { container } = render(<ResumeEditPage />)
 
@@ -125,7 +125,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should maintain authentication across re-renders', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       const { rerender } = render(<ResumeEditPage />)
 
@@ -211,11 +211,11 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     it('should not show print button before authentication', () => {
       render(<ResumeEditPage />)
 
-      expect(screen.queryByText('Print')).not.toBeInTheDocument()
+      expect(screen.queryAllByRole('button', { name: /print/i }).length).toBe(0)
     })
 
     it('should show print button after authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 
@@ -226,7 +226,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
 
       await waitFor(
         () => {
-          expect(screen.getByText('Print')).toBeInTheDocument()
+          expect(screen.getAllByRole('button', { name: /print/i }).length).toBeGreaterThan(0)
         },
         { timeout: 3000 }
       )
@@ -235,7 +235,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
 
   describe('Form Interaction After Authentication', () => {
     beforeEach(async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
       render(<ResumeEditPage />)
 
       fireEvent.change(screen.getByLabelText('Password'), {
@@ -267,13 +267,14 @@ describe('Resume Edit Page - Password Protection Integration', () => {
 
     it('should show preview updates', () => {
       // Preview section should be rendered
-      expect(screen.getByText('Print')).toBeInTheDocument()
+      const printButtons = screen.getAllByRole('button', { name: /print/i })
+      expect(printButtons.length).toBeGreaterThan(0)
     })
   })
 
   describe('Error Handling', () => {
     it('should show error message for incorrect password', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(false)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(false)
 
       render(<ResumeEditPage />)
 
@@ -292,7 +293,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should remain on password screen after failed authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(false)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(false)
 
       render(<ResumeEditPage />)
 
@@ -312,7 +313,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should allow retry after failed authentication', async () => {
-      ;(bcrypt.compare as jest.Mock)
+      ; (bcrypt.compare as jest.Mock)
         .mockResolvedValueOnce(false) // First attempt fails
         .mockResolvedValueOnce(true) // Second attempt succeeds
 
@@ -347,7 +348,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
 
   describe('Context and State Management', () => {
     it('should initialize ResumeContext after authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 
@@ -366,7 +367,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should maintain resume data state after authentication', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 
@@ -420,7 +421,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should clear password from input after failed attempt', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(false)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(false)
 
       render(<ResumeEditPage />)
 
@@ -437,7 +438,7 @@ describe('Resume Edit Page - Password Protection Integration', () => {
     })
 
     it('should use bcrypt for password comparison', async () => {
-      ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+      ; (bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
       render(<ResumeEditPage />)
 

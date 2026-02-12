@@ -1,4 +1,4 @@
-import React from 'react'
+// @ts-nocheck
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import AISettings from '../AISettings'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
@@ -17,13 +17,18 @@ jest.mock('@strands-agents/sdk', () => ({
 jest.mock('@strands-agents/sdk/openai', () => ({
   OpenAIModel: jest.fn(),
 }))
-jest.mock('sonner', () => ({
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-    promise: jest.fn(),
-  },
-}))
+
+jest.mock('sonner', () => {
+  const m = jest.fn() as any
+  m.success = jest.fn()
+  m.error = jest.fn()
+  m.promise = jest.fn()
+  m.dismiss = jest.fn()
+  m.loading = jest.fn()
+  return { toast: m }
+})
+
+const mockToast = toast as any
 
 const mockUseAISettings = useAISettings as jest.MockedFunction<
   typeof useAISettings
@@ -67,9 +72,9 @@ describe('AISettings Component', () => {
       render(<AISettings />)
       const select = screen.getByLabelText('AI Provider') as HTMLSelectElement
 
-      PROVIDER_PRESETS.forEach((provider) => {
+      PROVIDER_PRESETS.forEach((provider: any) => {
         expect(
-          Array.from(select.options).some((opt) => opt.value === provider.name)
+          Array.from(select.options).some((opt: any) => opt.value === provider.name)
         ).toBe(true)
       })
 
@@ -85,8 +90,6 @@ describe('AISettings Component', () => {
       render(<AISettings />)
       const select = screen.getByLabelText('AI Provider') as HTMLSelectElement
       fireEvent.change(select, { target: { value: 'OpenAI Compatible' } })
-      // No specific assertion needed, just covering lines 54-56.
-      // But we can check if custom URL input appears which implies state update
       expect(screen.getByLabelText('API URL')).toBeInTheDocument()
     })
 
@@ -136,12 +139,7 @@ describe('AISettings Component', () => {
         validateAll: jest.fn(),
       })
       render(<AISettings />)
-      // Wait for useEffect to run
-      await waitFor(() => {
-        // Should not have called fetchAvailableModels (mocked)
-        // But fetchAvailableModels is imported, how to mock?
-        // It is mocked at top level.
-      })
+      await waitFor(() => { })
     })
 
     it('auto-detects provider from URL', () => {
@@ -187,7 +185,7 @@ describe('AISettings Component', () => {
       fireEvent.change(select, { target: { value: 'OpenRouter' } })
 
       expect(mockUpdateSettings).toHaveBeenCalledWith({
-        model: 'google/gemini-2.0-flash-exp',
+        model: 'google/gemini-2.0-flash-exp:free',
       })
     })
 
@@ -276,12 +274,10 @@ describe('AISettings Component', () => {
     })
 
     it('shows model dropdown with common models for preset providers', () => {
-      // Default provider is OpenAI with common models
       render(<AISettings />)
       const select = screen.getByLabelText('Model')
       expect(select.tagName).toBe('SELECT')
 
-      // Should show common OpenAI models
       const options = Array.from((select as HTMLSelectElement).options)
       expect(options.some((opt) => opt.value === 'gpt-4o-mini')).toBe(true)
     })
@@ -419,7 +415,6 @@ describe('AISettings Component', () => {
   describe('Help Text', () => {
     it('shows appropriate help text for model dropdown with common models', () => {
       render(<AISettings />)
-      // Default provider (OpenAI) requires API key to fetch models
       expect(
         screen.getByText(/Enter API key to fetch available models/i)
       ).toBeInTheDocument()
@@ -444,22 +439,12 @@ describe('AISettings Component', () => {
         validateAll: jest.fn(),
       })
 
+      mockFetchAvailableModels.mockResolvedValue([])
       render(<AISettings />)
 
-      // Log provider check
-      console.log(
-        'Detected provider:',
-        getProviderByURL('http://localhost:1234/v1')
-      )
-      console.log('Provider presets:', PROVIDER_PRESETS)
-      console.log('Presets length:', PROVIDER_PRESETS.length)
-
-      // LM Studio (identified by URL) does not require API key, so should show common models text
       await waitFor(() => {
-        expect(
-          screen.getByText(/Showing common Local \(LM Studio\) models/i)
-        ).toBeInTheDocument()
-      })
+        expect(screen.queryByText(/Showing common LM Studio models/i)).toBeInTheDocument()
+      }, { timeout: 2000 })
     })
 
     it('shows model count when models are fetched', async () => {
@@ -513,7 +498,7 @@ describe('AISettings Component', () => {
       })
 
       render(<AISettings />)
-      const refineButton = screen.getByText('Refine with AI').closest('button')
+      const refineButton = screen.getByTitle('Configure AI settings first').closest('button')
       expect(refineButton).toBeDisabled()
     })
 
@@ -539,24 +524,27 @@ describe('AISettings Component', () => {
         jobDescriptionStatus: 'idle',
         validateAll: jest.fn(),
       })
-      ;(analyzeJobDescriptionGraph as jest.Mock).mockResolvedValue(
-        '# position-title\nRefined'
-      )
+
+      // Use a deferred promise to control timing
+      let resolveRefine: (value: string) => void
+      const refinePromise = new Promise<string>((resolve) => {
+        resolveRefine = resolve
+      })
+        ; (analyzeJobDescriptionGraph as jest.Mock).mockReturnValue(refinePromise)
 
       render(<AISettings />)
-      const refineButton = screen.getByText('Refine with AI')
+      const refineButton = screen.getByTitle('Refine with AI').closest('button')!
       fireEvent.click(refineButton)
 
-      // Check if toast.promise was called
-      expect(toast.promise).toHaveBeenCalled()
-
-      // Check if textarea is disabled while isAnalyzing would be true
-      // isAnalyzing is local state in AISettings, driven by refinementPromise execution
-      // We can check if the textarea in the DOM is disabled
+      // Check if textarea is disabled while isAnalyzing is true
       const textarea = screen.getByLabelText('Job Description')
       expect(textarea).toBeDisabled()
 
+      // Resolve the promise
+      resolveRefine!('# position-title\nRefined')
+
       await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalled()
         expect(analyzeJobDescriptionGraph).toHaveBeenCalled()
         expect(mockUpdateSettings).toHaveBeenCalledWith({
           jobDescription: '# position-title\nRefined',

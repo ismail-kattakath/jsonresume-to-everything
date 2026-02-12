@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useContext } from 'react'
 import { VscJson } from 'react-icons/vsc'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -6,13 +8,20 @@ import { validateJSONResume } from '@/lib/jsonResumeSchema'
 import { toast } from 'sonner'
 import { analytics } from '@/lib/analytics'
 import { generateJSONFilename } from '@/lib/filenameGenerator'
+import PrintButton from '@/components/document-builder/ui/PrintButton'
 import type { ResumeData } from '@/types/resume'
 
 interface ImportExportProps {
   preserveContent?: boolean
+  hidePrintButton?: boolean
+  hideExportButton?: boolean
 }
 
-const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
+const ImportExport = ({
+  preserveContent = false,
+  hidePrintButton = false,
+  hideExportButton = false,
+}: ImportExportProps) => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
   // migrate old skills format to new format
@@ -155,7 +164,7 @@ const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
         Import or export your resume in JSON Resume format for portability
         across different resume tools.
       </p>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className={`grid gap-3 ${hidePrintButton ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
         <label className="group/btn inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]">
           <VscJson className="text-lg transition-transform group-hover/btn:rotate-12" />
           <span>Import JSON Resume</span>
@@ -168,14 +177,22 @@ const ImportExport = ({ preserveContent = false }: ImportExportProps) => {
           />
         </label>
 
-        <button
-          aria-label="Export JSON Resume"
-          className="group/btn inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
-          onClick={handleExport}
-        >
-          <VscJson className="text-lg transition-transform group-hover/btn:rotate-12" />
-          <span>Export JSON Resume</span>
-        </button>
+        {!hideExportButton && (
+          <button
+            aria-label="Export JSON Resume"
+            className="group/btn inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-sm font-medium text-white transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+            onClick={handleExport}
+          >
+            <VscJson className="text-lg transition-transform group-hover/btn:rotate-12" />
+            <span>Export JSON Resume</span>
+          </button>
+        )}
+
+        {!hidePrintButton && (
+          <div className="flex">
+            <PrintButton className="w-full justify-center py-3" />
+          </div>
+        )}
       </div>
     </div>
   )

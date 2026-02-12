@@ -4,6 +4,15 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
 import type { ResumeData } from '@/types'
 
+// Mock the strands agent module
+jest.mock('@/lib/ai/strands/agent', () => ({
+  generateSummaryGraph: jest.fn(),
+  analyzeJobDescription: jest.fn(),
+  analyzeJobDescriptionGraph: jest.fn(),
+  sortSkillsGraph: jest.fn(),
+  extractSkillsGraph: jest.fn(),
+}))
+
 // Mock the openai-client module
 jest.mock('@/lib/ai/openai-client', () => ({
   generateCoverLetter: jest.fn(),
@@ -21,10 +30,25 @@ jest.mock('@/lib/ai/openai-client', () => ({
 }))
 
 // Mock sonner toast
-jest.mock('sonner', () => ({
-  toast: {
+jest.mock('sonner', () => {
+  const toastMock = jest.fn()
+  Object.assign(toastMock, {
     success: jest.fn(),
     error: jest.fn(),
+    loading: jest.fn(),
+    dismiss: jest.fn(),
+  })
+  return {
+    toast: toastMock,
+  }
+})
+
+// Mock analytics
+jest.mock('@/lib/analytics', () => ({
+  analytics: {
+    aiGenerationStart: jest.fn(),
+    aiGenerationSuccess: jest.fn(),
+    aiGenerationError: jest.fn(),
   },
 }))
 
@@ -54,6 +78,7 @@ const mockAISettings = {
     model: 'gpt-4o-mini',
     jobDescription: '',
     providerType: 'openai-compatible' as const,
+    providerKeys: {},
     rememberCredentials: false,
     skillsToHighlight: '',
   },
@@ -79,14 +104,15 @@ const mockConfiguredAISettings = {
 const renderWithContext = (
   resumeData: ResumeData = mockResumeData,
   handleChange = mockHandleChange,
-  aiSettings: any = mockAISettings
+  aiSettings: any = mockAISettings,
+  setResumeData = mockSetResumeData
 ) => {
   return render(
     <AISettingsContext.Provider value={aiSettings}>
       <ResumeContext.Provider
         value={{
           resumeData,
-          setResumeData: mockSetResumeData,
+          setResumeData,
           handleChange,
           handleProfilePicture: jest.fn(),
         }}
@@ -197,16 +223,16 @@ describe('Summary Component', () => {
 
   describe('AI Generation Callback', () => {
     it('updates summary when AI generation completes', async () => {
-      const { generateSummary } = require('@/lib/ai/openai-client')
+      const { generateSummaryGraph } = require('@/lib/ai/strands/agent')
 
       // Mock successful AI generation
       const generatedText =
         'AI-generated professional summary with experience and skills'
-      generateSummary.mockImplementation(
+      generateSummaryGraph.mockImplementation(
         async (
-          _config: any,
           _data: any,
           _jobDescription: any,
+          _config: any,
           onChunk: any
         ) => {
           // Simulate streaming by calling onChunk
@@ -218,14 +244,17 @@ describe('Summary Component', () => {
       renderWithContext(
         mockResumeData,
         mockHandleChange,
-        mockConfiguredAISettings
+        mockConfiguredAISettings,
+        mockSetResumeData
       )
 
       mockSetResumeData.mockClear()
 
+      console.error('[TEST DEBUG] Clicking button')
       // Click the AI generation button
-      const aiButton = screen.getByRole('button')
-      fireEvent.click(aiButton)
+      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      aiButton.click()
+      console.error('[TEST DEBUG] Clicked')
 
       // Wait for AI generation to complete and setResumeData to be called
       await waitFor(() => {

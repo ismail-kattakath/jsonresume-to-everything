@@ -23,12 +23,18 @@ jest.mock('@/lib/ai/openai-client', () => ({
 }))
 
 // Mock sonner toast
-jest.mock('sonner', () => ({
-  toast: {
+jest.mock('sonner', () => {
+  const toastMock = jest.fn()
+  Object.assign(toastMock, {
     success: jest.fn(),
     error: jest.fn(),
-  },
-}))
+    loading: jest.fn(),
+    dismiss: jest.fn(),
+  })
+  return {
+    toast: toastMock,
+  }
+})
 
 const mockResumeData: ResumeData = {
   name: 'Test User',
@@ -245,7 +251,7 @@ describe('AITextAreaWithButton Component', () => {
         mockConfiguredAISettings
       )
       const button = container.querySelector(
-        '.from-purple-500\\/20.to-blue-500\\/20'
+        '.from-blue-500.to-purple-500'
       )
       expect(button).toBeInTheDocument()
     })
@@ -270,7 +276,7 @@ describe('AITextAreaWithButton Component', () => {
       const { container } = renderWithProviders(
         <AITextAreaWithButton {...defaultProps} />
       )
-      const button = container.querySelector('.bg-white\\/5')
+      const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
       expect(button).toHaveClass('cursor-not-allowed')
     })

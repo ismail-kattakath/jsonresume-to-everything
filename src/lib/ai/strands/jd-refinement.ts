@@ -105,21 +105,13 @@ export async function analyzeJobDescriptionGraph(
     let iteration = 0
     const maxIterations = 2 // 1 initial refine + up to 2 review/refine loops
 
-    if (onProgress)
-        onProgress({
-            content: '🚀 Starting Multi-Agent Refinement...\n',
-            done: false,
-        })
+    onProgress?.({ content: 'Analyzing job description...', done: false })
 
     while (iteration <= maxIterations) {
         iteration++
 
         // Node: Refine
-        if (onProgress)
-            onProgress({
-                content: `\n[Agent: Refiner] (Iteration ${iteration}) Improving JD...\n`,
-                done: false,
-            })
+        onProgress?.({ content: 'Refining job description...', done: false })
 
         const refinePrompt =
             iteration === 1
@@ -129,20 +121,8 @@ export async function analyzeJobDescriptionGraph(
         const refineResult = await refiner.invoke(refinePrompt)
         currentJD = refineResult.toString().trim()
 
-        if (onProgress) {
-            // Stream the current version so user sees progress
-            onProgress({
-                content: `\n--- Refined Version ---\n${currentJD}\n-----------------------\n`,
-                done: false,
-            })
-        }
-
         // Node: Review
-        if (onProgress)
-            onProgress({
-                content: `\n[Agent: Reviewer] Analyzing quality...\n`,
-                done: false,
-            })
+        onProgress?.({ content: 'Validating format...', done: false })
 
         const reviewResult = await reviewer.invoke(
             `Review this Job Description:\n\n${currentJD}`
@@ -150,25 +130,14 @@ export async function analyzeJobDescriptionGraph(
         const reviewText = reviewResult.toString().trim()
 
         if (reviewText.startsWith('APPROVED')) {
-            if (onProgress)
-                onProgress({
-                    content: `\n✅ Approved by Reviewer after ${iteration} iteration(s).\n`,
-                    done: false,
-                })
             break
         } else {
-            if (onProgress)
-                onProgress({ content: `\n❌ Feedback: ${reviewText}\n`, done: false })
             // Append critiques to guide the next refinement
             currentJD = `Refined JD:\n${currentJD}\n\nCritiques from Reviewer:\n${reviewText}`
         }
 
         if (iteration > maxIterations) {
-            if (onProgress)
-                onProgress({
-                    content: `\n⚠️ Reached max iterations (${maxIterations}). Finalizing.\n`,
-                    done: false,
-                })
+            break
         }
     }
 

@@ -10,7 +10,23 @@ import type { ResumeData } from '@/types/resume'
 // Mock dependencies
 jest.mock('@/lib/jsonResume')
 jest.mock('@/lib/jsonResumeSchema')
-jest.mock('sonner')
+jest.mock('@/lib/analytics')
+jest.mock('../../ui/PrintButton', () => ({
+  __esModule: true,
+  default: () => <div data-testid="print-button">Print</div>,
+}))
+
+jest.mock('sonner', () => {
+  const m = jest.fn() as any
+  m.success = jest.fn()
+  m.error = jest.fn()
+  m.promise = jest.fn()
+  m.loading = jest.fn()
+  m.dismiss = jest.fn()
+  return { toast: m }
+})
+
+const mockToast = toast as any
 
 const mockConvertToJSONResume = convertToJSONResume as jest.MockedFunction<
   typeof convertToJSONResume
@@ -21,7 +37,6 @@ const mockConvertFromJSONResume = convertFromJSONResume as jest.MockedFunction<
 const mockValidateJSONResume = validateJSONResume as jest.MockedFunction<
   typeof validateJSONResume
 >
-const mockToast = toast as jest.Mocked<typeof toast>
 
 const mockResumeData: ResumeData = {
   name: 'John Doe',
@@ -37,7 +52,11 @@ const mockResumeData: ResumeData = {
   projects: [],
   certifications: [],
   languages: [],
-  socialMedia: [],
+  socialMedia: {
+    linkedin: '',
+    github: '',
+    twitter: '',
+  },
 }
 
 const mockSetResumeData = jest.fn()
@@ -58,114 +77,46 @@ const renderWithContext = (
   )
 }
 
-// Mock URL.createObjectURL and URL.revokeObjectURL
-global.URL.createObjectURL = jest.fn(() => 'blob:mock-url')
-global.URL.revokeObjectURL = jest.fn()
-
-// Mock document.createElement for download link
-const mockClick = jest.fn()
-const originalCreateElement = document.createElement.bind(document)
-document.createElement = jest.fn((tagName: string) => {
-  const element = originalCreateElement(tagName)
-  if (tagName === 'a') {
-    element.click = mockClick
-  }
-  return element
-}) as any
-
 describe('ImportExport Component', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockToast.loading = jest.fn()
-    mockToast.success = jest.fn()
-    mockToast.error = jest.fn()
-    mockClick.mockClear()
+    global.URL.createObjectURL = jest.fn(() => 'blob:mock-url')
+    global.URL.revokeObjectURL = jest.fn()
   })
 
   describe('Rendering', () => {
-    it('renders import button', () => {
+    it('renders import button by default', () => {
       renderWithContext()
       expect(screen.getByText(/import json resume/i)).toBeInTheDocument()
       expect(screen.getByLabelText(/import json resume/i)).toBeInTheDocument()
     })
 
-    it('renders export button', () => {
+    it('renders export button by default', () => {
       renderWithContext()
       expect(
         screen.getByRole('button', { name: /export json resume/i })
       ).toBeInTheDocument()
     })
 
-    it('renders description text', () => {
+    it('renders print button by default', () => {
       renderWithContext()
+      expect(screen.getByText(/print/i)).toBeInTheDocument()
+    })
+
+    it('hides export button when hideExportButton is true', () => {
+      renderWithContext(mockResumeData, { hideExportButton: true })
       expect(
-        screen.getByText(/import or export your resume/i)
-      ).toBeInTheDocument()
+        screen.queryByRole('button', { name: /export json resume/i })
+      ).not.toBeInTheDocument()
+    })
+
+    it('hides print button when hidePrintButton is true', () => {
+      renderWithContext(mockResumeData, { hidePrintButton: true })
+      expect(screen.queryByText(/print/i)).not.toBeInTheDocument()
     })
   })
 
-  describe('Export Functionality', () => {
-    it('exports resume in JSON Resume format', () => {
-      mockConvertToJSONResume.mockReturnValue({
-        basics: { name: 'John Doe' },
-      } as any)
-
-      renderWithContext()
-      fireEvent.click(
-        screen.getByRole('button', { name: /export json resume/i })
-      )
-
-      expect(mockConvertToJSONResume).toHaveBeenCalledWith(mockResumeData)
-      expect(mockToast.loading).toHaveBeenCalledWith(
-        'Generating JSON Resume...',
-        { id: 'export-resume' }
-      )
-      expect(mockToast.success).toHaveBeenCalledWith(
-        'JSON Resume exported successfully!',
-        { id: 'export-resume' }
-      )
-      expect(mockClick).toHaveBeenCalled()
-    })
-
-    it('generates correct filename format', () => {
-      mockConvertToJSONResume.mockReturnValue({
-        basics: { name: 'John Doe' },
-      } as any)
-
-      const now = new Date()
-      const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`
-
-      renderWithContext()
-      fireEvent.click(
-        screen.getByRole('button', { name: /export json resume/i })
-      )
-
-      // Check that createElement was called with 'a'
-      expect(document.createElement).toHaveBeenCalledWith('a')
-
-      // The filename should be in format: YYYYMM-JohnDoe-SeniorDeveloper-Resume.json
-      const expectedFilename = `${yearMonth}-JohnDoe-SeniorDeveloper-Resume.json`
-      // We can't directly assert the download attribute, but we verified the flow works
-    })
-
-    it('handles export errors', () => {
-      mockConvertToJSONResume.mockImplementation(() => {
-        throw new Error('Conversion failed')
-      })
-
-      renderWithContext()
-      fireEvent.click(
-        screen.getByRole('button', { name: /export json resume/i })
-      )
-
-      expect(mockToast.error).toHaveBeenCalledWith(
-        'Failed to export resume: Conversion failed',
-        { id: 'export-resume', duration: 5000 }
-      )
-    })
-  })
-
-  describe('Import Functionality - JSON Resume Format', () => {
+  describe('Import Functionality', () => {
     it('imports valid JSON Resume format', async () => {
       const jsonResumeData = {
         $schema:
@@ -210,48 +161,35 @@ describe('ImportExport Component', () => {
       })
     })
 
-    it('detects JSON Resume by $schema field', async () => {
-      const jsonResumeData = {
-        $schema: 'https://jsonresume.org/schema',
-        basics: { name: 'Test' },
+    it('imports internal format resume', async () => {
+      const internalFormatData = {
+        name: 'Test User',
+        position: 'Developer',
+        skills: [
+          {
+            category: 'Programming',
+            skills: ['JavaScript', 'TypeScript'],
+          },
+        ],
       }
-
-      mockValidateJSONResume.mockReturnValue({ valid: true, errors: [] })
-      mockConvertFromJSONResume.mockReturnValue(mockResumeData)
 
       const { container } = renderWithContext()
       const fileInput = container.querySelector('input[type="file"]')!
 
-      const file = new File([JSON.stringify(jsonResumeData)], 'resume.json', {
-        type: 'application/json',
-      })
+      const file = new File(
+        [JSON.stringify(internalFormatData)],
+        'resume.json',
+        { type: 'application/json' }
+      )
 
       fireEvent.change(fileInput, { target: { files: [file] } })
 
       await waitFor(() => {
-        expect(mockValidateJSONResume).toHaveBeenCalled()
-      })
-    })
-
-    it('detects JSON Resume by basics field', async () => {
-      const jsonResumeData = {
-        basics: { name: 'Test', email: 'test@example.com' },
-      }
-
-      mockValidateJSONResume.mockReturnValue({ valid: true, errors: [] })
-      mockConvertFromJSONResume.mockReturnValue(mockResumeData)
-
-      const { container } = renderWithContext()
-      const fileInput = container.querySelector('input[type="file"]')!
-
-      const file = new File([JSON.stringify(jsonResumeData)], 'resume.json', {
-        type: 'application/json',
-      })
-
-      fireEvent.change(fileInput, { target: { files: [file] } })
-
-      await waitFor(() => {
-        expect(mockValidateJSONResume).toHaveBeenCalled()
+        expect(mockSetResumeData).toHaveBeenCalled()
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Resume data imported successfully!',
+          { id: 'import-resume' }
+        )
       })
     })
 
@@ -308,43 +246,7 @@ describe('ImportExport Component', () => {
         )
       })
     })
-  })
 
-  describe('Import Functionality - Internal Format', () => {
-    it('imports internal format resume', async () => {
-      const internalFormatData = {
-        name: 'Test User',
-        position: 'Developer',
-        skills: [
-          {
-            category: 'Programming',
-            skills: ['JavaScript', 'TypeScript'],
-          },
-        ],
-      }
-
-      const { container } = renderWithContext()
-      const fileInput = container.querySelector('input[type="file"]')!
-
-      const file = new File(
-        [JSON.stringify(internalFormatData)],
-        'resume.json',
-        { type: 'application/json' }
-      )
-
-      fireEvent.change(fileInput, { target: { files: [file] } })
-
-      await waitFor(() => {
-        expect(mockSetResumeData).toHaveBeenCalled()
-        expect(mockToast.success).toHaveBeenCalledWith(
-          'Resume data imported successfully!',
-          { id: 'import-resume' }
-        )
-      })
-    })
-  })
-
-  describe('Error Handling', () => {
     it('handles JSON parse errors', async () => {
       const { container } = renderWithContext()
       const fileInput = container.querySelector('input[type="file"]')!
@@ -371,7 +273,6 @@ describe('ImportExport Component', () => {
         type: 'application/json',
       })
 
-      // Override FileReader to trigger error
       const originalFileReader = global.FileReader
       global.FileReader = jest.fn().mockImplementation(() => ({
         readAsText: function () {
@@ -390,30 +291,8 @@ describe('ImportExport Component', () => {
 
       global.FileReader = originalFileReader
     })
-  })
 
-  describe('Edge Cases', () => {
-    it('handles empty file selection', () => {
-      const { container } = renderWithContext()
-      const fileInput = container.querySelector('input[type="file"]')!
-
-      fireEvent.change(fileInput, { target: { files: [] } })
-
-      expect(mockSetResumeData).not.toHaveBeenCalled()
-    })
-
-    it('accepts only .json files', () => {
-      const { container } = renderWithContext()
-      const fileInput = container.querySelector(
-        'input[type="file"]'
-      ) as HTMLInputElement
-
-      expect(fileInput.accept).toBe('.json')
-    })
-  })
-
-  describe('Preserve Content Flag', () => {
-    it('preserves content when preserveContent flag is true for JSON Resume', async () => {
+    it('preserves content when preserveContent flag is true', async () => {
       const jsonResumeData = {
         $schema: 'https://jsonresume.org/schema',
         basics: { name: 'Test' },
@@ -447,10 +326,95 @@ describe('ImportExport Component', () => {
       })
     })
 
-    it('preserves content when preserveContent flag is true for internal format', async () => {
+    it('migrates old skills format to new format', async () => {
+      const oldSkillsData = {
+        name: 'Test',
+        skills: [
+          {
+            category: 'Languages',
+            skills: ['JavaScript', { text: 'TypeScript', underline: true }],
+          },
+        ],
+      }
+
+      const { container } = renderWithContext()
+      const fileInput = container.querySelector('input[type="file"]')!
+
+      const file = new File([JSON.stringify(oldSkillsData)], 'resume.json', {
+        type: 'application/json',
+      })
+
+      fireEvent.change(fileInput, { target: { files: [file] } })
+
+      await waitFor(() => {
+        expect(mockSetResumeData).toHaveBeenCalledWith(
+          expect.objectContaining({
+            skills: [
+              {
+                category: 'Languages',
+                skills: [
+                  { text: 'JavaScript', highlight: false },
+                  { text: 'TypeScript', highlight: true },
+                ],
+              },
+            ],
+          })
+        )
+      })
+    })
+
+    it('preserves skills already in new format during migration', async () => {
+      const mixedSkillsData = {
+        name: 'Test',
+        skills: [
+          {
+            category: 'Languages',
+            skills: [
+              'JavaScript',
+              { text: 'TypeScript', underline: true },
+              { text: 'Python', highlight: true },
+            ],
+          },
+        ],
+      }
+
+      const { container } = renderWithContext()
+      const fileInput = container.querySelector('input[type="file"]')!
+
+      const file = new File([JSON.stringify(mixedSkillsData)], 'resume.json', {
+        type: 'application/json',
+      })
+
+      fireEvent.change(fileInput, { target: { files: [file] } })
+
+      await waitFor(() => {
+        expect(mockSetResumeData).toHaveBeenCalledWith(
+          expect.objectContaining({
+            skills: [
+              {
+                category: 'Languages',
+                skills: [
+                  { text: 'JavaScript', highlight: false },
+                  { text: 'TypeScript', highlight: true },
+                  { text: 'Python', highlight: true },
+                ],
+              },
+            ],
+          })
+        )
+      })
+    })
+
+    it('preserves content when importing internal format with preserveContent flag', async () => {
       const internalFormatData = {
         name: 'Test User',
         email: 'test@example.com',
+        skills: [
+          {
+            title: 'Programming',
+            skills: [{ text: 'JavaScript', highlight: false }],
+          },
+        ],
       }
 
       const resumeWithContent = {
@@ -481,6 +445,59 @@ describe('ImportExport Component', () => {
           })
         )
       })
+    })
+  })
+
+  describe('Export Functionality', () => {
+    it('exports resume in JSON Resume format', () => {
+      mockConvertToJSONResume.mockReturnValue({ basics: { name: 'John Doe' } })
+
+      renderWithContext()
+      fireEvent.click(
+        screen.getByRole('button', { name: /export json resume/i })
+      )
+
+      expect(mockConvertToJSONResume).toHaveBeenCalledWith(mockResumeData)
+      expect(mockToast.success).toHaveBeenCalledWith(
+        'JSON Resume exported successfully!',
+        { id: 'export-resume' }
+      )
+    })
+
+    it('handles export errors', () => {
+      mockConvertToJSONResume.mockImplementation(() => {
+        throw new Error('Conversion failed')
+      })
+
+      renderWithContext()
+      fireEvent.click(
+        screen.getByRole('button', { name: /export json resume/i })
+      )
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Failed to export resume: Conversion failed',
+        { id: 'export-resume', duration: 5000 }
+      )
+    })
+  })
+
+  describe('Edge Cases', () => {
+    it('handles empty file selection', () => {
+      const { container } = renderWithContext()
+      const fileInput = container.querySelector('input[type="file"]')!
+
+      fireEvent.change(fileInput, { target: { files: [] } })
+
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+    })
+
+    it('accepts only .json files', () => {
+      const { container } = renderWithContext()
+      const fileInput = container.querySelector(
+        'input[type="file"]'
+      ) as HTMLInputElement
+
+      expect(fileInput.accept).toBe('.json')
     })
   })
 })

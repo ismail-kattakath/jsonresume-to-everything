@@ -11,12 +11,8 @@ import type { DropResult } from '@hello-pangea/dnd'
 import AISortButton from '@/components/ui/AISortButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { requestAISort } from '@/lib/ai/openai-client'
-import {
-  buildAchievementsSortPrompt,
-  parseAchievementsSortResponse,
-  applySortedAchievements,
-} from '@/lib/ai/sorting-prompts'
+import { sortAchievementsGraph, AchievementsSortResult } from '@/lib/ai/strands/agent'
+import { AILoadingToast } from '@/components/ui/AILoadingToast'
 
 interface KeyAchievementsProps {
   workExperienceIndex: number
@@ -94,36 +90,45 @@ const KeyAchievements = ({
       return
 
     setIsSorting(true)
+    let toastId: string | number | undefined
+
     try {
-      const prompt = buildAchievementsSortPrompt(
-        achievements,
+      const achievementTexts = achievements.map((a) => a.text)
+
+      const sortResult = await sortAchievementsGraph(
+        achievementTexts,
         workExperience.position,
         workExperience.organization,
-        settings.jobDescription
-      )
-
-      const response = await requestAISort(
+        settings.jobDescription,
         {
-          baseURL: settings.apiUrl,
+          apiUrl: settings.apiUrl,
           apiKey: settings.apiKey,
           model: settings.model,
+          providerType: settings.providerType,
         },
-        prompt
+        (chunk) => {
+          if (chunk.content) {
+            console.log('[Achievements Sort Graph]', chunk.content)
+            // Update toast with progress
+            if (!toastId) {
+              toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+            } else {
+              toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+            }
+          }
+        }
       )
 
-      const sortResult = parseAchievementsSortResponse(response, achievements)
+      if (toastId) toast.dismiss(toastId)
 
-      if (sortResult) {
-        const sortedAchievements = applySortedAchievements(
-          achievements,
-          sortResult
-        )
-        setAchievements(sortedAchievements)
-        toast.success('Achievements sorted by job relevance')
-      } else {
-        toast.error('Failed to parse AI response. Please try again.')
-      }
-    } catch (error) {
+      // Apply the sorted order
+      const sortedAchievements = sortResult.rankedIndices
+        .map((index) => achievements[index])
+        .filter((a): a is typeof achievements[0] => a !== undefined)
+      setAchievements(sortedAchievements)
+      toast.success('Achievements sorted by job relevance')
+    } catch (error: any) {
+      if (toastId) toast.dismiss(toastId)
       console.error('AI Achievements sort error:', error)
       toast.error(
         error instanceof Error ? error.message : 'Failed to sort achievements'
@@ -169,9 +174,8 @@ const KeyAchievements = ({
                     <div
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
-                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${
-                        snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
-                      }`}
+                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
+                        }`}
                     >
                       {/* Drag handle */}
                       <div
@@ -222,15 +226,28 @@ const KeyAchievements = ({
         </DnDDroppable>
       </DnDContext>
 
-      {/* Add new achievement input */}
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={handleAddKeyDown}
-        placeholder="Add key achievement... (Press Enter to save)"
-        className={`w-full rounded-lg border border-dashed ${borderColor} bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 ${focusBorderColor}`}
-      />
+      {/* Add new achievement input and AI Sort button */}
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleAddKeyDown}
+          placeholder="Add key achievement... (Press Enter to save)"
+          className={`flex-1 rounded-lg border border-dashed ${borderColor} bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 ${focusBorderColor}`}
+        />
+        {showAISort && (
+          <AISortButton
+            isConfigured={isConfigured}
+            isLoading={isSorting}
+            onClick={handleAISort}
+            label="Sort by JD"
+            showLabel={true}
+            size="sm"
+            variant="amber"
+          />
+        )}
+      </div>
     </div>
   )
 }

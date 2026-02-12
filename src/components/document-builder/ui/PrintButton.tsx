@@ -11,6 +11,7 @@ interface PrintButtonProps {
   position?: string
   documentType?: 'Resume' | 'CoverLetter'
   resumeData?: ResumeData
+  className?: string
 }
 
 export default function PrintButton({
@@ -18,6 +19,7 @@ export default function PrintButton({
   position,
   documentType = 'Resume',
   resumeData,
+  className,
 }: PrintButtonProps) {
   const handlePrint = () => {
     // Set document title for PDF filename
@@ -61,7 +63,7 @@ export default function PrintButton({
   }
 
   return (
-    <div className="flex rounded-full shadow-2xl">
+    <div className={`flex rounded-full shadow-2xl ${className || ''}`}>
       {/* Print to PDF Button */}
       <button
         type="button"

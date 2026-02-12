@@ -10,17 +10,17 @@ import {
 } from '@/lib/__tests__/test-utils'
 
 // Mock the AI generation module
-jest.mock('@/lib/ai/document-generator', () => ({
-  ...jest.requireActual('@/lib/ai/document-generator'),
-  generateJobTitleWithProvider: jest.fn(),
-  OpenAIAPIError: class OpenAIAPIError extends Error {},
-  GeminiAPIError: class GeminiAPIError extends Error {},
+jest.mock('@/lib/ai/strands/agent', () => ({
+  generateJobTitleGraph: jest.fn(),
+}))
+jest.mock('@/lib/ai/openai-client', () => ({
+  OpenAIAPIError: class OpenAIAPIError extends Error { },
 }))
 
 describe('AIInputWithButton Component', () => {
   const {
-    generateJobTitleWithProvider,
-  } = require('@/lib/ai/document-generator')
+    generateJobTitleGraph,
+  } = require('@/lib/ai/strands/agent')
 
   const defaultProps = {
     value: 'Software Engineer',
@@ -100,7 +100,7 @@ describe('AIInputWithButton Component', () => {
         resolveGeneration = resolve
       })
 
-      generateJobTitleWithProvider.mockReturnValue(generationPromise)
+      generateJobTitleGraph.mockReturnValue(generationPromise)
 
       const { container } = renderWithContext(
         <AIInputWithButton {...defaultProps} />,
@@ -130,7 +130,7 @@ describe('AIInputWithButton Component', () => {
 
   describe('AI Generation', () => {
     it('should generate job title when button clicked', async () => {
-      generateJobTitleWithProvider.mockResolvedValue('Senior Software Engineer')
+      generateJobTitleGraph.mockResolvedValue('Senior Software Engineer')
 
       const mockOnGenerated = jest.fn()
 
@@ -152,7 +152,7 @@ describe('AIInputWithButton Component', () => {
       fireEvent.click(button)
 
       await waitFor(() => {
-        expect(generateJobTitleWithProvider).toHaveBeenCalled()
+        expect(generateJobTitleGraph).toHaveBeenCalled()
       })
 
       await waitFor(() => {
@@ -161,7 +161,7 @@ describe('AIInputWithButton Component', () => {
     })
 
     it('should show loading spinner while generating', async () => {
-      generateJobTitleWithProvider.mockImplementation(
+      generateJobTitleGraph.mockImplementation(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve('Lead Developer'), 50)
@@ -213,11 +213,11 @@ describe('AIInputWithButton Component', () => {
     })
 
     it('should handle generation errors gracefully', async () => {
-      generateJobTitleWithProvider.mockRejectedValue(new Error('API Error'))
+      generateJobTitleGraph.mockRejectedValue(new Error('API Error'))
 
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       renderWithContext(<AIInputWithButton {...defaultProps} />, {
         aiSettings: {
@@ -234,7 +234,7 @@ describe('AIInputWithButton Component', () => {
       fireEvent.click(button)
 
       await waitFor(() => {
-        expect(generateJobTitleWithProvider).toHaveBeenCalled()
+        expect(generateJobTitleGraph).toHaveBeenCalled()
       })
 
       // Button should be re-enabled after error
@@ -246,7 +246,7 @@ describe('AIInputWithButton Component', () => {
     })
 
     it('should update input via onChange when onGenerated not provided', async () => {
-      generateJobTitleWithProvider.mockResolvedValue('Principal Engineer')
+      generateJobTitleGraph.mockResolvedValue('Principal Engineer')
 
       const mockOnChange = jest.fn()
 
@@ -282,7 +282,7 @@ describe('AIInputWithButton Component', () => {
     it('should support streaming updates', async () => {
       const mockOnGenerated = jest.fn()
 
-      generateJobTitleWithProvider.mockImplementation(
+      generateJobTitleGraph.mockImplementation(
         (
           _resumeData: any,
           _jobDescription: any,
@@ -320,7 +320,7 @@ describe('AIInputWithButton Component', () => {
       fireEvent.click(button)
 
       await waitFor(() => {
-        expect(generateJobTitleWithProvider).toHaveBeenCalled()
+        expect(generateJobTitleGraph).toHaveBeenCalled()
       })
 
       await waitFor(() => {
@@ -355,7 +355,7 @@ describe('AIInputWithButton Component', () => {
       )
 
       const button = container.querySelector('button')
-      expect(button).toHaveClass('from-purple-500/20', 'to-blue-500/20')
+      expect(button).toHaveClass('from-amber-500', 'to-orange-500')
     })
 
     it('should apply disabled styling when not configured', () => {
@@ -429,7 +429,7 @@ describe('AIInputWithButton Component', () => {
 
     it('should handle long generated titles', async () => {
       const longTitle = 'Senior Principal Staff Software Engineering Manager'
-      generateJobTitleWithProvider.mockResolvedValue(longTitle)
+      generateJobTitleGraph.mockResolvedValue(longTitle)
 
       const mockOnGenerated = jest.fn()
 

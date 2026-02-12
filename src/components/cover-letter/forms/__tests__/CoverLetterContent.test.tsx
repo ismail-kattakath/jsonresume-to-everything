@@ -11,6 +11,11 @@ import {
   createMockAISettingsContext,
 } from '@/lib/__tests__/test-utils'
 
+// Mock the strands agent module
+jest.mock('@/lib/ai/strands/agent', () => ({
+  generateCoverLetterGraph: jest.fn(),
+}))
+
 // Mock the openai-client module
 jest.mock('@/lib/ai/openai-client', () => ({
   generateCoverLetter: jest.fn(),
@@ -28,12 +33,19 @@ jest.mock('@/lib/ai/openai-client', () => ({
 }))
 
 // Mock sonner toast
-jest.mock('sonner', () => ({
-  toast: {
+jest.mock('sonner', () => {
+  const toastMock = jest.fn()
+  // Add methods to the function
+  Object.assign(toastMock, {
     success: jest.fn(),
     error: jest.fn(),
-  },
-}))
+    loading: jest.fn(),
+    dismiss: jest.fn(),
+  })
+  return {
+    toast: toastMock,
+  }
+})
 
 // Helper to render with both contexts for tests that need custom setResumeData
 const renderWithBothContexts = (
@@ -400,13 +412,18 @@ describe('CoverLetterContent Component', () => {
 
   describe('AI Generation Callback', () => {
     it('updates content when AI generation completes', async () => {
-      const { generateCoverLetter } = require('@/lib/ai/openai-client')
+      const { generateCoverLetterGraph } = require('@/lib/ai/strands/agent')
 
       // Mock successful AI generation
       const generatedText =
         'AI-generated cover letter content with compelling narrative and skills alignment'
-      generateCoverLetter.mockImplementation(
-        async (config, data, jobDescription, onChunk) => {
+      generateCoverLetterGraph.mockImplementation(
+        async (
+          _data: any,
+          _jobDescription: any,
+          _config: any,
+          onChunk: any
+        ) => {
           // Simulate streaming by calling onChunk
           onChunk({ content: generatedText })
           return generatedText

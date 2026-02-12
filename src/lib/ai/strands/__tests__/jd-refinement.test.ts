@@ -25,7 +25,7 @@ jest.mock('@strands-agents/sdk/gemini', () => {
 })
 
 describe('JD Refinement', () => {
-    const mockConfig = {
+    const mockConfig: any = {
         apiUrl: 'http://localhost:1234/v1',
         apiKey: 'test-key',
         model: 'test-model',
@@ -118,11 +118,7 @@ describe('JD Refinement', () => {
             expect(mockReviewerInvoke).toHaveBeenCalledWith(
                 expect.stringContaining('# position-title')
             )
-            expect(onProgress).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    content: expect.stringContaining('Approved by Reviewer'),
-                })
-            )
+
             expect(result).toBe(mockRefinedJD)
         })
 
