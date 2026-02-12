@@ -432,7 +432,11 @@ describe('Integration: Form → Preview Synchronization', () => {
 
         // Fill in the new social media
         await waitFor(() => {
-          const linkInputs = container.querySelectorAll('input[name="link"]')
+          // Find the social media section container first
+          const socialSection = container.querySelector('#section-social-media')
+          expect(socialSection).toBeInTheDocument()
+
+          const linkInputs = socialSection!.querySelectorAll('input[name="link"]')
           const lastLinkInput = linkInputs[
             linkInputs.length - 1
           ] as HTMLInputElement

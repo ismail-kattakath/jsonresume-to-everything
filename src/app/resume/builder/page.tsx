@@ -936,15 +936,17 @@ function UnifiedEditor() {
                   </CollapsibleSection>
                 </div>
 
-                <CollapsibleSection
-                  title="Social Media"
-                  icon={<Share2 className="h-4 w-4 text-blue-400" />}
-                  isExpanded={expandedSection === 'social-media'}
-                  onToggle={createToggleHandler('social-media')}
-                  tooltip={tooltips.sections.socialMedia}
-                >
-                  <SocialMedia />
-                </CollapsibleSection>
+                <div id="section-social-media">
+                  <CollapsibleSection
+                    title="Social Media"
+                    icon={<Share2 className="h-4 w-4 text-blue-400" />}
+                    isExpanded={expandedSection === 'social-media'}
+                    onToggle={createToggleHandler('social-media')}
+                    tooltip={tooltips.sections.socialMedia}
+                  >
+                    <SocialMedia />
+                  </CollapsibleSection>
+                </div>
 
                 {/* Resume-only sections */}
                 {mode === 'resume' && (
@@ -959,15 +961,17 @@ function UnifiedEditor() {
                       <Summary />
                     </CollapsibleSection>
 
-                    <CollapsibleSection
-                      title="Education"
-                      icon={<GraduationCap className="h-4 w-4 text-blue-400" />}
-                      isExpanded={expandedSection === 'education'}
-                      onToggle={createToggleHandler('education')}
-                      tooltip={tooltips.sections.education}
-                    >
-                      <Education />
-                    </CollapsibleSection>
+                    <div id="section-education">
+                      <CollapsibleSection
+                        title="Education"
+                        icon={<GraduationCap className="h-4 w-4 text-blue-400" />}
+                        isExpanded={expandedSection === 'education'}
+                        onToggle={createToggleHandler('education')}
+                        tooltip={tooltips.sections.education}
+                      >
+                        <Education />
+                      </CollapsibleSection>
+                    </div>
 
                     <div id="section-work-experience">
                       <CollapsibleSection
@@ -1006,15 +1010,17 @@ function UnifiedEditor() {
                       </CollapsibleSection>
                     </div>
 
-                    <CollapsibleSection
-                      title="Additional Info"
-                      icon={<Layers className="h-4 w-4 text-blue-400" />}
-                      isExpanded={expandedSection === 'additional-info'}
-                      onToggle={createToggleHandler('additional-info')}
-                      tooltip={tooltips.sections.additionalInfo}
-                    >
-                      <AdditionalSections />
-                    </CollapsibleSection>
+                    <div id="section-additional-info">
+                      <CollapsibleSection
+                        title="Additional Info"
+                        icon={<Layers className="h-4 w-4 text-blue-400" />}
+                        isExpanded={expandedSection === 'additional-info'}
+                        onToggle={createToggleHandler('additional-info')}
+                        tooltip={tooltips.sections.additionalInfo}
+                      >
+                        <AdditionalSections />
+                      </CollapsibleSection>
+                    </div>
                   </>
                 )}
 
