@@ -13,7 +13,8 @@ import {
 jest.mock('@/lib/ai/strands/agent', () => ({
   generateJobTitleGraph: jest.fn(),
 }))
-jest.mock('@/lib/ai/openai-client', () => ({
+// Mock the modular AI modules
+jest.mock('@/lib/ai/api', () => ({
   OpenAIAPIError: class OpenAIAPIError extends Error { },
 }))
 
@@ -355,7 +356,7 @@ describe('AIInputWithButton Component', () => {
       )
 
       const button = container.querySelector('button')
-      expect(button).toHaveClass('from-amber-500', 'to-orange-500')
+      expect(button).toHaveClass('from-blue-500', 'to-purple-500')
     })
 
     it('should apply disabled styling when not configured', () => {
@@ -401,7 +402,9 @@ describe('AIInputWithButton Component', () => {
       })
 
       const button = screen.getByRole('button')
-      expect(button).toHaveAttribute('title', 'Generate by JD')
+      // Title is not shown when showLabel is true and not disabled
+      expect(button).not.toHaveAttribute('title')
+      expect(screen.getByText('Refine')).toBeInTheDocument()
     })
 
     it('should have proper input attributes', () => {

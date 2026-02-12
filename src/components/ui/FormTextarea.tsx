@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react'
 import { Sparkles, Loader2 } from 'lucide-react'
-import AISortButton from './AISortButton'
+import AIActionButton from './AIActionButton'
 import { FormVariant, variantClasses } from '@/lib/utils/formVariants'
 
 interface FormTextareaProps {
@@ -20,7 +20,7 @@ interface FormTextareaProps {
   aiButtonTitle?: string
   isAIConfigured?: boolean
   aiShowLabel?: boolean
-  aiVariant?: 'primary' | 'amber' | 'ghost'
+  aiVariant?: 'blue' | 'amber' | 'green'
   disabled?: boolean
 }
 
@@ -45,7 +45,7 @@ export function FormTextarea({
   aiButtonTitle = 'Generate by JD',
   isAIConfigured = true,
   aiShowLabel = false,
-  aiVariant = 'primary',
+  aiVariant = 'blue',
   disabled = false,
 }: FormTextareaProps) {
   const textareaId = `textarea-${name}`
@@ -79,7 +79,7 @@ export function FormTextarea({
         )}
         {onAIAction && (
           <div className="absolute right-3 bottom-[18px]">
-            <AISortButton
+            <AIActionButton
               isConfigured={isAIConfigured}
               isLoading={!!isAILoading}
               onClick={onAIAction}

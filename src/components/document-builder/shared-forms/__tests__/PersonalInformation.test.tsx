@@ -15,7 +15,8 @@ import {
 jest.mock('@/lib/ai/strands/agent', () => ({
   generateJobTitleGraph: jest.fn(),
 }))
-jest.mock('@/lib/ai/openai-client', () => ({
+// Mock the modular AI modules
+jest.mock('@/lib/ai/api', () => ({
   OpenAIAPIError: class OpenAIAPIError extends Error { },
 }))
 
@@ -335,7 +336,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      const aiButton = screen.getByRole('button', { name: /refine/i })
       expect(aiButton).toBeInTheDocument()
     })
 
@@ -376,7 +377,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      const aiButton = screen.getByRole('button', { name: /refine/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {
@@ -411,6 +412,7 @@ describe('PersonalInformation Component', () => {
 
       const aiButton = screen.getByRole('button')
       expect(aiButton).toBeDisabled()
+      // Title is set based on disabledTooltip
       expect(aiButton).toHaveAttribute('title', 'Configure AI settings first')
     })
 
@@ -434,7 +436,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      const aiButton = screen.getByRole('button', { name: /refine/i })
 
       // Verify button is initially enabled
       expect(aiButton).not.toBeDisabled()
@@ -469,7 +471,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      const aiButton = screen.getByRole('button', { name: /refine/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {
@@ -504,7 +506,7 @@ describe('PersonalInformation Component', () => {
         },
       })
 
-      const aiButton = screen.getByRole('button', { name: /generate by jd/i })
+      const aiButton = screen.getByRole('button', { name: /refine/i })
       fireEvent.click(aiButton)
 
       await waitFor(() => {

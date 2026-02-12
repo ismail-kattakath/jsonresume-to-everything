@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/DragAndDrop'
 import KeyAchievements from '@/components/resume/forms/KeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import {
   sortSkillsGraph,
@@ -108,11 +108,11 @@ const TechStackSortButton = ({
   }
 
   return (
-    <AISortButton
-      isConfigured={isConfigured}
-      isLoading={isSorting}
+    <AIActionButton
       onClick={handleAISort}
-      label="Sort by JD"
+      isLoading={isSorting}
+      isConfigured={isConfigured}
+      label={isSorting ? 'Sorting...' : 'Sort by JD'}
       showLabel={true}
       size="sm"
       variant="amber"
@@ -385,7 +385,7 @@ const WorkExperience = () => {
                           minHeight="100px"
                         />
                         <div className="absolute bottom-2 right-2">
-                          <AISortButton
+                          <AIActionButton
                             isConfigured={isConfigured && !!settings.jobDescription}
                             isLoading={isTailoringExperience[index] || false}
                             onClick={() => handleTailorToJD(index)}

@@ -11,9 +11,9 @@ import {
 import {
   saveCredentials,
   loadCredentials,
-  OpenAIAPIError,
-} from '@/lib/ai/openai-client'
-import AISortButton from '@/components/ui/AISortButton'
+} from '@/lib/ai/storage'
+import { OpenAIAPIError } from '@/lib/ai/api'
+import AIActionButton from '@/components/ui/AIActionButton'
 import type { ResumeData } from '@/types'
 
 interface AIGenerateModalProps {
@@ -414,7 +414,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
 
         {/* Generate button */}
         <div className="space-y-3 pt-2">
-          <AISortButton
+          <AIActionButton
             isConfigured={isFormValid}
             isLoading={isGenerating}
             onClick={handleGenerate}

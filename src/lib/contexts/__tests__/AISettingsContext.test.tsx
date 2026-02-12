@@ -7,11 +7,14 @@ import {
 import {
   loadCredentials,
   saveCredentials,
+} from '@/lib/ai/storage'
+import {
   testConnection,
-} from '@/lib/ai/openai-client'
+} from '@/lib/ai/api'
 
 // Mock dependencies
-jest.mock('@/lib/ai/openai-client')
+jest.mock('@/lib/ai/storage')
+jest.mock('@/lib/ai/api')
 
 const mockLoadCredentials = loadCredentials as jest.MockedFunction<
   typeof loadCredentials
@@ -227,7 +230,7 @@ describe('AISettingsContext', () => {
 
       act(() => {
         result.current.updateSettings({
-          jobDescription: 'Short'.repeat(30), // < 100 chars
+          jobDescription: 'Short'.repeat(10), // < 100 chars
         })
       })
 

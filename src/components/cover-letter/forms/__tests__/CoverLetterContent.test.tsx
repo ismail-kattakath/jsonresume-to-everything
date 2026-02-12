@@ -16,10 +16,8 @@ jest.mock('@/lib/ai/strands/agent', () => ({
   generateCoverLetterGraph: jest.fn(),
 }))
 
-// Mock the openai-client module
-jest.mock('@/lib/ai/openai-client', () => ({
-  generateCoverLetter: jest.fn(),
-  generateSummary: jest.fn(),
+// Mock the modular AI modules
+jest.mock('@/lib/ai/api', () => ({
   OpenAIAPIError: class OpenAIAPIError extends Error {
     constructor(
       message: string,
@@ -76,7 +74,7 @@ describe('CoverLetterContent Component', () => {
     it('should render textarea with placeholder', () => {
       renderWithContext(<CoverLetterContent />)
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toBeInTheDocument()
       expect(textarea.tagName).toBe('TEXTAREA')
@@ -102,7 +100,7 @@ describe('CoverLetterContent Component', () => {
       })
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveValue('This is my cover letter content')
     })
@@ -127,7 +125,7 @@ describe('CoverLetterContent Component', () => {
       renderWithBothContexts(mockData, mockSetResumeData)
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       fireEvent.change(textarea, {
         target: { value: 'New cover letter content' },
@@ -146,7 +144,7 @@ describe('CoverLetterContent Component', () => {
       renderWithBothContexts(mockData, mockSetResumeData)
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       fireEvent.change(textarea, { target: { value: '' } })
 
@@ -165,7 +163,7 @@ describe('CoverLetterContent Component', () => {
       const multilineContent =
         'First paragraph\n\nSecond paragraph\n\nThird paragraph'
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       fireEvent.change(textarea, { target: { value: multilineContent } })
 
@@ -280,9 +278,9 @@ describe('CoverLetterContent Component', () => {
     it('should have minimum height set', () => {
       renderWithContext(<CoverLetterContent />)
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
-      expect(textarea).toHaveStyle({ minHeight: '300px' })
+      expect(textarea).toHaveStyle({ minHeight: '400px' })
     })
   })
 
@@ -292,7 +290,7 @@ describe('CoverLetterContent Component', () => {
     it('should have name attribute on textarea', () => {
       renderWithContext(<CoverLetterContent />)
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveAttribute('name', 'content')
     })
@@ -300,20 +298,17 @@ describe('CoverLetterContent Component', () => {
     it('should have rows attribute for better accessibility', () => {
       renderWithContext(<CoverLetterContent />)
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
-      expect(textarea).toHaveAttribute('rows', '18')
+      expect(textarea).toHaveAttribute('rows', '12')
     })
 
-    it('should have descriptive placeholder with tips', () => {
+    it('should have descriptive placeholder', () => {
       renderWithContext(<CoverLetterContent />)
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       ) as HTMLTextAreaElement
-      expect(textarea.placeholder).toContain('Tip:')
-      expect(textarea.placeholder).toContain(
-        'Highlight your relevant experience'
-      )
+      expect(textarea.placeholder).toBe('Write your cover letter content...')
     })
   })
 
@@ -327,7 +322,7 @@ describe('CoverLetterContent Component', () => {
 
       expect(screen.getByText('5000')).toBeInTheDocument()
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveValue(longContent)
     })
@@ -340,7 +335,7 @@ describe('CoverLetterContent Component', () => {
       renderWithBothContexts(mockData, mockSetResumeData)
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveValue(specialContent)
       expect(screen.getByText(`${specialContent.length}`)).toBeInTheDocument()
@@ -353,7 +348,7 @@ describe('CoverLetterContent Component', () => {
       })
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveValue('')
       expect(screen.getByText('0')).toBeInTheDocument()
@@ -379,7 +374,7 @@ describe('CoverLetterContent Component', () => {
       })
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
       expect(textarea).toHaveValue(unicodeContent)
       expect(screen.getByText(`${unicodeContent.length}`)).toBeInTheDocument()
@@ -392,7 +387,7 @@ describe('CoverLetterContent Component', () => {
       renderWithBothContexts(mockData, mockSetResumeData)
 
       const textarea = screen.getByPlaceholderText(
-        /Write your compelling cover letter here/i
+        /Write your cover letter content\.\.\./i
       )
 
       // Simulate rapid typing

@@ -2,7 +2,7 @@
 
 import React, { useState, useContext } from 'react'
 import { Sparkles, Loader2 } from 'lucide-react'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -10,25 +10,30 @@ import {
   generateCoverLetterGraph,
   generateSummaryGraph,
 } from '@/lib/ai/strands/agent'
-import { OpenAIAPIError } from '@/lib/ai/openai-client'
+import {
+  OpenAIAPIError,
+} from '@/lib/ai/api'
+import {
+  fetchAvailableModels,
+} from '@/lib/ai/models'
 import { analytics } from '@/lib/analytics'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
 
-interface AITextAreaWithButtonProps {
+interface AIContentGeneratorProps {
   value: string
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  onGenerated?: (content: string) => void
-  placeholder: string
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void
+  onGenerated: (value: string) => void
+  placeholder?: string
   name: string
   rows?: number
   minHeight?: string
   maxLength?: number
   showCharacterCount?: boolean
   className?: string
-  mode: 'summary' | 'coverLetter'
+  mode: 'coverLetter' | 'summary'
 }
 
-const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
+const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   value,
   onChange,
   onGenerated,
@@ -71,10 +76,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
     if (onGenerated) {
       onGenerated(newValue)
     } else {
-      const syntheticEvent = {
-        target: { value: newValue, name },
-      } as React.ChangeEvent<HTMLTextAreaElement>
-      onChange(syntheticEvent)
+      onChange(newValue)
     }
   }
 
@@ -214,7 +216,7 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
           placeholder={placeholder}
           name={name}
           rows={rows}
-          className="block w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+          className="block w-full resize-y rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm leading-relaxed text-white transition-all outline-none placeholder:text-white/30 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 disabled:cursor-not-allowed disabled:opacity50"
           value={value}
           onChange={onChange}
           maxLength={maxLength}
@@ -232,14 +234,13 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
 
         {/* Generate by JD button - absolute bottom right */}
         <div className="absolute right-3 bottom-3">
-          <AISortButton
-            isConfigured={isConfigured}
+          <AIActionButton
             isLoading={isGenerating}
             onClick={handleGenerate}
-            label="Generate by JD"
-            disabledTooltip="Configure AI settings first"
-            size="sm"
-            variant="primary"
+            label={isGenerating ? 'Generating...' : 'Generate by JD'}
+            isConfigured={isConfigured}
+            className="text-amber-400 border-amber-400/20 hover:bg-amber-400/10"
+            variant="amber"
           />
         </div>
       </div>
@@ -247,4 +248,4 @@ const AITextAreaWithButton: React.FC<AITextAreaWithButtonProps> = ({
   )
 }
 
-export default AITextAreaWithButton
+export default AIContentGenerator

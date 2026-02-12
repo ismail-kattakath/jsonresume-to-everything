@@ -137,7 +137,7 @@ jest.mock('@/components/resume/forms/AdditionalSections', () => () => (
 jest.mock('@/components/resume/forms/Skill', () => ({ title }: any) => (
   <div data-testid={`skill-group-${title}`}>Skills: {title}</div>
 ))
-jest.mock('@/components/ui/AISortButton', () => ({ onClick }: any) => (
+jest.mock('@/components/ui/AIActionButton', () => ({ onClick }: any) => (
   <button data-testid="ai-sort-btn" onClick={onClick}>
     Sort
   </button>

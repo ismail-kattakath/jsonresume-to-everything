@@ -8,7 +8,7 @@ import {
   DnDDraggable,
 } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { sortAchievementsGraph, AchievementsSortResult } from '@/lib/ai/strands/agent'
@@ -237,11 +237,11 @@ const KeyAchievements = ({
           className={`flex-1 rounded-lg border border-dashed ${borderColor} bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 ${focusBorderColor}`}
         />
         {showAISort && (
-          <AISortButton
-            isConfigured={isConfigured}
-            isLoading={isSorting}
+          <AIActionButton
             onClick={handleAISort}
-            label="Sort by JD"
+            isLoading={isSorting}
+            isConfigured={isConfigured}
+            label={isSorting ? 'Sorting...' : 'Sort by JD'}
             showLabel={true}
             size="sm"
             variant="amber"

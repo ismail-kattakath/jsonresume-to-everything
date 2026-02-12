@@ -1,12 +1,13 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 
-describe('AISortButton', () => {
+describe('AIActionButton', () => {
   const defaultProps = {
     isConfigured: true,
     isLoading: false,
     onClick: jest.fn(),
+    label: 'Test Action'
   }
 
   beforeEach(() => {
@@ -14,20 +15,20 @@ describe('AISortButton', () => {
   })
 
   describe('rendering', () => {
-    it('should render with default label', () => {
-      render(<AISortButton {...defaultProps} />)
+    it('should render with provided label', () => {
+      render(<AIActionButton {...defaultProps} />)
 
-      expect(screen.getByText('Sort by JD')).toBeInTheDocument()
+      expect(screen.getByText('Test Action')).toBeInTheDocument()
     })
 
     it('should render with custom label', () => {
-      render(<AISortButton {...defaultProps} label="Sort Skills" />)
+      render(<AIActionButton {...defaultProps} label="Sort Skills" />)
 
       expect(screen.getByText('Sort Skills')).toBeInTheDocument()
     })
 
     it('should render sparkle icon when not loading', () => {
-      render(<AISortButton {...defaultProps} />)
+      render(<AIActionButton {...defaultProps} />)
 
       // The Sparkles icon should be present (via lucide-react)
       const button = screen.getByRole('button')
@@ -35,7 +36,7 @@ describe('AISortButton', () => {
     })
 
     it('should render loading spinner when loading', () => {
-      render(<AISortButton {...defaultProps} isLoading={true} />)
+      render(<AIActionButton {...defaultProps} isLoading={true} />)
 
       // The Loader2 icon should have animate-spin class
       const button = screen.getByRole('button')
@@ -47,7 +48,7 @@ describe('AISortButton', () => {
   describe('interaction', () => {
     it('should call onClick when clicked and configured', () => {
       const onClick = jest.fn()
-      render(<AISortButton {...defaultProps} onClick={onClick} />)
+      render(<AIActionButton {...defaultProps} onClick={onClick} />)
 
       fireEvent.click(screen.getByRole('button'))
 
@@ -57,7 +58,7 @@ describe('AISortButton', () => {
     it('should not call onClick when not configured', () => {
       const onClick = jest.fn()
       render(
-        <AISortButton
+        <AIActionButton
           {...defaultProps}
           isConfigured={false}
           onClick={onClick}
@@ -72,7 +73,7 @@ describe('AISortButton', () => {
     it('should not call onClick when loading', () => {
       const onClick = jest.fn()
       render(
-        <AISortButton {...defaultProps} isLoading={true} onClick={onClick} />
+        <AIActionButton {...defaultProps} isLoading={true} onClick={onClick} />
       )
 
       fireEvent.click(screen.getByRole('button'))
@@ -83,26 +84,26 @@ describe('AISortButton', () => {
 
   describe('disabled state', () => {
     it('should be disabled when not configured', () => {
-      render(<AISortButton {...defaultProps} isConfigured={false} />)
+      render(<AIActionButton {...defaultProps} isConfigured={false} />)
 
       expect(screen.getByRole('button')).toBeDisabled()
     })
 
     it('should be disabled when loading', () => {
-      render(<AISortButton {...defaultProps} isLoading={true} />)
+      render(<AIActionButton {...defaultProps} isLoading={true} />)
 
       expect(screen.getByRole('button')).toBeDisabled()
     })
 
     it('should not be disabled when configured and not loading', () => {
-      render(<AISortButton {...defaultProps} />)
+      render(<AIActionButton {...defaultProps} />)
 
       expect(screen.getByRole('button')).not.toBeDisabled()
     })
 
     it('should show custom disabled tooltip when not configured', () => {
       render(
-        <AISortButton
+        <AIActionButton
           {...defaultProps}
           isConfigured={false}
           disabledTooltip="Custom tooltip"
@@ -116,7 +117,7 @@ describe('AISortButton', () => {
     })
 
     it('should show default disabled tooltip when not configured', () => {
-      render(<AISortButton {...defaultProps} isConfigured={false} />)
+      render(<AIActionButton {...defaultProps} isConfigured={false} />)
 
       expect(screen.getByRole('button')).toHaveAttribute(
         'title',
@@ -127,21 +128,21 @@ describe('AISortButton', () => {
 
   describe('size variants', () => {
     it('should apply small size classes by default', () => {
-      render(<AISortButton {...defaultProps} />)
+      render(<AIActionButton {...defaultProps} />)
 
       const button = screen.getByRole('button')
       expect(button).toHaveClass('px-2', 'py-1', 'text-xs')
     })
 
     it('should apply small size classes when size is sm', () => {
-      render(<AISortButton {...defaultProps} size="sm" />)
+      render(<AIActionButton {...defaultProps} size="sm" />)
 
       const button = screen.getByRole('button')
       expect(button).toHaveClass('px-2', 'py-1', 'text-xs')
     })
 
     it('should apply medium size classes when size is md', () => {
-      render(<AISortButton {...defaultProps} size="md" />)
+      render(<AIActionButton {...defaultProps} size="md" />)
 
       const button = screen.getByRole('button')
       expect(button).toHaveClass('px-3', 'py-1.5', 'text-sm')
@@ -150,14 +151,14 @@ describe('AISortButton', () => {
 
   describe('styling', () => {
     it('should have gradient styling when enabled', () => {
-      render(<AISortButton {...defaultProps} />)
+      render(<AIActionButton {...defaultProps} />)
 
       const button = screen.getByRole('button')
       expect(button).toHaveClass('bg-gradient-to-r')
     })
 
     it('should have muted styling when disabled', () => {
-      render(<AISortButton {...defaultProps} isConfigured={false} />)
+      render(<AIActionButton {...defaultProps} isConfigured={false} />)
 
       const button = screen.getByRole('button')
       expect(button).toHaveClass('cursor-not-allowed')

@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { FormTextarea } from '@/components/ui/FormTextarea'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { fetchAvailableModels } from '@/lib/ai/openai-client'
+import { fetchAvailableModels } from '@/lib/ai/models'
 import {
   PROVIDER_PRESETS,
   getProviderByURL,
@@ -22,6 +22,7 @@ import ProviderSelector from './ai-settings/ProviderSelector'
 import APIKeyInput from './ai-settings/APIKeyInput'
 import ModelSelector from './ai-settings/ModelSelector'
 import AIPipelineButton from './ai-settings/AIPipelineButton'
+import JobDescriptionInput from './ai-settings/JobDescriptionInput'
 
 const AISettings = () => {
   const { resumeData, setResumeData } = React.useContext(ResumeContext)
@@ -267,22 +268,13 @@ const AISettings = () => {
         </div>
       )}
 
-      <FormTextarea
-        label="Job Description"
-        name="jobDescription"
+      <JobDescriptionInput
         value={settings.jobDescription}
-        onChange={(e) => updateSettings({ jobDescription: e.target.value })}
-        placeholder="Paste the job description here..."
-        variant="blue"
-        minHeight="160px"
-        onAIAction={handleRefineJD}
-        isAILoading={isAnalyzing}
-        isAIConfigured={isConfigured}
-        aiButtonTitle="Refine with AI"
-        aiShowLabel={false}
-        aiVariant="amber"
+        onChange={(val) => updateSettings({ jobDescription: val })}
+        onRefine={handleRefineJD}
+        isAnalyzing={isAnalyzing}
+        isConfigured={isConfigured}
         disabled={isAnalyzing || isPipelineRunning}
-        showCounter={false}
       />
 
       <AIPipelineButton

@@ -2,7 +2,7 @@
 
 import React, { useState, useContext } from 'react'
 import { Sparkles, Loader2 } from 'lucide-react'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
@@ -139,14 +139,11 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
           disabled={isGenerating}
         />
         <div className="absolute top-1/2 right-2 -translate-y-1/2">
-          <AISortButton
-            isConfigured={isConfigured}
+          <AIActionButton
             isLoading={isGenerating}
             onClick={handleGenerate}
-            label="Generate by JD"
-            showLabel={false}
-            size="sm"
-            variant="amber"
+            label={isGenerating ? 'Generating...' : 'Refine'}
+            isConfigured={isConfigured}
           />
         </div>
       </div>

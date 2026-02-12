@@ -13,10 +13,8 @@ jest.mock('@/lib/ai/strands/agent', () => ({
   extractSkillsGraph: jest.fn(),
 }))
 
-// Mock the openai-client module
-jest.mock('@/lib/ai/openai-client', () => ({
-  generateCoverLetter: jest.fn(),
-  generateSummary: jest.fn(),
+// Mock the modular AI modules
+jest.mock('@/lib/ai/api', () => ({
   OpenAIAPIError: class OpenAIAPIError extends Error {
     constructor(
       message: string,
@@ -27,6 +25,10 @@ jest.mock('@/lib/ai/openai-client', () => ({
       this.name = 'OpenAIAPIError'
     }
   },
+}))
+
+jest.mock('@/lib/ai/models', () => ({
+  fetchAvailableModels: jest.fn(),
 }))
 
 // Mock sonner toast

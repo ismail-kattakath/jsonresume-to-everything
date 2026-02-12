@@ -12,7 +12,7 @@ import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndD
 import { AccordionCard } from '@/components/ui/AccordionCard'
 import { SkillGroupHeader } from './SkillGroupHeader'
 import Skill from './Skill'
-import AISortButton from '@/components/ui/AISortButton'
+import AIActionButton from '@/components/ui/AIActionButton'
 import { FormTextarea } from '@/components/ui/FormTextarea'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
 import { tooltips } from '@/config/tooltips'
@@ -271,14 +271,12 @@ export function SkillsSection() {
                         <MdAddCircle className="text-lg" />
                         <span>Add Skill Group</span>
                     </button>
-                    <AISortButton
-                        isConfigured={isConfigured}
-                        isLoading={isSorting}
+                    <AIActionButton
                         onClick={handleAISort}
-                        label="Sort by JD"
+                        isLoading={isSorting}
+                        isConfigured={isConfigured}
+                        label={isSorting ? 'Sorting...' : 'Sort by JD'}
                         showLabel={true}
-                        size="sm"
-                        variant="amber"
                     />
                 </div>
             )}

@@ -13,9 +13,13 @@ import type { AIProviderType } from '@/types/ai-provider'
 import {
   loadCredentials,
   saveCredentials,
+} from '@/lib/ai/storage'
+import {
   testConnection,
+} from '@/lib/ai/api'
+import {
   validateJobDescription,
-} from '@/lib/ai/openai-client'
+} from '@/lib/ai/utils'
 import { getProviderByURL } from '@/lib/ai/providers'
 
 const DEFAULT_API_URL = 'https://api.openai.com/v1'

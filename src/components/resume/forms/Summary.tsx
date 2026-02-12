@@ -1,26 +1,32 @@
 import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import AITextAreaWithButton from '@/components/document-builder/shared-forms/AITextAreaWithButton'
+import AIContentGenerator from '@/components/document-builder/shared-forms/AIContentGenerator'
 
 const Summary = () => {
   const { resumeData, setResumeData, handleChange } = useContext(ResumeContext)
 
-  const handleGenerate = (generatedSummary: string) => {
-    setResumeData({ ...resumeData, summary: generatedSummary })
+
+
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement> | string) => {
+    if (typeof e === 'string') {
+      setResumeData({ ...resumeData, summary: e })
+    } else if (handleChange) {
+      handleChange(e)
+    } else {
+      setResumeData({ ...resumeData, summary: e.target.value })
+    }
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <AITextAreaWithButton
-        value={resumeData.summary}
-        onChange={handleChange}
-        onGenerated={handleGenerate}
-        placeholder="Write a compelling professional summary highlighting your key strengths, experience, and career objectives..."
+      <AIContentGenerator
         name="summary"
+        value={resumeData.summary || ''}
+        onChange={handleSummaryChange}
+        onGenerated={handleSummaryChange}
+        placeholder="Write a compelling professional summary..."
         rows={8}
-        minHeight="160px"
         maxLength={600}
-        showCharacterCount={true}
         mode="summary"
       />
     </div>

@@ -1,15 +1,14 @@
+
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import AITextAreaWithButton from '@/components/document-builder/shared-forms/AITextAreaWithButton'
+import AIContentGenerator from '../AIContentGenerator'
 import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import type { ResumeData } from '@/types'
 
-// Mock the openai-client module
-jest.mock('@/lib/ai/openai-client', () => ({
-  generateCoverLetter: jest.fn(),
-  generateSummary: jest.fn(),
+// Mock the modular AI modules
+jest.mock('@/lib/ai/api', () => ({
   OpenAIAPIError: class OpenAIAPIError extends Error {
     constructor(
       message: string,
@@ -20,6 +19,10 @@ jest.mock('@/lib/ai/openai-client', () => ({
       this.name = 'OpenAIAPIError'
     }
   },
+}))
+
+jest.mock('@/lib/ai/models', () => ({
+  fetchAvailableModels: jest.fn(),
 }))
 
 // Mock sonner toast
@@ -108,10 +111,11 @@ const renderWithProviders = (
   )
 }
 
-describe('AITextAreaWithButton Component', () => {
+describe('AIContentGenerator Component', () => {
   const defaultProps = {
     value: '',
     onChange: jest.fn(),
+    onGenerated: jest.fn(),
     placeholder: 'Test placeholder',
     name: 'testField',
     mode: 'summary' as const,
@@ -122,29 +126,29 @@ describe('AITextAreaWithButton Component', () => {
   })
 
   describe('Rendering', () => {
-    it('should render textarea with provided props', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+    it('should render AIContentGenerator with provided props', () => {
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const textarea = screen.getByPlaceholderText('Test placeholder')
       expect(textarea).toBeInTheDocument()
       expect(textarea).toHaveAttribute('name', 'testField')
     })
 
     it('should render floating AI button', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
     })
 
     it('should display character counter by default', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value="Hello" />
+        <AIContentGenerator {...defaultProps} value="Hello" />
       )
       expect(screen.getByText('5')).toBeInTheDocument()
     })
 
     it('should hide character counter when showCharacterCount is false', () => {
       renderWithProviders(
-        <AITextAreaWithButton
+        <AIContentGenerator
           {...defaultProps}
           value="Hello"
           showCharacterCount={false}
@@ -155,32 +159,32 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should display maxLength in character counter when provided', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value="Hello" maxLength={100} />
+        <AIContentGenerator {...defaultProps} value="Hello" maxLength={100} />
       )
       expect(screen.getByText('5/100')).toBeInTheDocument()
     })
 
     it('should render with custom rows prop', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} rows={10} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} rows={10} />)
       const textarea = screen.getByPlaceholderText('Test placeholder')
       expect(textarea).toHaveAttribute('rows', '10')
     })
 
     it('should use default rows value of 18', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const textarea = screen.getByPlaceholderText('Test placeholder')
       expect(textarea).toHaveAttribute('rows', '18')
     })
 
     it('should show configure hint in button title when AI is not configured', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const button = screen.getByRole('button')
       expect(button).toHaveAttribute('title', 'Configure AI settings first')
     })
 
     it('should show generate hint in button title when AI is configured', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />,
+        <AIContentGenerator {...defaultProps} />,
         mockConfiguredAISettings
       )
       const button = screen.getByRole('button')
@@ -192,11 +196,18 @@ describe('AITextAreaWithButton Component', () => {
   describe('User Interactions', () => {
     it('should call onChange when user types', () => {
       const mockOnChange = jest.fn()
+      const mockOnGenerated = jest.fn()
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} onChange={mockOnChange} />
+        <AIContentGenerator
+          value=""
+          onChange={mockOnChange}
+          onGenerated={mockOnGenerated}
+          name="test-input"
+          placeholder="Enter text..."
+          mode="summary"
+        />
       )
-
-      const textarea = screen.getByPlaceholderText('Test placeholder')
+      const textarea = screen.getByPlaceholderText('Enter text...')
       fireEvent.change(textarea, { target: { value: 'New content' } })
 
       expect(mockOnChange).toHaveBeenCalledTimes(1)
@@ -204,7 +215,7 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should update displayed value when value prop changes', () => {
       const { rerender } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value="Initial" />
+        <AIContentGenerator {...defaultProps} value="Initial" />
       )
 
       const textarea = screen.getByPlaceholderText('Test placeholder')
@@ -213,7 +224,7 @@ describe('AITextAreaWithButton Component', () => {
       rerender(
         <AISettingsContext.Provider value={mockAISettings}>
           <ResumeContext.Provider value={mockResumeContext}>
-            <AITextAreaWithButton {...defaultProps} value="Updated" />
+            <AIContentGenerator {...defaultProps} value="Updated" />
           </ResumeContext.Provider>
         </AISettingsContext.Provider>
       )
@@ -224,7 +235,7 @@ describe('AITextAreaWithButton Component', () => {
   describe('Styling', () => {
     it('should have orange focus styles on textarea', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AIContentGenerator {...defaultProps} />
       )
       const textarea = container.querySelector('.focus\\:border-amber-400')
       expect(textarea).toBeInTheDocument()
@@ -232,14 +243,14 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should have fully rounded textarea', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AIContentGenerator {...defaultProps} />
       )
       const textarea = container.querySelector('.rounded-lg')
       expect(textarea).toBeInTheDocument()
     })
 
     it('should have inline generate button at top', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
       expect(screen.getByText('Generate by JD')).toBeInTheDocument()
@@ -247,18 +258,16 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should have gradient purple/blue button styling', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />,
+        <AIContentGenerator {...defaultProps} />,
         mockConfiguredAISettings
       )
-      const button = container.querySelector(
-        '.from-blue-500.to-purple-500'
-      )
-      expect(button).toBeInTheDocument()
+      const button = screen.getByRole('button')
+      expect(button).toHaveClass('bg-gradient-to-r')
     })
 
     it('should position character counter at top-right', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AIContentGenerator {...defaultProps} />
       )
       const counter = container.querySelector('.absolute.top-3.right-3')
       expect(counter).toBeInTheDocument()
@@ -266,7 +275,7 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should apply custom className to wrapper', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} className="custom-class" />
+        <AIContentGenerator {...defaultProps} className="custom-class" />
       )
       const wrapper = container.querySelector('.custom-class')
       expect(wrapper).toBeInTheDocument()
@@ -274,7 +283,7 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should have disabled styling when not configured', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AIContentGenerator {...defaultProps} />
       )
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
@@ -284,13 +293,13 @@ describe('AITextAreaWithButton Component', () => {
 
   describe('Character Counter', () => {
     it('should show 0 for empty value', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} value="" />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} value="" />)
       expect(screen.getByText('0')).toBeInTheDocument()
     })
 
     it('should count all characters including spaces', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value="Hello World" />
+        <AIContentGenerator {...defaultProps} value="Hello World" />
       )
       expect(screen.getByText('11')).toBeInTheDocument()
     })
@@ -298,21 +307,21 @@ describe('AITextAreaWithButton Component', () => {
     it('should count newlines', () => {
       const valueWithNewline = 'Line 1\nLine 2'
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value={valueWithNewline} />
+        <AIContentGenerator {...defaultProps} value={valueWithNewline} />
       )
       expect(screen.getByText(`${valueWithNewline.length}`)).toBeInTheDocument()
     })
 
     it('should count special characters', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value="Test@123!" />
+        <AIContentGenerator {...defaultProps} value="Test@123!" />
       )
       expect(screen.getByText('9')).toBeInTheDocument()
     })
 
     it('should be non-interactive', () => {
       const { container } = renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />
+        <AIContentGenerator {...defaultProps} />
       )
       const counter = container.querySelector('.pointer-events-none')
       expect(counter).toBeInTheDocument()
@@ -322,7 +331,7 @@ describe('AITextAreaWithButton Component', () => {
   describe('Accessibility', () => {
     it('should have accessible button with title', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />,
+        <AIContentGenerator {...defaultProps} />,
         mockConfiguredAISettings
       )
       const button = screen.getByRole('button')
@@ -333,14 +342,14 @@ describe('AITextAreaWithButton Component', () => {
     })
 
     it('should have button type set to button', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const button = screen.getByRole('button')
       expect(button).toHaveAttribute('type', 'button')
     })
 
     it('should have name attribute on textarea', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} name="customName" />
+        <AIContentGenerator {...defaultProps} name="customName" />
       )
       const textarea = screen.getByPlaceholderText('Test placeholder')
       expect(textarea).toHaveAttribute('name', 'customName')
@@ -348,21 +357,21 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should have maxLength attribute when provided', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} maxLength={500} />
+        <AIContentGenerator {...defaultProps} maxLength={500} />
       )
       const textarea = screen.getByPlaceholderText('Test placeholder')
       expect(textarea).toHaveAttribute('maxLength', '500')
     })
 
     it('should disable button when AI is not configured', () => {
-      renderWithProviders(<AITextAreaWithButton {...defaultProps} />)
+      renderWithProviders(<AIContentGenerator {...defaultProps} />)
       const button = screen.getByRole('button')
       expect(button).toBeDisabled()
     })
 
     it('should enable button when AI is configured', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} />,
+        <AIContentGenerator {...defaultProps} />,
         mockConfiguredAISettings
       )
       const button = screen.getByRole('button')
@@ -373,7 +382,7 @@ describe('AITextAreaWithButton Component', () => {
   describe('Edge Cases', () => {
     it('should handle undefined value', () => {
       renderWithProviders(
-        <AITextAreaWithButton
+        <AIContentGenerator
           {...defaultProps}
           value={undefined as unknown as string}
         />
@@ -385,7 +394,7 @@ describe('AITextAreaWithButton Component', () => {
 
     it('should handle null value', () => {
       renderWithProviders(
-        <AITextAreaWithButton
+        <AIContentGenerator
           {...defaultProps}
           value={null as unknown as string}
         />
@@ -398,7 +407,7 @@ describe('AITextAreaWithButton Component', () => {
     it('should handle very long content', () => {
       const longContent = 'A'.repeat(5000)
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value={longContent} />
+        <AIContentGenerator {...defaultProps} value={longContent} />
       )
       expect(screen.getByText('5000')).toBeInTheDocument()
     })
@@ -406,7 +415,7 @@ describe('AITextAreaWithButton Component', () => {
     it('should handle emoji and unicode characters', () => {
       const content = 'Hello 🎉 你好'
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} value={content} />
+        <AIContentGenerator {...defaultProps} value={content} />
       )
       expect(screen.getByText(`${content.length}`)).toBeInTheDocument()
     })
@@ -415,14 +424,14 @@ describe('AITextAreaWithButton Component', () => {
   describe('Mode prop', () => {
     it('should accept summary mode', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} mode="summary" />
+        <AIContentGenerator {...defaultProps} mode="summary" />
       )
       expect(screen.getByRole('button')).toBeInTheDocument()
     })
 
     it('should accept coverLetter mode', () => {
       renderWithProviders(
-        <AITextAreaWithButton {...defaultProps} mode="coverLetter" />
+        <AIContentGenerator {...defaultProps} mode="coverLetter" />
       )
       expect(screen.getByRole('button')).toBeInTheDocument()
     })

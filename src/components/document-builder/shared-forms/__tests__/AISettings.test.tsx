@@ -2,14 +2,14 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import AISettings from '../AISettings'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { fetchAvailableModels } from '@/lib/ai/openai-client'
+import { fetchAvailableModels } from '@/lib/ai/models'
 import { PROVIDER_PRESETS, getProviderByURL } from '@/lib/ai/providers'
 import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
 import { toast } from 'sonner'
 
 // Mock dependencies
 jest.mock('@/lib/contexts/AISettingsContext')
-jest.mock('@/lib/ai/openai-client')
+jest.mock('@/lib/ai/models')
 jest.mock('@/lib/ai/strands/agent')
 jest.mock('@strands-agents/sdk', () => ({
   Agent: jest.fn(),
