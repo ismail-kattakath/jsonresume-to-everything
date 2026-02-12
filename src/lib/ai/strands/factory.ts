@@ -15,8 +15,8 @@ export function createModel(config: AgentConfig): Model {
             modelId: config.model,
             apiKey: config.apiKey || 'not-needed',
             clientConfig: {
-                // If it's a proxy or custom endpoint, otherwise it uses default
-                httpOptions: config.apiUrl !== 'https://api.openai.com/v1' ? {
+                // If it's a custom proxy, otherwise use SDK default
+                httpOptions: config.apiUrl && !config.apiUrl.includes('generativelanguage.googleapis.com') ? {
                     baseUrl: config.apiUrl
                 } : undefined
             }

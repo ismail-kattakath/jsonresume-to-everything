@@ -9,6 +9,16 @@ import type { ResumeData } from '@/types'
 
 // Mock the modular AI modules
 jest.mock('@/lib/ai/api', () => ({
+  AIAPIError: class AIAPIError extends Error {
+    constructor(
+      message: string,
+      public code?: string,
+      public type?: string
+    ) {
+      super(message)
+      this.name = 'AIAPIError'
+    }
+  },
   OpenAIAPIError: class OpenAIAPIError extends Error {
     constructor(
       message: string,
@@ -19,6 +29,7 @@ jest.mock('@/lib/ai/api', () => ({
       this.name = 'OpenAIAPIError'
     }
   },
+  sanitizeAIError: jest.fn(err => err.message || err.toString()),
 }))
 
 jest.mock('@/lib/ai/models', () => ({

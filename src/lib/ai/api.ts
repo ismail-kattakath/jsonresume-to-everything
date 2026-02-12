@@ -8,25 +8,39 @@ import {
 const REQUEST_TIMEOUT = 120000 // 120 seconds (2 minutes)
 
 /**
- * Custom error class for OpenAI API errors
+ * Custom error class for AI API errors
  */
-export class OpenAIAPIError extends Error {
+export class AIAPIError extends Error {
     constructor(
         public override message: string,
         public code?: string,
         public type?: string
     ) {
         super(message)
-        this.name = 'OpenAIAPIError'
+        this.name = 'AIAPIError'
     }
 }
 
 /**
- * Helper to sanitize OpenAI/Provider errors into user-friendly messages
+ * Backward compatibility alias
  */
-function sanitizeOpenAIError(error: any): string {
+export const OpenAIAPIError = AIAPIError
+
+/**
+ * Helper to sanitize AI errors into user-friendly messages
+ */
+export function sanitizeAIError(error: any): string {
     // 1. Handle string errors directly
-    if (typeof error === 'string') return error
+    if (typeof error === 'string') {
+        // Check if the string itself is a JSON error from Gemini
+        if (error.includes('{') && error.includes('}')) {
+            try {
+                const parsed = JSON.parse(error)
+                if (parsed.error?.message) return sanitizeAIError(parsed.error.message)
+            } catch (e) { /* ignore */ }
+        }
+        return error
+    }
 
     // 2. Handle standard Error objects
     const message = error.message || error.toString()
@@ -38,9 +52,10 @@ function sanitizeOpenAIError(error: any): string {
         message.includes('RateLimitError') ||
         message.includes('429') ||
         message.includes('quota') ||
-        message.includes('Resource has been exhausted')
+        message.includes('Resource has been exhausted') ||
+        message.includes('RESOURCE_EXHAUSTED')
     ) {
-        return 'Rate limit exceeded. Please try again later or check your API quota.'
+        return 'Rate limit exceeded. Please try again later or check your AI API quota.'
     }
 
     // Overloaded server / Service Unavailable
@@ -75,8 +90,15 @@ function sanitizeOpenAIError(error: any): string {
             // Attempt to find a nested "message" field in the raw string
             const match = message.match(/"message":\s*"([^"]+)"/)
             if (match && match[1]) {
-                return match[1]
+                // If the extracted message is also encoded JSON, recurse
+                return sanitizeAIError(match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'))
             }
+
+            // Try direct JSON parse if it looks like a complete object
+            const jsonPart = message.substring(message.indexOf('{'))
+            const parsed = JSON.parse(jsonPart)
+            if (parsed.error?.message) return sanitizeAIError(parsed.error.message)
+            if (parsed.message) return sanitizeAIError(parsed.message)
         } catch (e) {
             // ignore parsing errors
         }
@@ -120,18 +142,18 @@ export async function makeOpenAIRequest(
                 errorMessage = errorData.error.message || errorMessage
 
                 // Sanitize the message before throwing
-                const sanitizedMessage = sanitizeOpenAIError(errorMessage)
+                const sanitizedMessage = sanitizeAIError(errorMessage)
 
-                throw new OpenAIAPIError(
+                throw new AIAPIError(
                     sanitizedMessage,
                     errorData.error.code,
                     errorData.error.type
                 )
             } catch (parseError) {
-                if (parseError instanceof OpenAIAPIError) {
+                if (parseError instanceof AIAPIError) {
                     throw parseError
                 }
-                throw new OpenAIAPIError(sanitizeOpenAIError(errorMessage))
+                throw new AIAPIError(sanitizeAIError(errorMessage))
             }
         }
 
@@ -158,12 +180,14 @@ export async function makeOpenAIRequest(
             }
 
             // Sanitize generic errors
-            throw new OpenAIAPIError(sanitizeOpenAIError(error))
+            throw new AIAPIError(sanitizeAIError(error))
         }
 
-        throw new OpenAIAPIError('An unexpected error occurred')
+        throw new AIAPIError('An unexpected error occurred')
     }
 }
+
+import { getProviderByURL } from './providers'
 
 /**
  * Tests the API connection and returns the actual model being used by the server
@@ -173,6 +197,17 @@ export async function testConnection(config: OpenAIConfig): Promise<{
     modelId?: string
 }> {
     try {
+        // Detect if it's Gemini - it has a different API structure
+        const provider = getProviderByURL(config.baseURL)
+        if (provider?.providerType === 'gemini') {
+            // For Gemini, we do a basic reachability test by fetching available models
+            const response = await fetch(`${config.baseURL}/models?key=${config.apiKey}`)
+            return {
+                success: response.ok,
+                modelId: config.model,
+            }
+        }
+
         const request: OpenAIRequest = {
             model: config.model,
             messages: [

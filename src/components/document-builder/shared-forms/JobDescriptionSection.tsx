@@ -6,6 +6,7 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { runAIGenerationPipeline, analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
+import { sanitizeAIError } from '@/lib/ai/api'
 import type { ResumeData } from '@/types'
 
 // Sub-components
@@ -39,7 +40,7 @@ const JobDescriptionSection = () => {
                     apiUrl: settings.apiUrl,
                     apiKey: settings.apiKey,
                     model: settings.model || 'gpt-4o-mini',
-                    providerType: 'openai-compatible',
+                    providerType: settings.providerType,
                 },
                 (chunk) => {
                     // Update toast with progress messages
@@ -53,7 +54,7 @@ const JobDescriptionSection = () => {
             toast.success('Job description refined successfully!', { id: toastId })
         } catch (error) {
             console.error('[JobDescriptionSection] Refinement error:', error)
-            toast.error(`Refinement failed: ${(error as Error).message}`, { id: toastId })
+            toast.error(`Refinement failed: ${sanitizeAIError(error)}`, { id: toastId })
         } finally {
             setIsAnalyzing(false)
         }
@@ -75,7 +76,7 @@ const JobDescriptionSection = () => {
                     apiUrl: settings.apiUrl,
                     apiKey: settings.apiKey,
                     model: settings.model || 'gpt-4o-mini',
-                    providerType: 'openai-compatible',
+                    providerType: settings.providerType,
                 },
                 (progress) => {
                     // Update toast with current step
@@ -133,7 +134,7 @@ const JobDescriptionSection = () => {
             toast.success('Resume optimized successfully!', { id: toastId })
         } catch (error) {
             console.error('[JobDescriptionSection] Pipeline error:', error)
-            toast.error(`Optimization failed: ${(error as Error).message}`, { id: toastId })
+            toast.error(`Optimization failed: ${sanitizeAIError(error)}`, { id: toastId })
         } finally {
             setIsPipelineRunning(false)
         }

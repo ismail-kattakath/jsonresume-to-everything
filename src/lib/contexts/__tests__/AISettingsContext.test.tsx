@@ -14,7 +14,12 @@ import {
 
 // Mock dependencies
 jest.mock('@/lib/ai/storage')
-jest.mock('@/lib/ai/api')
+jest.mock('@/lib/ai/api', () => ({
+  testConnection: jest.fn(),
+  AIAPIError: class AIAPIError extends Error { },
+  OpenAIAPIError: class OpenAIAPIError extends Error { },
+  sanitizeAIError: jest.fn(err => err.message || err.toString()),
+}))
 
 const mockLoadCredentials = loadCredentials as jest.MockedFunction<
   typeof loadCredentials

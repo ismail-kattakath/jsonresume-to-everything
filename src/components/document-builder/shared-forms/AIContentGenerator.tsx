@@ -11,7 +11,8 @@ import {
   generateSummaryGraph,
 } from '@/lib/ai/strands/agent'
 import {
-  OpenAIAPIError,
+  AIAPIError,
+  sanitizeAIError,
 } from '@/lib/ai/api'
 import {
   fetchAvailableModels,
@@ -184,7 +185,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       let errorType = 'unknown'
 
       /* istanbul ignore next */
-      if (err instanceof OpenAIAPIError) {
+      if (err instanceof AIAPIError) {
         errorMessage = err.message
         errorType = err.constructor.name
       } else if (err instanceof Error) {
@@ -198,7 +199,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 
       /* istanbul ignore next */
       toast.error('Generation failed', {
-        description: errorMessage,
+        description: sanitizeAIError(err),
       })
     } finally {
       setIsGenerating(false)

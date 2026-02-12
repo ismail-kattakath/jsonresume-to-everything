@@ -12,7 +12,8 @@ import {
   saveCredentials,
   loadCredentials,
 } from '@/lib/ai/storage'
-import { OpenAIAPIError } from '@/lib/ai/api'
+import { AIAPIError, sanitizeAIError } from '@/lib/ai/api'
+import { getProviderByURL } from '@/lib/ai/providers'
 import AIActionButton from '@/components/ui/AIActionButton'
 import type { ResumeData } from '@/types'
 
@@ -137,6 +138,9 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
       })
 
       // Generate content with streaming
+      const provider = getProviderByURL(apiUrl)
+      const providerType = provider?.providerType || 'openai-compatible'
+
       const content = await currentConfig.generateFunction(
         resumeData,
         jobDescription,
@@ -144,7 +148,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
           apiUrl,
           apiKey,
           model: DEFAULT_MODEL,
-          providerType: 'openai-compatible', // Default to openai-compatible for legacy modal
+          providerType,
         },
         (chunk) => {
           // Update streamed content in real-time
@@ -166,15 +170,15 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
 
       let errorMessage = currentConfig.errorMessage
 
-      if (err instanceof OpenAIAPIError) {
+      if (err instanceof AIAPIError) {
         errorMessage = err.message
       } else if (err instanceof Error) {
         errorMessage = err.message
       }
 
-      setError(errorMessage)
+      setError(sanitizeAIError(err))
       toast.error('Generation failed', {
-        description: errorMessage,
+        description: sanitizeAIError(err),
       })
     } finally {
       setIsGenerating(false)

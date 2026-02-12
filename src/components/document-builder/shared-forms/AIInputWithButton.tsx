@@ -10,6 +10,7 @@ import { generateJobTitleGraph } from '@/lib/ai/strands/agent'
 import { analytics } from '@/lib/analytics'
 import { FormInput } from '@/components/ui/FormInput'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
+import { sanitizeAIError } from '@/lib/ai/api'
 
 interface AIInputWithButtonProps {
   value: string
@@ -121,7 +122,7 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
 
       /* istanbul ignore next */
       toast.error('Generation failed', {
-        description: errorMessage,
+        description: sanitizeAIError(err),
       })
     } finally {
       setIsGenerating(false)

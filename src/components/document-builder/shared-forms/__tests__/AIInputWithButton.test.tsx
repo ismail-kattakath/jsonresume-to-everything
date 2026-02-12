@@ -15,7 +15,9 @@ jest.mock('@/lib/ai/strands/agent', () => ({
 }))
 // Mock the modular AI modules
 jest.mock('@/lib/ai/api', () => ({
+  AIAPIError: class AIAPIError extends Error { },
   OpenAIAPIError: class OpenAIAPIError extends Error { },
+  sanitizeAIError: jest.fn(err => err.message || err.toString()),
 }))
 
 describe('AIInputWithButton Component', () => {
