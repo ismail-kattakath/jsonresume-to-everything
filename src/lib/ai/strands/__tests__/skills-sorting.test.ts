@@ -18,10 +18,11 @@ jest.mock('@strands-agents/sdk/openai', () => {
 })
 
 describe('Skills Sorting', () => {
-    const mockConfig = {
+    const mockConfig: any = {
         apiUrl: 'http://localhost:1234/v1',
         apiKey: 'test-key',
         model: 'test-model',
+        providerType: 'openai-compatible',
     }
 
     const mockJD = 'Looking for a Senior React Developer.'

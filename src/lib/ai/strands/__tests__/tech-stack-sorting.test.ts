@@ -10,7 +10,7 @@ jest.mock('../factory', () => ({
 describe('sortTechStackGraph', () => {
     const mockTechnologies = ['React', 'Node.js', 'PostgreSQL']
     const mockJD = 'Looking for a React developer with Node.js experience.'
-    const mockConfig = { apiUrl: 'test', apiKey: 'test', model: 'test' }
+    const mockConfig: any = { apiUrl: 'test', apiKey: 'test', model: 'test', providerType: 'openai-compatible' }
 
     beforeEach(() => {
         jest.clearAllMocks()
