@@ -17,16 +17,12 @@ import KeyAchievements from '@/components/resume/forms/KeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
 import AISortButton from '@/components/ui/AISortButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { requestAISort } from '@/lib/ai/openai-client'
 import {
   sortSkillsGraph,
   sortTechStackGraph,
+  tailorExperienceToJD,
 } from '@/lib/ai/strands/agent'
-import {
-  buildAchievementsSortPrompt,
-  parseAchievementsSortResponse,
-  applySortedAchievements,
-} from '@/lib/ai/sorting-prompts'
+import { AILoadingToast } from '@/components/ui/AILoadingToast'
 import type { DropResult } from '@hello-pangea/dnd'
 import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
 
@@ -50,67 +46,8 @@ const KeyAchievementsSortButton = ({
   // Only show if there are 2+ achievements
   if (achievements.length < 2) return null
 
-  /* istanbul ignore next */
-  const handleAISort = /* istanbul ignore next */ async () => {
-    /* istanbul ignore next */
-    if (!isConfigured || isSorting) return
-
-    /* istanbul ignore next */
-    setIsSorting(true)
-    /* istanbul ignore next */
-    try {
-      const prompt = buildAchievementsSortPrompt(
-        achievements,
-        workExperience.position,
-        workExperience.organization,
-        settings.jobDescription
-      )
-
-      const response = await requestAISort(
-        {
-          baseURL: settings.apiUrl,
-          apiKey: settings.apiKey,
-          model: settings.model,
-        },
-        prompt
-      )
-
-      const sortResult = parseAchievementsSortResponse(response, achievements)
-
-      if (sortResult) {
-        const sortedAchievements = applySortedAchievements(
-          achievements,
-          sortResult
-        )
-        const newWorkExperience = [...resumeData.workExperience]
-        newWorkExperience[workExperienceIndex] = {
-          ...workExperience,
-          keyAchievements: sortedAchievements,
-        }
-        setResumeData({ ...resumeData, workExperience: newWorkExperience })
-        toast.success('Achievements sorted by job relevance')
-      } else {
-        toast.error('Failed to parse AI response. Please try again.')
-      }
-    } catch (error) {
-      console.error('AI Achievements sort error:', error)
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to sort achievements'
-      )
-    } finally {
-      setIsSorting(false)
-    }
-  }
-
-  return (
-    <AISortButton
-      isConfigured={isConfigured}
-      isLoading={isSorting}
-      onClick={handleAISort}
-      label="Sort by JD"
-      size="sm"
-    />
-  )
+  // This button is now handled by the KeyAchievements component itself
+  return null
 }
 
 /**
@@ -138,6 +75,7 @@ const TechStackSortButton = ({
     if (!isConfigured || isSorting) return
 
     setIsSorting(true)
+    let toastId: string | number | undefined
 
     const sortPromise = sortTechStackGraph(
       technologies,
@@ -150,27 +88,33 @@ const TechStackSortButton = ({
       (chunk) => {
         if (chunk.content) {
           console.log('[Tech Stack Sort Graph]', chunk.content)
+          // Update toast with progress
+          if (!toastId) {
+            toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+          } else {
+            toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+          }
         }
       }
     )
 
-    toast.promise(sortPromise, {
-      loading: 'Sorting tech stack by relevance...',
-      success: (sortedTechnologies) => {
-        const newWorkExperience = [...resumeData.workExperience]
-        newWorkExperience[workExperienceIndex] = {
-          ...workExperience,
-          technologies: sortedTechnologies,
-        }
-        setResumeData({ ...resumeData, workExperience: newWorkExperience })
-        setIsSorting(false)
-        return 'Tech stack sorted by job relevance'
-      },
-      error: (err: Error) => {
-        setIsSorting(false)
-        return `Failed: ${err.message || 'Unknown error'}`
-      },
-    })
+    try {
+      const sortedTechnologies = await sortPromise
+      if (toastId) toast.dismiss(toastId)
+
+      const newWorkExperience = [...resumeData.workExperience]
+      newWorkExperience[workExperienceIndex] = {
+        ...workExperience,
+        technologies: sortedTechnologies,
+      }
+      setResumeData({ ...resumeData, workExperience: newWorkExperience })
+      setIsSorting(false)
+      toast.success('Tech stack sorted by job relevance')
+    } catch (err: any) {
+      if (toastId) toast.dismiss(toastId)
+      setIsSorting(false)
+      toast.error(`Failed: ${err.message || 'Unknown error'}`)
+    }
 
     await sortPromise
   }
@@ -182,6 +126,7 @@ const TechStackSortButton = ({
       onClick={handleAISort}
       label="Sort by JD"
       size="sm"
+      variant="amber"
     />
   )
 }
@@ -191,6 +136,7 @@ const TechStackSortButton = ({
  */
 const WorkExperience = () => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
+  const { settings, isConfigured } = useAISettings()
   const { data, handleChange, add, remove } = useArrayForm<WorkExperienceType>(
     'workExperience',
     {
@@ -206,6 +152,7 @@ const WorkExperience = () => {
     },
     { urlFields: ['url'] }
   )
+  const [isTailoringExperience, setIsTailoringExperience] = useState<Record<number, boolean>>({})
 
   const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
     useAccordion()
@@ -291,6 +238,61 @@ const WorkExperience = () => {
         technologies,
       }
       setResumeData({ ...resumeData, workExperience: newWorkExperience })
+    }
+  }
+
+  const handleTailorToJD = async (index: number) => {
+    const workExperience = resumeData.workExperience[index]
+    if (!workExperience || !isConfigured || !settings.jobDescription) return
+
+    setIsTailoringExperience(prev => ({ ...prev, [index]: true }))
+    let toastId: string | number | undefined
+
+    try {
+      const achievements = (workExperience.keyAchievements || []).map(a => a.text)
+
+      const result = await tailorExperienceToJD(
+        workExperience.description,
+        achievements,
+        workExperience.position,
+        workExperience.organization,
+        settings.jobDescription,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+          providerType: settings.providerType,
+        },
+        (chunk) => {
+          if (chunk.content) {
+            if (!toastId) {
+              toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+            } else {
+              toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+            }
+          }
+        }
+      )
+
+      if (toastId) toast.dismiss(toastId)
+
+      // Update description and achievements
+      const newWorkExperience = [...resumeData.workExperience]
+      newWorkExperience[index] = {
+        ...workExperience,
+        description: result.description,
+        keyAchievements: result.achievements.map(text => ({ text })),
+      }
+      setResumeData({ ...resumeData, workExperience: newWorkExperience })
+      toast.success('Experience tailored to job description')
+    } catch (error: any) {
+      if (toastId) toast.dismiss(toastId)
+      console.error('Experience tailoring error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to tailor experience'
+      )
+    } finally {
+      setIsTailoringExperience(prev => ({ ...prev, [index]: false }))
     }
   }
 
@@ -381,17 +383,28 @@ const WorkExperience = () => {
                         variant="teal"
                       />
 
-                      <FormTextarea
-                        label="Description"
-                        name="description"
-                        placeholder="Brief company/role description..."
-                        value={workExperience.description}
-                        onChange={(e) => handleChange(e, index)}
-                        variant="teal"
-                        maxLength={250}
-                        showCounter
-                        minHeight="100px"
-                      />
+                      <div className="relative">
+                        <FormTextarea
+                          label="Description"
+                          name="description"
+                          placeholder="Brief company/role description..."
+                          value={workExperience.description}
+                          onChange={(e) => handleChange(e, index)}
+                          variant="teal"
+                          maxLength={250}
+                          showCounter
+                          minHeight="100px"
+                        />
+                        <div className="absolute bottom-2 right-2">
+                          <AISortButton
+                            isConfigured={isConfigured && !!settings.jobDescription}
+                            isLoading={isTailoringExperience[index] || false}
+                            onClick={() => handleTailorToJD(index)}
+                            size="sm"
+                            variant="amber"
+                          />
+                        </div>
+                      </div>
 
                       <div>
                         <div className="mb-2 flex items-center gap-2">

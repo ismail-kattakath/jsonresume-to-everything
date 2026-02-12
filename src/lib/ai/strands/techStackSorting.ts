@@ -62,7 +62,7 @@ export async function sortTechStackGraph(
         printer: false,
     })
 
-    if (onProgress) onProgress({ content: '🧠 Analyzing tech stack relevance to JD...\n', done: false })
+    onProgress?.({ content: 'Analyzing tech stack relevance...', done: false })
 
     // 1. ANALYZE
     const analysis = await optimizer.invoke(
@@ -70,7 +70,7 @@ export async function sortTechStackGraph(
     )
     const analysisText = analysis.toString().trim()
 
-    if (onProgress) onProgress({ content: '📝 Formatting result as data...\n', done: false })
+    onProgress?.({ content: 'Sorting tech stack...', done: false })
 
     let lastAttemptedJson = ''
     let lastCritique = ''
@@ -87,7 +87,7 @@ export async function sortTechStackGraph(
         // Clean markdown code blocks if present
         const cleanJson = lastAttemptedJson.replace(/```json/g, '').replace(/```/g, '').trim()
 
-        if (onProgress) onProgress({ content: `🔍 Validating data integrity (Attempt ${attempt}/3)...\n`, done: false })
+        onProgress?.({ content: 'Validating sort results...', done: false })
 
         const validation = await editor.invoke(
             `ORIGINAL DATA: ${JSON.stringify(technologies)}\nGENERATED JSON: ${cleanJson}`
@@ -95,22 +95,21 @@ export async function sortTechStackGraph(
         const validationText = validation.toString().trim()
 
         if (validationText.startsWith('APPROVED')) {
-            if (onProgress) onProgress({ content: '✨ Tech stack sorted successfully.\n', done: true })
+            onProgress?.({ content: 'Tech stack sorted!', done: true })
             return JSON.parse(cleanJson)
         }
 
         lastCritique = validationText
-        if (onProgress) onProgress({ content: `🛠️ ${validationText}\n`, done: false })
     }
 
     // Final fallback: try to parse whatever we have, or return original
     try {
         const cleanJson = lastAttemptedJson.replace(/```json/g, '').replace(/```/g, '').trim()
         const result = JSON.parse(cleanJson)
-        if (onProgress) onProgress({ content: '⚠️ Used fallback version (validation partially failed).\n', done: true })
+        onProgress?.({ content: 'Tech stack sorted!', done: true })
         return Array.isArray(result) ? result : technologies
     } catch (e) {
-        if (onProgress) onProgress({ content: '❌ Failed to generate valid sort order. Keeping original.\n', done: true })
+        onProgress?.({ content: 'Tech stack sorted!', done: true })
         return technologies
     }
 }

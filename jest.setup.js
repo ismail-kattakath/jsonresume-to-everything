@@ -96,6 +96,14 @@ jest.mock('@strands-agents/sdk/openai', () => ({
   OpenAIModel: jest.fn().mockImplementation(() => ({})),
 }))
 
+jest.mock('@strands-agents/sdk/gemini', () => ({
+  GeminiModel: jest.fn().mockImplementation(() => ({})),
+}))
+
+// Mock @lottiefiles/dotlottie-react to avoid ESM issues in tests
+jest.mock('@lottiefiles/dotlottie-react', () => ({
+  DotLottieReact: () => React.createElement('div', { 'data-testid': 'lottie-spinner' }),
+}))
 // Suppress React act() warnings and intentional test console.errors
 const originalError = console.error
 beforeAll(() => {

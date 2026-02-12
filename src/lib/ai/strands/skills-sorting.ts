@@ -1,9 +1,13 @@
 import { Agent } from '@strands-agents/sdk'
 import { StreamCallback } from '@/types/openai'
 import { SkillGroup } from '@/types'
-import { SkillsSortResult } from '@/lib/ai/sorting-prompts'
 import { AgentConfig } from './types'
 import { createModel } from './factory'
+
+export interface SkillsSortResult {
+    sortedSkills: string[]
+    missingSkills?: string[]
+}
 
 /**
  * A multi-agent graph flow that sorts resume skills based on job description relevance.
@@ -85,15 +89,13 @@ export async function sortSkillsGraph(
     let lastAttemptedJson = ''
     let lastCritique = ''
 
-    if (onProgress) onProgress({ content: '🧠 [1/3] Brain: Analyzing job description and skills...\n', done: false })
+    onProgress?.({ content: 'Analyzing skill relevance...', done: false })
 
     // STAGE 1: Analysis
     const analysisResult = await brain.invoke(`JOB DESCRIPTION:\n${jobDescription}\n\nCURRENT SKILLS:\n${JSON.stringify(skillsData)}`)
     lastAnalysis = analysisResult.toString().trim()
 
-    if (onProgress) {
-        onProgress({ content: `✅ Analysis complete.\n\n✍️ [2/3] Scribe: Constructing JSON output...\n`, done: false })
-    }
+    onProgress?.({ content: 'Sorting and optimizing skills...', done: false })
 
     // STAGE 2 & 3: Iterative Scribing and Editing
     while (iteration <= maxIterations) {
@@ -108,7 +110,7 @@ export async function sortSkillsGraph(
         const cleanedJson = rawJson.replace(/```json/g, '').replace(/```/g, '').trim()
         lastAttemptedJson = cleanedJson
 
-        if (onProgress) onProgress({ content: `🔍 [3/3] Editor: Validating data integrity (Attempt ${iteration})...\n`, done: false })
+        onProgress?.({ content: 'Validating sort results...', done: false })
 
         const review = await editor.invoke(`Original Data:\n${JSON.stringify(skillsData)}\n\nGenerated JSON:\n${cleanedJson}`)
         const reviewText = review.toString().trim()
@@ -116,21 +118,21 @@ export async function sortSkillsGraph(
         if (reviewText.startsWith('APPROVED')) {
             try {
                 const finalJson = JSON.parse(cleanedJson) as SkillsSortResult
-                if (onProgress) onProgress({ content: '✨ Skills optimized, structured, and verified.\n', done: true })
+                onProgress?.({ content: 'Skills sorted!', done: true })
                 return finalJson
             } catch (e) {
                 lastCritique = `CRITIQUE: Error parsing JSON: ${e instanceof Error ? e.message : 'Unknown error'}`
             }
         } else {
-            if (onProgress) onProgress({ content: `❌ ${reviewText}\n`, done: false })
-            lastCritique = reviewText // Pass critique for next iteration
+            // Internal critique - don't show to user, just use for next iteration
+            lastCritique = reviewText
         }
     }
 
     // Final fallback
     try {
         const fallback = JSON.parse(lastAttemptedJson.replace(/```json/g, '').replace(/```/g, '').trim())
-        if (onProgress) onProgress({ content: '⚠️ Used fallback version (validation partially failed).\n', done: true })
+        onProgress?.({ content: 'Skills sorted!', done: true })
         return fallback as SkillsSortResult
     } catch (e) {
         throw new Error('Failed to generate a valid skill sorting result after multiple attempts.')

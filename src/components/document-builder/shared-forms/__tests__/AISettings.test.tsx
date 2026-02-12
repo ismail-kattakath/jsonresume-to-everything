@@ -67,9 +67,9 @@ describe('AISettings Component', () => {
       render(<AISettings />)
       const select = screen.getByLabelText('AI Provider') as HTMLSelectElement
 
-      PROVIDER_PRESETS.forEach((provider) => {
+      PROVIDER_PRESETS.forEach((provider: any) => {
         expect(
-          Array.from(select.options).some((opt) => opt.value === provider.name)
+          Array.from(select.options).some((opt: any) => opt.value === provider.name)
         ).toBe(true)
       })
 
@@ -456,10 +456,8 @@ describe('AISettings Component', () => {
 
       // LM Studio (identified by URL) does not require API key, so should show common models text
       await waitFor(() => {
-        expect(
-          screen.getByText(/Showing common Local \(LM Studio\) models/i)
-        ).toBeInTheDocument()
-      })
+        expect(screen.queryByText(/Showing common Local \(LM Studio\) models/i)).toBeInTheDocument()
+      }, { timeout: 2000 })
     })
 
     it('shows model count when models are fetched', async () => {
@@ -513,7 +511,7 @@ describe('AISettings Component', () => {
       })
 
       render(<AISettings />)
-      const refineButton = screen.getByText('Refine with AI').closest('button')
+      const refineButton = screen.getByTitle('Configure AI settings first').closest('button')
       expect(refineButton).toBeDisabled()
     })
 
@@ -539,12 +537,12 @@ describe('AISettings Component', () => {
         jobDescriptionStatus: 'idle',
         validateAll: jest.fn(),
       })
-      ;(analyzeJobDescriptionGraph as jest.Mock).mockResolvedValue(
-        '# position-title\nRefined'
-      )
+        ; (analyzeJobDescriptionGraph as jest.Mock).mockResolvedValue(
+          '# position-title\nRefined'
+        )
 
       render(<AISettings />)
-      const refineButton = screen.getByText('Refine with AI')
+      const refineButton = screen.getByTitle('Refine with AI').closest('button')!
       fireEvent.click(refineButton)
 
       // Check if toast.promise was called

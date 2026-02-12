@@ -11,15 +11,20 @@ import {
   getProviderByURL,
 } from '@/lib/ai/providers'
 import { fetchAvailableModels } from '@/lib/ai/openai-client'
-import { Loader2 } from 'lucide-react'
-import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/agent'
+import { Loader2, Sparkles } from 'lucide-react'
+import { analyzeJobDescriptionGraph, runAIGenerationPipeline } from '@/lib/ai/strands/agent'
 import { toast } from 'sonner'
+import { AILoadingToast } from '@/components/ui/AILoadingToast'
+import { useContext } from 'react'
+import { ResumeContext } from '@/lib/contexts/DocumentContext'
 
 const AISettings: React.FC = () => {
   const { settings, updateSettings, connectionStatus, isConfigured } =
     useAISettings()
+  const { resumeData, setResumeData } = useContext(ResumeContext)
 
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isPipelineRunning, setIsPipelineRunning] = useState(false)
 
   // State for provider selection
   const [selectedProvider, setSelectedProvider] = useState<string>(() => {
@@ -165,38 +170,95 @@ const AISettings: React.FC = () => {
     }
 
     setIsAnalyzing(true)
+    let toastId: string | number | undefined
 
-    const refinementPromise = async () => {
-      try {
-        const refinedJD = await analyzeJobDescriptionGraph(
-          settings.jobDescription,
-          {
-            apiUrl: settings.apiUrl,
-            apiKey: settings.apiKey,
-            model: settings.model,
-          },
-          (chunk) => {
-            if (chunk.content) {
-              console.log('[Strands Graph]', chunk.content)
+    try {
+      const refinedJD = await analyzeJobDescriptionGraph(
+        settings.jobDescription,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+          providerType: settings.providerType,
+        },
+        (chunk) => {
+          if (chunk.content) {
+            console.log('[Strands Graph]', chunk.content)
+            // Update toast with progress
+            if (!toastId) {
+              toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+            } else {
+              toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
             }
           }
-        )
-        updateSettings({ jobDescription: refinedJD })
-        return refinedJD
-      } catch (error) {
-        console.error('[AISettings] JD analysis error:', error)
-        throw error
-      } finally {
-        setIsAnalyzing(false)
-      }
+        }
+      )
+      if (toastId) toast.dismiss(toastId)
+      updateSettings({ jobDescription: refinedJD })
+      toast.success('Job description refined successfully!')
+    } catch (error: any) {
+      if (toastId) toast.dismiss(toastId)
+      console.error('[AISettings] JD analysis error:', error)
+      toast.error(`Analysis failed: ${error.message || 'Unknown error occurred'}`)
+    } finally {
+      setIsAnalyzing(false)
     }
+  }
 
-    toast.promise(refinementPromise(), {
-      loading: 'Refining job description with multi-agent flow...',
-      success: 'Job description refined successfully!',
-      error: (err) =>
-        `Analysis failed: ${err.message || 'Unknown error occurred'}`,
-    })
+  const handleRunPipeline = async () => {
+    if (!isConfigured || !settings.jobDescription) return
+
+    setIsPipelineRunning(true)
+    let toastId: string | number | undefined
+
+    try {
+      const result = await runAIGenerationPipeline(
+        resumeData,
+        settings.jobDescription,
+        {
+          apiUrl: settings.apiUrl,
+          apiKey: settings.apiKey,
+          model: settings.model,
+          providerType: settings.providerType,
+        },
+        (progress) => {
+          const message = `Step ${progress.currentStep}/${progress.totalSteps}: ${progress.message}`
+
+          if (!toastId) {
+            toastId = toast(<AILoadingToast message={message} />, {
+              duration: Infinity,
+            })
+          } else {
+            toast(<AILoadingToast message={message} />, {
+              id: toastId,
+              duration: Infinity,
+            })
+          }
+        }
+      )
+
+      if (toastId) toast.dismiss(toastId)
+
+      // Update all data
+      updateSettings({ jobDescription: result.refinedJD })
+      setResumeData({
+        ...resumeData,
+        summary: result.summary,
+        workExperience: result.workExperiences,
+      })
+
+      toast.success(
+        '🎉 AI optimization complete! Your resume has been tailored to the job description.'
+      )
+    } catch (error: any) {
+      if (toastId) toast.dismiss(toastId)
+      console.error('Pipeline error:', error)
+      toast.error(
+        error instanceof Error ? error.message : 'Pipeline failed'
+      )
+    } finally {
+      setIsPipelineRunning(false)
+    }
   }
 
   // Auto-select first model when available models change
@@ -460,10 +522,30 @@ const AISettings: React.FC = () => {
         isAILoading={isAnalyzing}
         isAIConfigured={isConfigured}
         aiButtonTitle="Refine with AI"
-        aiShowLabel={true}
-        disabled={isAnalyzing}
+        aiShowLabel={false}
+        aiVariant="amber"
+        disabled={isAnalyzing || isPipelineRunning}
         showCounter={false}
       />
+
+      {/* AI Pipeline Button */}
+      <button
+        onClick={handleRunPipeline}
+        disabled={!isConfigured || !settings.jobDescription || isPipelineRunning || isAnalyzing}
+        className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed cursor-pointer text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+      >
+        {isPipelineRunning ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Generating...
+          </>
+        ) : (
+          <>
+            <Sparkles className="w-5 h-5" />
+            AI-Powered Resume Optimization
+          </>
+        )}
+      </button>
     </div>
   )
 }

@@ -72,16 +72,9 @@ import { tooltips } from '@/config/tooltips'
 import { OnboardingTour } from '@/components/onboarding'
 import AISortButton from '@/components/ui/AISortButton'
 import { FormTextarea } from '@/components/ui/FormTextarea'
-import { requestAISort } from '@/lib/ai/openai-client'
-import {
-  buildSkillsSortPrompt,
-  parseSkillsSortResponse,
-  applySortedSkills,
-  type SkillsSortResult,
-} from '@/lib/ai/sorting-prompts'
 import { DEFAULT_COVER_LETTER_CONTENT } from '@/data/cover-letter'
-import { generateSkillsToHighlightWithProvider } from '@/lib/ai/document-generator'
 import { StreamCallback } from '@/types/openai'
+import { AILoadingToast } from '@/components/ui/AILoadingToast'
 
 type EditorMode = 'resume' | 'coverLetter'
 
@@ -308,6 +301,8 @@ function SkillsSection() {
     setIsSorting(true)
     /* istanbul ignore next */
     try {
+      let toastId: string | number | undefined
+
       const sortPromise = sortSkillsGraph(
         resumeData.skills,
         settings.jobDescription,
@@ -323,22 +318,36 @@ function SkillsSection() {
         }) => {
           if (chunk.content) {
             console.log('[Skills Sort Graph]', chunk.content)
+            // Update toast with progress
+            if (!toastId) {
+              toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+            } else {
+              toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+            }
           }
         }
       )
 
-      toast.promise(sortPromise, {
-        loading: 'AI is sorting and optimizing your skills...',
-        success: (sortResult: SkillsSortResult) => {
-          const sortedSkills = applySortedSkills(resumeData.skills, sortResult)
-          setResumeData({ ...resumeData, skills: sortedSkills })
-          return 'Skills optimized and sorted by job relevance!'
-        },
-        error: (err) =>
-          `Failed to sort skills: ${err.message || 'Unknown error occurred'}`,
-      })
+      const sortResult = await sortPromise
+      if (toastId) toast.dismiss(toastId)
 
-      await sortPromise
+      // Apply sorted skills inline - skills are objects with 'text' property
+      const sortedSkillNames = sortResult.sortedSkills
+      const updatedSkills = resumeData.skills.map((group) => ({
+        ...group,
+        skills: group.skills
+          .slice()
+          .sort((a, b) => {
+            const aIndex = sortedSkillNames.indexOf(a.text)
+            const bIndex = sortedSkillNames.indexOf(b.text)
+            if (aIndex === -1) return 1
+            if (bIndex === -1) return -1
+            return aIndex - bIndex
+          }),
+      }))
+
+      setResumeData({ ...resumeData, skills: updatedSkills })
+      toast.success('Skills optimized and sorted by job relevance!')
     } catch (error) {
       console.error('AI Skills sort error:', error)
       // toast.error is handled by toast.promise
@@ -367,9 +376,10 @@ function SkillsSection() {
     }
 
     setIsExtractingSkills(true)
+    let toastId: string | number | undefined
+
     const extractPromise = extractSkillsGraph(
       settings.jobDescription,
-      resumeData,
       {
         apiUrl: settings.apiUrl,
         apiKey: settings.apiKey,
@@ -378,24 +388,28 @@ function SkillsSection() {
       (chunk: { content?: string; done: boolean }) => {
         if (chunk.content) {
           console.log('[Skills Extraction Graph]', chunk.content)
+          // Update toast with progress
+          if (!toastId) {
+            toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+          } else {
+            toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+          }
         }
       }
     )
 
-    toast.promise(extractPromise, {
-      loading: 'Extracting and aligning key skills...',
-      success: (skills) => {
-        updateSettings({ skillsToHighlight: skills })
-        setIsExtractingSkills(false)
-        return 'Skills extracted and aligned with your resume!'
-      },
-      error: (err) => {
-        setIsExtractingSkills(false)
-        return `Failed: ${err.message || 'Unknown error'}`
-      },
-    })
+    try {
+      const skills = await extractPromise
+      if (toastId) toast.dismiss(toastId)
 
-    await extractPromise
+      updateSettings({ skillsToHighlight: skills })
+      setIsExtractingSkills(false)
+      toast.success('Skills extracted and aligned with your resume!')
+    } catch (err: any) {
+      if (toastId) toast.dismiss(toastId)
+      setIsExtractingSkills(false)
+      toast.error(`Failed: ${err.message || 'Unknown error'}`)
+    }
   }
 
   return (
@@ -497,6 +511,7 @@ function SkillsSection() {
             onClick={handleAISort}
             label="Sort by JD"
             size="sm"
+            variant="amber"
           />
         </div>
       )}
@@ -518,6 +533,7 @@ function SkillsSection() {
           isAILoading={isExtractingSkills}
           aiButtonTitle="Extract skills from JD"
           aiShowLabel={false}
+          aiVariant="amber"
           isAIConfigured={isConfigured}
           showCounter={false}
         />
@@ -811,7 +827,20 @@ function UnifiedEditor() {
 
   return (
     <>
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster
+        position="bottom-right"
+        theme="dark"
+        expand={true}
+        visibleToasts={10}
+        richColors
+        closeButton
+        toastOptions={{
+          style: {
+            fontSize: '0.875rem', // text-sm
+            fontWeight: '600', // semibold
+          },
+        }}
+      />
       <Tooltip />
       <AISettingsProvider>
         <ResumeContext.Provider value={currentContext}>

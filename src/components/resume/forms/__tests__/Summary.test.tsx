@@ -4,6 +4,15 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
 import type { ResumeData } from '@/types'
 
+// Mock the strands agent module
+jest.mock('@/lib/ai/strands/agent', () => ({
+  generateSummaryGraph: jest.fn(),
+  analyzeJobDescription: jest.fn(),
+  analyzeJobDescriptionGraph: jest.fn(),
+  sortSkillsGraph: jest.fn(),
+  extractSkillsGraph: jest.fn(),
+}))
+
 // Mock the openai-client module
 jest.mock('@/lib/ai/openai-client', () => ({
   generateCoverLetter: jest.fn(),
@@ -25,6 +34,8 @@ jest.mock('sonner', () => ({
   toast: {
     success: jest.fn(),
     error: jest.fn(),
+    loading: jest.fn(),
+    dismiss: jest.fn(),
   },
 }))
 
@@ -165,7 +176,7 @@ describe('Summary Component', () => {
       const button = screen.getByRole('button')
       expect(button).not.toBeDisabled()
       expect(button).toBeInTheDocument()
-      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
+      expect(screen.getByTitle('Generate by JD')).toBeInTheDocument()
     })
   })
 
@@ -197,16 +208,16 @@ describe('Summary Component', () => {
 
   describe('AI Generation Callback', () => {
     it('updates summary when AI generation completes', async () => {
-      const { generateSummary } = require('@/lib/ai/openai-client')
+      const { generateSummaryGraph } = require('@/lib/ai/strands/agent')
 
       // Mock successful AI generation
       const generatedText =
         'AI-generated professional summary with experience and skills'
-      generateSummary.mockImplementation(
+      generateSummaryGraph.mockImplementation(
         async (
-          _config: any,
           _data: any,
           _jobDescription: any,
+          _config: any,
           onChunk: any
         ) => {
           // Simulate streaming by calling onChunk

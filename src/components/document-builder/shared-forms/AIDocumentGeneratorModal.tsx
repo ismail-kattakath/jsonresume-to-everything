@@ -5,12 +5,15 @@ import Modal from '@/components/ui/Modal'
 import { Sparkles, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import {
-  generateCoverLetter,
-  generateSummary,
+  generateCoverLetterGraph,
+  generateSummaryGraph,
+} from '@/lib/ai/strands/agent'
+import {
   saveCredentials,
   loadCredentials,
   OpenAIAPIError,
 } from '@/lib/ai/openai-client'
+import AISortButton from '@/components/ui/AISortButton'
 import type { ResumeData } from '@/types'
 
 interface AIGenerateModalProps {
@@ -53,7 +56,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
       successDescription: 'The AI has crafted your personalized cover letter.',
       errorMessage: 'Failed to generate cover letter',
       streamingMessage: 'AI is crafting your cover letter...',
-      generateFunction: generateCoverLetter,
+      generateFunction: generateCoverLetterGraph,
     },
     summary: {
       title: '🤖 AI Professional Summary Generator',
@@ -63,7 +66,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
         'The AI has crafted your tailored professional summary.',
       errorMessage: 'Failed to generate professional summary',
       streamingMessage: 'AI is crafting your professional summary...',
-      generateFunction: generateSummary,
+      generateFunction: generateSummaryGraph,
     },
   }
 
@@ -135,13 +138,14 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
 
       // Generate content with streaming
       const content = await currentConfig.generateFunction(
-        {
-          baseURL: apiUrl,
-          apiKey: apiKey,
-          model: DEFAULT_MODEL,
-        },
         resumeData,
         jobDescription,
+        {
+          apiUrl,
+          apiKey,
+          model: DEFAULT_MODEL,
+          providerType: 'openai-compatible', // Default to openai-compatible for legacy modal
+        },
         (chunk) => {
           // Update streamed content in real-time
           if (chunk.content) {
@@ -231,7 +235,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
             <div className="space-y-2">
               <label
                 htmlFor="api-url"
-                className="block flex items-center gap-2 text-sm font-medium text-white"
+                className="flex items-center gap-2 text-sm font-medium text-white"
               >
                 API URL
                 <span className="text-xs font-normal text-white/50">
@@ -253,7 +257,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
             <div className="space-y-2">
               <label
                 htmlFor="api-key"
-                className="block flex items-center gap-2 text-sm font-medium text-white"
+                className="flex items-center gap-2 text-sm font-medium text-white"
               >
                 API Key
                 <a
@@ -408,30 +412,29 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
           </div>
         )}
 
-        {/* Generate button - only show when not generating */}
-        {!isGenerating && (
-          <div className="space-y-3 pt-2">
-            <button
-              onClick={handleGenerate}
-              disabled={!isFormValid}
-              className="group flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-4 font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-600 hover:to-purple-600 hover:shadow-xl disabled:cursor-not-allowed disabled:from-gray-600 disabled:to-gray-600 disabled:opacity-50"
-            >
-              <Sparkles className="h-5 w-5 transition-transform group-hover:rotate-12" />
-              <span>Generate {currentConfig.label}</span>
-            </button>
+        {/* Generate button */}
+        <div className="space-y-3 pt-2">
+          <AISortButton
+            isConfigured={isFormValid}
+            isLoading={isGenerating}
+            onClick={handleGenerate}
+            label={`Generate ${currentConfig.label}`}
+            size="lg"
+            fullWidth
+            variant="amber"
+          />
 
-            {/* Helper text */}
-            {!isFormValid && (
-              <p className="text-center text-xs text-white/50">
-                {!apiKey
-                  ? '⚠️ API key required'
-                  : !jobDescription
-                    ? '⚠️ Job description required'
-                    : 'Fill all fields to continue'}
-              </p>
-            )}
-          </div>
-        )}
+          {/* Helper text */}
+          {!isGenerating && !isFormValid && (
+            <p className="text-center text-xs text-white/50">
+              {!apiKey
+                ? '⚠️ API key required'
+                : !jobDescription
+                  ? '⚠️ Job description required'
+                  : 'Fill all fields to continue'}
+            </p>
+          )}
+        </div>
       </div>
     </Modal>
   )

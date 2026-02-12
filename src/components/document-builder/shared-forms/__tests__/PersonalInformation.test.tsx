@@ -12,11 +12,11 @@ import {
 } from '@/lib/__tests__/test-utils'
 
 // Mock the AI generation module
-jest.mock('@/lib/ai/document-generator', () => ({
-  ...jest.requireActual('@/lib/ai/document-generator'),
-  generateJobTitleWithProvider: jest.fn(),
-  OpenAIAPIError: class OpenAIAPIError extends Error {},
-  GeminiAPIError: class GeminiAPIError extends Error {},
+jest.mock('@/lib/ai/strands/agent', () => ({
+  generateJobTitleGraph: jest.fn(),
+}))
+jest.mock('@/lib/ai/openai-client', () => ({
+  OpenAIAPIError: class OpenAIAPIError extends Error { },
 }))
 
 describe('PersonalInformation Component', () => {
@@ -315,8 +315,8 @@ describe('PersonalInformation Component', () => {
 
   describe('AI Generate Job Title Button', () => {
     const {
-      generateJobTitleWithProvider,
-    } = require('@/lib/ai/document-generator')
+      generateJobTitleGraph,
+    } = require('@/lib/ai/strands/agent')
 
     beforeEach(() => {
       jest.clearAllMocks()
@@ -357,7 +357,7 @@ describe('PersonalInformation Component', () => {
     })
 
     it('should generate job title when button clicked with valid AI settings', async () => {
-      generateJobTitleWithProvider.mockResolvedValue('Senior Software Engineer')
+      generateJobTitleGraph.mockResolvedValue('Senior Software Engineer')
 
       const mockData = createMockResumeData({ position: 'Developer' })
       const mockSetResumeData = jest.fn()
@@ -380,7 +380,7 @@ describe('PersonalInformation Component', () => {
       fireEvent.click(aiButton)
 
       await waitFor(() => {
-        expect(generateJobTitleWithProvider).toHaveBeenCalled()
+        expect(generateJobTitleGraph).toHaveBeenCalled()
       })
 
       await waitFor(() => {
@@ -415,7 +415,7 @@ describe('PersonalInformation Component', () => {
     })
 
     it('should show loading state while generating', async () => {
-      generateJobTitleWithProvider.mockImplementation(
+      generateJobTitleGraph.mockImplementation(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve('Senior Developer'), 50)
@@ -451,11 +451,11 @@ describe('PersonalInformation Component', () => {
     })
 
     it('should handle generation errors gracefully', async () => {
-      generateJobTitleWithProvider.mockRejectedValue(new Error('API Error'))
+      generateJobTitleGraph.mockRejectedValue(new Error('API Error'))
 
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       renderWithContext(<PersonalInformation />, {
         aiSettings: {
@@ -473,7 +473,7 @@ describe('PersonalInformation Component', () => {
       fireEvent.click(aiButton)
 
       await waitFor(() => {
-        expect(generateJobTitleWithProvider).toHaveBeenCalled()
+        expect(generateJobTitleGraph).toHaveBeenCalled()
       })
 
       // Button should be re-enabled after error
@@ -485,7 +485,7 @@ describe('PersonalInformation Component', () => {
     })
 
     it('should update job title field with generated content', async () => {
-      generateJobTitleWithProvider.mockResolvedValue('Lead Frontend Developer')
+      generateJobTitleGraph.mockResolvedValue('Lead Frontend Developer')
 
       const mockData = createMockResumeData({ position: '' })
       const mockSetResumeData = jest.fn()

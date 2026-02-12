@@ -32,16 +32,9 @@ jest.mock('@/lib/contexts/DocumentContext', () => ({
   },
 }))
 
-// Mock requestAISort
-jest.mock('@/lib/ai/openai-client', () => ({
-  requestAISort: jest.fn(),
-}))
-
-// Mock sorting prompts
-jest.mock('@/lib/ai/sorting-prompts', () => ({
-  buildAchievementsSortPrompt: jest.fn(() => 'mock prompt'),
-  parseAchievementsSortResponse: jest.fn(() => null),
-  applySortedAchievements: jest.fn(),
+// Mock sortAchievementsGraph
+jest.mock('@/lib/ai/strands/agent', () => ({
+  sortAchievementsGraph: jest.fn(),
 }))
 
 describe('KeyAchievements', () => {
