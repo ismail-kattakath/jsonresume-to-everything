@@ -20,7 +20,6 @@ import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import {
   sortSkillsGraph,
   sortTechStackGraph,
-  tailorExperienceToJDGraph,
 } from '@/lib/ai/strands/agent'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
 import type { DropResult } from '@hello-pangea/dnd'
@@ -133,7 +132,6 @@ const WorkExperience = () => {
     },
     { urlFields: ['url'] }
   )
-  const [isTailoringExperience, setIsTailoringExperience] = useState<Record<number, boolean>>({})
 
   const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
     useAccordion()
@@ -222,61 +220,6 @@ const WorkExperience = () => {
     }
   }
 
-  const handleTailorToJD = async (index: number) => {
-    const workExperience = resumeData.workExperience[index]
-    if (!workExperience || !isConfigured || !settings.jobDescription) return
-
-    setIsTailoringExperience(prev => ({ ...prev, [index]: true }))
-    let toastId: string | number | undefined
-
-    try {
-      const achievements = (workExperience.keyAchievements || []).map(a => a.text)
-
-      const result = await tailorExperienceToJDGraph(
-        workExperience.description,
-        achievements,
-        workExperience.position,
-        workExperience.organization,
-        settings.jobDescription,
-        {
-          apiUrl: settings.apiUrl,
-          apiKey: settings.apiKey,
-          model: settings.model,
-          providerType: settings.providerType,
-        },
-        (chunk) => {
-          if (chunk.content) {
-            const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
-            if (!toastId) {
-              toastId = toast(<AILoadingToast message={cleanMessage} />, { duration: Infinity })
-            } else {
-              toast(<AILoadingToast message={cleanMessage} />, { id: toastId, duration: Infinity })
-            }
-          }
-        }
-      )
-
-      if (toastId) toast.dismiss(toastId)
-
-      // Update description and achievements
-      const newWorkExperience = [...resumeData.workExperience]
-      newWorkExperience[index] = {
-        ...workExperience,
-        description: result.description,
-        keyAchievements: result.achievements.map(text => ({ text })),
-      }
-      setResumeData({ ...resumeData, workExperience: newWorkExperience })
-      toast.success('Experience tailored to job description')
-    } catch (error: any) {
-      if (toastId) toast.dismiss(toastId)
-      console.error('Experience tailoring error:', error)
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to tailor experience'
-      )
-    } finally {
-      setIsTailoringExperience(prev => ({ ...prev, [index]: false }))
-    }
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -375,12 +318,6 @@ const WorkExperience = () => {
                         maxLength={250}
                         showCounter={false}
                         minHeight="100px"
-                        onAIAction={() => handleTailorToJD(index)}
-                        isAILoading={isTailoringExperience[index] || false}
-                        isAIConfigured={isConfigured && !!settings.jobDescription}
-                        aiButtonTitle=""
-                        aiShowLabel={false}
-                        aiVariant="amber"
                       />
 
                       <div>

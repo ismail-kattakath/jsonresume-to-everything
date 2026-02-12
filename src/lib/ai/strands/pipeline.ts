@@ -1,7 +1,7 @@
 import { AgentConfig } from './types'
 import { analyzeJobDescriptionGraph } from './jd-refinement-graph'
 import { generateSummaryGraph } from './summary-graph'
-import { tailorExperienceToJDGraph } from './experience-tailoring-graph'
+// import { tailorExperienceToJDGraph } from './experience-tailoring-graph'
 import type { ResumeData, WorkExperience, Achievement } from '@/types'
 
 export interface PipelineProgress {
@@ -37,7 +37,7 @@ export async function runAIGenerationPipeline(
 ): Promise<PipelineResult> {
     const workExperiences = resumeData.workExperience || []
     const workExperienceCount = workExperiences.length
-    const totalSteps = 2 + workExperienceCount // JD + Summary + N experiences
+    const totalSteps = 2 // JD + Summary (Experience tailoring disabled for now)
     let currentStep = 0
 
     // Step 1: Refine Job Description
@@ -112,62 +112,15 @@ export async function runAIGenerationPipeline(
         summary
     })
 
-    // Steps 3+: Tailor Each Work Experience
+    // Steps 3+: Tailor Each Work Experience (DISABLED)
+    /*
     const tailoredExperiences: WorkExperience[] = []
 
     for (let i = 0; i < workExperienceCount; i++) {
-        currentStep++
-        const experience = workExperiences[i]
-
-        if (!experience) continue
-
-        onProgress?.({
-            currentStep,
-            totalSteps,
-            message: `Tailoring experience ${i + 1} of ${workExperienceCount}: ${experience.position}...`,
-            done: false
-        })
-
-        const achievements = (experience.keyAchievements || []).map((a: Achievement) => a.text)
-
-        const result = await tailorExperienceToJDGraph(
-            experience.description || '',
-            achievements,
-            experience.position || '',
-            experience.organization || '',
-            refinedJD, // Use refined JD
-            config,
-            (p) => {
-                if (p.content && !p.done) {
-                    onProgress?.({
-                        currentStep,
-                        totalSteps,
-                        message: `Tailoring experience ${i + 1}: ${p.content}`,
-                        done: false,
-                        refinedJD,
-                        summary,
-                        workExperiences: [...tailoredExperiences]
-                    })
-                }
-            }
-        )
-
-        tailoredExperiences.push({
-            ...experience,
-            description: result.description,
-            keyAchievements: result.achievements.map(text => ({ text }))
-        })
-
-        onProgress?.({
-            currentStep,
-            totalSteps,
-            message: `Tailored experience ${i + 1} of ${workExperienceCount}`,
-            done: false,
-            refinedJD,
-            summary,
-            workExperiences: [...tailoredExperiences]
-        })
+        ...
     }
+    */
+    const tailoredExperiences = [...workExperiences]
     onProgress?.({
         currentStep: totalSteps,
         totalSteps,
