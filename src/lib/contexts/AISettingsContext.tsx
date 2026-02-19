@@ -203,7 +203,7 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
         return false
       }
     } catch (error) {
-      console.error('[AISettings] Validation error:', error)
+      console.warn('[AISettings] Validation error:', error)
       setConnectionStatus('invalid')
       return false
     }

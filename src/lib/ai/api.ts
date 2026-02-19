@@ -146,8 +146,8 @@ export async function makeOpenAIRequest(
 
                 throw new AIAPIError(
                     sanitizedMessage,
-                    errorData.error.code,
-                    errorData.error.type
+                    errorData.error?.code,
+                    errorData.error?.type
                 )
             } catch (parseError) {
                 if (parseError instanceof AIAPIError) {
@@ -226,7 +226,8 @@ export async function testConnection(config: OpenAIConfig): Promise<{
         }
     } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-            console.error('[OpenAIClient] Connection test failed:', error)
+            // Use warn instead of error to avoid triggering the development overlay for expected test failures
+            console.warn('[OpenAIClient] Connection test failed:', error)
         }
         return { success: false }
     }
