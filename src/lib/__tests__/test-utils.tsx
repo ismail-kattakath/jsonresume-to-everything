@@ -75,6 +75,8 @@ export const createMockAISettingsContext = (
     connectionStatus: 'idle',
     jobDescriptionStatus: 'idle',
     validateAll: jest.fn().mockResolvedValue(false),
+    isPipelineActive: false,
+    setIsPipelineActive: jest.fn(),
     ...overrides,
   }
 }

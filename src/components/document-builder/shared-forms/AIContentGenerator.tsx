@@ -33,6 +33,7 @@ interface AIContentGeneratorProps {
   showCharacterCount?: boolean
   className?: string
   mode: 'coverLetter' | 'summary'
+  disabled?: boolean
 }
 
 const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
@@ -47,6 +48,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   showCharacterCount = false,
   className = '',
   mode,
+  disabled = false,
 }) => {
   const { settings, isConfigured } = useAISettings()
   const { resumeData } = useContext(ResumeContext)
@@ -218,13 +220,13 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       minHeight={minHeight}
       rows={rows}
       className={className}
-      disabled={isGenerating}
+      disabled={isGenerating || disabled}
       variant="amber"
       onAIAction={handleGenerate}
       isAILoading={isGenerating}
       isAIConfigured={isConfigured}
       aiButtonTitle="Generate by JD"
-      aiShowLabel={true}
+      aiShowLabel={false}
       aiVariant="amber"
     />
   )

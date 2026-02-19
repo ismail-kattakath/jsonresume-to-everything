@@ -19,10 +19,11 @@ const JobDescriptionSection = () => {
         settings,
         updateSettings,
         isConfigured,
+        isPipelineActive,
+        setIsPipelineActive,
     } = useAISettings()
 
     const [isAnalyzing, setIsAnalyzing] = useState(false)
-    const [isPipelineRunning, setIsPipelineRunning] = useState(false)
 
     const handleRefineJD = async () => {
         if (!isConfigured || !settings.jobDescription || settings.jobDescription.length < 50) {
@@ -64,7 +65,7 @@ const JobDescriptionSection = () => {
         if (!isConfigured || !settings.jobDescription) return
 
         console.log('[Pipeline] Starting pipeline...')
-        setIsPipelineRunning(true)
+        setIsPipelineActive(true)
         let toastId: string | number | undefined = toast(<AILoadingToast message="Running AI optimization pipeline..." />, { duration: Infinity })
 
         try {
@@ -136,7 +137,7 @@ const JobDescriptionSection = () => {
             console.error('[JobDescriptionSection] Pipeline error:', error)
             toast.error(`Optimization failed: ${sanitizeAIError(error)}`, { id: toastId })
         } finally {
-            setIsPipelineRunning(false)
+            setIsPipelineActive(false)
         }
     }
 
@@ -148,13 +149,13 @@ const JobDescriptionSection = () => {
                 onRefine={handleRefineJD}
                 isAnalyzing={isAnalyzing}
                 isConfigured={isConfigured}
-                disabled={isAnalyzing || isPipelineRunning}
+                disabled={isAnalyzing || isPipelineActive}
             />
 
             <AIPipelineButton
                 onRun={handleRunPipeline}
-                disabled={!isConfigured || !settings.jobDescription || isPipelineRunning || isAnalyzing}
-                isLoading={isPipelineRunning}
+                disabled={!isConfigured || !settings.jobDescription || isPipelineActive || isAnalyzing}
+                isLoading={isPipelineActive}
             />
         </div>
     )

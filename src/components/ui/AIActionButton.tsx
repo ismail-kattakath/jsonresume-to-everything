@@ -9,6 +9,8 @@ interface AIActionButtonProps {
   isConfigured?: boolean
   /** Whether action is in progress */
   isLoading: boolean
+  /** Whether button is explicitly disabled for another reason */
+  isDisabled?: boolean
   /** Click handler to trigger action */
   onClick: () => void
   /** Optional tooltip text when disabled */
@@ -35,6 +37,7 @@ interface AIActionButtonProps {
 const AIActionButton: React.FC<AIActionButtonProps> = ({
   isConfigured = true,
   isLoading,
+  isDisabled: explicitlyDisabled = false,
   onClick,
   disabledTooltip = 'Configure AI settings first',
   size = 'sm',
@@ -56,9 +59,11 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
     green: 'gradient-green',
   }[variant] as 'gradient-blue' | 'gradient-amber' | 'gradient-green'
 
-  const isDisabled = !isConfigured || isLoading
-  const showTooltip = !showLabel || (isDisabled && !isLoading)
-  const tooltipText = isDisabled && !isLoading ? disabledTooltip : label
+  const isActuallyDisabled = !isConfigured || isLoading || explicitlyDisabled
+  const showTooltip = !showLabel || (isActuallyDisabled && !isLoading)
+  const tooltipText = explicitlyDisabled && !isLoading
+    ? 'Disabled while optimization is running'
+    : (!isConfigured && !isLoading ? disabledTooltip : label)
 
   const icon = isLoading ? (
     <Loader2 className={`${iconSize} animate-spin`} />
@@ -72,7 +77,7 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
       onClick={() => {
         onClick()
       }}
-      disabled={isDisabled}
+      disabled={isActuallyDisabled}
       title={showTooltip ? tooltipText : undefined}
       data-tooltip-id={showTooltip ? 'app-tooltip' : undefined}
       data-tooltip-content={showTooltip ? tooltipText : undefined}

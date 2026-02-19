@@ -82,6 +82,8 @@ const mockAISettings = {
   connectionStatus: 'idle' as const,
   jobDescriptionStatus: 'idle' as const,
   validateAll: jest.fn(),
+  isPipelineActive: false,
+  setIsPipelineActive: jest.fn(),
 }
 
 const mockConfiguredAISettings = {
@@ -100,6 +102,8 @@ const mockConfiguredAISettings = {
   connectionStatus: 'valid' as const,
   jobDescriptionStatus: 'valid' as const,
   validateAll: jest.fn(),
+  isPipelineActive: false,
+  setIsPipelineActive: jest.fn(),
 }
 
 const mockResumeContext = {
@@ -275,8 +279,8 @@ describe('AIContentGenerator Component', () => {
       )
       const button = screen.getByRole('button')
       expect(button).toBeInTheDocument()
-      // Title is only shown when disabled or label is hidden. Since label is shown, title is undefined.
-      expect(button).not.toHaveAttribute('title')
+      // Title always shows when showLabel is false (aiShowLabel=false is the default) to show tooltip
+      expect(button).toHaveAttribute('title', 'Generate by JD')
       expect(screen.getByRole('button', { name: /generate by jd/i })).toBeInTheDocument()
     })
 

@@ -66,6 +66,8 @@ const renderWithContext = (
         connectionStatus: 'idle',
         jobDescriptionStatus: 'idle',
         validateAll: mockValidateAll,
+        isPipelineActive: false,
+        setIsPipelineActive: jest.fn(),
       }}
     >
       <ResumeContext.Provider

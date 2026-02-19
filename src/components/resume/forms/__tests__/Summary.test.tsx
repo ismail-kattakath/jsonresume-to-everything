@@ -197,10 +197,10 @@ describe('Summary Component', () => {
         mockHandleChange,
         mockConfiguredAISettings
       )
-      const button = screen.getByRole('button')
+      const button = screen.getByRole('button', { name: /generate by jd/i })
       expect(button).not.toBeDisabled()
       expect(button).toBeInTheDocument()
-      expect(screen.getByText('Generate by JD')).toBeInTheDocument()
+      expect(screen.queryByText('Generate by JD', { selector: 'span' })).not.toBeInTheDocument()
     })
   })
 
@@ -213,12 +213,12 @@ describe('Summary Component', () => {
       expect(textarea).toBeInTheDocument()
     })
 
-    it('passes correct maxLength to textarea', () => {
+    it('does not pass maxLength to textarea', () => {
       renderWithContext()
       const textarea = screen.getByPlaceholderText(
         /write a compelling professional summary/i
       )
-      expect(textarea).toHaveAttribute('maxLength', '600')
+      expect(textarea).not.toHaveAttribute('maxLength')
     })
 
     it('passes correct rows to textarea', () => {

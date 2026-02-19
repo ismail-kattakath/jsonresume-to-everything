@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import AIContentGenerator from '@/components/document-builder/shared-forms/AIContentGenerator'
 
 const Summary = () => {
   const { resumeData, setResumeData, handleChange } = useContext(ResumeContext)
-
+  const { isPipelineActive } = useAISettings()
 
 
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement> | string) => {
@@ -26,8 +27,8 @@ const Summary = () => {
         onGenerated={handleSummaryChange}
         placeholder="Write a compelling professional summary..."
         rows={8}
-        maxLength={600}
         mode="summary"
+        disabled={isPipelineActive}
       />
     </div>
   )

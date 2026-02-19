@@ -42,6 +42,8 @@ describe('JobDescriptionSection Component', () => {
             },
             updateSettings: mockUpdateSettings,
             isConfigured: true,
+            isPipelineActive: false,
+            setIsPipelineActive: jest.fn(),
         })
     })
 
@@ -84,6 +86,8 @@ describe('JobDescriptionSection Component', () => {
                 },
                 updateSettings: mockUpdateSettings,
                 isConfigured: true,
+                isPipelineActive: false,
+                setIsPipelineActive: jest.fn(),
             })
 
             renderComponent()
@@ -104,6 +108,8 @@ describe('JobDescriptionSection Component', () => {
                 },
                 updateSettings: mockUpdateSettings,
                 isConfigured: true,
+                isPipelineActive: false,
+                setIsPipelineActive: jest.fn(),
             })
 
             analyzeJobDescriptionGraph.mockResolvedValue('Refined JD')
@@ -134,6 +140,8 @@ describe('JobDescriptionSection Component', () => {
                 },
                 updateSettings: mockUpdateSettings,
                 isConfigured: true,
+                isPipelineActive: false,
+                setIsPipelineActive: jest.fn(),
             })
 
             const mockResult = {

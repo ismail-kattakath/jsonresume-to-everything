@@ -92,6 +92,8 @@ export interface AISettingsContextType {
   connectionStatus: ValidationStatus
   jobDescriptionStatus: ValidationStatus
   validateAll: () => Promise<boolean>
+  isPipelineActive: boolean
+  setIsPipelineActive: (active: boolean) => void
 }
 
 const defaultSettings: AISettings = {
@@ -116,6 +118,7 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
     useState<ValidationStatus>('idle')
   const [jobDescriptionStatus, setJobDescriptionStatus] =
     useState<ValidationStatus>('idle')
+  const [isPipelineActive, setIsPipelineActive] = useState(false)
 
   // Track last validated JD to avoid re-validating the same content
   const lastValidatedJD = useRef<string>('')
@@ -314,6 +317,8 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
         connectionStatus,
         jobDescriptionStatus,
         validateAll,
+        isPipelineActive,
+        setIsPipelineActive,
       }}
     >
       {children}

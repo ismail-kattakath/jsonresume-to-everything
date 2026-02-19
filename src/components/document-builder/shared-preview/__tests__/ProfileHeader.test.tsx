@@ -52,6 +52,8 @@ const mockAISettings = {
   connectionStatus: 'idle' as const,
   jobDescriptionStatus: 'idle' as const,
   validateAll: jest.fn(),
+  isPipelineActive: false,
+  setIsPipelineActive: jest.fn(),
 }
 
 const renderWithContext = (

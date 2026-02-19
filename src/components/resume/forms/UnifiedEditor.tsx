@@ -93,7 +93,9 @@ export function UnifiedEditor() {
                 visibleToasts={10}
                 richColors
                 closeButton
+                className="print:hidden"
                 toastOptions={{
+                    className: 'print:hidden',
                     style: {
                         fontSize: '0.875rem',
                         fontWeight: '600',

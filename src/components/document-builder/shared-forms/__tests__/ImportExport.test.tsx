@@ -87,7 +87,7 @@ describe('ImportExport Component', () => {
   describe('Rendering', () => {
     it('renders import button by default', () => {
       renderWithContext()
-      expect(screen.getByText(/import json resume/i)).toBeInTheDocument()
+      expect(screen.getByText('Import')).toBeInTheDocument()
       expect(screen.getByLabelText(/import json resume/i)).toBeInTheDocument()
     })
 
@@ -95,6 +95,13 @@ describe('ImportExport Component', () => {
       renderWithContext()
       expect(
         screen.getByRole('button', { name: /export json resume/i })
+      ).toBeInTheDocument()
+    })
+
+    it('renders reset button by default', () => {
+      renderWithContext()
+      expect(
+        screen.getByRole('button', { name: /reset/i })
       ).toBeInTheDocument()
     })
 
@@ -478,6 +485,45 @@ describe('ImportExport Component', () => {
         'Failed to export resume: Conversion failed',
         { id: 'export-resume', duration: 5000 }
       )
+    })
+  })
+
+  describe('Reset Functionality', () => {
+    it('resets resume to default when confirmed', () => {
+      const originalConfirm = window.confirm
+      window.confirm = jest.fn(() => true)
+
+      const setItemSpy = jest.spyOn(Storage.prototype, 'removeItem')
+
+      renderWithContext()
+
+      fireEvent.click(screen.getByRole('button', { name: /reset/i }))
+
+      expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to reset your resume? All your changes will be lost.')
+      expect(setItemSpy).toHaveBeenCalledWith('resumeData')
+      expect(mockSetResumeData).toHaveBeenCalled()
+      expect(mockToast.success).toHaveBeenCalledWith('Resume reset successfully', { id: 'reset-resume' })
+
+      window.confirm = originalConfirm
+      setItemSpy.mockRestore()
+    })
+
+    it('does not reset resume if confirmation is cancelled', () => {
+      const originalConfirm = window.confirm
+      window.confirm = jest.fn(() => false)
+
+      const setItemSpy = jest.spyOn(Storage.prototype, 'removeItem')
+
+      renderWithContext()
+
+      fireEvent.click(screen.getByRole('button', { name: /reset/i }))
+
+      expect(window.confirm).toHaveBeenCalled()
+      expect(setItemSpy).not.toHaveBeenCalled()
+      expect(mockSetResumeData).not.toHaveBeenCalled()
+
+      window.confirm = originalConfirm
+      setItemSpy.mockRestore()
     })
   })
 

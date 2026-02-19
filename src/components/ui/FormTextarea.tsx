@@ -23,6 +23,7 @@ interface FormTextareaProps {
   aiShowLabel?: boolean
   aiVariant?: 'blue' | 'amber' | 'green'
   disabled?: boolean
+  aiDisabled?: boolean
 }
 
 /**
@@ -49,6 +50,7 @@ export function FormTextarea({
   aiShowLabel = false,
   aiVariant = 'blue',
   disabled = false,
+  aiDisabled = false,
 }: FormTextareaProps) {
   const textareaId = `textarea-${name}`
 
@@ -118,6 +120,7 @@ export function FormTextarea({
             <AIActionButton
               isConfigured={isAIConfigured}
               isLoading={!!isAILoading}
+              isDisabled={disabled || aiDisabled}
               onClick={onAIAction}
               label={aiButtonTitle}
               showLabel={aiShowLabel}

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useContext } from 'react'
-import { VscJson } from 'react-icons/vsc'
+import { VscJson, VscRefresh } from 'react-icons/vsc'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
 import { validateJSONResume } from '@/lib/jsonResumeSchema'
@@ -11,6 +11,7 @@ import { generateJSONFilename } from '@/lib/filenameGenerator'
 import PrintButton from '@/components/document-builder/ui/PrintButton'
 import { BaseButton } from '@/components/ui/BaseButton'
 import type { ResumeData } from '@/types/resume'
+import defaultResumeData from '@/lib/resumeAdapter'
 
 interface ImportExportProps {
   preserveContent?: boolean
@@ -159,13 +160,24 @@ const ImportExport = ({
     }
   }
 
+  // reset resume data to default
+  const handleReset = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+
+    if (window.confirm('Are you sure you want to reset your resume? All your changes will be lost.')) {
+      localStorage.removeItem('resumeData')
+      setResumeData(defaultResumeData)
+      toast.success('Resume reset successfully', { id: 'reset-resume' })
+    }
+  }
+
   return (
     <div className="group">
       <p className="mb-3 text-sm text-white/60">
         Import or export your resume in JSON Resume format for portability
         across different resume tools.
       </p>
-      <div className={`grid items-stretch gap-3 ${hidePrintButton ? 'sm:grid-cols-2' : 'sm:grid-cols-3'}`}>
+      <div className={`grid items-stretch gap-3 ${hidePrintButton ? 'sm:grid-cols-3' : 'sm:grid-cols-4'}`}>
         <BaseButton
           as="label"
           variant="gradient-blue"
@@ -174,7 +186,7 @@ const ImportExport = ({
           icon={<VscJson className="text-base transition-transform group-hover/btn:rotate-12" />}
           className="group/btn cursor-pointer"
         >
-          Import JSON Resume
+          Import
           <input
             aria-label="Import JSON Resume"
             type="file"
@@ -195,9 +207,22 @@ const ImportExport = ({
             icon={<VscJson className="text-base transition-transform group-hover/btn:rotate-12" />}
             className="group/btn"
           >
-            Export JSON Resume
+            Export
           </BaseButton>
         )}
+
+        <BaseButton
+          type="button"
+          aria-label="Reset"
+          variant="danger"
+          size="md"
+          fullWidth
+          onClick={handleReset}
+          icon={<VscRefresh className="text-base transition-transform group-hover/btn:-rotate-45" />}
+          className="group/btn"
+        >
+          Reset
+        </BaseButton>
 
         {!hidePrintButton && (
           <div className="flex">
@@ -214,3 +239,4 @@ const ImportExport = ({
 }
 
 export default ImportExport
+
