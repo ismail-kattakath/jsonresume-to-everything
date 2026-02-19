@@ -1,10 +1,12 @@
 node_modules/
 .next/
 out/
+output/
 *.log
 .DS_Store
 qdrant_storage/
 *output*.txt
+test_results.json
 
 src/data/resume.json
 # Environment variables (ignore all except example)

@@ -566,18 +566,18 @@ describe('Integration: Form → Preview Synchronization', () => {
       })
     })
 
-    it('should update preview when project highlight is added', async () => {
+    it('should update preview when project key achievement is added', async () => {
       const { container } = render(<ResumeEditPage />)
 
-      // Find the "Add highlight" input
+      // Find the "Add key achievement" input
       await waitFor(() => {
         const addInput = container.querySelector(
-          'input[placeholder*="Add highlight"]'
+          'input[placeholder*="Add key achievement"]'
         ) as HTMLInputElement
         expect(addInput).toBeInTheDocument()
 
         fireEvent.change(addInput, {
-          target: { value: 'Successfully refactored highlights' },
+          target: { value: 'Successfully refactored achievements' },
         })
         fireEvent.keyDown(addInput, { key: 'Enter', code: 'Enter' })
       })
@@ -585,7 +585,7 @@ describe('Integration: Form → Preview Synchronization', () => {
       // Verify the preview updates
       await waitFor(() => {
         const preview = container.querySelector('.preview')
-        expect(preview).toHaveTextContent('Successfully refactored highlights')
+        expect(preview).toHaveTextContent('Successfully refactored achievements')
       })
     })
   })

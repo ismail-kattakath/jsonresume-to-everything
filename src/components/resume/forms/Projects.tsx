@@ -7,7 +7,9 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 import { DeleteButton } from '@/components/ui/DeleteButton'
 import { useArrayForm } from '@/hooks/useArrayForm'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import ProjectHighlights from '@/components/resume/forms/ProjectHighlights'
+import type { DropResult } from '@hello-pangea/dnd'
+import type { Project } from '@/types'
+import ProjectKeyAchievements from '@/components/resume/forms/ProjectKeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
 
 const DragDropContext = dynamic(
@@ -37,11 +39,11 @@ const Draggable = dynamic(
  */
 const Projects = () => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
-  const { data, handleChange, add, remove } = useArrayForm('projects', {
+  const { data, handleChange, add, remove } = useArrayForm<Project>('projects', {
     name: '',
     link: '',
     description: '',
-    highlights: [],
+    keyAchievements: [],
     keywords: [],
     startYear: '',
     endYear: '',
@@ -174,7 +176,7 @@ const Projects = () => {
                         <label className="mb-2 block text-sm font-medium text-white">
                           Highlights
                         </label>
-                        <ProjectHighlights
+                        <ProjectKeyAchievements
                           projectIndex={index}
                           variant="teal"
                         />

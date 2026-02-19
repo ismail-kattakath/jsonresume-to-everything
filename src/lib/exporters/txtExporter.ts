@@ -122,11 +122,11 @@ export function convertResumeToText(data: ResumeData): string {
         lines.push('')
         lines.push(project.description)
       }
-      if (project.highlights && project.highlights.length > 0) {
+      if (project.keyAchievements && project.keyAchievements.length > 0) {
         lines.push('')
-        lines.push('Highlights:')
-        project.highlights.forEach((highlight) => {
-          lines.push(`  • ${highlight}`)
+        lines.push('Key Achievements:')
+        project.keyAchievements.forEach((achievement) => {
+          lines.push(`  • ${achievement.text}`)
         })
       }
     })

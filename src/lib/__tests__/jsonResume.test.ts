@@ -1722,7 +1722,7 @@ describe('JSON Resume Conversion', () => {
 
       const result = convertFromJSONResume(jsonResume) as any
       expect(result?.projects).toHaveLength(1)
-      expect(result?.projects[0].link).toBe('example.com/project')
+      expect(result?.projects[0].link).toBe('https://example.com/project')
       expect(result?.projects[0].name).toBe('Sample Project')
     })
 
@@ -1791,7 +1791,7 @@ describe('JSON Resume Conversion', () => {
       }
 
       const result = convertFromJSONResume(jsonResume) as any
-      expect(result?.projects[0].link).toBe('github.com/project')
+      expect(result?.projects[0].link).toBe('https://github.com/project')
     })
 
     it('should handle address with only street address', () => {
@@ -2098,7 +2098,7 @@ describe('JSON Resume Conversion', () => {
       }
 
       const result = convertFromJSONResume(jsonResume) as any
-      expect(result?.projects[0].highlights).toHaveLength(2)
+      expect(result?.projects[0].keyAchievements).toHaveLength(2)
     })
 
     it('should return null when validation fails', () => {

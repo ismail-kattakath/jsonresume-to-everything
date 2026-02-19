@@ -130,6 +130,10 @@ beforeAll(() => {
     if (message.includes('variants')) return
     if (message.includes('transition')) return
     if (message.includes('viewport')) return
+    if (message.includes('validateDOMNesting')) return
+    if (message.includes('cannot be a child of')) return
+    if (message.includes('hydration error')) return
+    if (message.includes('Not implemented: navigation')) return
     originalError.call(console, ...args)
   }
 })

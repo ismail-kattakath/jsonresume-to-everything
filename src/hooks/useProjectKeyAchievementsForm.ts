@@ -1,11 +1,12 @@
 import { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import type { Achievement } from '@/types'
 
 /**
- * Specialized hook for managing highlights in projects
- * Handles individual highlight items within a project entry
+ * Specialized hook for managing key achievements in projects
+ * Handles individual achievement items within a project entry
  */
-export function useProjectHighlightsForm(projectIndex: number) {
+export function useProjectKeyAchievementsForm(projectIndex: number) {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
   const project = resumeData.projects?.[projectIndex]
@@ -14,87 +15,85 @@ export function useProjectHighlightsForm(projectIndex: number) {
     throw new Error(`Project at index ${projectIndex} not found`)
   }
 
-  // Ensure highlights is initialized
-  const highlights = project.highlights || []
+  // Ensure keyAchievements is initialized
+  const achievements = project.keyAchievements || []
 
   /**
-   * Handle text change for a specific highlight
+   * Handle text change for a specific achievement
    */
-  const handleChange = (highlightIndex: number, value: string) => {
+  const handleChange = (index: number, value: string) => {
     if (!project) return
 
-    const newHighlights = [...highlights]
-    newHighlights[highlightIndex] = value
+    const newAchievements = [...achievements]
+    newAchievements[index] = { ...newAchievements[index], text: value }
 
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
         i === projectIndex
-          ? { ...proj, highlights: newHighlights }
+          ? { ...proj, keyAchievements: newAchievements }
           : proj
       ),
     }))
   }
 
   /**
-   * Add new highlight
+   * Add new achievement
    */
   const add = (text: string) => {
     if (!text.trim() || !project) return
-    const newHighlights = [...highlights, text.trim()]
+    const newAchievements = [...achievements, { text: text.trim() }]
 
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
         i === projectIndex
-          ? { ...proj, highlights: newHighlights }
+          ? { ...proj, keyAchievements: newAchievements }
           : proj
       ),
     }))
   }
 
   /**
-   * Remove highlight by index
+   * Remove achievement by index
    */
-  const remove = (highlightIndex: number) => {
+  const remove = (index: number) => {
     if (!project) return
-    const newHighlights = highlights.filter(
-      (_, i) => i !== highlightIndex
-    )
+    const newAchievements = achievements.filter((_, i) => i !== index)
 
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
         i === projectIndex
-          ? { ...proj, highlights: newHighlights }
+          ? { ...proj, keyAchievements: newAchievements }
           : proj
       ),
     }))
   }
 
   /**
-   * Reorder highlights via drag and drop
+   * Reorder achievements via drag and drop
    */
   const reorder = (startIndex: number, endIndex: number) => {
     if (!project) return
-    const newHighlights = [...highlights]
-    const [removed] = newHighlights.splice(startIndex, 1)
+    const newAchievements = [...achievements]
+    const [removed] = newAchievements.splice(startIndex, 1)
     if (removed) {
-      newHighlights.splice(endIndex, 0, removed)
+      newAchievements.splice(endIndex, 0, removed)
     }
 
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
         i === projectIndex
-          ? { ...proj, highlights: newHighlights }
+          ? { ...proj, keyAchievements: newAchievements }
           : proj
       ),
     }))
   }
 
   return {
-    highlights,
+    achievements,
     handleChange,
     add,
     remove,

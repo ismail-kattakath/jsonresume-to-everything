@@ -130,18 +130,18 @@ const Preview = () => {
     }
 
     if (
-      source.droppableId.includes('PROJECTS_HIGHLIGHT') &&
+      source.droppableId.includes('PROJECTS_KEY_ACHIEVEMENT') &&
       resumeData.projects
     ) {
       const newProjects = [...resumeData.projects]
       const projectIndex = parseInt(source.droppableId.split('-')[1])
       const project = newProjects[projectIndex]
-      if (project && project.highlights) {
-        const highlights = [...project.highlights]
-        const [removed] = highlights.splice(source.index, 1)
+      if (project && project.keyAchievements) {
+        const keyAchievements = [...project.keyAchievements]
+        const [removed] = keyAchievements.splice(source.index, 1)
         if (removed) {
-          highlights.splice(destination.index, 0, removed)
-          project.highlights = highlights
+          keyAchievements.splice(destination.index, 0, removed)
+          project.keyAchievements = keyAchievements
           setResumeData({ ...resumeData, projects: newProjects })
         }
       }
@@ -411,8 +411,8 @@ const Preview = () => {
                         {project.description}
                       </p>
                       <Droppable
-                        droppableId={`PROJECTS_HIGHLIGHT-${index}`}
-                        type="PROJECTS_HIGHLIGHT"
+                        droppableId={`PROJECTS_KEY_ACHIEVEMENT-${index}`}
+                        type="PROJECTS_KEY_ACHIEVEMENT"
                       >
                         {(provided) => (
                           <ul
@@ -420,11 +420,11 @@ const Preview = () => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                           >
-                            {Array.isArray(project.highlights) &&
-                              project.highlights.map((highlight, subIndex) => (
+                            {Array.isArray(project.keyAchievements) &&
+                              project.keyAchievements.map((achievement, subIndex) => (
                                 <Draggable
-                                  key={`PROJECT-HIGHLIGHT-${index}-${subIndex}`}
-                                  draggableId={`PROJECTS_HIGHLIGHT-${index}-${subIndex}`}
+                                  key={`PROJECT-KEY-ACHIEVEMENT-${index}-${subIndex}`}
+                                  draggableId={`PROJECTS_KEY_ACHIEVEMENT-${index}-${subIndex}`}
                                   index={subIndex}
                                 >
                                   {(provided, snapshot) => (
@@ -437,7 +437,7 @@ const Preview = () => {
                                         }`}
                                     >
                                       <Highlight
-                                        text={highlight}
+                                        text={achievement.text}
                                         keywords={settings.skillsToHighlight}
                                         isHTML={true}
                                         className="editable-block"

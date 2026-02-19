@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
-import { useProjectHighlightsForm } from '@/hooks/useProjectHighlightsForm'
+import { useProjectKeyAchievementsForm } from '@/hooks/useProjectKeyAchievementsForm'
 
-interface ProjectHighlightsProps {
+interface ProjectKeyAchievementsProps {
   projectIndex: number
   variant?: 'teal' | 'pink'
 }
 
 /**
- * ProjectHighlights form component - displays project highlights as a vertical list
+ * ProjectKeyAchievements form component - displays project achievements as a vertical list
  * with inline add and click-to-edit functionality
  */
-const ProjectHighlights = ({
+const ProjectKeyAchievements = ({
   projectIndex,
   variant = 'teal',
-}: ProjectHighlightsProps) => {
-  const { highlights, add, remove, handleChange } =
-    useProjectHighlightsForm(projectIndex)
+}: ProjectKeyAchievementsProps) => {
+  const { achievements, add, remove, handleChange } =
+    useProjectKeyAchievementsForm(projectIndex)
   const [inputValue, setInputValue] = useState('')
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editValue, setEditValue] = useState('')
@@ -53,10 +53,11 @@ const ProjectHighlights = ({
   }
 
   const handleEditBlur = (index: number) => {
+    const currentAchievement = achievements[index]
     if (
       editValue.trim() &&
-      highlights[index] &&
-      editValue !== highlights[index]
+      currentAchievement &&
+      editValue !== currentAchievement.text
     ) {
       handleChange(index, editValue)
     }
@@ -71,10 +72,10 @@ const ProjectHighlights = ({
 
   return (
     <div className="space-y-2">
-      {/* Existing highlights */}
-      {(highlights || []).map((highlight, index) => (
+      {/* Existing achievements */}
+      {(achievements || []).map((achievement, index) => (
         <div
-          key={`PROJECT-HIGHLIGHT-${projectIndex}-${index}`}
+          key={`PROJECT-ACHIEVEMENT-${projectIndex}-${index}`}
           className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10`}
         >
           {/* Number bullet */}
@@ -82,7 +83,7 @@ const ProjectHighlights = ({
             {index + 1}
           </span>
 
-          {/* Highlight text or edit input */}
+          {/* Achievement text or edit input */}
           {editingIndex === index ? (
             <input
               type="text"
@@ -95,11 +96,11 @@ const ProjectHighlights = ({
             />
           ) : (
             <p
-              onClick={() => startEditing(index, highlight)}
+              onClick={() => startEditing(index, achievement.text)}
               className="flex-1 cursor-pointer text-sm leading-relaxed text-white hover:text-white/80"
               title="Click to edit"
             >
-              {highlight}
+              {achievement.text}
             </p>
           )}
 
@@ -108,24 +109,24 @@ const ProjectHighlights = ({
             type="button"
             onClick={() => remove(index)}
             className={`flex-shrink-0 cursor-pointer text-white/40 opacity-0 transition-all group-hover:opacity-100 hover:text-red-400`}
-            title="Remove highlight"
+            title="Remove achievement"
           >
             ✕
           </button>
         </div>
       ))}
 
-      {/* Add new highlight input */}
+      {/* Add new achievement input */}
       <input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleAddKeyDown}
-        placeholder="Add highlight... (Press Enter to save)"
+        placeholder="Add key achievement... (Press Enter to save)"
         className={`w-full rounded-lg border border-dashed ${borderColor} bg-transparent px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 ${focusBorderColor}`}
       />
     </div>
   )
 }
 
-export default ProjectHighlights
+export default ProjectKeyAchievements

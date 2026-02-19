@@ -821,21 +821,21 @@ describe('Preview Component', () => {
             {
               name: 'Project A',
               description: 'Description A',
-              highlights: ['Achievement A'],
+              keyAchievements: [{ text: 'Achievement A' }],
               url: '',
               technologies: [],
             },
             {
               name: 'Project B',
               description: 'Description B',
-              highlights: ['Achievement B'],
+              keyAchievements: [{ text: 'Achievement B' }],
               url: '',
               technologies: [],
             },
             {
               name: 'Project C',
               description: 'Description C',
-              highlights: ['Achievement C'],
+              keyAchievements: [{ text: 'Achievement C' }],
               url: '',
               technologies: [],
             },
@@ -876,10 +876,10 @@ describe('Preview Component', () => {
             {
               name: 'Project A',
               description: 'Description A',
-              highlights: [
-                'Achievement 1',
-                'Achievement 2',
-                'Achievement 3',
+              keyAchievements: [
+                { text: 'Achievement 1' },
+                { text: 'Achievement 2' },
+                { text: 'Achievement 3' },
               ],
               url: '',
               technologies: [],
@@ -899,8 +899,8 @@ describe('Preview Component', () => {
 
         // Move first highlight to last position within project index 0
         capturedOnDragEnd!({
-          source: { droppableId: 'PROJECTS_HIGHLIGHT-0', index: 0 },
-          destination: { droppableId: 'PROJECTS_HIGHLIGHT-0', index: 2 },
+          source: { droppableId: 'PROJECTS_KEY_ACHIEVEMENT-0', index: 0 },
+          destination: { droppableId: 'PROJECTS_KEY_ACHIEVEMENT-0', index: 2 },
         })
 
         expect(mockSetResumeData).toHaveBeenCalledWith({
@@ -908,10 +908,10 @@ describe('Preview Component', () => {
           projects: [
             {
               ...mockData.projects[0],
-              highlights: [
-                'Achievement 2',
-                'Achievement 3',
-                'Achievement 1',
+              keyAchievements: [
+                { text: 'Achievement 2' },
+                { text: 'Achievement 3' },
+                { text: 'Achievement 1' },
               ],
             },
           ],

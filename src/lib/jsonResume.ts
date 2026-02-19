@@ -77,7 +77,7 @@ export function convertToJSONResume(customData?: ResumeData) {
   }))
 
   // Parse address from the current format
-  const addressParts = data.address.split(',').map((s) => s.trim())
+  const addressParts = (data.address || '').split(',').map((s) => s.trim())
   const location = {
     address: addressParts[0] || '',
     postalCode: addressParts[2]?.match(/[A-Z]\d[A-Z]\s?\d[A-Z]\d/)?.[0] || '',
@@ -126,7 +126,8 @@ export function convertToJSONResume(customData?: ResumeData) {
   const projects = (data.projects || []).map((project: Project) => ({
     name: project.name,
     description: project.description,
-    highlights: project.highlights,
+    highlights: (project.keyAchievements || []).map((a) => a.text),
+    keywords: project.keywords,
     startDate: project.startYear,
     endDate: project.endYear,
     url: project.link ? ensureProtocol(project.link) : undefined,
@@ -239,16 +240,15 @@ export function convertFromJSONResume(
     )
 
     // Convert projects back
-    const projects = (jsonResume.projects || []).map(
-      (project: JSONResumeProject) => ({
-        name: project.name || '',
-        link: project.url?.replace(/^https?:\/\//, '') || '',
-        description: project.description || '',
-        highlights: project.highlights || [],
-        startYear: project.startDate || '',
-        endYear: project.endDate || '',
-      })
-    )
+    const projects = (jsonResume.projects || []).map((project: JSONResumeProject) => ({
+      name: project.name || '',
+      link: project.url || '',
+      description: project.description || '',
+      keyAchievements: (project.highlights || []).map((a) => ({ text: a })),
+      keywords: project.keywords || [],
+      startYear: project.startDate || '',
+      endYear: project.endDate || '',
+    }))
 
     // Reconstruct location
     const location = basics.location || {}

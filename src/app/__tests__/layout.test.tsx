@@ -30,6 +30,8 @@ jest.mock('@/config/metadata', () => ({
   })),
 }))
 
+// No mock needed for Html/Body here if they aren't used
+
 describe('RootLayout', () => {
   it('should render children inside body', () => {
     render(

@@ -356,10 +356,10 @@ describe('convertFromJSONResume - Edge Cases', () => {
       } as JSONResume
 
       const result = convertFromJSONResume(resume) as any
-      expect(result.projects[0].highlights).toEqual([
-        'Project Achievement 1',
-        'Project Achievement 2',
-        'Project Achievement 3',
+      expect(result.projects[0].keyAchievements).toEqual([
+        { text: 'Project Achievement 1' },
+        { text: 'Project Achievement 2' },
+        { text: 'Project Achievement 3' },
       ])
     })
   })
