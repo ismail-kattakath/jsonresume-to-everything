@@ -7,6 +7,7 @@ import resumeData from '@/lib/resume-adapter'
 import { Logo } from '@/components/logo'
 import { navItems } from '@/config/navigation'
 import { analytics } from '@/lib/analytics'
+import { navigateTo } from '@/lib/navigation'
 
 /**
  * The site-wide footer component containing social links, navigation, and site metadata.
@@ -19,6 +20,7 @@ export default function Footer() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    analytics.socialMediaClick('back_to_top')
   }
 
   return (
@@ -40,7 +42,7 @@ export default function Footer() {
           >
             <div className="mb-6">
               <motion.button
-                onClick={() => window.location.assign('/')}
+                onClick={() => navigateTo('/')}
                 className="mb-4 h-27 w-48 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
@@ -153,10 +155,10 @@ export default function Footer() {
                                   element.scrollIntoView({ behavior: 'smooth' })
                                 }
                               } else {
-                                window.location.assign(`/${subItem.href}`)
+                                navigateTo(`/${subItem.href}`)
                               }
                             } else {
-                              window.location.assign(subItem.href)
+                              navigateTo(subItem.href)
                             }
                           }}
                           className="md3-body-medium group flex w-full cursor-pointer items-center gap-2 pl-4 text-[var(--md-sys-color-on-surface-variant)] transition-colors hover:text-[var(--md-sys-color-primary)]"
@@ -177,10 +179,10 @@ export default function Footer() {
                               element.scrollIntoView({ behavior: 'smooth' })
                             }
                           } else {
-                            window.location.assign(`/${item.href}`)
+                            navigateTo(`/${item.href}`)
                           }
                         } else if (item.href) {
-                          window.location.assign(item.href)
+                          navigateTo(item.href)
                         }
                       }}
                       className="md3-body-medium group flex cursor-pointer items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] transition-colors hover:text-[var(--md-sys-color-primary)]"
@@ -199,6 +201,7 @@ export default function Footer() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               className="md3-label-medium mt-6 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[var(--md-sys-color-primary-container)] px-4 py-2 font-medium text-[var(--md-sys-color-on-primary-container)] shadow-sm transition-shadow hover:shadow-md"
+              data-testid="back-to-top"
             >
               <ArrowUp size={16} />
               Back to Top
@@ -247,6 +250,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-[var(--md-sys-color-primary)]"
+                  data-testid="edit-template-link"
                 >
                   Edit Template
                 </a>

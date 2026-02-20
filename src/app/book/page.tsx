@@ -1,7 +1,7 @@
 import ExternalRedirect from '@/components/ui/external-redirect'
 import resumeData from '@/lib/resume-adapter'
 import MainLayout from '@/components/layout/main-layout'
-import Header from '@/components/layout/header'
+import { Header } from '@/components/layout/header'
 
 /**
  * Page component for booking meetings, redirects to external calendar.

@@ -393,7 +393,9 @@ describe('PasswordProtection Component', () => {
       const submitButton = screen.getByRole('button', { name: /unlock/i })
 
       fireEvent.change(passwordInput, { target: { value: correctPassword } })
+      console.error('DEBUG: globalThis.suppressPatterns from test:', globalThis.suppressPatterns)
       await suppressConsoleError(/Authentication error:/i, async () => {
+        console.error('DEBUG: globalThis.suppressPatterns inside suppression:', globalThis.suppressPatterns)
         fireEvent.click(submitButton)
 
         await waitFor(() => {

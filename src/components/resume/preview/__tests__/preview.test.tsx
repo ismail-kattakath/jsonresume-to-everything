@@ -375,4 +375,110 @@ describe('Preview Component', () => {
 
     expect(setResumeData).toHaveBeenCalled()
   })
+
+  it('handles drag and drop for work experience key achievements', () => {
+    const setResumeData = jest.fn()
+    render(
+      <ResumeContext.Provider
+        value={
+          {
+            resumeData: createMockResumeData({
+              workExperience: [{ organization: 'W1', keyAchievements: [{ text: 'A1' }, { text: 'A2' }] } as any],
+            }),
+            setResumeData,
+          } as any
+        }
+      >
+        <Preview />
+      </ResumeContext.Provider>
+    )
+
+    const onDragEnd = (global as any).__MOCKED_PREVIEW_ON_DRAG_END__
+
+    act(() => {
+      onDragEnd({
+        source: { index: 0, droppableId: 'WORK_EXPERIENCE_KEY_ACHIEVEMENT-0' },
+        destination: { index: 1, droppableId: 'WORK_EXPERIENCE_KEY_ACHIEVEMENT-0' },
+      })
+    })
+
+    expect(setResumeData).toHaveBeenCalled()
+  })
+
+  it('handles font size and alignment buttons', () => {
+    render(
+      <TestWrapper initialData={{}}>
+        <Preview />
+      </TestWrapper>
+    )
+
+    const plusButton = screen.getByTitle(/Increase Font Size/i)
+    fireEvent.click(plusButton)
+    expect(document.execCommand).toHaveBeenCalledWith('fontSize', false, '4')
+
+    const minusButton = screen.getByTitle(/Decrease Font Size/i)
+    fireEvent.click(minusButton)
+    expect(document.execCommand).toHaveBeenCalledWith('fontSize', false, '2')
+
+    const leftButton = screen.getByTitle(/Align Left/i)
+    fireEvent.click(leftButton)
+    expect(document.execCommand).toHaveBeenCalledWith('justifyLeft', false, undefined)
+
+    const centerButton = screen.getByTitle(/Align Center/i)
+    fireEvent.click(centerButton)
+    expect(document.execCommand).toHaveBeenCalledWith('justifyCenter', false, undefined)
+
+    const rightButton = screen.getByTitle(/Align Right/i)
+    fireEvent.click(rightButton)
+    expect(document.execCommand).toHaveBeenCalledWith('justifyRight', false, undefined)
+  })
+
+  it('renders education section with various data combinations', () => {
+    const { unmount } = render(
+      <TestWrapper
+        initialData={{
+          education: [
+            {
+              school: 'University',
+              studyType: 'BS',
+              area: 'CS',
+              startYear: '2020',
+              endYear: '2024',
+              url: 'http://edu.com',
+            },
+          ],
+        }}
+      >
+        <Preview />
+      </TestWrapper>
+    )
+    expect(screen.getByText(/BS/i)).toBeInTheDocument()
+    expect(screen.getByText(/CS/i)).toBeInTheDocument()
+    expect(screen.getByText('University')).toHaveAttribute('href', 'http://edu.com')
+    unmount()
+
+    const { unmount: unmount2 } = render(
+      <TestWrapper
+        initialData={{
+          education: [{ school: 'No Link', studyType: 'MS', area: '' }],
+        }}
+      >
+        <Preview />
+      </TestWrapper>
+    )
+    expect(screen.getByText(/MS/i)).toBeInTheDocument()
+    expect(screen.getByText('No Link')).not.toHaveAttribute('href')
+    unmount2()
+
+    render(
+      <TestWrapper
+        initialData={{
+          education: [{ school: 'Only Area', studyType: '', area: 'Physics' }],
+        }}
+      >
+        <Preview />
+      </TestWrapper>
+    )
+    expect(screen.getByText(/Physics/i)).toBeInTheDocument()
+  })
 })

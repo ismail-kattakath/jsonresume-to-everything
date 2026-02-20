@@ -131,13 +131,72 @@ describe('AIDocumentGeneratorModal', () => {
 
     const generateButton = screen.getByRole('button', { name: /Generate Cover Letter/i })
 
-    await suppressConsoleError(/Cover Letter generation error/i, async () => {
-      fireEvent.click(generateButton)
+    fireEvent.click(generateButton)
 
-      await waitFor(() => {
-        expect(screen.getByText(/Generation failed/i)).toBeInTheDocument()
-        expect(toast.error).toHaveBeenCalledWith('Generation failed', expect.any(Object))
-      })
+    await waitFor(() => {
+      expect(screen.getByText(/Generation failed/i)).toBeInTheDocument()
+      expect(toast.error).toHaveBeenCalledWith('Generation failed', expect.any(Object))
     })
+  })
+
+  it('handles Ctrl+Enter to submit', async () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    fireEvent.change(getApiKeyInput(container), { target: { value: 'test-key' } })
+    fireEvent.change(getJobDescriptionTextarea(container), { target: { value: 'test-jd' } })
+
+    const textarea = getJobDescriptionTextarea(container)
+    fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true })
+
+    expect(generateCoverLetterGraph).toHaveBeenCalled()
+  })
+
+  it('handles Meta+Enter to submit', async () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    fireEvent.change(getApiKeyInput(container), { target: { value: 'test-key' } })
+    fireEvent.change(getJobDescriptionTextarea(container), { target: { value: 'test-jd' } })
+
+    const textarea = getJobDescriptionTextarea(container)
+    fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true })
+
+    expect(generateCoverLetterGraph).toHaveBeenCalled()
+  })
+
+  it('updates rememberCredentials state', () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    const checkbox = container.querySelector('#remember-credentials') as HTMLInputElement
+    fireEvent.click(checkbox)
+    expect(checkbox.checked).toBe(true)
+  })
+
+  it('resets form when modal is closed', async () => {
+    const { rerender, container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    fireEvent.change(getJobDescriptionTextarea(container), { target: { value: 'some jd' } })
+
+    rerender(<AIDocumentGeneratorModal {...mockProps} isOpen={false} />)
+
+    // Rerender as open again to check if it's reset
+    rerender(<AIDocumentGeneratorModal {...mockProps} isOpen={true} />)
+    expect(getJobDescriptionTextarea(container)).toHaveValue('')
+  })
+
+  it('updates API URL when changed', () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    const urlInput = getApiUrlInput(container)
+    fireEvent.change(urlInput, { target: { value: 'https://new-api.com' } })
+    expect(urlInput).toHaveValue('https://new-api.com')
+  })
+
+  it('shows validation helper text if form is incomplete', async () => {
+    // In current implementation, button is disabled based on isFormValid
+    // and helper text is shown instead of setting an error state on click
+    render(<AIDocumentGeneratorModal {...mockProps} />)
+
+    // Initially API key and JD are empty, helper text should reflect this
+    expect(screen.getByText(/API key required/i)).toBeInTheDocument()
+
+    // Fill API key but not JD
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    fireEvent.change(getApiKeyInput(container), { target: { value: 'test-key' } })
+    expect(screen.getByText(/Job description required/i)).toBeInTheDocument()
   })
 })

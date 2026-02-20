@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Header from '@/components/layout/header'
+import { Header } from '@/components/layout/header'
 import MainLayout from '@/components/layout/main-layout'
 import { Home, ArrowLeft } from 'lucide-react'
 

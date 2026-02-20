@@ -1,15 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown } from 'lucide-react'
-import { navItems } from '@/config/navigation'
 import { Logo } from '@/components/logo'
+import { navItems } from '@/config/navigation'
+import { navigateTo } from '@/lib/navigation'
+import { analytics } from '@/lib/analytics'
 
 /**
- * The site-wide navigation header component with scroll effects and mobile menu.
+ * The main header component with navigation links and mobile menu.
  */
-export default function Header() {
+export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
@@ -18,19 +20,10 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      setIsScrolled(window.scrollY > 20)
     }
-
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      if (dropdownTimeoutRef.current) {
-        clearTimeout(dropdownTimeoutRef.current)
-      }
-    }
   }, [])
 
   const handleNavigation = (href: string) => {
@@ -45,11 +38,11 @@ export default function Header() {
         }
       } else {
         // On other page - navigate to homepage with anchor
-        window.location.href = `/${href}`
+        navigateTo(`/${href}`)
       }
     } else {
       // Full page navigation
-      window.location.href = href
+      navigateTo(href)
     }
     setIsMobileMenuOpen(false)
     setActiveDropdown(null)
@@ -90,7 +83,7 @@ export default function Header() {
               if (isHomePage) {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               } else {
-                window.location.assign('/')
+                navigateTo('/')
               }
             }}
             className="group flex cursor-pointer items-center gap-2"
@@ -100,7 +93,7 @@ export default function Header() {
             data-testid="logo-button"
           >
             <div className="h-14 w-24">
-              <Logo width={96} height={54} fill="#ffffff" />
+              <Logo width={192} height={108} fill="var(--md-sys-color-primary)" />
             </div>
           </motion.button>
 
@@ -112,6 +105,7 @@ export default function Header() {
                 className="relative"
                 onMouseEnter={() => item.submenu && handleMouseEnter(item.name)}
                 onMouseLeave={handleMouseLeave}
+                data-testid={`nav-item-${item.name.toLowerCase()}`}
               >
                 <motion.button
                   onClick={() => (item.href ? handleNavigation(item.href) : null)}
@@ -132,6 +126,7 @@ export default function Header() {
                       style={{
                         transform: activeDropdown === item.name ? 'rotate(180deg)' : 'rotate(0deg)',
                       }}
+                      data-testid="chevron-icon"
                     />
                   )}
                   {!item.submenu && (
@@ -144,9 +139,8 @@ export default function Header() {
                   )}
                 </motion.button>
 
-                {/* Dropdown Menu */}
                 <AnimatePresence>
-                  {item.submenu && activeDropdown === item.name && (
+                  {activeDropdown === item.name && item.submenu && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -163,6 +157,7 @@ export default function Header() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.2, delay: subIndex * 0.05 }}
                           whileHover={{ x: 4 }}
+                          data-testid={`submenu-desktop-${subItem.name.toLowerCase()}`}
                         >
                           {subItem.name}
                         </motion.button>
@@ -179,35 +174,38 @@ export default function Header() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 text-[var(--md-sys-color-on-surface)] md:hidden"
             whileTap={{ scale: 0.95 }}
+            data-testid="menu-toggle"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={24} data-testid="x-icon" /> : <Menu size={24} data-testid="menu-icon" />}
           </motion.button>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="mt-4 pb-4 md:hidden"
+            className="border-t border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] md:hidden"
           >
-            <div className="flex flex-col space-y-2 rounded-2xl border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-high)] p-4">
+            <div className="flex flex-col space-y-4 p-6">
               {navItems.map((item, index) => (
-                <div key={item.name}>
+                <div key={item.name} className="flex flex-col space-y-2">
                   {item.submenu ? (
                     <>
                       <motion.button
                         onClick={() => toggleMobileSubmenu(item.name)}
-                        className="md3-btn-filled flex w-full items-center justify-between text-left"
+                        className="md3-btn-tonal flex w-full items-center justify-between"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
+                        data-testid={`mobile-submenu-toggle-${item.name.toLowerCase()}`}
                       >
-                        <span>{item.name}</span>
+                        {item.name}
                         <ChevronDown
-                          size={20}
                           className="transition-transform"
                           style={{
                             transform: mobileExpandedMenu === item.name ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -220,8 +218,7 @@ export default function Header() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="mt-2 space-y-1 pl-4"
+                            className="flex flex-col space-y-2 pl-4"
                           >
                             {item.submenu.map((subItem, subIndex) => (
                               <motion.button
@@ -234,6 +231,7 @@ export default function Header() {
                                   duration: 0.2,
                                   delay: subIndex * 0.05,
                                 }}
+                                data-testid={`submenu-mobile-${subItem.name.toLowerCase()}`}
                               >
                                 {subItem.name}
                               </motion.button>
@@ -249,6 +247,7 @@ export default function Header() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
+                      data-testid={`mobile-direct-${item.name.toLowerCase()}`}
                     >
                       {item.name}
                     </motion.button>
@@ -258,7 +257,7 @@ export default function Header() {
             </div>
           </motion.div>
         )}
-      </nav>
+      </AnimatePresence>
     </motion.header>
   )
 }

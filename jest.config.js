@@ -22,12 +22,15 @@ const customJestConfig = {
     '!src/**/__tests__/**',
   ],
   coverageThreshold: {
+    // Matches 'project' status target (80%) in codecov.yml
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
       statements: 80,
     },
+    // Note: 'patch' status (80%) from codecov.yml is handled by Codecov on PRs.
+    // Jest does not natively support a 'patch' threshold in its global configuration.
   },
   testMatch: ['**/__tests__/**/*.(test|spec).[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 }

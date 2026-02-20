@@ -3,11 +3,9 @@ import { render, screen } from '@testing-library/react'
 import Home from '@/app/page'
 
 // Mock all child components to isolate page component testing
-jest.mock('@/components/layout/header', () => {
-  return function MockHeader() {
-    return <header data-testid="header">Header</header>
-  }
-})
+jest.mock('@/components/layout/header', () => ({
+  Header: () => <header data-testid="header">Header</header>,
+}))
 
 jest.mock('@/components/layout/footer', () => {
   return function MockFooter() {
