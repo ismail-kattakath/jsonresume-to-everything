@@ -69,6 +69,7 @@ export function convertResumeToMarkdown(data: ResumeData): string {
       if (index > 0) lines.push('')
       lines.push(`### ${job.position} @ [${job.organization}](${job.url ? ensureProtocol(job.url) : '#'})`)
       lines.push(`${job.startYear} - ${job.endYear === 'Present' ? 'Present' : job.endYear}`)
+      lines.push(``)
       if (job.description) {
         lines.push(job.description)
       }
@@ -98,6 +99,9 @@ export function convertResumeToMarkdown(data: ResumeData): string {
         )
       }
       if (project.description) {
+        if (project.startYear || project.endYear) {
+          lines.push('')
+        }
         lines.push(project.description)
       }
       if (project.keyAchievements && project.keyAchievements.length > 0) {
@@ -117,8 +121,15 @@ export function convertResumeToMarkdown(data: ResumeData): string {
     data.education.forEach((edu, index) => {
       if (index > 0) lines.push('')
       lines.push(`### ${edu.studyType} @ [${edu.school}](${edu.url ? ensureProtocol(edu.url) : '#'})`)
-      lines.push(`${edu.startYear} - ${edu.endYear}`)
-      lines.push(`Major: ${edu.area}`)
+      if (edu.startYear || edu.endYear) {
+        lines.push(`${edu.startYear || ''}${edu.startYear && edu.endYear ? ' - ' : ''}${edu.endYear || ''}`)
+      }
+      if (edu.area) {
+        if (edu.startYear || edu.endYear) {
+          lines.push('')
+        }
+        lines.push(`Major: ${edu.area}`)
+      }
     })
     lines.push('')
     lines.push(horizontalLine)
