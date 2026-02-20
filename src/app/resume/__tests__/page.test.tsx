@@ -10,7 +10,7 @@ jest.mock('@/components/resume/preview/Preview', () => {
 
 // Mock PrintButton component
 jest.mock('@/components/document-builder/ui/PrintButton', () => {
-  return function MockPrintButton({ name, documentType }: any) {
+  return function MockPrintButton({ name, documentType }: { name: string; documentType: string }) {
     return (
       <button data-testid="mock-print-button">
         Print {documentType} for {name}
@@ -21,7 +21,7 @@ jest.mock('@/components/document-builder/ui/PrintButton', () => {
 
 // Mock ScaledPreviewWrapper component
 jest.mock('@/components/document-builder/ui/ScaledPreviewWrapper', () => {
-  return function MockScaledPreviewWrapper({ children }: any) {
+  return function MockScaledPreviewWrapper({ children }: { children: React.ReactNode }) {
     return <div data-testid="scaled-preview-wrapper">{children}</div>
   }
 })

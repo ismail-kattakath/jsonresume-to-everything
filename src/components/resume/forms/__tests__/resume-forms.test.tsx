@@ -29,9 +29,10 @@ jest.mock('@/hooks/useAccordion', () => ({
 
 // Mock drag and drop since it's hard to test directly
 jest.mock('@/components/ui/DragAndDrop', () => ({
-  DnDContext: ({ children }: any) => <div>{children}</div>,
-  DnDDroppable: ({ children }: any) => children({ droppableProps: {}, innerRef: jest.fn(), placeholder: null }),
-  DnDDraggable: ({ children }: any) =>
+  DnDContext: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DnDDroppable: ({ children }: { children: (provided: unknown) => React.ReactNode }) =>
+    children({ droppableProps: {}, innerRef: jest.fn(), placeholder: null }),
+  DnDDraggable: ({ children }: { children: (provided: unknown, snapshot: unknown) => React.ReactNode }) =>
     children({ dragHandleProps: {}, draggableProps: {}, innerRef: jest.fn() }, { isDragging: false }),
 }))
 
@@ -53,11 +54,11 @@ const mockResumeData = {
       technologies: [],
     },
   ],
-} as any
+} as never
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ResumeContext.Provider value={{ resumeData: mockResumeData, setResumeData: jest.fn() } as any}>
+    <ResumeContext.Provider value={{ resumeData: mockResumeData, setResumeData: jest.fn() } as never}>
       {children}
     </ResumeContext.Provider>
   )

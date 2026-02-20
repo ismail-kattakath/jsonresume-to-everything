@@ -31,7 +31,17 @@ jest.mock('@/components/resume/forms/KeyAchievements', () => ({
 
 jest.mock('@/components/ui/SortableTagInput', () => ({
   __esModule: true,
-  default: ({ tags, onAdd, onRemove, onReorder }: any) => (
+  default: ({
+    tags,
+    onAdd,
+    onRemove,
+    onReorder,
+  }: {
+    tags: string[]
+    onAdd: (t: string) => void
+    onRemove: (i: number) => void
+    onReorder: (i: number, j: number) => void
+  }) => (
     <div data-testid="tag-input">
       {tags.map((tag: string, i: number) => (
         <div key={i}>
@@ -47,7 +57,7 @@ jest.mock('@/components/ui/SortableTagInput', () => ({
 
 jest.mock('@/components/ui/AIActionButton', () => ({
   __esModule: true,
-  default: ({ onClick, label }: any) => (
+  default: ({ onClick, label }: { onClick: () => void; label: string }) => (
     <button onClick={onClick} aria-label={label}>
       {label}
     </button>
@@ -104,7 +114,9 @@ describe('WorkExperience', () => {
 
   const renderComponent = (resumeData = mockResumeData) => {
     return render(
-      <ResumeContext.Provider value={{ resumeData, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider
+        value={{ resumeData, setResumeData: mockSetResumeData } as unknown as React.ContextType<typeof ResumeContext>}
+      >
         <WorkExperience />
       </ResumeContext.Provider>
     )
@@ -287,7 +299,7 @@ describe('WorkExperience', () => {
     }
     ;(useArrayForm as jest.Mock).mockReturnValue({ ...mockArrayForm, data: dataWithOneTech.workExperience })
 
-    renderComponent(dataWithOneTech as any)
+    renderComponent(dataWithOneTech as never)
     expect(screen.queryByLabelText('Sort by JD')).not.toBeInTheDocument()
   })
 
@@ -327,7 +339,13 @@ describe('WorkExperience', () => {
     })
 
     render(
-      <ResumeContext.Provider value={{ resumeData: { workExperience: [] }, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider
+        value={
+          { resumeData: { workExperience: [] }, setResumeData: mockSetResumeData } as unknown as React.ContextType<
+            typeof ResumeContext
+          >
+        }
+      >
         <WorkExperience />
       </ResumeContext.Provider>
     )

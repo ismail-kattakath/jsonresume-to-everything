@@ -51,7 +51,12 @@ const mockAISettings: AISettings = {
 const mockUpdateSettings = jest.fn()
 const mockValidateAll = jest.fn()
 
-const renderWithContext = (title: string, skills: any[], editable = true, resumeData = mockResumeData) => {
+const renderWithContext = (
+  title: string,
+  skills: SkillGroup['skills'],
+  editable = true,
+  resumeData = mockResumeData
+) => {
   return render(
     <AISettingsContext.Provider
       value={{

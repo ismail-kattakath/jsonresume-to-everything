@@ -31,8 +31,8 @@ function isBrowser(): boolean {
  */
 export function getPasswordHash(): string | undefined {
   // Try to get from window object (injected at build time)
-  if (isBrowser() && (window as any).__PASSWORD_HASH__) {
-    return (window as any).__PASSWORD_HASH__
+  if (isBrowser() && '__PASSWORD_HASH__' in window) {
+    return (window as unknown as { __PASSWORD_HASH__?: string }).__PASSWORD_HASH__
   }
 
   // Get from environment variable (works in dev and build time)

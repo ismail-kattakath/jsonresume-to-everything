@@ -44,7 +44,7 @@ describe('useSkillsForm', () => {
     return (
       <ResumeContext.Provider
         value={{
-          resumeData: mockResumeData as any,
+          resumeData: mockResumeData as unknown as ResumeData,
           setResumeData,
           handleProfilePicture: jest.fn(),
           handleChange: jest.fn(),

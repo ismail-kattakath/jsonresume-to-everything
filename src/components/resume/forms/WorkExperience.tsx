@@ -82,10 +82,10 @@ const TechStackSortButton = ({ workExperienceIndex }: { workExperienceIndex: num
       setResumeData({ ...resumeData, workExperience: newWorkExperience })
       setIsSorting(false)
       toast.success('Tech stack sorted by job relevance')
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (toastId) toast.dismiss(toastId)
       setIsSorting(false)
-      toast.error(`Failed: ${err.message || 'Unknown error'}`)
+      toast.error(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
 

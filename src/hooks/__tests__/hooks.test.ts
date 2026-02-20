@@ -219,10 +219,14 @@ describe('useUnifiedData', () => {
     const { result } = renderHook(() => useUnifiedData())
 
     act(() => {
-      result.current.setResumeData((prev: any) => ({
-        ...prev,
-        name: 'Synced Name',
-      }))
+      result.current.setResumeData(
+        (
+          prev: Parameters<typeof result.current.setResumeData>[0] extends (value: infer P) => unknown ? P : unknown
+        ) => ({
+          ...prev,
+          name: 'Synced Name',
+        })
+      )
     })
 
     // After state update, cover letter should reflect the new name
@@ -233,10 +237,16 @@ describe('useUnifiedData', () => {
     const { result } = renderHook(() => useUnifiedData())
 
     act(() => {
-      result.current.setCoverLetterData((prev: any) => ({
-        ...prev,
-        email: 'newemail@test.com',
-      }))
+      result.current.setCoverLetterData(
+        (
+          prev: Parameters<typeof result.current.setCoverLetterData>[0] extends (value: infer P) => unknown
+            ? P
+            : unknown
+        ) => ({
+          ...prev,
+          email: 'newemail@test.com',
+        })
+      )
     })
 
     expect(result.current.resumeData.email).toBe('newemail@test.com')

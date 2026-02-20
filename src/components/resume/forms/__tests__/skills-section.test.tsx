@@ -26,7 +26,17 @@ jest.mock('sonner', () => ({
 
 // Mock child components to simplify testing SkillsSection logic
 jest.mock('../SkillGroupHeader', () => ({
-  SkillGroupHeader: ({ title, onToggle, onRename, onDelete }: any) => (
+  SkillGroupHeader: ({
+    title,
+    onToggle,
+    onRename,
+    onDelete,
+  }: {
+    title: string
+    onToggle: () => void
+    onRename: (s: string) => void
+    onDelete: () => void
+  }) => (
     <div data-testid="skill-group-header">
       <span>{title}</span>
       <button onClick={onToggle}>Toggle</button>
@@ -38,12 +48,22 @@ jest.mock('../SkillGroupHeader', () => ({
 
 jest.mock('../Skill', () => ({
   __esModule: true,
-  default: ({ title }: any) => <div data-testid="skill-list">{title} skills</div>,
+  default: ({ title }: { title: string }) => <div data-testid="skill-list">{title} skills</div>,
 }))
 
 jest.mock('@/components/ui/AIActionButton', () => ({
   __esModule: true,
-  default: ({ onClick, label, isConfigured, title }: any) => (
+  default: ({
+    onClick,
+    label,
+    isConfigured,
+    title,
+  }: {
+    onClick: () => void
+    label: string
+    isConfigured: boolean
+    title: string
+  }) => (
     <button onClick={onClick} aria-label={label} title={title}>
       {label}
     </button>
@@ -51,7 +71,17 @@ jest.mock('@/components/ui/AIActionButton', () => ({
 }))
 
 jest.mock('@/components/ui/FormTextarea', () => ({
-  FormTextarea: ({ label, onAIAction, value, onChange }: any) => (
+  FormTextarea: ({
+    label,
+    onAIAction,
+    value,
+    onChange,
+  }: {
+    label: string
+    onAIAction: () => void
+    value: string
+    onChange: () => void
+  }) => (
     <div>
       <label htmlFor="textarea">{label}</label>
       <textarea id="textarea" value={value} onChange={onChange} aria-label={label} />
@@ -117,7 +147,7 @@ describe('SkillsSection', () => {
 
   const renderComponent = (resumeData = mockResumeData) => {
     return render(
-      <ResumeContext.Provider value={{ resumeData, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider value={{ resumeData, setResumeData: mockSetResumeData } as never}>
         <SkillsSection />
       </ResumeContext.Provider>
     )
@@ -538,7 +568,7 @@ describe('SkillsSection', () => {
 
   it('returns null if no context', () => {
     const { container } = render(
-      <ResumeContext.Provider value={null as any}>
+      <ResumeContext.Provider value={null as never}>
         <SkillsSection />
       </ResumeContext.Provider>
     )

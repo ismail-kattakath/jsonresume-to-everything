@@ -40,11 +40,11 @@ jest.mock('@/components/ui/SortableTagInput', () => ({
 // Mock next/dynamic to handle DND render props synchronously
 jest.mock('next/dynamic', () => ({
   __esModule: true,
-  default: (loader: () => Promise<any>) => {
+  default: (loader: () => Promise<unknown>) => {
     const ReactComp = React
     // Call loader to get coverage for the dynamic imports
     loader()
-    return (props: any) => {
+    return (props: Record<string, unknown> & { children?: unknown; onDragEnd?: unknown }) => {
       if (props.onDragEnd) {
         // @ts-ignore
         global.__MOCKED_DND_CONTEXT_ON_DRAG_END__ = props.onDragEnd
@@ -57,10 +57,10 @@ jest.mock('next/dynamic', () => ({
           dragHandleProps: {},
           placeholder: ReactComp.createElement('div', { 'data-testid': 'placeholder' }),
         }
-        const snapshot = { isDragging: (global as any).__MOCK_IS_DRAGGING__ || false }
+        const snapshot = { isDragging: Boolean((global as Record<string, unknown>)['__MOCK_IS_DRAGGING__']) }
         return props.children(provided, snapshot)
       }
-      return ReactComp.createElement('div', props, props.children)
+      return ReactComp.createElement('div', props, props.children as React.ReactNode)
     }
   },
 }))
@@ -94,7 +94,7 @@ describe('Projects', () => {
     window.prompt = jest.fn().mockReturnValue('New Keyword')
   })
 
-  const renderComponent = (resumeData = mockResumeData as any) => {
+  const renderComponent = (resumeData: unknown = mockResumeData) => {
     return render(
       <ResumeContext.Provider
         value={
@@ -103,7 +103,7 @@ describe('Projects', () => {
             setResumeData: mockSetResumeData,
             handleChange: jest.fn(),
             handleProfilePicture: jest.fn(),
-          } as any
+          } as unknown as React.ContextType<typeof ResumeContext>
         }
       >
         <Projects />
@@ -224,7 +224,7 @@ describe('Projects', () => {
 
   it('handles missing project or keywords in handlers', () => {
     // 1. onDragEnd with missing projects (exercising line 59 fallback)
-    renderComponent({ projects: undefined } as any)
+    renderComponent({ projects: undefined })
     // @ts-ignore
     const onDragEnd = global.__MOCKED_DND_CONTEXT_ON_DRAG_END__
     act(() => {
@@ -241,7 +241,13 @@ describe('Projects', () => {
       data: [{ name: 'Ghost', keywords: ['Poltergeist'] }],
     })
     render(
-      <ResumeContext.Provider value={{ resumeData: { projects: [] }, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider
+        value={
+          { resumeData: { projects: [] }, setResumeData: mockSetResumeData } as unknown as React.ContextType<
+            typeof ResumeContext
+          >
+        }
+      >
         <Projects />
       </ResumeContext.Provider>
     )

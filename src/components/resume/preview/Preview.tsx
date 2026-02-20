@@ -30,6 +30,7 @@ import Certification from '@/components/resume/preview/Certification'
 import useKeyboardShortcut from '@/hooks/useKeyboardShortcut'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { Highlight } from '@/components/ui/Highlight'
+import type { DropResult } from '@hello-pangea/dnd'
 
 const DragDropContext = dynamic(
   () =>
@@ -73,7 +74,7 @@ const Preview = () => {
     { name: 'website', icon: <FaGlobe /> },
   ]
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     const { destination, source } = result
 
     if (!destination) return
@@ -91,7 +92,7 @@ const Preview = () => {
 
     if (source.droppableId.includes('WORK_EXPERIENCE_KEY_ACHIEVEMENT')) {
       const newWorkExperience = [...resumeData.workExperience]
-      const workExperienceIndex = parseInt(source.droppableId.split('-')[1])
+      const workExperienceIndex = parseInt(source.droppableId.split('-')[1] || '0')
       const workExp = newWorkExperience[workExperienceIndex]
       if (workExp && workExp.keyAchievements) {
         const keyAchievements = [...workExp.keyAchievements]
@@ -124,7 +125,7 @@ const Preview = () => {
 
     if (source.droppableId.includes('PROJECTS_KEY_ACHIEVEMENT') && resumeData.projects) {
       const newProjects = [...resumeData.projects]
-      const projectIndex = parseInt(source.droppableId.split('-')[1])
+      const projectIndex = parseInt(source.droppableId.split('-')[1] || '0')
       const project = newProjects[projectIndex]
       if (project && project.keyAchievements) {
         const keyAchievements = [...project.keyAchievements]

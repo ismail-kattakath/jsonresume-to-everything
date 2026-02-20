@@ -19,17 +19,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Workflow:**
 
 ```bash
-# Start
+# 1. Create an Issue
+gh issue create --title "Feature or Fix description" --body "..." --label "bug|feature|chore"
+
+# 2. Sync and Branch (Reference the issue number)
 git checkout main && git pull
-git checkout -b feature/name  # or fix/, docs/, refactor/, test/, chore/
+git checkout -b feature/name-#issue  # e.g. fix/mobile-print-#42
 
-# Work
-git add . && git commit -m "feat: description"
-git push origin feature/name
+# 3. Work and Commit
+git add . && git commit -m "feat: description (#issue)"
+git push -u origin HEAD
 
-# Finish
+# 4. Finish and create PR
 npm test && npm run build
-gh pr create --title "feat: Title" --body "Summary..."
+gh pr create --title "feat: Title" --body "Closes #issue"
 # Wait for user approval, then merge via GitHub
 ```
 
@@ -209,3 +212,8 @@ npm run format       # Prettier + Tailwind
 ## Resources
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for technical details, [docs/](./docs/) for feature guides.
+
+## Temporary files
+
+- Temporary log files generated during troubleshooting should be under `logs/` folder. Strictly not at project root.
+- Temporary script files generated during troubleshooting should be under `tmp/` folder. Strictly not at project root or `scripts/` folder.

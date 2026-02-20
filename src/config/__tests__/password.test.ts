@@ -108,8 +108,8 @@ describe('Password Configuration', () => {
 
       // Simulate browser without process
       try {
-        // @ts-ignore - deliberately testing undefined process
-        delete (global as any).process
+        // deliberately testing undefined process
+        delete (global as unknown as { process?: NodeJS.Process }).process
 
         const result = getPasswordHash()
 
@@ -127,14 +127,14 @@ describe('Password Configuration', () => {
 
       try {
         // Set process but with no env
-        // @ts-ignore - deliberately testing missing env
-        ;(process as any).env = undefined
+        // deliberately testing missing env
+        ;(process as unknown as { env?: typeof process.env }).env = undefined
 
         const result = getPasswordHash()
 
         expect(result).toBeUndefined()
       } finally {
-        ;(process as any).env = originalEnv
+        ;(process as unknown as { env?: typeof process.env }).env = originalEnv
       }
     })
 

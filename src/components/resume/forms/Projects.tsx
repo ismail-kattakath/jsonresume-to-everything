@@ -49,7 +49,7 @@ const Projects = () => {
     endYear: '',
   })
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     const { destination, source } = result
 
     if (!destination) return

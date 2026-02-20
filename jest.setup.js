@@ -154,6 +154,7 @@ beforeAll(() => {
       /Failed to parse or decrypt providerKeys/i,
       /Error loading saved (resume|cover letter) data/i,
       /AISettings.*Model fetch error/i,
+      /AI Achievements sort error/i,
     ]
 
     if (silentPatterns.some((pattern) => pattern.test(message))) {
