@@ -1,6 +1,6 @@
 /**
- * Text Export Utility
- * Converts resume data to Markdown-flavored plain text format for ATS compatibility and accessibility.
+ * Markdown Export Utility
+ * Converts resume data to Markdown format for ATS compatibility, accessibility, and easy sharing.
  * Uses sentence splitting for professional summaries.
  */
 
@@ -9,11 +9,11 @@ import { splitTextIntoSentences } from '@/lib/utils/string-helpers'
 import { ensureProtocol } from '@/lib/utils/url-helpers'
 
 /**
- * Convert resume data to Markdown-flavored plain text format
+ * Convert resume data to Markdown format
  * @param data - Resume data structure
- * @returns Formatted Markdown text resume
+ * @returns Formatted Markdown resume
  */
-export function convertResumeToText(data: ResumeData): string {
+export function convertResumeToMarkdown(data: ResumeData): string {
   const lines: string[] = []
   const horizontalLine = '-'.repeat(80)
 
@@ -49,6 +49,18 @@ export function convertResumeToText(data: ResumeData): string {
     lines.push(horizontalLine)
   }
 
+  // Skills
+  if (data.skills && data.skills.length > 0) {
+    lines.push(`## SKILLS`)
+    lines.push('')
+    data.skills.forEach((skillGroup) => {
+      const skillTexts = skillGroup.skills.map((skill) => skill.text)
+      lines.push(`- ${skillGroup.title}: ${skillTexts.join(', ')}`)
+    })
+    lines.push('')
+    lines.push(horizontalLine)
+  }
+
   // Work Experience
   if (data.workExperience && data.workExperience.length > 0) {
     lines.push(`## EXPERIENCE`)
@@ -68,32 +80,6 @@ export function convertResumeToText(data: ResumeData): string {
       if (job.technologies && job.technologies.length > 0 && job.showTechnologies !== false) {
         lines.push(`> Tech Stack: ${job.technologies.join(', ')}`)
       }
-    })
-    lines.push('')
-    lines.push(horizontalLine)
-  }
-
-  // Education
-  if (data.education && data.education.length > 0) {
-    lines.push(`## EDUCATION`)
-    lines.push('')
-    data.education.forEach((edu, index) => {
-      if (index > 0) lines.push('')
-      lines.push(`### ${edu.studyType} @ [${edu.school}](${edu.url ? ensureProtocol(edu.url) : '#'})`)
-      lines.push(`${edu.startYear} - ${edu.endYear}`)
-      lines.push(`Major: ${edu.area}`)
-    })
-    lines.push('')
-    lines.push(horizontalLine)
-  }
-
-  // Skills
-  if (data.skills && data.skills.length > 0) {
-    lines.push(`## SKILLS`)
-    lines.push('')
-    data.skills.forEach((skillGroup) => {
-      const skillTexts = skillGroup.skills.map((skill) => skill.text)
-      lines.push(`- ${skillGroup.title}: ${skillTexts.join(', ')}`)
     })
     lines.push('')
     lines.push(horizontalLine)
@@ -119,6 +105,20 @@ export function convertResumeToText(data: ResumeData): string {
           lines.push(`- ${achievement.text}`)
         })
       }
+    })
+    lines.push('')
+    lines.push(horizontalLine)
+  }
+
+  // Education
+  if (data.education && data.education.length > 0) {
+    lines.push(`## EDUCATION`)
+    lines.push('')
+    data.education.forEach((edu, index) => {
+      if (index > 0) lines.push('')
+      lines.push(`### ${edu.studyType} @ [${edu.school}](${edu.url ? ensureProtocol(edu.url) : '#'})`)
+      lines.push(`${edu.startYear} - ${edu.endYear}`)
+      lines.push(`Major: ${edu.area}`)
     })
     lines.push('')
     lines.push(horizontalLine)

@@ -1,8 +1,9 @@
 'use client'
 
-import { MdPictureAsPdf, MdContentCopy } from 'react-icons/md'
+import { MdPictureAsPdf } from 'react-icons/md'
+import { SiMarkdown } from 'react-icons/si'
 import { generatePDFFilename } from '@/lib/filename-generator'
-import { convertResumeToText } from '@/lib/exporters/txt-exporter'
+import { convertResumeToMarkdown } from '@/lib/exporters/markdown-exporter'
 import { ResumeData } from '@/types/resume'
 import { toast } from 'sonner'
 
@@ -51,16 +52,16 @@ export default function PrintButton({
     }
   }
 
-  const handleCopyText = async () => {
+  const handleCopyMarkdown = async () => {
     if (!resumeData) {
       toast.error('No resume data available to copy')
       return
     }
 
     try {
-      const textContent = convertResumeToText(resumeData)
-      await navigator.clipboard.writeText(textContent)
-      toast.success('Resume copied to clipboard!')
+      const markdownContent = convertResumeToMarkdown(resumeData)
+      await navigator.clipboard.writeText(markdownContent)
+      toast.success('Resume copied as Markdown!')
     } catch (error) {
       console.error('Failed to copy to clipboard:', error)
       toast.error('Failed to copy to clipboard')
@@ -84,17 +85,15 @@ export default function PrintButton({
         <span className={isUnified ? 'hidden' : 'hidden md:inline'}>Print</span>
       </button>
 
-      {/* Copy to Clipboard Button */}
+      {/* Copy as Markdown Button */}
       <button
         type="button"
-        onClick={handleCopyText}
+        onClick={handleCopyMarkdown}
         disabled={!resumeData}
-        aria-label="Copy text to clipboard"
+        aria-label="Copy as Markdown"
         className={`group inline-flex cursor-pointer items-center gap-2 border-l border-purple-700/50 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 text-xs font-medium text-white transition-all hover:scale-[1.02] hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 ${isUnified ? 'flex-1 justify-center rounded-r-xl' : 'rounded-r-full md:px-6'}`}
       >
-        <MdContentCopy
-          className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`}
-        />
+        <SiMarkdown className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`} />
         <span className={isUnified ? 'hidden' : 'hidden md:inline'}>Copy</span>
       </button>
     </div>

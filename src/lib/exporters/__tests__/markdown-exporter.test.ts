@@ -1,7 +1,7 @@
-import { convertResumeToText } from '@/lib/exporters/txt-exporter'
+import { convertResumeToMarkdown } from '@/lib/exporters/markdown-exporter'
 import { ResumeData, WorkExperience, Project } from '@/types/resume'
 
-describe('txtExporter', () => {
+describe('markdownExporter', () => {
   const mockResumeData: ResumeData = {
     name: 'John Doe',
     position: 'Senior Software Engineer',
@@ -64,9 +64,9 @@ describe('txtExporter', () => {
     languages: ['English', 'Spanish'],
   }
 
-  describe('convertResumeToText', () => {
-    it('should convert resume data to plain text format', () => {
-      const result = convertResumeToText(mockResumeData)
+  describe('convertResumeToMarkdown', () => {
+    it('should convert resume data to Markdown format', () => {
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('JOHN DOE')
       expect(result).toContain('Senior Software Engineer')
@@ -75,7 +75,7 @@ describe('txtExporter', () => {
     })
 
     it('should include all major sections', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('## SUMMARY')
       expect(result).toContain('## EXPERIENCE')
@@ -87,7 +87,7 @@ describe('txtExporter', () => {
     })
 
     it('should format work experience correctly', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('### Senior Software Engineer @ [Tech Corp](https://techcorp.com)')
       expect(result).toContain('2020 - Present')
@@ -97,7 +97,7 @@ describe('txtExporter', () => {
     })
 
     it('should format education correctly', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('### Bachelor of Science @ [University of California](https://berkeley.edu)')
       expect(result).toContain('2010 - 2014')
@@ -105,7 +105,7 @@ describe('txtExporter', () => {
     })
 
     it('should include social media links', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('- LinkedIn: [https://linkedin.com/in/johndoe](https://linkedin.com/in/johndoe)')
       expect(result).toContain('- GitHub: [https://github.com/johndoe](https://github.com/johndoe)')
@@ -129,7 +129,7 @@ describe('txtExporter', () => {
         languages: [],
       }
 
-      const result = convertResumeToText(minimalData)
+      const result = convertResumeToMarkdown(minimalData)
 
       expect(result).toContain('JANE SMITH')
       expect(result).toContain('Developer')
@@ -138,7 +138,7 @@ describe('txtExporter', () => {
     })
 
     it('should include contact information when provided', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('- Email: [john.doe@example.com](mailto:john.doe@example.com)')
       expect(result).toContain('- Phone: +1 (555) 123-4567')
@@ -150,12 +150,12 @@ describe('txtExporter', () => {
         ...mockResumeData,
         email: '',
       }
-      const result = convertResumeToText(dataWithoutEmail)
+      const result = convertResumeToMarkdown(dataWithoutEmail)
       expect(result).not.toContain('Email:')
     })
 
     it('should format work experience with description', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('Led development of core platform features.')
     })
@@ -171,7 +171,7 @@ describe('txtExporter', () => {
           } as WorkExperience,
         ],
       }
-      const result = convertResumeToText(dataWithoutDesc)
+      const result = convertResumeToMarkdown(dataWithoutDesc)
       expect(result).toContain('### Senior Software Engineer @ [Tech Corp]')
     })
 
@@ -193,13 +193,13 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithHiddenTech)
+      const result = convertResumeToMarkdown(dataWithHiddenTech)
 
       expect(result).not.toContain('> Tech Stack:')
     })
 
     it('should format projects with description', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('A popular open source library.')
     })
@@ -215,7 +215,7 @@ describe('txtExporter', () => {
           } as Project,
         ],
       }
-      const result = convertResumeToText(dataWithoutDesc)
+      const result = convertResumeToMarkdown(dataWithoutDesc)
       expect(result).toContain('### [Open Source Project]')
     })
 
@@ -237,19 +237,19 @@ describe('txtExporter', () => {
           } as Project,
         ],
       }
-      const result = convertResumeToText(dataPartialYears)
+      const result = convertResumeToMarkdown(dataPartialYears)
       expect(result).toContain('2019')
       expect(result).toContain('2020')
     })
 
     it('should format projects with highlights', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('- 1000+ stars on GitHub')
     })
 
     it('should format certifications with URL', () => {
-      const result = convertResumeToText(mockResumeData)
+      const result = convertResumeToMarkdown(mockResumeData)
 
       expect(result).toContain('- Verification: https://aws.amazon.com/certification')
     })
@@ -283,7 +283,7 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithMultipleJobs)
+      const result = convertResumeToMarkdown(dataWithMultipleJobs)
 
       expect(result).toContain('Company A')
       expect(result).toContain('Company B')
@@ -312,7 +312,7 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithMultipleEdu)
+      const result = convertResumeToMarkdown(dataWithMultipleEdu)
 
       expect(result).toContain('University A')
       expect(result).toContain('University B')
@@ -341,7 +341,7 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithMultipleProjects)
+      const result = convertResumeToMarkdown(dataWithMultipleProjects)
 
       expect(result).toContain('Project A')
       expect(result).toContain('Project B')
@@ -366,7 +366,7 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithMultipleCerts)
+      const result = convertResumeToMarkdown(dataWithMultipleCerts)
 
       expect(result).toContain('Cert A')
       expect(result).toContain('Cert B')
@@ -381,7 +381,7 @@ describe('txtExporter', () => {
         ],
       }
 
-      const result = convertResumeToText(dataWithIncompleteSocial)
+      const result = convertResumeToMarkdown(dataWithIncompleteSocial)
 
       // Should not include incomplete social media entries
       expect(result).not.toContain('LinkedIn:')
