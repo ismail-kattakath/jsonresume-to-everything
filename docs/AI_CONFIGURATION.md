@@ -388,7 +388,7 @@ The application automatically fetches available models from your API provider us
 
 ```
 HTTP-Referer: https://github.com/ismail-kattakath/ai-jsonresume
-X-Title: JSON Resume to Everything
+X-Title: AI-JSONResume
 ```
 
 ## Data Persistence

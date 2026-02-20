@@ -62,7 +62,7 @@ src/lib/resumeAdapter.ts (Converts to internal format)
     │   └── /resume/builder (password-protected editor)
     │
     ├── Cover Letter Pages
-    │   └── /cover-letter/edit (password-protected editor)
+    │   └── /resume/builder (Cover Letter tab)
     │
     ├── SEO & Metadata
     │   ├── Meta tags (src/config/metadata.ts)
@@ -516,9 +516,8 @@ npm run dev
 # Check these pages:
 # 1. Homepage - http://localhost:3000
 # 2. Resume view - http://localhost:3000/resume
-# 3. Resume editor - http://localhost:3000/resume/builder
-# 4. Cover letter - http://localhost:3000/cover-letter/edit
-# 5. JSON API - http://localhost:3000/resume.json
+# 3. Resume & Cover Letter editor - http://localhost:3000/resume/builder
+# 4. JSON API - http://localhost:3000/resume.json
 ```
 
 ### Validation Testing

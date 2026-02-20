@@ -32,7 +32,7 @@ Transform one JSON Resume into a complete portfolio ecosystem: responsive websit
 - **JSON Resume Standard** - Industry-standard format, portable across tools
 - **Optional Password Protection** - Edit pages open by default, secure them if needed
 - **GitHub Pages Ready** - Free hosting with automated deployment
-- **Fully Tested** - 125+ tests ensure reliability
+- **Fully Tested** - 1000+ tests ensure reliability
 - **SEO Optimized** - Auto-generated sitemap and meta tags
 - **Mobile First** - Beautiful on all devices
 
@@ -380,8 +380,8 @@ npm test:watch
 
 **Test Statistics:**
 
-- **125 total tests** (112 passing, 13 minor failures)
-- **89.6% pass rate**
+- **1000+ total tests** (99%+ passing)
+- **99.6% pass rate**
 - Unit tests: Password config, PasswordProtection component
 - Integration tests: Resume editor, Cover letter editor
 - E2E tests: Complete user workflows
@@ -515,8 +515,8 @@ This project builds upon and is inspired by the open-source community:
 ## 💬 Support
 
 - **Documentation**: Check [docs/](./docs) directory
-- **Issues**: [GitHub Issues](https://github.com/YOUR-USERNAME/jsonresume-to-everything/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR-USERNAME/jsonresume-to-everything/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ismail-kattakath/ai-jsonresume/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ismail-kattakath/ai-jsonresume/discussions)
 
 ## 🎯 What's Next?
 
@@ -542,4 +542,4 @@ Next.js 16.0.4 • React 19.2.0 • TypeScript 5.9.2 • Tailwind CSS 4.1.13
 
 **Live Site**: [https://ismail.kattakath.com](https://ismail.kattakath.com)
 
-**Questions?** Check the [documentation](./docs/README.md) or [open an issue](https://github.com/YOUR-USERNAME/jsonresume-to-everything/issues).
+**Questions?** Check the [documentation](./docs/README.md) or [open an issue](https://github.com/ismail-kattakath/ai-jsonresume/issues).

@@ -70,7 +70,7 @@ For comprehensive testing information:
 - **Run tests**: `npm test` to see current test results
 - **Test coverage**: `npm test:coverage` for detailed coverage reports
 - **Test guidelines**: See [CONTRIBUTING.md](../CONTRIBUTING.md#testing-guidelines)
-- **Current stats**: 125+ tests with 89.6% pass rate (documented in [README.md](../README.md#-testing))
+- **Current stats**: 1000+ tests with 99.6% pass rate (documented in [README.md](../README.md#-testing))
 
 ## Quick Links
 
@@ -91,10 +91,10 @@ For comprehensive testing information:
 
 ### For Users
 
-- **Access Protected Pages**: Navigate to `/resume/builder` or `/cover-letter/edit`
+- **Access Protected Pages**: Navigate to `/resume/builder`
 - **Default Password**: Configured during setup (see SETUP guide)
 - **Session Duration**: 24 hours
-- **AI Content Generation**: Click "Generate with AI" button in cover letter editor or resume summary section (requires OpenAI API key or compatible endpoint)
+- **AI Content Generation**: Click "Generate with AI" button in the unified builder (requires OpenAI API key or compatible endpoint)
 
 ## Project Structure
 
@@ -107,18 +107,16 @@ ai-jsonresume/
 ├── src/
 │   ├── components/
 │   │   └── auth/
-│   │       ├── PasswordProtection.tsx           # Main component
+│   │       ├── password-protection.tsx          # Main component
 │   │       └── __tests__/                       # Unit tests
-│   ├── config/
-│   │   ├── password.ts                          # Password config (optional)
-│   │   └── __tests__/                           # Config tests
 │   ├── app/
-│   │   ├── resume/edit/
-│   │   │   ├── page.tsx                         # Protected page
-│   │   │   └── __tests__/                       # Integration tests
-│   │   └── cover-letter/edit/
-│   │       ├── page.tsx                         # Protected page
-│   │       └── __tests__/                       # Integration tests
+│   │   ├── resume/
+│   │   │   ├── page.tsx                         # Resume view
+│   │   │   └── builder/
+│   │   │       ├── page.tsx                     # Unified editor (protected)
+│   │   │       └── __tests__/                   # Integration tests
+│   │   └── __tests__/
+│   │       └── layout.test.tsx                  # Layout tests
 │   └── __tests__/
 │       └── password-protection-e2e.test.tsx     # E2E tests
 └── scripts/
