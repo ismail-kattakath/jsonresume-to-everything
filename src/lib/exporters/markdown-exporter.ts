@@ -120,10 +120,11 @@ export function convertResumeToMarkdown(data: ResumeData): string {
     lines.push('')
     data.education.forEach((edu, index) => {
       if (index > 0) lines.push('')
-      lines.push(`### ${edu.studyType} in ${edu.area} @ [${edu.school}](${edu.url ? ensureProtocol(edu.url) : '#'})`)
+      lines.push(`### ${edu.studyType} in ${edu.area}`)
       if (edu.startYear || edu.endYear) {
-        lines.push(`${edu.startYear || ''}${edu.startYear && edu.endYear ? ' - ' : ''}${edu.endYear || ''}`)
+        lines.push(`${edu.startYear || ''}${edu.startYear && edu.endYear ? ' - ' : ''}${edu.endYear || ''}  `)
       }
+      lines.push(`[${edu.school}](${edu.url ? ensureProtocol(edu.url) : '#'})`)
     })
     lines.push('')
     lines.push(horizontalLine)
