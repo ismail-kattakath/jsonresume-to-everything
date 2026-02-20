@@ -26,21 +26,21 @@ jest.mock(
 
 // Mock IntersectionObserver for framer-motion
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() { }
-  disconnect() { }
-  observe() { }
+  constructor() {}
+  disconnect() {}
+  observe() {}
   takeRecords() {
     return []
   }
-  unobserve() { }
+  unobserve() {}
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() { }
-  disconnect() { }
-  observe() { }
-  unobserve() { }
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
 }
 
 // Mock performance API for Next.js third-party scripts (Google Analytics)
@@ -134,16 +134,14 @@ beforeAll(() => {
 
     /**
      * Boilerplate library/environmental noise that is difficult or too noisy to localize.
-     * 
+     *
      * Strategy:
-     * 1. Application-specific errors (Auth, API, etc.) MUST be localized using 
+     * 1. Application-specific errors (Auth, API, etc.) MUST be localized using
      *    `suppressConsoleError` in the specific test file.
      * 2. Only frequent, unavoidable library noise (like React act() warnings caused
      *    by third-party cleanups) should stay here to keep logs readable.
      */
-    const silentPatterns = [
-      /not wrapped in act/i,
-    ]
+    const silentPatterns = [/not wrapped in act/i]
 
     if (silentPatterns.some((pattern) => pattern.test(message))) {
       return
