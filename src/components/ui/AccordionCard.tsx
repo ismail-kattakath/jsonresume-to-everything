@@ -5,8 +5,7 @@ type ColorTheme = 'teal' | 'indigo' | 'pink'
 
 const themeClasses: Record<ColorTheme, string> = {
   teal: 'border-teal-400/50 bg-white/10 shadow-xl shadow-teal-500/20 ring-2 ring-teal-400/30',
-  indigo:
-    'border-indigo-400/50 bg-white/10 shadow-xl shadow-indigo-500/20 ring-2 ring-indigo-400/30',
+  indigo: 'border-indigo-400/50 bg-white/10 shadow-xl shadow-indigo-500/20 ring-2 ring-indigo-400/30',
   pink: 'border-pink-400/50 bg-white/10 shadow-xl shadow-pink-500/20 ring-2 ring-pink-400/30',
 }
 
@@ -50,9 +49,7 @@ export function AccordionHeader({
 }: AccordionHeaderProps) {
   const handleDeleteClick = () => {
     const displayName = title || placeholder
-    const message =
-      deleteConfirmMessage ||
-      `Are you sure you want to delete "${displayName}"?`
+    const message = deleteConfirmMessage || `Are you sure you want to delete "${displayName}"?`
     const confirmed = window.confirm(message)
     if (confirmed) {
       onDelete()
@@ -63,28 +60,17 @@ export function AccordionHeader({
     <div className="flex items-center justify-between">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         {dragHandleProps && (
-          <div
-            {...dragHandleProps}
-            className="cursor-grab text-white/40 hover:text-white/60 active:cursor-grabbing"
-          >
+          <div {...dragHandleProps} className="cursor-grab text-white/40 hover:text-white/60 active:cursor-grabbing">
             <GripVertical className="h-4 w-4" />
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={onToggle}
-          className="flex min-w-0 flex-1 items-center gap-2 text-left"
-        >
+        <button type="button" onClick={onToggle} className="flex min-w-0 flex-1 items-center gap-2 text-left">
           <div className="min-w-0 flex-1">
             <span className="block truncate text-sm font-semibold tracking-wide text-white/80">
               {title || placeholder}
             </span>
-            {subtitle && (
-              <span className="block truncate text-xs text-white/50">
-                {subtitle}
-              </span>
-            )}
+            {subtitle && <span className="block truncate text-xs text-white/50">{subtitle}</span>}
           </div>
         </button>
         {titleExtra && <div className="mr-1">{titleExtra}</div>}
@@ -158,16 +144,10 @@ export function AccordionCard({
       {/* Collapsible content - hidden during drag for cleaner preview */}
       <div
         className={`transition-all duration-300 ease-in-out ${
-          isDragging
-            ? 'hidden'
-            : isExpanded
-              ? 'mt-3 max-h-[2000px] opacity-100'
-              : 'max-h-0 overflow-hidden opacity-0'
+          isDragging ? 'hidden' : isExpanded ? 'mt-3 max-h-[2000px] opacity-100' : 'max-h-0 overflow-hidden opacity-0'
         }`}
       >
-        <div className="space-y-3 border-t border-white/10 pt-3">
-          {children}
-        </div>
+        <div className="space-y-3 border-t border-white/10 pt-3">{children}</div>
       </div>
     </div>
   )

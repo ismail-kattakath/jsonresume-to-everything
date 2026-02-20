@@ -3,19 +3,9 @@ import RootLayout, { metadata } from '@/app/layout'
 
 // Mock BackgroundImage component
 jest.mock('@/components/BackgroundImage', () => {
-  return function MockBackgroundImage({
-    withBlur,
-    withOverlay,
-  }: {
-    withBlur?: boolean
-    withOverlay?: boolean
-  }) {
+  return function MockBackgroundImage({ withBlur, withOverlay }: { withBlur?: boolean; withOverlay?: boolean }) {
     return (
-      <div
-        data-testid="background-image"
-        data-with-blur={withBlur}
-        data-with-overlay={withOverlay}
-      >
+      <div data-testid="background-image" data-with-blur={withBlur} data-with-overlay={withOverlay}>
         Background
       </div>
     )
@@ -90,10 +80,7 @@ describe('RootLayout', () => {
 
     const head = document.querySelector('head')
     const appleTouchIcon = head?.querySelector('link[rel="apple-touch-icon"]')
-    expect(appleTouchIcon).toHaveAttribute(
-      'href',
-      '/favicon/apple-touch-icon.png'
-    )
+    expect(appleTouchIcon).toHaveAttribute('href', '/favicon/apple-touch-icon.png')
   })
 
   it('should include manifest link in head', () => {

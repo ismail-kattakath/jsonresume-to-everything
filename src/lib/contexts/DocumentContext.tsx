@@ -4,6 +4,9 @@ import React, { createContext, ChangeEvent } from 'react'
 import resumeData from '@/lib/resumeAdapter'
 import type { ResumeData } from '@/types'
 
+/**
+ * Interface representing the result of a skills sorting and enhancement operation.
+ */
 export type DocumentContextType = {
   resumeData: ResumeData
   setResumeData: React.Dispatch<React.SetStateAction<ResumeData>>

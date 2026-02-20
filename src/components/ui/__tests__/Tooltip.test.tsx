@@ -46,19 +46,13 @@ describe('Tooltip', () => {
 
   it('listens for resize events', () => {
     render(<Tooltip />)
-    expect(addEventListenerSpy).toHaveBeenCalledWith(
-      'resize',
-      expect.any(Function)
-    )
+    expect(addEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
   })
 
   it('cleans up resize listener on unmount', () => {
     const { unmount } = render(<Tooltip />)
     unmount()
-    expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      'resize',
-      expect.any(Function)
-    )
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
   })
 
   it('updates mobile state on resize', () => {
@@ -148,10 +142,7 @@ describe('CustomTooltip', () => {
     const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener')
     const { unmount } = render(<CustomTooltip />)
     unmount()
-    expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      'resize',
-      expect.any(Function)
-    )
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
     removeEventListenerSpy.mockRestore()
   })
 })

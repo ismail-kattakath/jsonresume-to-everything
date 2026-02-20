@@ -1,13 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import {
-  ChevronDown,
-  ChevronUp,
-  GripVertical,
-  Pencil,
-  Trash2,
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, GripVertical, Pencil, Trash2 } from 'lucide-react'
 import { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 
 type SectionVariant = 'default' | 'utility'
@@ -108,10 +102,7 @@ const CollapsibleSection = ({
       : 'border-white/10 bg-white/5 hover:border-white/20'
 
   return (
-    <div
-      id={id}
-      className={`overflow-hidden rounded-lg border backdrop-blur-sm transition-all ${variantClasses}`}
-    >
+    <div id={id} className={`overflow-hidden rounded-lg border backdrop-blur-sm transition-all ${variantClasses}`}>
       {/* Header - Clickable */}
       <button
         type="button"
@@ -151,9 +142,7 @@ const CollapsibleSection = ({
                 className="flex-1 rounded-lg border border-blue-400 bg-white/10 px-3 py-1 text-sm font-semibold text-white outline-none focus:ring-2 focus:ring-blue-400/20"
               />
             ) : (
-              <h2 className="truncate text-sm font-semibold text-white">
-                {title}
-              </h2>
+              <h2 className="truncate text-sm font-semibold text-white">{title}</h2>
             )}
           </div>
         </div>
@@ -188,10 +177,7 @@ const CollapsibleSection = ({
           )}
 
           {action && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2"
-            >
+            <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-2">
               {action}
             </div>
           )}
@@ -211,9 +197,7 @@ const CollapsibleSection = ({
       {/* Content - Collapsible */}
       <div
         className={`transition-all duration-300 ease-in-out ${
-          isExpanded
-            ? 'max-h-[10000px] opacity-100'
-            : 'max-h-0 overflow-hidden opacity-0'
+          isExpanded ? 'max-h-[10000px] opacity-100' : 'max-h-0 overflow-hidden opacity-0'
         }`}
       >
         <div className="border-t border-white/10 p-4 pt-3">{children}</div>

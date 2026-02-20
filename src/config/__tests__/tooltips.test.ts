@@ -109,9 +109,7 @@ describe('Tooltips Configuration', () => {
 
   describe('Content Quality', () => {
     it('should have concise tooltips (under 100 characters)', () => {
-      const allTooltips = Object.values(tooltips).flatMap((category) =>
-        Object.values(category)
-      )
+      const allTooltips = Object.values(tooltips).flatMap((category) => Object.values(category))
 
       allTooltips.forEach((tooltip) => {
         expect(tooltip.length).toBeLessThan(100)
@@ -119,9 +117,7 @@ describe('Tooltips Configuration', () => {
     })
 
     it('should not have empty tooltips', () => {
-      const allTooltips = Object.values(tooltips).flatMap((category) =>
-        Object.values(category)
-      )
+      const allTooltips = Object.values(tooltips).flatMap((category) => Object.values(category))
 
       allTooltips.forEach((tooltip) => {
         expect(tooltip.trim().length).toBeGreaterThan(0)
@@ -129,9 +125,7 @@ describe('Tooltips Configuration', () => {
     })
 
     it('should not start or end with whitespace', () => {
-      const allTooltips = Object.values(tooltips).flatMap((category) =>
-        Object.values(category)
-      )
+      const allTooltips = Object.values(tooltips).flatMap((category) => Object.values(category))
 
       allTooltips.forEach((tooltip) => {
         expect(tooltip).toBe(tooltip.trim())

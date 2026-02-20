@@ -1,10 +1,4 @@
-import {
-  contactInfo,
-  summary,
-  skills,
-  experience,
-  projects,
-} from '@/lib/data/portfolio'
+import { contactInfo, summary, skills, experience, projects } from '@/lib/data/portfolio'
 
 describe('Portfolio Data - Contact Info', () => {
   it('should export contact info object', () => {
@@ -195,9 +189,7 @@ describe('Portfolio Data - formatDateRange Function', () => {
 
   it('should handle "Present" for current jobs', () => {
     // At least one job should have "Present" (current position)
-    const hasCurrentJob = experience.some((job) =>
-      job.duration.includes('Present')
-    )
+    const hasCurrentJob = experience.some((job) => job.duration.includes('Present'))
     expect(hasCurrentJob).toBe(true)
   })
 

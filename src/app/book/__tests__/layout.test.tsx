@@ -6,9 +6,7 @@ describe('BookLayout', () => {
     it('should export correct metadata', () => {
       expect(metadata).toBeDefined()
       expect(metadata.title).toBe('Book Meeting')
-      expect(metadata.description).toBe(
-        "Let's discuss how we can work together."
-      )
+      expect(metadata.description).toBe("Let's discuss how we can work together.")
     })
 
     it('should include Open Graph metadata', () => {
@@ -39,9 +37,7 @@ describe('BookLayout', () => {
         </BookLayout>
       )
 
-      expect(
-        container.querySelector('[data-testid="test-child"]')
-      ).toBeInTheDocument()
+      expect(container.querySelector('[data-testid="test-child"]')).toBeInTheDocument()
     })
 
     it('should not wrap children in additional elements', () => {

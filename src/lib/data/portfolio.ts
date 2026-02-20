@@ -2,15 +2,9 @@ import { ContactInfo, Experience, Skill, Project } from '@/types/portfolio'
 import resumeData from '@/lib/resumeAdapter'
 
 // Derive contact info from resumeData
-const linkedInProfile = resumeData.socialMedia.find(
-  (s) => s.socialMedia === 'LinkedIn'
-)
-const githubProfile = resumeData.socialMedia.find(
-  (s) => s.socialMedia === 'Github'
-)
-const websiteProfile = resumeData.socialMedia.find(
-  (s) => s.socialMedia === 'Website'
-)
+const linkedInProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'LinkedIn')
+const githubProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'Github')
+const websiteProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'Website')
 
 // Extract location from address (e.g., "24-242 John Garland Blvd, Toronto, ON M9V 1N8" -> "Toronto, ON 🇨🇦")
 const extractLocation = (address: string): string => {
@@ -58,31 +52,22 @@ function formatDateRange(startDate: string, endDate: string): string {
 }
 
 // Convert work experience from resumeData
-export const experience: Experience[] = resumeData.workExperience.map(
-  (job) => ({
-    title: job.position,
-    organization: job.organization,
-    location: '', // Not displayed on main website
-    duration: formatDateRange(job.startYear, job.endYear),
-    summary: job.description, // Organization/role description
-    description: job.keyAchievements.map((achievement) => achievement.text),
-    technologies: job.technologies || [],
-  })
-)
+export const experience: Experience[] = resumeData.workExperience.map((job) => ({
+  title: job.position,
+  organization: job.organization,
+  location: '', // Not displayed on main website
+  duration: formatDateRange(job.startYear, job.endYear),
+  summary: job.description, // Organization/role description
+  description: job.keyAchievements.map((achievement) => achievement.text),
+  technologies: job.technologies || [],
+}))
 
 export const projects: Project[] = [
   {
     name: 'AI Infrastructure & Model Deployment Platform',
     description:
       'Micro-SaaS platform providing image and video manipulation services through optimized AI model inference APIs',
-    technologies: [
-      'Google Vertex AI',
-      'Kubernetes',
-      'Docker',
-      'StableDiffusion',
-      'FLUX',
-      'OAuth2.0',
-    ],
+    technologies: ['Google Vertex AI', 'Kubernetes', 'Docker', 'StableDiffusion', 'FLUX', 'OAuth2.0'],
     highlights: [
       'Deployed production-ready inference APIs for multiple AI models',
       'Achieved reduced computational overhead with improved response times',
@@ -93,14 +78,7 @@ export const projects: Project[] = [
     name: 'Homeweb.ca Portal',
     description:
       'Employee and Family Assistance Program portal for corporations, built with MEAN stack and migrated to React',
-    technologies: [
-      'ReactJS',
-      'NextJS',
-      'Node.js',
-      'MongoDB',
-      'SAML2',
-      'OAuth2.0',
-    ],
+    technologies: ['ReactJS', 'NextJS', 'Node.js', 'MongoDB', 'SAML2', 'OAuth2.0'],
     highlights: [
       'Successfully migrated from AngularJS to ReactJS',
       'Integrated with multiple identity providers using SAML2',
@@ -109,16 +87,8 @@ export const projects: Project[] = [
   },
   {
     name: 'Brilliant Rewards Platform',
-    description:
-      'Comprehensive hospitality business software suite with digital loyalty program and marketing tools',
-    technologies: [
-      'AngularJS',
-      'Node.js',
-      'Express',
-      'LoopBack',
-      'Ionic',
-      'OAuth2.0',
-    ],
+    description: 'Comprehensive hospitality business software suite with digital loyalty program and marketing tools',
+    technologies: ['AngularJS', 'Node.js', 'Express', 'LoopBack', 'Ionic', 'OAuth2.0'],
     highlights: [
       'Led development of 4 cross-platform applications and 7 web portals',
       'Implemented RESTful API backend with microservices architecture',

@@ -21,10 +21,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ResumeLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+/**
+ * Layout component for the resume download/preview page.
+ */
+export default function ResumeLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }

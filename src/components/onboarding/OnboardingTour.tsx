@@ -2,11 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Onborda, OnbordaProvider, useOnborda } from 'onborda'
-import {
-  onboardingTours,
-  hasCompletedOnboarding,
-  markOnboardingComplete,
-} from '@/config/onboarding'
+import { onboardingTours, hasCompletedOnboarding, markOnboardingComplete } from '@/config/onboarding'
 import { TourCard } from './TourCard'
 
 /**

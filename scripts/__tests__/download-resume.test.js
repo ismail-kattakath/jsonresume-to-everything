@@ -34,20 +34,14 @@ describe('downloadResume', () => {
   it('should skip download if RESUME_GIST_URL is missing', async () => {
     fs.existsSync.mockReturnValue(true)
     await downloadResume()
-    expect(mockWarn).toHaveBeenCalledWith(
-      expect.stringContaining('RESUME_GIST_URL is not defined')
-    )
-    expect(mockLog).not.toHaveBeenCalledWith(
-      expect.stringContaining('Downloading resume')
-    )
+    expect(mockWarn).toHaveBeenCalledWith(expect.stringContaining('RESUME_GIST_URL is not defined'))
+    expect(mockLog).not.toHaveBeenCalledWith(expect.stringContaining('Downloading resume'))
   })
 
   it('should log error if RESUME_GIST_URL is missing and file does not exist', async () => {
     fs.existsSync.mockReturnValue(false)
     await downloadResume()
-    expect(mockError).toHaveBeenCalledWith(
-      expect.stringContaining('src/data/resume.json does not exist')
-    )
+    expect(mockError).toHaveBeenCalledWith(expect.stringContaining('src/data/resume.json does not exist'))
   })
 
   it('should download and save resume if RESUME_GIST_URL is present', async () => {
@@ -64,17 +58,13 @@ describe('downloadResume', () => {
     await downloadResume()
 
     expect(mockLog).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'Downloading resume from https://example.com/resume.json'
-      )
+      expect.stringContaining('Downloading resume from https://example.com/resume.json')
     )
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       expect.stringContaining('resume.json'),
       JSON.stringify(mockData, null, 2)
     )
-    expect(mockLog).toHaveBeenCalledWith(
-      expect.stringContaining('Successfully downloaded')
-    )
+    expect(mockLog).toHaveBeenCalledWith(expect.stringContaining('Successfully downloaded'))
   })
 
   it('should handle fetch errors', async () => {

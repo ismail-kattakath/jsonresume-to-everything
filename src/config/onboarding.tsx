@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-// @ts-ignore - onborda types may be missing Tour
+// @ts-expect-error - Onboarding configuration involves dynamic types missing Tour
 import type { Tour } from 'onborda'
 import { Sparkles, ArrowDownUp } from 'lucide-react'
 
@@ -19,13 +19,7 @@ import { Sparkles, ArrowDownUp } from 'lucide-react'
  * @see https://github.com/uixmat/onborda
  */
 
-const IconWrapper = ({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode
-  className?: string
-}) => (
+const IconWrapper = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <div
     className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 text-white ${className}`}
   >
@@ -47,13 +41,8 @@ export const onboardingTours: Tour[] = [
         title: 'Import & Export Your Data',
         content: (
           <div className="space-y-2">
-            <p>
-              Import existing resume data from JSON Resume format, or export
-              your work anytime.
-            </p>
-            <p className="text-sm text-white/70">
-              Your data is automatically saved to your browser.
-            </p>
+            <p>Import existing resume data from JSON Resume format, or export your work anytime.</p>
+            <p className="text-sm text-white/70">Your data is automatically saved to your browser.</p>
           </div>
         ),
         selector: '#section-import-export',
@@ -73,12 +62,9 @@ export const onboardingTours: Tour[] = [
         title: 'Configure AI Generation',
         content: (
           <div className="space-y-2">
-            <p>
-              Set up your AI API credentials to enable smart content generation.
-            </p>
+            <p>Set up your AI API credentials to enable smart content generation.</p>
             <p className="text-sm text-white/70">
-              Works with OpenAI, OpenRouter, Ollama, and any OpenAI-compatible
-              API.
+              Works with OpenAI, OpenRouter, Ollama, and any OpenAI-compatible API.
             </p>
           </div>
         ),
@@ -111,10 +97,7 @@ export function hasCompletedOnboarding(): boolean {
 export function markOnboardingComplete(): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(ONBOARDING_STORAGE_KEY, 'true')
-  localStorage.setItem(
-    'resume_builder_tour_completed_at',
-    new Date().toISOString()
-  )
+  localStorage.setItem('resume_builder_tour_completed_at', new Date().toISOString())
 }
 
 /**

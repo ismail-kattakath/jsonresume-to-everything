@@ -54,11 +54,7 @@ const Projects = () => {
 
     if (!destination) return
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return
 
     const newProjects = [...(resumeData.projects || [])]
     const [removed] = newProjects.splice(source.index, 1)
@@ -69,10 +65,11 @@ const Projects = () => {
   }
 
   const handleAddKeyword = (index: number, keyword: string) => {
-    const project = resumeData.projects?.[index]
+    if (!resumeData.projects) return
+    const newProjects = [...resumeData.projects]
+    const project = newProjects[index]
     if (!project) return
 
-    const newProjects = [...(resumeData.projects || [])]
     const keywords = project.keywords || []
     newProjects[index] = {
       ...project,
@@ -82,10 +79,11 @@ const Projects = () => {
   }
 
   const handleRemoveKeyword = (index: number, keywordIndex: number) => {
-    const project = resumeData.projects?.[index]
+    if (!resumeData.projects) return
+    const newProjects = [...resumeData.projects]
+    const project = newProjects[index]
     if (!project) return
 
-    const newProjects = [...(resumeData.projects || [])]
     const keywords = [...(project.keywords || [])]
     keywords.splice(keywordIndex, 1)
     newProjects[index] = {
@@ -95,23 +93,17 @@ const Projects = () => {
     setResumeData({ ...resumeData, projects: newProjects })
   }
 
-  const handleReorderKeyword = (
-    index: number,
-    startIndex: number,
-    endIndex: number
-  ) => {
-    const project = resumeData.projects?.[index]
-    if (!project) return
+  const handleReorderKeyword = (index: number, startIndex: number, endIndex: number) => {
+    if (!resumeData.projects) return
+    const newProjects = [...resumeData.projects]
+    const currentProject = newProjects[index]
+    if (!currentProject) return
 
-    const newProjects = [...(resumeData.projects || [])]
-    const keywords = [...(project.keywords || [])]
+    const keywords = [...(currentProject.keywords || [])]
     const [removed] = keywords.splice(startIndex, 1)
     if (removed) {
       keywords.splice(endIndex, 0, removed)
-      newProjects[index] = {
-        ...project,
-        keywords,
-      }
+      newProjects[index] = { ...currentProject, keywords }
       setResumeData({ ...resumeData, projects: newProjects })
     }
   }
@@ -123,26 +115,17 @@ const Projects = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="projects">
           {(provided) => (
-            <div
-              className="flex flex-col gap-3"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div className="flex flex-col gap-3" {...provided.droppableProps} ref={provided.innerRef}>
               {data.map((project, index) => (
-                <Draggable
-                  key={`PROJECT-${index}`}
-                  draggableId={`PROJECT-${index}`}
-                  index={index}
-                >
+                <Draggable key={`PROJECT-${index}`} draggableId={`PROJECT-${index}`} index={index}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`group flex cursor-grab flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 hover:border-white/20 hover:bg-white/10 active:cursor-grabbing ${snapshot.isDragging
-                        ? 'bg-white/20 outline-2 outline-purple-400 outline-dashed'
-                        : ''
-                        }`}
+                      className={`group flex cursor-grab flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 hover:border-white/20 hover:bg-white/10 active:cursor-grabbing ${
+                        snapshot.isDragging ? 'bg-white/20 outline-2 outline-purple-400 outline-dashed' : ''
+                      }`}
                     >
                       <FormInput
                         label="Project Name"
@@ -173,28 +156,17 @@ const Projects = () => {
                       />
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white">
-                          Highlights
-                        </label>
-                        <ProjectKeyAchievements
-                          projectIndex={index}
-                          variant="teal"
-                        />
+                        <label className="mb-2 block text-sm font-medium text-white">Highlights</label>
+                        <ProjectKeyAchievements projectIndex={index} variant="teal" />
                       </div>
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white">
-                          Keywords
-                        </label>
+                        <label className="mb-2 block text-sm font-medium text-white">Keywords</label>
                         <SortableTagInput
                           tags={project.keywords || []}
                           onAdd={(tag) => handleAddKeyword(index, tag)}
-                          onRemove={(tagIndex) =>
-                            handleRemoveKeyword(index, tagIndex)
-                          }
-                          onReorder={(startIndex, endIndex) =>
-                            handleReorderKeyword(index, startIndex, endIndex)
-                          }
+                          onRemove={(tagIndex) => handleRemoveKeyword(index, tagIndex)}
+                          onReorder={(startIndex, endIndex) => handleReorderKeyword(index, startIndex, endIndex)}
                           placeholder="Add keywords..."
                           variant="teal"
                         />
@@ -221,10 +193,7 @@ const Projects = () => {
                           className="flex-1"
                         />
 
-                        <DeleteButton
-                          onClick={() => remove(index)}
-                          label="Delete this project"
-                        />
+                        <DeleteButton onClick={() => remove(index)} label="Delete this project" />
                       </div>
                     </div>
                   )}

@@ -1,3 +1,6 @@
+/**
+ * Professional experience entry for the portfolio.
+ */
 export interface Experience {
   title: string
   organization: string
@@ -8,11 +11,17 @@ export interface Experience {
   technologies: string[]
 }
 
+/**
+ * Skill category and associated items for the portfolio.
+ */
 export interface Skill {
   category: string
   items: string[]
 }
 
+/**
+ * Featured project details for the portfolio showcase.
+ */
 export interface Project {
   name: string
   description: string
@@ -20,6 +29,9 @@ export interface Project {
   highlights: string[]
 }
 
+/**
+ * Contact details and social profile links for the portfolio.
+ */
 export interface ContactInfo {
   name: string
   title: string

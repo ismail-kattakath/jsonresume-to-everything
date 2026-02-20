@@ -15,6 +15,9 @@ interface PrintButtonProps {
   variant?: 'pill' | 'unified'
 }
 
+/**
+ * A floating action button that triggers the browser's print dialog and handles PDF naming.
+ */
 export default function PrintButton({
   name,
   position,
@@ -67,7 +70,7 @@ export default function PrintButton({
   const isUnified = variant === 'unified'
 
   return (
-    <div className={`flex ${isUnified ? 'rounded-xl overflow-hidden' : 'rounded-full'} shadow-2xl ${className || ''}`}>
+    <div className={`flex ${isUnified ? 'overflow-hidden rounded-xl' : 'rounded-full'} shadow-2xl ${className || ''}`}>
       {/* Print to PDF Button */}
       <button
         type="button"
@@ -75,7 +78,9 @@ export default function PrintButton({
         aria-label="Print to PDF"
         className={`group inline-flex cursor-pointer items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 text-xs font-medium text-white transition-all hover:scale-[1.02] hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] ${isUnified ? 'flex-1 justify-center rounded-l-xl' : 'rounded-l-full md:px-6'}`}
       >
-        <MdPictureAsPdf className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`} />
+        <MdPictureAsPdf
+          className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`}
+        />
         <span className={isUnified ? 'hidden' : 'hidden md:inline'}>Print</span>
       </button>
 
@@ -87,7 +92,9 @@ export default function PrintButton({
         aria-label="Copy text to clipboard"
         className={`group inline-flex cursor-pointer items-center gap-2 border-l border-purple-700/50 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 text-xs font-medium text-white transition-all hover:scale-[1.02] hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 ${isUnified ? 'flex-1 justify-center rounded-r-xl' : 'rounded-r-full md:px-6'}`}
       >
-        <MdContentCopy className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`} />
+        <MdContentCopy
+          className={`${isUnified ? 'text-base' : 'text-lg'} transition-transform group-hover:scale-110`}
+        />
         <span className={isUnified ? 'hidden' : 'hidden md:inline'}>Copy</span>
       </button>
     </div>

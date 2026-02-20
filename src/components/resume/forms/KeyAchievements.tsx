@@ -2,11 +2,7 @@ import React, { useState, useContext } from 'react'
 import { GripVertical } from 'lucide-react'
 import { toast } from 'sonner'
 import { useKeyAchievementsForm } from '@/hooks/useKeyAchievementsForm'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
 import AIActionButton from '@/components/ui/AIActionButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
@@ -23,10 +19,7 @@ interface KeyAchievementsProps {
  * KeyAchievements form component - displays achievements as a vertical list
  * with inline add, click-to-edit, drag-to-reorder, and AI-sort functionality
  */
-const KeyAchievements = ({
-  workExperienceIndex,
-  variant = 'teal',
-}: KeyAchievementsProps) => {
+const KeyAchievements = ({ workExperienceIndex, variant = 'teal' }: KeyAchievementsProps) => {
   const { achievements, add, remove, handleChange, reorder, setAchievements } =
     useKeyAchievementsForm(workExperienceIndex)
   const [inputValue, setInputValue] = useState('')
@@ -49,10 +42,7 @@ const KeyAchievements = ({
     }
   }
 
-  const handleEditKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       if (editValue.trim()) {
@@ -81,13 +71,7 @@ const KeyAchievements = ({
   }
 
   const handleAISort = async () => {
-    if (
-      !isConfigured ||
-      isSorting ||
-      !workExperience ||
-      achievements.length < 2
-    )
-      return
+    if (!isConfigured || isSorting || !workExperience || achievements.length < 2) return
 
     setIsSorting(true)
     let toastId: string | number | undefined
@@ -111,9 +95,14 @@ const KeyAchievements = ({
             console.log('[Achievements Sort Graph]', chunk.content)
             // Update toast with progress
             if (!toastId) {
-              toastId = toast(<AILoadingToast message={chunk.content} />, { duration: Infinity })
+              toastId = toast(<AILoadingToast message={chunk.content} />, {
+                duration: Infinity,
+              })
             } else {
-              toast(<AILoadingToast message={chunk.content} />, { id: toastId, duration: Infinity })
+              toast(<AILoadingToast message={chunk.content} />, {
+                id: toastId,
+                duration: Infinity,
+              })
             }
           }
         }
@@ -124,24 +113,20 @@ const KeyAchievements = ({
       // Apply the sorted order
       const sortedAchievements = sortResult.rankedIndices
         .map((index) => achievements[index])
-        .filter((a): a is typeof achievements[0] => a !== undefined)
+        .filter((a): a is (typeof achievements)[0] => a !== undefined)
       setAchievements(sortedAchievements)
       toast.success('Achievements sorted by job relevance')
     } catch (error: any) {
       if (toastId) toast.dismiss(toastId)
       console.error('AI Achievements sort error:', error)
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to sort achievements'
-      )
+      toast.error(error instanceof Error ? error.message : 'Failed to sort achievements')
     } finally {
       setIsSorting(false)
     }
   }
 
-  const borderColor =
-    variant === 'teal' ? 'border-teal-400/30' : 'border-pink-400/30'
-  const focusBorderColor =
-    variant === 'teal' ? 'focus:border-teal-400' : 'focus:border-pink-400'
+  const borderColor = variant === 'teal' ? 'border-teal-400/30' : 'border-pink-400/30'
+  const focusBorderColor = variant === 'teal' ? 'focus:border-teal-400' : 'focus:border-pink-400'
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return
@@ -159,11 +144,7 @@ const KeyAchievements = ({
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId={`achievements-${workExperienceIndex}`}>
           {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="space-y-2"
-            >
+            <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
               {(achievements || []).map((achievement, index) => (
                 <DnDDraggable
                   key={`ACHIEVEMENT-${workExperienceIndex}-${index}`}
@@ -174,8 +155,9 @@ const KeyAchievements = ({
                     <div
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
-                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
-                        }`}
+                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${
+                        snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
+                      }`}
                     >
                       {/* Drag handle */}
                       <div

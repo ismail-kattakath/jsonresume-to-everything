@@ -1,5 +1,4 @@
-// @ts-nocheck
-// @ts-nocheck
+'use client'
 import React, { useContext, useState, useEffect, useCallback } from 'react'
 import FormButton from '@/components/ui/FormButton'
 import { FormInput } from '@/components/ui/FormInput'
@@ -7,11 +6,7 @@ import { AccordionCard, AccordionHeader } from '@/components/ui/AccordionCard'
 import { useArrayForm } from '@/hooks/useArrayForm'
 import { useAccordion } from '@/hooks/useAccordion'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 
@@ -71,12 +66,9 @@ const SocialMedia = () => {
     { urlFields: ['link'] }
   )
 
-  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
-    useAccordion()
+  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } = useAccordion()
 
-  const [validationStatus, setValidationStatus] = useState<
-    Record<number, ValidationStatus>
-  >({})
+  const [validationStatus, setValidationStatus] = useState<Record<number, ValidationStatus>>({})
 
   // Validate URL
   const validateUrl = useCallback(async (url: string, index: number) => {
@@ -130,10 +122,13 @@ const SocialMedia = () => {
       const newStatus: Record<number, ValidationStatus> = {}
       Object.keys(prev).forEach((key) => {
         const keyIndex = parseInt(key)
+        const status = prev[keyIndex]
+        if (!status) return
+
         if (keyIndex < index) {
-          newStatus[keyIndex] = prev[keyIndex]
+          newStatus[keyIndex] = status
         } else if (keyIndex > index) {
-          newStatus[keyIndex - 1] = prev[keyIndex]
+          newStatus[keyIndex - 1] = status
         }
       })
       return newStatus
@@ -148,8 +143,10 @@ const SocialMedia = () => {
 
     const newSocialMedia = [...resumeData.socialMedia]
     const [removed] = newSocialMedia.splice(source.index, 1)
-    newSocialMedia.splice(destination.index, 0, removed)
-    setResumeData({ ...resumeData, socialMedia: newSocialMedia })
+    if (removed) {
+      newSocialMedia.splice(destination.index, 0, removed)
+      setResumeData({ ...resumeData, socialMedia: newSocialMedia })
+    }
 
     updateAfterReorder(source.index, destination.index)
 
@@ -158,22 +155,17 @@ const SocialMedia = () => {
       const newStatus: Record<number, ValidationStatus> = {}
       Object.keys(prev).forEach((key) => {
         const keyIndex = parseInt(key)
+        const status = prev[keyIndex]
+        if (!status) return
+
         if (keyIndex === source.index) {
-          newStatus[destination.index] = prev[keyIndex]
-        } else if (
-          keyIndex > source.index &&
-          keyIndex <= destination.index &&
-          source.index < destination.index
-        ) {
-          newStatus[keyIndex - 1] = prev[keyIndex]
-        } else if (
-          keyIndex < source.index &&
-          keyIndex >= destination.index &&
-          source.index > destination.index
-        ) {
-          newStatus[keyIndex + 1] = prev[keyIndex]
+          newStatus[destination.index] = status
+        } else if (keyIndex > source.index && keyIndex <= destination.index && source.index < destination.index) {
+          newStatus[keyIndex - 1] = status
+        } else if (keyIndex < source.index && keyIndex >= destination.index && source.index > destination.index) {
+          newStatus[keyIndex + 1] = status
         } else {
-          newStatus[keyIndex] = prev[keyIndex]
+          newStatus[keyIndex] = status
         }
       })
       return newStatus
@@ -185,17 +177,9 @@ const SocialMedia = () => {
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId="social-media">
           {(provided) => (
-            <div
-              className="space-y-3"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div className="space-y-3" {...provided.droppableProps} ref={provided.innerRef}>
               {data.map((socialMedia, index) => (
-                <DnDDraggable
-                  key={`SOCIAL-${index}`}
-                  draggableId={`SOCIAL-${index}`}
-                  index={index}
-                >
+                <DnDDraggable key={`SOCIAL-${index}`} draggableId={`SOCIAL-${index}`} index={index}>
                   {(dragProvided, snapshot) => (
                     <AccordionCard
                       isDragging={snapshot.isDragging}
@@ -213,11 +197,7 @@ const SocialMedia = () => {
                           onDelete={() => handleRemove(index)}
                           deleteTitle="Delete social media"
                           dragHandleProps={dragProvided.dragHandleProps}
-                          titleExtra={
-                            <UrlStatusIndicator
-                              status={validationStatus[index] || 'empty'}
-                            />
-                          }
+                          titleExtra={<UrlStatusIndicator status={validationStatus[index] || 'empty'} />}
                         />
                       }
                     >
@@ -242,8 +222,7 @@ const SocialMedia = () => {
                         />
                         {validationStatus[index] === 'invalid' && (
                           <p className="text-xs text-amber-400/80">
-                            This URL may not be reachable. Double-check the
-                            spelling.
+                            This URL may not be reachable. Double-check the spelling.
                           </p>
                         )}
                       </div>

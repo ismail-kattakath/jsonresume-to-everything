@@ -51,11 +51,7 @@ export function FormSelect({
           disabled={disabled}
         >
           {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              className="bg-gray-900 text-white"
-            >
+            <option key={option.value} value={option.value} className="bg-gray-900 text-white">
               {option.label}
             </option>
           ))}

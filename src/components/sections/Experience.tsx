@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'
 import { experience } from '@/lib/data/portfolio'
 import { Calendar, Briefcase, Sparkles } from 'lucide-react'
 
+/**
+ * The 'Experience' section displaying a professional timeline with roles and achievements.
+ */
 export default function Experience() {
   return (
     <section id="experience" className="py-24 backdrop-blur-sm">
@@ -51,10 +54,7 @@ export default function Experience() {
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ type: 'spring', stiffness: 400 }}
                   >
-                    <Briefcase
-                      className="text-[var(--md-sys-color-on-primary-container)]"
-                      size={20}
-                    />
+                    <Briefcase className="text-[var(--md-sys-color-on-primary-container)]" size={20} />
                   </motion.div>
                 </div>
 
@@ -78,10 +78,7 @@ export default function Experience() {
 
                       {/* Duration badge */}
                       <div className="flex flex-shrink-0 items-center gap-2 rounded-full bg-[var(--md-sys-color-surface-container-highest)] px-3 py-2 whitespace-nowrap shadow-sm">
-                        <Calendar
-                          size={14}
-                          className="text-[var(--md-sys-color-primary)]"
-                        />
+                        <Calendar size={14} className="text-[var(--md-sys-color-primary)]" />
                         <span className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">
                           {exp.duration}
                         </span>
@@ -101,13 +98,8 @@ export default function Experience() {
                   {/* Key achievements section */}
                   <div className="p-6">
                     <div className="mb-4 flex items-center gap-2">
-                      <Sparkles
-                        size={16}
-                        className="text-[var(--md-sys-color-primary)]"
-                      />
-                      <h5 className="md3-title-medium text-[var(--md-sys-color-on-surface)]">
-                        Key Achievements
-                      </h5>
+                      <Sparkles size={16} className="text-[var(--md-sys-color-primary)]" />
+                      <h5 className="md3-title-medium text-[var(--md-sys-color-on-surface)]">Key Achievements</h5>
                     </div>
 
                     <ul className="mb-6 space-y-3">

@@ -13,14 +13,7 @@ interface ModalProps {
   showCloseButton?: boolean
 }
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  maxWidth = 'md',
-  showCloseButton = true,
-}) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = 'md', showCloseButton = true }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const firstFocusableRef = useRef<HTMLButtonElement>(null)
 
@@ -97,10 +90,7 @@ const Modal: React.FC<ModalProps> = ({
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-6 py-4">
-              <h2
-                id="modal-title"
-                className="flex items-center gap-2 text-xl font-semibold text-white"
-              >
+              <h2 id="modal-title" className="flex items-center gap-2 text-xl font-semibold text-white">
                 {title}
               </h2>
               {showCloseButton && (

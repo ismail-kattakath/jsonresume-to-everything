@@ -8,20 +8,19 @@ import type { Certification } from '@/types'
  */
 export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
   const { resumeData, setResumeData } = useContext(ResumeContext)
+  // eslint-disable-next-line security/detect-object-injection
   const rawData = resumeData[dataKey] || []
 
   // Map to strings for the UI
   const data = (
-    dataKey === 'certifications'
-      ? (rawData as Certification[]).map((c) => c.name)
-      : (rawData as string[])
+    dataKey === 'certifications' ? (rawData as Certification[]).map((c) => c.name) : (rawData as string[])
   ) as string[]
 
   /**
    * Handle value change at specific index
    */
   const handleChange = (index: number, value: string) => {
-    const newData = [...rawData] as any[]
+    const newData = [...rawData] as unknown[]
     if (dataKey === 'certifications') {
       const current = (newData[index] as Certification) || {
         name: '',
@@ -40,10 +39,8 @@ export function useSimpleArrayForm(dataKey: 'certifications' | 'languages') {
    * Add new item (empty or with value)
    */
   const add = (value: string = '') => {
-    const newItem =
-      dataKey === 'certifications'
-        ? { name: value, date: '', issuer: '', url: '' }
-        : value
+    const newItem = dataKey === 'certifications' ? { name: value, date: '', issuer: '', url: '' } : value
+
     setResumeData({
       ...resumeData,
       [dataKey]: [...rawData, newItem],

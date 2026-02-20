@@ -33,15 +33,11 @@ describe('Structured Data Configurations', () => {
     })
 
     it('should have correct URL', () => {
-      expect(resumeBuilderStructuredData.url).toBe(
-        'https://test.example.com/resume/builder'
-      )
+      expect(resumeBuilderStructuredData.url).toBe('https://test.example.com/resume/builder')
     })
 
     it('should have BusinessApplication category', () => {
-      expect(resumeBuilderStructuredData.applicationCategory).toBe(
-        'BusinessApplication'
-      )
+      expect(resumeBuilderStructuredData.applicationCategory).toBe('BusinessApplication')
     })
 
     it('should have Any operating system', () => {
@@ -65,9 +61,7 @@ describe('Structured Data Configurations', () => {
     })
 
     it('should have browser requirements', () => {
-      expect(resumeBuilderStructuredData.browserRequirements).toContain(
-        'JavaScript'
-      )
+      expect(resumeBuilderStructuredData.browserRequirements).toContain('JavaScript')
       expect(resumeBuilderStructuredData.browserRequirements).toContain('HTML5')
     })
 
@@ -82,9 +76,7 @@ describe('Structured Data Configurations', () => {
     })
 
     it('should have screenshot URL', () => {
-      expect(resumeBuilderStructuredData.screenshot).toBe(
-        'https://test.example.com/resume/builder/opengraph-image'
-      )
+      expect(resumeBuilderStructuredData.screenshot).toBe('https://test.example.com/resume/builder/opengraph-image')
     })
 
     it('should have aggregate rating', () => {
@@ -154,17 +146,13 @@ describe('Structured Data Configurations', () => {
     })
 
     it('should include question about pricing', () => {
-      const pricingQuestion = resumeBuilderFAQData.mainEntity.find((q) =>
-        q.name.toLowerCase().includes('free')
-      )
+      const pricingQuestion = resumeBuilderFAQData.mainEntity.find((q) => q.name.toLowerCase().includes('free'))
       expect(pricingQuestion).toBeDefined()
       expect(pricingQuestion?.acceptedAnswer.text).toContain('free')
     })
 
     it('should include question about ATS compatibility', () => {
-      const atsQuestion = resumeBuilderFAQData.mainEntity.find((q) =>
-        q.name.toLowerCase().includes('ats')
-      )
+      const atsQuestion = resumeBuilderFAQData.mainEntity.find((q) => q.name.toLowerCase().includes('ats'))
       expect(atsQuestion).toBeDefined()
       expect(atsQuestion?.acceptedAnswer.text).toContain('ATS')
     })
@@ -177,17 +165,13 @@ describe('Structured Data Configurations', () => {
     })
 
     it('should include question about export formats', () => {
-      const exportQuestion = resumeBuilderFAQData.mainEntity.find((q) =>
-        q.name.toLowerCase().includes('export')
-      )
+      const exportQuestion = resumeBuilderFAQData.mainEntity.find((q) => q.name.toLowerCase().includes('export'))
       expect(exportQuestion).toBeDefined()
       expect(exportQuestion?.acceptedAnswer.text).toContain('PDF')
     })
 
     it('should include question about AI assistance', () => {
-      const aiQuestion = resumeBuilderFAQData.mainEntity.find((q) =>
-        q.name.toLowerCase().includes('ai')
-      )
+      const aiQuestion = resumeBuilderFAQData.mainEntity.find((q) => q.name.toLowerCase().includes('ai'))
       expect(aiQuestion).toBeDefined()
     })
   })

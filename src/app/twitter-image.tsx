@@ -12,6 +12,9 @@ export const size = {
 
 export const contentType = 'image/png'
 
+/**
+ * Generates the Twitter card image for the main portfolio page.
+ */
 export default async function Image() {
   return generateOgImage(TWITTER_IMAGE_CONFIG)
 }

@@ -82,7 +82,7 @@ describe('opengraph-image Route Handler', () => {
   })
 
   describe('Alt Text Fallback', () => {
-    it('should use "Portfolio" as fallback when name is empty', () => {
+    it('should use "Portfolio" as fallback when name is empty', async () => {
       // Re-import with empty name mock
       jest.resetModules()
       jest.mock('@/lib/resumeAdapter', () => ({
@@ -105,7 +105,7 @@ describe('opengraph-image Route Handler', () => {
         },
       }))
 
-      const { alt: altWithFallback } = require('@/app/opengraph-image')
+      const { alt: altWithFallback } = await import('@/app/opengraph-image')
       expect(altWithFallback).toBe('PORTFOLIO')
     })
   })

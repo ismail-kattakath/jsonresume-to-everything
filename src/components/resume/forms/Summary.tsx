@@ -3,10 +3,13 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import AIContentGenerator from '@/components/document-builder/shared-forms/AIContentGenerator'
 
+/**
+ * Summary form component
+ * Provides a text area for editing the professional summary with AI generation support
+ */
 const Summary = () => {
   const { resumeData, setResumeData, handleChange } = useContext(ResumeContext)
   const { isPipelineActive } = useAISettings()
-
 
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement> | string) => {
     if (typeof e === 'string') {

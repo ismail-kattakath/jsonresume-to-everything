@@ -22,14 +22,7 @@ import { useOnborda } from 'onborda'
  * @param prevStep - Function to go to previous step
  * @param arrow - SVG arrow element pointing to target
  */
-export function TourCard({
-  step,
-  currentStep,
-  totalSteps,
-  nextStep,
-  prevStep,
-  arrow,
-}: CardComponentProps) {
+export function TourCard({ step, currentStep, totalSteps, nextStep, prevStep, arrow }: CardComponentProps) {
   const { closeOnborda } = useOnborda()
   const isFirstStep = currentStep === 0
   const isLastStep = currentStep === totalSteps - 1
@@ -37,9 +30,7 @@ export function TourCard({
   return (
     <div className="relative max-w-[400px] min-w-[320px]">
       {/* Arrow pointing to target element - centered at top */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full">
-        {arrow}
-      </div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full">{arrow}</div>
 
       {/* Card Container */}
       <div className="overflow-hidden rounded-2xl border border-white/20 bg-gray-900/95 shadow-2xl backdrop-blur-xl">
@@ -69,9 +60,7 @@ export function TourCard({
         </div>
 
         {/* Content */}
-        <div className="p-4 text-sm leading-relaxed text-white/90">
-          {step.content}
-        </div>
+        <div className="p-4 text-sm leading-relaxed text-white/90">{step.content}</div>
 
         {/* Progress Bar */}
         <div className="px-4">
@@ -87,10 +76,7 @@ export function TourCard({
         {step.showControls && (
           <div className="flex items-center justify-between gap-3 p-4">
             {/* Skip Tour */}
-            <button
-              onClick={closeOnborda}
-              className="text-sm text-white/50 transition-colors hover:text-white/80"
-            >
+            <button onClick={closeOnborda} className="text-sm text-white/50 transition-colors hover:text-white/80">
               Skip tour
             </button>
 

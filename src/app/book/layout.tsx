@@ -21,10 +21,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function BookLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+/**
+ * Layout component for the book meeting page.
+ */
+export default function BookLayout({ children }: { children: React.ReactNode }) {
   return children
 }

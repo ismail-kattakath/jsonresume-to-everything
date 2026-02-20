@@ -6,6 +6,9 @@ import Header from '@/components/layout/Header'
 import MainLayout from '@/components/layout/MainLayout'
 import { Home, ArrowLeft } from 'lucide-react'
 
+/**
+ * 404 error page component.
+ */
 export default function NotFound() {
   return (
     <MainLayout className="min-h-screen bg-[var(--md-sys-color-background)]">
@@ -45,14 +48,8 @@ export default function NotFound() {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Link
-              href="/"
-              className="md3-btn-filled group flex w-full items-center justify-center gap-2 sm:w-auto"
-            >
-              <Home
-                size={20}
-                className="transition-transform group-hover:-translate-y-0.5"
-              />
+            <Link href="/" className="md3-btn-filled group flex w-full items-center justify-center gap-2 sm:w-auto">
+              <Home size={20} className="transition-transform group-hover:-translate-y-0.5" />
               Go Home
             </Link>
 
@@ -60,10 +57,7 @@ export default function NotFound() {
               onClick={() => window.history.back()}
               className="md3-btn-outlined group flex w-full items-center justify-center gap-2 sm:w-auto"
             >
-              <ArrowLeft
-                size={20}
-                className="transition-transform group-hover:-translate-x-1"
-              />
+              <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
               Go Back
             </button>
           </motion.div>

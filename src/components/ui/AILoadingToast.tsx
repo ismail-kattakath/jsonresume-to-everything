@@ -4,7 +4,7 @@ import React from 'react'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 interface AILoadingToastProps {
-    message: string
+  message: string
 }
 
 /**
@@ -12,16 +12,12 @@ interface AILoadingToastProps {
  * Used for AI generation progress messages
  */
 export function AILoadingToast({ message }: AILoadingToastProps) {
-    return (
-        <div className="flex items-center gap-3">
-            <div className="w-8 h-8 flex-shrink-0">
-                <DotLottieReact
-                    src="/animations/spinner.lottie"
-                    loop
-                    autoplay
-                />
-            </div>
-            <span className="text-sm font-semibold">{message}</span>
-        </div>
-    )
+  return (
+    <div className="flex items-center gap-3">
+      <div className="h-8 w-8 flex-shrink-0">
+        <DotLottieReact src="/animations/spinner.lottie" loop autoplay />
+      </div>
+      <span className="text-sm font-semibold">{message}</span>
+    </div>
+  )
 }

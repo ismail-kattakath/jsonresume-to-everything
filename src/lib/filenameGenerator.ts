@@ -10,16 +10,12 @@
 export function toPascalCase(str: string): string {
   if (!str || typeof str !== 'string') return ''
 
-  return (
-    str
-      .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters, keep spaces
-      .split(/\s+/) // Split by spaces
-      .filter((word) => word.length > 0) // Remove empty strings
-      .map(
-        (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-      )
-      .join('')
-  )
+  return str
+    .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters, keep spaces
+    .split(/\s+/) // Split by spaces
+    .filter((word) => word.length > 0) // Remove empty strings
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('')
 }
 
 /**
@@ -70,9 +66,7 @@ export function generateFilename(options: {
   // Add date prefix if requested (only for JSON exports)
   if (includeDate) {
     const now = new Date()
-    const yearMonth = `${now.getFullYear()}${String(
-      now.getMonth() + 1
-    ).padStart(2, '0')}`
+    const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`
     parts.push(yearMonth)
   }
 

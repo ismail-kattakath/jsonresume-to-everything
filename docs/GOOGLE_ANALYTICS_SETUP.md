@@ -241,11 +241,7 @@ If you see TypeScript errors about `window.gtag`:
 // Already handled in src/lib/analytics.ts
 declare global {
   interface Window {
-    gtag?: (
-      command: 'config' | 'event' | 'set',
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void
+    gtag?: (command: 'config' | 'event' | 'set', targetId: string, config?: Record<string, unknown>) => void
   }
 }
 ```

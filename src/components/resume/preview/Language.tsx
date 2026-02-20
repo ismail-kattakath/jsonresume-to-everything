@@ -15,14 +15,9 @@ const Language = ({ title, languages }: LanguageProps) => {
 
   return (
     <div>
-      <h2 className="section-title mb-1 border-b-2 border-dashed border-gray-300">
-        {title}
-      </h2>
+      <h2 className="section-title mb-1 border-b-2 border-dashed border-gray-300">{title}</h2>
       <p className="content">
-        <Highlight
-          text={languages.join(', ')}
-          keywords={settings.skillsToHighlight}
-        />
+        <Highlight text={languages.join(', ')} keywords={settings.skillsToHighlight} />
       </p>
     </div>
   )

@@ -10,19 +10,19 @@ import { tooltips } from '@/config/tooltips'
  * Shows valid/invalid status in the section header
  */
 export function AISettingsStatusIndicator() {
-    const { isConfigured } = useAISettings()
+  const { isConfigured } = useAISettings()
 
-    return isConfigured ? (
-        <CheckCircle
-            className="mr-1 h-4 w-4 text-green-400"
-            data-tooltip-id="app-tooltip"
-            data-tooltip-content={tooltips.aiSettings.validStatus}
-        />
-    ) : (
-        <XCircle
-            className="mr-1 h-4 w-4 text-red-400"
-            data-tooltip-id="app-tooltip"
-            data-tooltip-content={tooltips.aiSettings.invalidStatus}
-        />
-    )
+  return isConfigured ? (
+    <CheckCircle
+      className="mr-1 h-4 w-4 text-green-400"
+      data-tooltip-id="app-tooltip"
+      data-tooltip-content={tooltips.aiSettings.validStatus}
+    />
+  ) : (
+    <XCircle
+      className="mr-1 h-4 w-4 text-red-400"
+      data-tooltip-id="app-tooltip"
+      data-tooltip-content={tooltips.aiSettings.invalidStatus}
+    />
+  )
 }

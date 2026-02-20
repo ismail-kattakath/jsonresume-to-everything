@@ -1,10 +1,5 @@
 import { generateResumeBuilderOgImage } from '@/lib/utils/generateResumeBuilderOgImage'
-import OgImage, {
-  dynamic,
-  alt,
-  size,
-  contentType,
-} from '@/app/resume/builder/opengraph-image'
+import OgImage, { dynamic, alt, size, contentType } from '@/app/resume/builder/opengraph-image'
 
 // Mock the generateResumeBuilderOgImage utility
 jest.mock('@/lib/utils/generateResumeBuilderOgImage', () => ({
@@ -40,9 +35,7 @@ describe('Resume Builder OpenGraph Image Route Handler', () => {
   describe('Image Generation', () => {
     it('should call generateResumeBuilderOgImage with correct OG parameters', async () => {
       const mockImageResponse = { ok: true }
-      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(
-        mockImageResponse
-      )
+      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(mockImageResponse)
 
       const result = await OgImage()
 
@@ -64,14 +57,11 @@ describe('Resume Builder OpenGraph Image Route Handler', () => {
 
     it('should use OG_IMAGE_CONFIG dimensions', async () => {
       const mockImageResponse = { ok: true }
-      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(
-        mockImageResponse
-      )
+      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(mockImageResponse)
 
       await OgImage()
 
-      const callArgs = (generateResumeBuilderOgImage as jest.Mock).mock
-        .calls[0][0]
+      const callArgs = (generateResumeBuilderOgImage as jest.Mock).mock.calls[0][0]
       expect(callArgs.width).toBe(1200)
       expect(callArgs.height).toBe(630)
     })

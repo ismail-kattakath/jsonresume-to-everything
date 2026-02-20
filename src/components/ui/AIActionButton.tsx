@@ -47,23 +47,38 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
   fullWidth = false,
   variant = 'blue',
 }) => {
-  const iconSize = {
-    sm: 'h-3 w-3',
-    md: 'h-4 w-4',
-    lg: 'h-5 w-5',
-  }[size]
+  const iconSize = (() => {
+    switch (size) {
+      case 'lg':
+        return 'h-5 w-5'
+      case 'md':
+        return 'h-4 w-4'
+      case 'sm':
+      default:
+        return 'h-3 w-3'
+    }
+  })()
 
-  const baseButtonVariant = {
-    blue: 'gradient-blue',
-    amber: 'gradient-amber',
-    green: 'gradient-green',
-  }[variant] as 'gradient-blue' | 'gradient-amber' | 'gradient-green'
+  const baseButtonVariant = (() => {
+    switch (variant) {
+      case 'amber':
+        return 'gradient-amber'
+      case 'green':
+        return 'gradient-green'
+      case 'blue':
+      default:
+        return 'gradient-blue'
+    }
+  })() as 'gradient-blue' | 'gradient-amber' | 'gradient-green'
 
   const isActuallyDisabled = !isConfigured || isLoading || explicitlyDisabled
   const showTooltip = !showLabel || (isActuallyDisabled && !isLoading)
-  const tooltipText = explicitlyDisabled && !isLoading
-    ? 'Disabled while optimization is running'
-    : (!isConfigured && !isLoading ? disabledTooltip : label)
+  const tooltipText =
+    explicitlyDisabled && !isLoading
+      ? 'Disabled while optimization is running'
+      : !isConfigured && !isLoading
+        ? disabledTooltip
+        : label
 
   const icon = isLoading ? (
     <Loader2 className={`${iconSize} animate-spin`} />

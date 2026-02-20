@@ -10,14 +10,11 @@ export function generateSiteMetadata(): Metadata {
   const { name, position, summary, socialMedia } = resumeData
 
   // Find LinkedIn handle for Twitter creator field
-  const linkedInProfile = socialMedia.find(
-    (sm) => sm.socialMedia === 'LinkedIn'
-  )
+  const linkedInProfile = socialMedia.find((sm) => sm.socialMedia === 'LinkedIn')
   const linkedInHandle = linkedInProfile?.link.replace('linkedin.com/in/', '')
 
   // OG title: "Name - Position"
-  const siteTitle =
-    name && position ? `${name} - ${position}` : name || 'Portfolio'
+  const siteTitle = name && position ? `${name} - ${position}` : name || 'Portfolio'
 
   // OG description: First sentence from summary (55-200 chars)
   let siteDescription = 'Professional Portfolio'

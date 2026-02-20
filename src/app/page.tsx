@@ -6,6 +6,9 @@ import Skills from '@/components/sections/Skills'
 import Experience from '@/components/sections/Experience'
 import Contact from '@/components/sections/Contact'
 
+/**
+ * The main portfolio landing page component.
+ */
 export default function Home() {
   return (
     <MainLayout>

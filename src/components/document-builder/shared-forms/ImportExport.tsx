@@ -63,18 +63,17 @@ const ImportExport = ({
         const loadedData = JSON.parse(event.target?.result as string)
 
         // Check if it's JSON Resume format (has $schema or basics field)
-        const isJSONResume =
-          loadedData.$schema?.includes('jsonresume') || loadedData.basics
+        const isJSONResume = loadedData.$schema?.includes('jsonresume') || loadedData.basics
 
         if (isJSONResume) {
           // Validate JSON Resume format
           const validation = validateJSONResume(loadedData)
 
           if (!validation.valid) {
-            toast.error(
-              `Invalid JSON Resume format:\n${validation.errors.join('\n')}`,
-              { id: 'import-resume', duration: 5000 }
-            )
+            toast.error(`Invalid JSON Resume format:\n${validation.errors.join('\n')}`, {
+              id: 'import-resume',
+              duration: 5000,
+            })
             return
           }
 
@@ -148,9 +147,7 @@ const ImportExport = ({
       })
 
       // Track export event
-      const sectionsCount = Object.keys(resumeData).filter(
-        (key) => resumeData[key as keyof ResumeData]
-      ).length
+      const sectionsCount = Object.keys(resumeData).filter((key) => resumeData[key as keyof ResumeData]).length
       analytics.resumeExport('JSON', sectionsCount)
     } catch (error) {
       toast.error(`Failed to export resume: ${(error as Error).message}`, {
@@ -174,8 +171,7 @@ const ImportExport = ({
   return (
     <div className="group">
       <p className="mb-3 text-sm text-white/60">
-        Import or export your resume in JSON Resume format for portability
-        across different resume tools.
+        Import or export your resume in JSON Resume format for portability across different resume tools.
       </p>
       <div className={`grid items-stretch gap-3 ${hidePrintButton ? 'sm:grid-cols-3' : 'sm:grid-cols-4'}`}>
         <BaseButton
@@ -226,11 +222,7 @@ const ImportExport = ({
 
         {!hidePrintButton && (
           <div className="flex">
-            <PrintButton
-              variant="unified"
-              className="w-full justify-center"
-              resumeData={resumeData}
-            />
+            <PrintButton variant="unified" className="w-full justify-center" resumeData={resumeData} />
           </div>
         )}
       </div>
@@ -239,4 +231,3 @@ const ImportExport = ({
 }
 
 export default ImportExport
-

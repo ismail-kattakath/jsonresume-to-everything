@@ -7,6 +7,8 @@ output/
 qdrant_storage/
 *output*.txt
 test_results.json
+lint_*.json
+*_report.*
 
 src/data/resume.json
 # Environment variables (ignore all except example)

@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
 
 interface SortableTagInputProps {
@@ -30,8 +26,7 @@ const SortableTagInput: React.FC<SortableTagInputProps> = ({
   const [inputValue, setInputValue] = useState('')
 
   const variantStyles = {
-    purple:
-      'border-purple-400/30 focus:border-purple-400 hover:border-purple-400/50',
+    purple: 'border-purple-400/30 focus:border-purple-400 hover:border-purple-400/50',
     pink: 'border-pink-400/30 focus:border-pink-400 hover:border-pink-400/50',
     teal: 'border-teal-400/30 focus:border-teal-400 hover:border-teal-400/50',
     blue: 'border-blue-400/30 focus:border-blue-400 hover:border-blue-400/50',
@@ -66,26 +61,16 @@ const SortableTagInput: React.FC<SortableTagInputProps> = ({
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId="sortable-tags" direction="horizontal">
           {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="flex flex-wrap gap-2"
-            >
+            <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-wrap gap-2">
               {tags?.map((tag, index) => (
-                <DnDDraggable
-                  key={`TAG-${index}`}
-                  draggableId={`TAG-${index}`}
-                  index={index}
-                >
+                <DnDDraggable key={`TAG-${index}`} draggableId={`TAG-${index}`} index={index}>
                   {(dragProvided, snapshot) => (
                     <div
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
                       {...dragProvided.dragHandleProps}
                       className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm text-white ${
-                        snapshot.isDragging
-                          ? 'border-white/40 bg-white/20 shadow-lg'
-                          : 'border-white/20 bg-white/5'
+                        snapshot.isDragging ? 'border-white/40 bg-white/20 shadow-lg' : 'border-white/20 bg-white/5'
                       } cursor-grab transition-all active:cursor-grabbing`}
                     >
                       {tag}

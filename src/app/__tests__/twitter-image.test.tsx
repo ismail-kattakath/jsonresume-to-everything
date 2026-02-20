@@ -1,10 +1,5 @@
 import { generateOgImage } from '@/lib/utils/generateOgImage'
-import TwitterImage, {
-  dynamic,
-  alt,
-  size,
-  contentType,
-} from '@/app/twitter-image'
+import TwitterImage, { dynamic, alt, size, contentType } from '@/app/twitter-image'
 
 // Mock the generateOgImage utility
 jest.mock('@/lib/utils/generateOgImage', () => ({
@@ -82,14 +77,12 @@ describe('twitter-image Route Handler', () => {
       const mockError = new Error('Twitter image generation failed')
       ;(generateOgImage as jest.Mock).mockRejectedValue(mockError)
 
-      await expect(TwitterImage()).rejects.toThrow(
-        'Twitter image generation failed'
-      )
+      await expect(TwitterImage()).rejects.toThrow('Twitter image generation failed')
     })
   })
 
   describe('Alt Text Fallback', () => {
-    it('should use "Portfolio" as fallback when name is empty', () => {
+    it('should use "Portfolio" as fallback when name is empty', async () => {
       // Re-import with empty name mock
       jest.resetModules()
       jest.mock('@/lib/resumeAdapter', () => ({
@@ -112,7 +105,7 @@ describe('twitter-image Route Handler', () => {
         },
       }))
 
-      const { alt: altWithFallback } = require('@/app/twitter-image')
+      const { alt: altWithFallback } = await import('@/app/twitter-image')
       expect(altWithFallback).toBe('PORTFOLIO')
     })
   })

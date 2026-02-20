@@ -2,18 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { skills } from '@/lib/data/portfolio'
-import {
-  Brain,
-  Cloud,
-  Shield,
-  Cog,
-  Server,
-  Code,
-  Database,
-  Network,
-  Monitor,
-  Sparkles,
-} from 'lucide-react'
+import { Brain, Cloud, Shield, Cog, Server, Code, Database, Network, Monitor, Sparkles } from 'lucide-react'
 
 const iconMap: { [key: string]: any } = {
   'AI/ML Stack': Brain,
@@ -39,12 +28,12 @@ const colorMap: { [key: string]: string } = {
   'Web & Mobile UI': 'from-cyan-500 to-blue-500',
 }
 
+/**
+ * The skills section of the portfolio, displaying technical expertise categories and tags.
+ */
 export default function Skills() {
   return (
-    <section
-      id="skills"
-      className="relative overflow-hidden py-24 backdrop-blur-sm"
-    >
+    <section id="skills" className="relative overflow-hidden py-24 backdrop-blur-sm">
       {/* Decorative background */}
       <div className="absolute top-1/2 left-0 h-96 w-96 rounded-full bg-[var(--md-sys-color-primary)]/5 blur-3xl"></div>
       <div className="absolute top-1/3 right-0 h-80 w-80 rounded-full bg-[var(--md-sys-color-tertiary)]/5 blur-3xl"></div>
@@ -64,10 +53,7 @@ export default function Skills() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Sparkles
-              size={16}
-              className="text-[var(--md-sys-color-on-secondary-container)]"
-            />
+            <Sparkles size={16} className="text-[var(--md-sys-color-on-secondary-container)]" />
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-secondary-container)]">
               Tech Stack
             </span>
@@ -75,8 +61,8 @@ export default function Skills() {
 
           <h2 className="md3-headline-large mb-4">Technical Expertise</h2>
           <p className="md3-body-large md3-on-surface-variant mx-auto max-w-3xl">
-            Comprehensive technical skills across AI/ML, cloud platforms, and
-            modern development frameworks built over 15+ years of experience.
+            Comprehensive technical skills across AI/ML, cloud platforms, and modern development frameworks built over
+            15+ years of experience.
           </p>
         </motion.div>
 
@@ -108,9 +94,7 @@ export default function Skills() {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h3 className="md3-title-medium font-semibold break-words">
-                        {skillCategory.category}
-                      </h3>
+                      <h3 className="md3-title-medium font-semibold break-words">{skillCategory.category}</h3>
                       <p className="md3-label-small text-[var(--md-sys-color-on-surface-variant)]">
                         {skillCategory.items.length} technologies
                       </p>
@@ -118,9 +102,7 @@ export default function Skills() {
                   </div>
 
                   {/* Accent line */}
-                  <div
-                    className={`mt-4 h-1 bg-gradient-to-r ${gradient} rounded-full`}
-                  ></div>
+                  <div className={`mt-4 h-1 bg-gradient-to-r ${gradient} rounded-full`}></div>
                 </div>
 
                 {/* Skills tags */}
@@ -159,9 +141,7 @@ export default function Skills() {
               <div className="md3-headline-medium mb-1 bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] bg-clip-text font-bold text-transparent">
                 {skills.length}
               </div>
-              <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">
-                Skill Categories
-              </div>
+              <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">Skill Categories</div>
             </div>
 
             <div className="h-12 w-px bg-[var(--md-sys-color-outline-variant)]"></div>
@@ -181,9 +161,7 @@ export default function Skills() {
               <div className="md3-headline-medium mb-1 bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] bg-clip-text font-bold text-transparent">
                 15+
               </div>
-              <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">
-                Years of Practice
-              </div>
+              <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">Years of Practice</div>
             </div>
           </div>
         </motion.div>

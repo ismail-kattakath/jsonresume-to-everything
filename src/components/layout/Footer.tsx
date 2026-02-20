@@ -1,21 +1,16 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import {
-  Github,
-  Linkedin,
-  Mail,
-  Globe,
-  Heart,
-  Sparkles,
-  ArrowUp,
-} from 'lucide-react'
+import { Github, Linkedin, Mail, Globe, Heart, Sparkles, ArrowUp } from 'lucide-react'
 import { contactInfo } from '@/lib/data/portfolio'
 import resumeData from '@/lib/resumeAdapter'
 import { Logo } from '@/components/Logo'
 import { navItems } from '@/config/navigation'
 import { analytics } from '@/lib/analytics'
 
+/**
+ * The site-wide footer component containing social links, navigation, and site metadata.
+ */
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
@@ -45,17 +40,14 @@ export default function Footer() {
           >
             <div className="mb-6">
               <motion.button
-                onClick={() => (window.location.href = '/')}
+                onClick={() => window.location.assign('/')}
                 className="mb-4 h-27 w-48 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
                 aria-label="Go to homepage"
+                data-testid="logo-button"
               >
-                <Logo
-                  width={192}
-                  height={108}
-                  fill="var(--md-sys-color-primary)"
-                />
+                <Logo width={192} height={108} fill="var(--md-sys-color-primary)" />
               </motion.button>
               <h3 className="md3-title-large mb-2 bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] bg-clip-text font-semibold text-transparent">
                 {resumeData.position}
@@ -132,13 +124,8 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <div className="mb-4 flex items-center gap-2">
-              <Sparkles
-                size={16}
-                className="text-[var(--md-sys-color-primary)]"
-              />
-              <h4 className="md3-title-medium font-semibold text-[var(--md-sys-color-primary)]">
-                Navigate
-              </h4>
+              <Sparkles size={16} className="text-[var(--md-sys-color-primary)]" />
+              <h4 className="md3-title-medium font-semibold text-[var(--md-sys-color-primary)]">Navigate</h4>
             </div>
             <ul className="space-y-3">
               {navItems.map((item, index) => (
@@ -159,20 +146,17 @@ export default function Footer() {
                           key={subItem.name}
                           onClick={() => {
                             if (subItem.href.startsWith('#')) {
-                              const isHomePage =
-                                window.location.pathname === '/'
+                              const isHomePage = window.location.pathname === '/'
                               if (isHomePage) {
-                                const element = document.querySelector(
-                                  subItem.href
-                                )
+                                const element = document.querySelector(subItem.href)
                                 if (element) {
                                   element.scrollIntoView({ behavior: 'smooth' })
                                 }
                               } else {
-                                window.location.href = `/${subItem.href}`
+                                window.location.assign(`/${subItem.href}`)
                               }
                             } else {
-                              window.location.href = subItem.href
+                              window.location.assign(subItem.href)
                             }
                           }}
                           className="md3-body-medium group flex w-full cursor-pointer items-center gap-2 pl-4 text-[var(--md-sys-color-on-surface-variant)] transition-colors hover:text-[var(--md-sys-color-primary)]"
@@ -193,10 +177,10 @@ export default function Footer() {
                               element.scrollIntoView({ behavior: 'smooth' })
                             }
                           } else {
-                            window.location.href = `/${item.href}`
+                            window.location.assign(`/${item.href}`)
                           }
                         } else if (item.href) {
-                          window.location.href = item.href
+                          window.location.assign(item.href)
                         }
                       }}
                       className="md3-body-medium group flex cursor-pointer items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] transition-colors hover:text-[var(--md-sys-color-primary)]"
@@ -241,16 +225,12 @@ export default function Footer() {
             <div className="flex flex-col items-center gap-3 md:items-end">
               <p className="md3-body-small flex flex-wrap items-center justify-center gap-2 text-[var(--md-sys-color-on-surface-variant)]">
                 <span className="flex items-center gap-1.5">
-                  Built with{' '}
-                  <Heart size={14} className="animate-pulse text-red-500" />{' '}
-                  using
+                  Built with <Heart size={14} className="animate-pulse text-red-500" /> using
                 </span>
                 <span className="md3-label-small inline-flex items-center gap-1 rounded-full bg-[var(--md-sys-color-primary-container)] px-2 py-0.5 font-medium text-[var(--md-sys-color-on-primary-container)]">
                   Next.js
                 </span>
-                <span className="text-[var(--md-sys-color-on-surface-variant)]">
-                  •
-                </span>
+                <span className="text-[var(--md-sys-color-on-surface-variant)]">•</span>
                 <a
                   href="https://github.com/ismail-kattakath/jsonresume-to-everything"
                   target="_blank"

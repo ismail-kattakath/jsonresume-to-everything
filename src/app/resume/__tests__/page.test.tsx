@@ -116,9 +116,7 @@ describe('ResumePage', () => {
       socialMedia: {},
     }
 
-    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(
-      JSON.stringify(storedData)
-    )
+    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(JSON.stringify(storedData))
 
     render(<ResumePage />)
 

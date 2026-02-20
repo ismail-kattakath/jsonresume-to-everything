@@ -7,10 +7,7 @@ import type { DropResult } from '@hello-pangea/dnd'
  * @param onReorder - Callback function to update the reordered items
  * @returns onDragEnd handler for DragDropContext
  */
-export function useDragAndDrop<T>(
-  items: T[],
-  onReorder: (reorderedItems: T[]) => void
-) {
+export function useDragAndDrop<T>(items: T[], onReorder: (reorderedItems: T[]) => void) {
   const onDragEnd = useCallback(
     (result: DropResult) => {
       const { destination, source } = result
@@ -19,10 +16,7 @@ export function useDragAndDrop<T>(
       if (!destination) return
 
       // Dropped in the same position
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      ) {
+      if (destination.droppableId === source.droppableId && destination.index === source.index) {
         return
       }
 

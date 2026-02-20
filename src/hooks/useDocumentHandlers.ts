@@ -1,10 +1,7 @@
 import { Dispatch, SetStateAction, ChangeEvent } from 'react'
 import type { ResumeData } from '@/types'
 
-export const useDocumentHandlers = (
-  resumeData: ResumeData,
-  setResumeData: Dispatch<SetStateAction<ResumeData>>
-) => {
+export const useDocumentHandlers = (resumeData: ResumeData, setResumeData: Dispatch<SetStateAction<ResumeData>>) => {
   const handleProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
 
@@ -22,9 +19,7 @@ export const useDocumentHandlers = (
     }
   }
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setResumeData((prevData) => ({ ...prevData, [name]: value }))
   }

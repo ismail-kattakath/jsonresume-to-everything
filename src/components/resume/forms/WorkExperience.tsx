@@ -8,32 +8,20 @@ import { AccordionCard, AccordionHeader } from '@/components/ui/AccordionCard'
 import { useArrayForm } from '@/hooks/useArrayForm'
 import { useAccordion } from '@/hooks/useAccordion'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import KeyAchievements from '@/components/resume/forms/KeyAchievements'
 import SortableTagInput from '@/components/ui/SortableTagInput'
 import AIActionButton from '@/components/ui/AIActionButton'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import {
-  sortSkillsGraph,
-  sortTechStackGraph,
-} from '@/lib/ai/strands/agent'
+import { sortSkillsGraph, sortTechStackGraph } from '@/lib/ai/strands/agent'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
 import type { DropResult } from '@hello-pangea/dnd'
 import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
 
-
 /**
  * Sort button for Tech Stack
  */
-const TechStackSortButton = ({
-  workExperienceIndex,
-}: {
-  workExperienceIndex: number
-}) => {
+const TechStackSortButton = ({ workExperienceIndex }: { workExperienceIndex: number }) => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
   const { settings, isConfigured } = useAISettings()
   const [isSorting, setIsSorting] = useState(false)
@@ -69,9 +57,14 @@ const TechStackSortButton = ({
           const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
 
           if (!toastId) {
-            toastId = toast(<AILoadingToast message={cleanMessage} />, { duration: Infinity })
+            toastId = toast(<AILoadingToast message={cleanMessage} />, {
+              duration: Infinity,
+            })
           } else {
-            toast(<AILoadingToast message={cleanMessage} />, { id: toastId, duration: Infinity })
+            toast(<AILoadingToast message={cleanMessage} />, {
+              id: toastId,
+              duration: Infinity,
+            })
           }
         }
       }
@@ -94,8 +87,6 @@ const TechStackSortButton = ({
       setIsSorting(false)
       toast.error(`Failed: ${err.message || 'Unknown error'}`)
     }
-
-    await sortPromise
   }
 
   return (
@@ -133,8 +124,7 @@ const WorkExperience = () => {
     { urlFields: ['url'] }
   )
 
-  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
-    useAccordion()
+  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } = useAccordion()
 
   const toggleTechnologiesVisibility = (index: number) => {
     const workExperience = resumeData.workExperience[index]
@@ -199,11 +189,7 @@ const WorkExperience = () => {
     setResumeData({ ...resumeData, workExperience: newWorkExperience })
   }
 
-  const handleReorderTechnology = (
-    index: number,
-    startIndex: number,
-    endIndex: number
-  ) => {
+  const handleReorderTechnology = (index: number, startIndex: number, endIndex: number) => {
     const workExperience = resumeData.workExperience[index]
     if (!workExperience) return
 
@@ -220,23 +206,14 @@ const WorkExperience = () => {
     }
   }
 
-
   return (
     <div className="flex flex-col gap-4">
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId="work-experience">
           {(provided) => (
-            <div
-              className="space-y-3"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div className="space-y-3" {...provided.droppableProps} ref={provided.innerRef}>
               {data.map((workExperience, index) => (
-                <DnDDraggable
-                  key={`WORK-${index}`}
-                  draggableId={`WORK-${index}`}
-                  index={index}
-                >
+                <DnDDraggable key={`WORK-${index}`} draggableId={`WORK-${index}`} index={index}>
                   {(dragProvided, snapshot) => (
                     <AccordionCard
                       isDragging={snapshot.isDragging}
@@ -322,21 +299,14 @@ const WorkExperience = () => {
 
                       <div>
                         <div className="mb-2 flex items-center gap-2">
-                          <label className="text-sm font-medium text-white">
-                            Key Achievements
-                          </label>
+                          <label className="text-sm font-medium text-white">Key Achievements</label>
                         </div>
-                        <KeyAchievements
-                          workExperienceIndex={index}
-                          variant="teal"
-                        />
+                        <KeyAchievements workExperienceIndex={index} variant="teal" />
                       </div>
 
                       <div>
                         <div className="mb-2 flex items-center gap-2">
-                          <label className="text-sm font-medium text-white">
-                            Tech Stack
-                          </label>
+                          <label className="text-sm font-medium text-white">Tech Stack</label>
                           <TechStackSortButton workExperienceIndex={index} />
                           <button
                             type="button"
@@ -359,16 +329,8 @@ const WorkExperience = () => {
                           <SortableTagInput
                             tags={workExperience.technologies || []}
                             onAdd={(tech) => handleAddTechnology(index, tech)}
-                            onRemove={(techIndex) =>
-                              handleRemoveTechnology(index, techIndex)
-                            }
-                            onReorder={(startIndex, endIndex) =>
-                              handleReorderTechnology(
-                                index,
-                                startIndex,
-                                endIndex
-                              )
-                            }
+                            onRemove={(techIndex) => handleRemoveTechnology(index, techIndex)}
+                            onReorder={(startIndex, endIndex) => handleReorderTechnology(index, startIndex, endIndex)}
                             placeholder="Add tech stack..."
                             variant="teal"
                           />
@@ -385,7 +347,7 @@ const WorkExperience = () => {
       </DnDContext>
 
       <FormButton size={data.length} add={handleAdd} label="Experience" />
-    </div >
+    </div>
   )
 }
 

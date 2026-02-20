@@ -51,8 +51,7 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
   const handleGenerate = async () => {
     if (!isConfigured) {
       toast.error('AI not configured', {
-        description:
-          'Please fill in the API settings and job description in the Generative AI Settings section above.',
+        description: 'Please fill in the API settings and job description in the Generative AI Settings section above.',
       })
       return
     }
@@ -77,16 +76,22 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
         (chunk) => {
           if (chunk.content) {
             // Filter out internal critique messages
-            const isCritique = chunk.content.includes('CRITIQUE:') ||
+            const isCritique =
+              chunk.content.includes('CRITIQUE:') ||
               chunk.content.includes('❌') ||
               chunk.content.startsWith('**CRITIQUE:**')
 
             if (!isCritique) {
               const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
               if (!toastId) {
-                toastId = toast(<AILoadingToast message={cleanMessage} />, { duration: Infinity })
+                toastId = toast(<AILoadingToast message={cleanMessage} />, {
+                  duration: Infinity,
+                })
               } else {
-                toast(<AILoadingToast message={cleanMessage} />, { id: toastId, duration: Infinity })
+                toast(<AILoadingToast message={cleanMessage} />, {
+                  id: toastId,
+                  duration: Infinity,
+                })
               }
             }
           }
@@ -99,11 +104,7 @@ const AIInputWithButton: React.FC<AIInputWithButtonProps> = ({
 
       // Track generation success
       const responseTimeMs = Date.now() - startTime
-      analytics.aiGenerationSuccess(
-        settings.providerType,
-        settings.model,
-        responseTimeMs
-      )
+      analytics.aiGenerationSuccess(settings.providerType, settings.model, responseTimeMs)
 
       toast.success('Job title generated successfully!', {
         description: 'The AI has crafted your tailored job title.',

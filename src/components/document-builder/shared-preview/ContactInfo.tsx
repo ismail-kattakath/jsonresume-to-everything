@@ -22,11 +22,7 @@ const ContactInfo = ({
   emailicon,
   addressicon,
 }: ContactInfoProps) => {
-  const {
-    resumeData,
-    setResumeData,
-    editable = true,
-  } = useContext(ResumeContext)
+  const { resumeData, setResumeData, editable = true } = useContext(ResumeContext)
 
   // Helper function to strip formatting from phone number for tel: link
   const getCleanPhoneNumber = (phone: string) => {

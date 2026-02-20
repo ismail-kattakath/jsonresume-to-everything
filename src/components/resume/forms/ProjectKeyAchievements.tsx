@@ -10,12 +10,8 @@ interface ProjectKeyAchievementsProps {
  * ProjectKeyAchievements form component - displays project achievements as a vertical list
  * with inline add and click-to-edit functionality
  */
-const ProjectKeyAchievements = ({
-  projectIndex,
-  variant = 'teal',
-}: ProjectKeyAchievementsProps) => {
-  const { achievements, add, remove, handleChange } =
-    useProjectKeyAchievementsForm(projectIndex)
+const ProjectKeyAchievements = ({ projectIndex, variant = 'teal' }: ProjectKeyAchievementsProps) => {
+  const { achievements, add, remove, handleChange } = useProjectKeyAchievementsForm(projectIndex)
   const [inputValue, setInputValue] = useState('')
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [editValue, setEditValue] = useState('')
@@ -30,10 +26,7 @@ const ProjectKeyAchievements = ({
     }
   }
 
-  const handleEditKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       if (editValue.trim()) {
@@ -54,21 +47,15 @@ const ProjectKeyAchievements = ({
 
   const handleEditBlur = (index: number) => {
     const currentAchievement = achievements[index]
-    if (
-      editValue.trim() &&
-      currentAchievement &&
-      editValue !== currentAchievement.text
-    ) {
+    if (editValue.trim() && currentAchievement && editValue !== currentAchievement.text) {
       handleChange(index, editValue)
     }
     setEditingIndex(null)
     setEditValue('')
   }
 
-  const borderColor =
-    variant === 'teal' ? 'border-teal-400/30' : 'border-pink-400/30'
-  const focusBorderColor =
-    variant === 'teal' ? 'focus:border-teal-400' : 'focus:border-pink-400'
+  const borderColor = variant === 'teal' ? 'border-teal-400/30' : 'border-pink-400/30'
+  const focusBorderColor = variant === 'teal' ? 'focus:border-teal-400' : 'focus:border-pink-400'
 
   return (
     <div className="space-y-2">

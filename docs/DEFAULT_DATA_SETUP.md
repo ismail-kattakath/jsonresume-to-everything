@@ -323,10 +323,7 @@ open src/data/resume.json
       "startDate": "2015-09-01",
       "endDate": "2019-05-31",
       "score": "3.8",
-      "courses": [
-        "CS106A - Programming Methodology",
-        "CS221 - Artificial Intelligence"
-      ]
+      "courses": ["CS106A - Programming Methodology", "CS221 - Artificial Intelligence"]
     }
   ]
 }

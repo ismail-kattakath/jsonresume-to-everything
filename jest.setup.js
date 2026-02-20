@@ -9,18 +9,9 @@ expect.extend(toHaveNoViolations)
 jest.mock(
   'onborda',
   () => ({
-    OnbordaProvider: ({ children }) =>
-      React.createElement(
-        'div',
-        { 'data-testid': 'onborda-provider' },
-        children
-      ),
+    OnbordaProvider: ({ children }) => React.createElement('div', { 'data-testid': 'onborda-provider' }, children),
     Onborda: ({ children, showOnborda }) =>
-      React.createElement(
-        'div',
-        { 'data-testid': 'onborda', 'data-show': showOnborda },
-        children
-      ),
+      React.createElement('div', { 'data-testid': 'onborda', 'data-show': showOnborda }, children),
     useOnborda: () => ({
       startOnborda: jest.fn(),
       closeOnborda: jest.fn(),
@@ -35,21 +26,21 @@ jest.mock(
 
 // Mock IntersectionObserver for framer-motion
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() { }
-  disconnect() { }
-  observe() { }
+  constructor() {}
+  disconnect() {}
+  observe() {}
   takeRecords() {
     return []
   }
-  unobserve() { }
+  unobserve() {}
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() { }
-  disconnect() { }
-  observe() { }
-  unobserve() { }
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
 }
 
 // Mock performance API for Next.js third-party scripts (Google Analytics)
@@ -66,7 +57,13 @@ global.fetch = jest.fn(() =>
 
 // Mock DragAndDrop wrapper components for testing
 jest.mock('@/components/ui/DragAndDrop', () => ({
-  DnDContext: ({ children }) => <div>{children}</div>,
+  DnDContext: ({ children, onDragEnd }) => {
+    // Expose for testing if needed
+    if (typeof global !== 'undefined') {
+      global.__MOCKED_DND_CONTEXT_ON_DRAG_END__ = onDragEnd
+    }
+    return <div>{children}</div>
+  },
   DnDDroppable: ({ children }) =>
     children({
       draggableProps: {},
@@ -153,6 +150,10 @@ beforeAll(() => {
       /cannot be a child of/i,
       /hydration error/i,
       /Not implemented: navigation/i,
+      /Failed to parse or decrypt credentials/i,
+      /Failed to parse or decrypt providerKeys/i,
+      /Error loading saved (resume|cover letter) data/i,
+      /AISettings.*Model fetch error/i,
     ]
 
     if (silentPatterns.some((pattern) => pattern.test(message))) {

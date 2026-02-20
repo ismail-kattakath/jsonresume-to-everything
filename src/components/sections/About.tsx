@@ -5,12 +5,14 @@ import { summary } from '@/lib/data/portfolio'
 import { Award, Users, Rocket, TrendingUp, Code2, Globe } from 'lucide-react'
 import { fadeInUp, scaleIn, fadeInUpWithDelay } from '@/lib/utils/animations'
 
+/**
+ * The 'About Me' section of the portfolio, highlighting professional journey and core competencies.
+ */
 export default function About() {
   // Parse summary into sentences for better display
   const sentences = summary.split(/\.(?!\d)/).filter((s) => s.trim())
   const mainSummary = sentences.slice(0, 2).join('.') + '.'
-  const achievements =
-    sentences.slice(2).join('.') + (sentences.length > 2 ? '' : '')
+  const achievements = sentences.slice(2).join('.') + (sentences.length > 2 ? '' : '')
 
   const stats = [
     {
@@ -40,10 +42,7 @@ export default function About() {
   ]
 
   return (
-    <section
-      id="about"
-      className="relative overflow-hidden py-24 backdrop-blur-sm"
-    >
+    <section id="about" className="relative overflow-hidden py-24 backdrop-blur-sm">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-1/4 h-64 w-64 rounded-full bg-[var(--md-sys-color-secondary)]/5 blur-3xl"></div>
       <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-[var(--md-sys-color-primary)]/5 blur-3xl"></div>
@@ -54,10 +53,7 @@ export default function About() {
             {...scaleIn}
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-primary-container)] px-4 py-2"
           >
-            <Globe
-              size={16}
-              className="text-[var(--md-sys-color-on-primary-container)]"
-            />
+            <Globe size={16} className="text-[var(--md-sys-color-on-primary-container)]" />
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-primary-container)]">
               Principal Software Engineer
             </span>
@@ -83,14 +79,10 @@ export default function About() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] shadow-lg">
                   <Award className="text-white" size={24} />
                 </div>
-                <h3 className="md3-title-large font-semibold">
-                  Professional Journey
-                </h3>
+                <h3 className="md3-title-large font-semibold">Professional Journey</h3>
               </div>
 
-              <p className="md3-body-large mb-4 leading-relaxed text-[var(--md-sys-color-on-surface)]">
-                {mainSummary}
-              </p>
+              <p className="md3-body-large mb-4 leading-relaxed text-[var(--md-sys-color-on-surface)]">{mainSummary}</p>
 
               {achievements && (
                 <p className="md3-body-medium leading-relaxed text-[var(--md-sys-color-on-surface-variant)]">
@@ -128,9 +120,7 @@ export default function About() {
                   {stat.value}
                 </div>
 
-                <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">
-                  {stat.label}
-                </div>
+                <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -144,9 +134,7 @@ export default function About() {
           viewport={{ once: true }}
           className="md3-card p-8"
         >
-          <h3 className="md3-title-large mb-6 text-center font-semibold">
-            Core Competencies
-          </h3>
+          <h3 className="md3-title-large mb-6 text-center font-semibold">Core Competencies</h3>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -158,8 +146,7 @@ export default function About() {
               },
               {
                 title: 'Full-Stack Development',
-                description:
-                  'Modern web applications with Next.js, React, Node.js, and cloud-native architectures',
+                description: 'Modern web applications with Next.js, React, Node.js, and cloud-native architectures',
                 icon: Code2,
               },
               {
@@ -177,13 +164,8 @@ export default function About() {
                 viewport={{ once: true }}
                 className="relative rounded-2xl bg-[var(--md-sys-color-surface-container-low)] p-6"
               >
-                <competency.icon
-                  className="mb-4 text-[var(--md-sys-color-primary)]"
-                  size={24}
-                />
-                <h4 className="md3-title-medium mb-2 font-semibold">
-                  {competency.title}
-                </h4>
+                <competency.icon className="mb-4 text-[var(--md-sys-color-primary)]" size={24} />
+                <h4 className="md3-title-medium mb-2 font-semibold">{competency.title}</h4>
                 <p className="md3-body-small leading-relaxed text-[var(--md-sys-color-on-surface-variant)]">
                   {competency.description}
                 </p>
