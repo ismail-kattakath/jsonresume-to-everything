@@ -1,13 +1,16 @@
 node_modules/
 .next/
+.swc/
 out/
 output/
+logs/
+tmp/
 *.log
 .DS_Store
 qdrant_storage/
 *output*.txt
 test_results.json
-lint_*.json
+lint*.json
 *_report.*
 
 src/data/resume.json

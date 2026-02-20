@@ -7,7 +7,7 @@ import type { ResumeData } from '@/types/resume'
 // Mock Next.js Image component
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => {
     // eslint-disable-next-line @next/next/no-img-element
     return <img {...props} />
   },
@@ -179,7 +179,7 @@ describe('ProfileHeader Component', () => {
     it('handles undefined social media', () => {
       const dataWithoutSocial = {
         ...mockResumeData,
-        socialMedia: undefined as any,
+        socialMedia: undefined as unknown as ResumeData['socialMedia'],
       }
       const { container } = renderWithContext(dataWithoutSocial)
       expect(container.querySelector('.grid')).toBeInTheDocument()

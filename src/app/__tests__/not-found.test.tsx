@@ -5,15 +5,15 @@ import NotFound from '@/app/not-found'
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, initial, animate, transition, viewport, ...props }: any) => <div {...props}>{children}</div>,
-    h1: ({ children, initial, animate, transition, ...props }: any) => <h1 {...props}>{children}</h1>,
-    h2: ({ children, initial, animate, transition, ...props }: any) => <h2 {...props}>{children}</h2>,
+    div: ({ children, initial, animate, transition, viewport, ...props }: React.ComponentProps<'div'> & { initial?: unknown; animate?: unknown; transition?: unknown; viewport?: unknown }) => <div {...props}>{children}</div>,
+    h1: ({ children, initial, animate, transition, ...props }: React.ComponentProps<'h1'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => <h1 {...props}>{children}</h1>,
+    h2: ({ children, initial, animate, transition, ...props }: React.ComponentProps<'h2'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => <h2 {...props}>{children}</h2>,
   },
 }))
 
 // Mock next/link
 jest.mock('next/link', () => {
-  const MockLink = ({ children, href, ...props }: any) => (
+  const MockLink = ({ children, href, ...props }: React.ComponentProps<'a'>) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -31,7 +31,7 @@ jest.mock('@/components/layout/Header', () => {
 
 // Mock MainLayout component
 jest.mock('@/components/layout/MainLayout', () => {
-  const MockMainLayout = ({ children, ...props }: any) => {
+  const MockMainLayout = ({ children, ...props }: React.ComponentProps<'div'>) => {
     return (
       <div data-testid="mock-main-layout" {...props}>
         {children}

@@ -10,7 +10,7 @@ jest.mock('@/components/resume/preview/Preview', () => {
 
 // Mock PrintButton component
 jest.mock('@/components/document-builder/ui/PrintButton', () => {
-  return function MockPrintButton({ name, documentType }: any) {
+  return function MockPrintButton({ name, documentType }: { name: string; documentType: string }) {
     return (
       <button data-testid="mock-print-button">
         Print {documentType} for {name}
@@ -21,7 +21,7 @@ jest.mock('@/components/document-builder/ui/PrintButton', () => {
 
 // Mock ScaledPreviewWrapper component
 jest.mock('@/components/document-builder/ui/ScaledPreviewWrapper', () => {
-  return function MockScaledPreviewWrapper({ children }: any) {
+  return function MockScaledPreviewWrapper({ children }: { children: React.ReactNode }) {
     return <div data-testid="scaled-preview-wrapper">{children}</div>
   }
 })
@@ -116,7 +116,7 @@ describe('ResumePage', () => {
       socialMedia: {},
     }
 
-    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(JSON.stringify(storedData))
+      ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(JSON.stringify(storedData))
 
     render(<ResumePage />)
 
@@ -126,7 +126,7 @@ describe('ResumePage', () => {
   })
 
   it('should use default resume data when localStorage is empty', () => {
-    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(null)
+    ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(null)
 
     render(<ResumePage />)
 
@@ -150,7 +150,7 @@ describe('ResumePage', () => {
   })
 
   it('should format name with spaces correctly', () => {
-    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(
+    ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(
       JSON.stringify({
         name: 'mary jane watson',
         position: 'Developer',

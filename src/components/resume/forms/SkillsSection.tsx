@@ -184,10 +184,10 @@ export function SkillsSection() {
       updateSettings({ skillsToHighlight: skills })
       setIsExtractingSkills(false)
       toast.success('Skills extracted and aligned with your resume!')
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (toastId) toast.dismiss(toastId)
       setIsExtractingSkills(false)
-      toast.error(`Failed: ${err.message || 'Unknown error'}`)
+      toast.error(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }
 

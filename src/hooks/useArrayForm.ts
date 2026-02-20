@@ -24,6 +24,7 @@ interface UseArrayFormOptions<T> {
  *   endYear: '',
  * }, { urlFields: ['url'] })
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useArrayForm<T extends Record<string, any>>(
   dataKey: keyof ResumeData,
   initialItem: T,

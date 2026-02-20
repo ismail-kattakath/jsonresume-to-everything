@@ -11,7 +11,7 @@ describe('Password Configuration', () => {
 
   afterEach(() => {
     // Restore original values
-    ;(global as unknown as TestGlobal).window = originalWindow
+    ; (global as unknown as TestGlobal).window = originalWindow
     // Clear and restore env
     Object.keys(process.env).forEach((key) => {
       delete process.env[key]
@@ -35,8 +35,8 @@ describe('Password Configuration', () => {
 
       expect(result).toBeUndefined()
 
-      // Restore window
-      ;(global as unknown as TestGlobal).window = serverWindow
+        // Restore window
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should return hash from environment variable when set (server-side)', async () => {
@@ -55,8 +55,8 @@ describe('Password Configuration', () => {
 
       expect(result).toBe(mockHash)
 
-      // Restore window
-      ;(global as unknown as TestGlobal).window = serverWindow
+        // Restore window
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should return hash from window.__PASSWORD_HASH__ in browser', () => {
@@ -78,7 +78,7 @@ describe('Password Configuration', () => {
     })
 
     it('should return undefined in browser when no window hash exists and no env var', () => {
-      ;(global as unknown as TestGlobal).window = {
+      ; (global as unknown as TestGlobal).window = {
         document: {}, // Make it look like a browser environment
       } as unknown as Window & typeof globalThis
       delete process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
@@ -90,9 +90,9 @@ describe('Password Configuration', () => {
 
     it('should return hash from process.env in browser-like test environment', () => {
       const mockHash = '$2b$10$testHashFromProcessEnv'
-      ;(global as unknown as TestGlobal).window = {
-        document: {}, // Make it look like a browser environment
-      } as unknown as Window & typeof globalThis
+        ; (global as unknown as TestGlobal).window = {
+          document: {}, // Make it look like a browser environment
+        } as unknown as Window & typeof globalThis
       process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH'] = mockHash
 
       const result = getPasswordHash()
@@ -101,15 +101,15 @@ describe('Password Configuration', () => {
     })
 
     it('should handle browser environment with undefined process gracefully', () => {
-      ;(global as unknown as TestGlobal).window = {
+      ; (global as unknown as TestGlobal).window = {
         document: {},
       } as unknown as Window & typeof globalThis
       const originalProcess = global.process
 
       // Simulate browser without process
       try {
-        // @ts-ignore - deliberately testing undefined process
-        delete (global as any).process
+        // deliberately testing undefined process
+        delete (global as unknown as { process?: NodeJS.Process }).process
 
         const result = getPasswordHash()
 
@@ -120,21 +120,21 @@ describe('Password Configuration', () => {
     })
 
     it('should handle browser environment with defined process but no env property', () => {
-      ;(global as unknown as TestGlobal).window = {
+      ; (global as unknown as TestGlobal).window = {
         document: {},
       } as unknown as Window & typeof globalThis
       const originalEnv = process.env
 
       try {
         // Set process but with no env
-        // @ts-ignore - deliberately testing missing env
-        ;(process as any).env = undefined
+        // deliberately testing missing env
+        ; (process as unknown as { env?: typeof process.env }).env = undefined
 
         const result = getPasswordHash()
 
         expect(result).toBeUndefined()
       } finally {
-        ;(process as any).env = originalEnv
+        ; (process as unknown as { env?: typeof process.env }).env = originalEnv
       }
     })
 
@@ -178,8 +178,8 @@ describe('Password Configuration', () => {
 
       expect(result).toBe(mockHash)
 
-      // Restore
-      ;(global as unknown as TestGlobal).window = serverWindow
+        // Restore
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
   })
 
@@ -195,7 +195,7 @@ describe('Password Configuration', () => {
       const result = freshIsEnabled()
 
       expect(result).toBe(false)
-      ;(global as unknown as TestGlobal).window = serverWindow
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should return true when password hash is configured via env var (server-side)', async () => {
@@ -210,7 +210,7 @@ describe('Password Configuration', () => {
       const result = freshIsEnabled()
 
       expect(result).toBe(true)
-      ;(global as unknown as TestGlobal).window = serverWindow
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should return true when password hash is configured via window object', () => {
@@ -232,7 +232,7 @@ describe('Password Configuration', () => {
     })
 
     it('should return false in browser when no hash is available', () => {
-      ;(global as unknown as TestGlobal).window = {
+      ; (global as unknown as TestGlobal).window = {
         document: {}, // Make it look like a browser environment
       } as unknown as Window & typeof globalThis
       delete process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
@@ -257,7 +257,7 @@ describe('Password Configuration', () => {
 
       // Bcrypt hashes start with $2a$, $2b$, or $2y$
       expect(hash).toMatch(/^\$2[aby]\$\d{2}\$/)
-      ;(global as unknown as TestGlobal).window = serverWindow
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should not expose password in plain text when configured', async () => {
@@ -278,7 +278,7 @@ describe('Password Configuration', () => {
         expect(hash).not.toMatch(/^[a-z0-9]{4,}$/i) // Not a simple alphanumeric string
       }
 
-      ;(global as unknown as TestGlobal).window = serverWindow
+      ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should use bcrypt hash with sufficient salt rounds when configured', async () => {
@@ -301,7 +301,7 @@ describe('Password Configuration', () => {
         }
       }
 
-      ;(global as unknown as TestGlobal).window = serverWindow
+      ; (global as unknown as TestGlobal).window = serverWindow
     })
   })
 
@@ -321,7 +321,7 @@ describe('Password Configuration', () => {
 
       expect(hash).toBeUndefined()
       expect(isEnabled).toBe(false)
-      ;(global as unknown as TestGlobal).window = serverWindow
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
 
     it('should enable password protection when env var is set', async () => {
@@ -340,7 +340,7 @@ describe('Password Configuration', () => {
 
       expect(hash).toBe(mockHash)
       expect(isEnabled).toBe(true)
-      ;(global as unknown as TestGlobal).window = serverWindow
+        ; (global as unknown as TestGlobal).window = serverWindow
     })
   })
 })

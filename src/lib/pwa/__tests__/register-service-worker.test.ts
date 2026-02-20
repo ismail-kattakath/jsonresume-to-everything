@@ -8,7 +8,7 @@ import { registerServiceWorker, unregisterServiceWorker } from '@/lib/pwa/regist
 describe('registerServiceWorker', () => {
   let mockRegister: jest.Mock
   let mockAddEventListener: jest.Mock
-  let mockServiceWorkerContainer: { register: jest.Mock; controller?: any }
+  let mockServiceWorkerContainer: { register: jest.Mock; controller?: unknown }
   let originalConsoleLog: typeof console.log
   let originalConsoleError: typeof console.error
 

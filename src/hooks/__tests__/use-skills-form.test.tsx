@@ -44,7 +44,7 @@ describe('useSkillsForm', () => {
     return (
       <ResumeContext.Provider
         value={{
-          resumeData: mockResumeData as any,
+          resumeData: mockResumeData as unknown as ResumeData,
           setResumeData,
           handleProfilePicture: jest.fn(),
           handleChange: jest.fn(),
@@ -61,7 +61,7 @@ describe('useSkillsForm', () => {
 
   it('should throw error when skill type not found', () => {
     // Suppress console.error for this test
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
 
     expect(() => {
       renderHook(() => useSkillsForm('NonExistent'), {

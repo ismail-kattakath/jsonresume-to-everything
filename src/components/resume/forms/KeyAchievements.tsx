@@ -116,7 +116,7 @@ const KeyAchievements = ({ workExperienceIndex, variant = 'teal' }: KeyAchieveme
         .filter((a): a is (typeof achievements)[0] => a !== undefined)
       setAchievements(sortedAchievements)
       toast.success('Achievements sorted by job relevance')
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (toastId) toast.dismiss(toastId)
       console.error('AI Achievements sort error:', error)
       toast.error(error instanceof Error ? error.message : 'Failed to sort achievements')
@@ -155,9 +155,8 @@ const KeyAchievements = ({ workExperienceIndex, variant = 'teal' }: KeyAchieveme
                     <div
                       ref={dragProvided.innerRef}
                       {...dragProvided.draggableProps}
-                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${
-                        snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
-                      }`}
+                      className={`group flex items-start gap-3 rounded-lg border ${borderColor} bg-white/5 p-3 transition-all hover:bg-white/10 ${snapshot.isDragging ? 'bg-white/20 shadow-lg' : ''
+                        }`}
                     >
                       {/* Drag handle */}
                       <div

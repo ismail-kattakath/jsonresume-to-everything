@@ -61,11 +61,11 @@ const renderWithBothContexts = (mockData: ReturnType<typeof createMockResumeData
     <AISettingsContext.Provider value={mockAISettings}>
       <ResumeContext.Provider
         value={{
-          resumeData: mockData as any,
+          resumeData: mockData,
           setResumeData: mockSetResumeData,
           handleProfilePicture: jest.fn(),
           handleChange: jest.fn(),
-        }}
+        } as unknown as React.ContextType<typeof ResumeContext>}
       >
         <CoverLetterContent />
       </ResumeContext.Provider>
@@ -95,7 +95,7 @@ describe('CoverLetterContent Component', () => {
         content: 'This is my cover letter content',
       })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { ...({} as any), resumeData: mockData as any },
+        contextValue: { resumeData: mockData } as unknown as React.ContextType<typeof ResumeContext>,
       })
 
       const textarea = screen.getByPlaceholderText(/Write your cover letter content\.\.\./i)
@@ -212,7 +212,7 @@ describe('CoverLetterContent Component', () => {
     it('should handle null content gracefully', () => {
       const mockData = createMockResumeData({ content: undefined })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { ...({} as any), resumeData: mockData as any },
+        contextValue: { resumeData: mockData } as unknown as React.ContextType<typeof ResumeContext>,
       })
 
       const textarea = screen.getByPlaceholderText(/Write your cover letter content\.\.\./i)
@@ -223,7 +223,7 @@ describe('CoverLetterContent Component', () => {
       const whitespaceContent = '   \n\n   '
       const mockData = createMockResumeData({ content: whitespaceContent })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { ...({} as any), resumeData: mockData as any },
+        contextValue: { resumeData: mockData } as unknown as React.ContextType<typeof ResumeContext>,
       })
 
       const textarea = screen.getByPlaceholderText(/Write your cover letter content\.\.\./i)
@@ -234,7 +234,7 @@ describe('CoverLetterContent Component', () => {
       const unicodeContent = 'Hello 你好 مرحبا'
       const mockData = createMockResumeData({ content: unicodeContent })
       renderWithContext(<CoverLetterContent />, {
-        contextValue: { ...({} as any), resumeData: mockData as any },
+        contextValue: { resumeData: mockData } as unknown as React.ContextType<typeof ResumeContext>,
       })
 
       const textarea = screen.getByPlaceholderText(/Write your cover letter content\.\.\./i)
@@ -268,13 +268,13 @@ describe('CoverLetterContent Component', () => {
     it('updates content when AI generation completes', async () => {
       // Mock successful AI generation
       const generatedText = 'AI-generated cover letter content with compelling narrative and skills alignment'
-      ;(generateCoverLetterGraph as jest.Mock).mockImplementation(
-        async (_data: any, _jobDescription: any, _config: any, onChunk: any) => {
-          // Simulate streaming by calling onChunk
-          onChunk({ content: generatedText })
-          return generatedText
-        }
-      )
+        ; (generateCoverLetterGraph as jest.Mock).mockImplementation(
+          async (_data: unknown, _jobDescription: unknown, _config: unknown, onChunk: (arg: { content: string }) => void) => {
+            // Simulate streaming by calling onChunk
+            onChunk({ content: generatedText })
+            return generatedText
+          }
+        )
 
       const mockData = createMockResumeData({ content: '' })
       const mockSetResumeData = jest.fn()
@@ -295,11 +295,11 @@ describe('CoverLetterContent Component', () => {
         <AISettingsContext.Provider value={mockAISettings}>
           <ResumeContext.Provider
             value={{
-              resumeData: mockData as any,
+              resumeData: mockData,
               setResumeData: mockSetResumeData,
               handleProfilePicture: jest.fn(),
               handleChange: jest.fn(),
-            }}
+            } as unknown as React.ContextType<typeof ResumeContext>}
           >
             <CoverLetterContent />
           </ResumeContext.Provider>

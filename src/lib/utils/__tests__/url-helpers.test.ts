@@ -22,7 +22,7 @@ describe('urlHelpers', () => {
 
     it('returns empty string for null or empty input', () => {
       expect(stripProtocol('')).toBe('')
-      expect(stripProtocol(null as any)).toBe('')
+      expect(stripProtocol(null as unknown as string)).toBe('')
     })
   })
 
@@ -45,7 +45,7 @@ describe('urlHelpers', () => {
 
     it('returns empty string for null or empty input', () => {
       expect(ensureProtocol('')).toBe('')
-      expect(ensureProtocol(null as any)).toBe('')
+      expect(ensureProtocol(null as unknown as string)).toBe('')
     })
   })
 

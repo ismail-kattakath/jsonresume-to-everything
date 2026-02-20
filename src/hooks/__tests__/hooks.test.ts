@@ -219,7 +219,7 @@ describe('useUnifiedData', () => {
     const { result } = renderHook(() => useUnifiedData())
 
     act(() => {
-      result.current.setResumeData((prev: any) => ({
+      result.current.setResumeData((prev: Parameters<typeof result.current.setResumeData>[0] extends (value: infer P) => unknown ? P : unknown) => ({
         ...prev,
         name: 'Synced Name',
       }))
@@ -233,7 +233,7 @@ describe('useUnifiedData', () => {
     const { result } = renderHook(() => useUnifiedData())
 
     act(() => {
-      result.current.setCoverLetterData((prev: any) => ({
+      result.current.setCoverLetterData((prev: Parameters<typeof result.current.setCoverLetterData>[0] extends (value: infer P) => unknown ? P : unknown) => ({
         ...prev,
         email: 'newemail@test.com',
       }))

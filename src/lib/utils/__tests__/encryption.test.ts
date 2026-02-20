@@ -1,8 +1,8 @@
 import { encryptData, decryptData, generateVaultKey } from '@/lib/utils/encryption'
 import { TextEncoder, TextDecoder } from 'util'
 
-global.TextEncoder = TextEncoder as any
-global.TextDecoder = TextDecoder as any
+global.TextEncoder = TextEncoder as unknown as typeof global.TextEncoder
+global.TextDecoder = TextDecoder as unknown as typeof global.TextDecoder
 
 // Mock the Web Crypto API
 const mockCrypto = {
@@ -35,8 +35,8 @@ describe('encryption utility', () => {
     jest.clearAllMocks()
 
     // Default implementation for key derivation
-    mockCrypto.subtle.importKey.mockResolvedValue('base-key' as any)
-    mockCrypto.subtle.deriveKey.mockResolvedValue('derived-key' as any)
+    mockCrypto.subtle.importKey.mockResolvedValue('base-key' as unknown as CryptoKey)
+    mockCrypto.subtle.deriveKey.mockResolvedValue('derived-key' as unknown as CryptoKey)
 
     // Default mock implementation for encrypt/decrypt to return a buffer
     mockCrypto.subtle.encrypt.mockImplementation((algo, key, data) => Promise.resolve(data.buffer))

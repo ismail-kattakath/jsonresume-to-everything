@@ -31,7 +31,7 @@ jest.mock('@/components/resume/forms/KeyAchievements', () => ({
 
 jest.mock('@/components/ui/SortableTagInput', () => ({
   __esModule: true,
-  default: ({ tags, onAdd, onRemove, onReorder }: any) => (
+  default: ({ tags, onAdd, onRemove, onReorder }: { tags: string[], onAdd: (t: string) => void, onRemove: (i: number) => void, onReorder: (i: number, j: number) => void }) => (
     <div data-testid="tag-input">
       {tags.map((tag: string, i: number) => (
         <div key={i}>
@@ -47,7 +47,7 @@ jest.mock('@/components/ui/SortableTagInput', () => ({
 
 jest.mock('@/components/ui/AIActionButton', () => ({
   __esModule: true,
-  default: ({ onClick, label }: any) => (
+  default: ({ onClick, label }: { onClick: () => void; label: string }) => (
     <button onClick={onClick} aria-label={label}>
       {label}
     </button>
@@ -96,15 +96,15 @@ describe('WorkExperience', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     window.confirm = jest.fn(() => true)
-    ;(useAISettings as jest.Mock).mockReturnValue(mockAISettings)
-    ;(useArrayForm as jest.Mock).mockReturnValue(mockArrayForm)
-    ;(useAccordion as jest.Mock).mockReturnValue(mockAccordion)
-    ;(sortTechStackGraph as jest.Mock).mockResolvedValue(['Node', 'React'])
+      ; (useAISettings as jest.Mock).mockReturnValue(mockAISettings)
+      ; (useArrayForm as jest.Mock).mockReturnValue(mockArrayForm)
+      ; (useAccordion as jest.Mock).mockReturnValue(mockAccordion)
+      ; (sortTechStackGraph as jest.Mock).mockResolvedValue(['Node', 'React'])
   })
 
   const renderComponent = (resumeData = mockResumeData) => {
     return render(
-      <ResumeContext.Provider value={{ resumeData, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider value={{ resumeData, setResumeData: mockSetResumeData } as unknown as React.ContextType<typeof ResumeContext>}>
         <WorkExperience />
       </ResumeContext.Provider>
     )
@@ -195,7 +195,7 @@ describe('WorkExperience', () => {
   })
 
   it('handles AI tech stack sort failure', async () => {
-    ;(sortTechStackGraph as jest.Mock).mockRejectedValue(new Error('Sort failed'))
+    ; (sortTechStackGraph as jest.Mock).mockRejectedValue(new Error('Sort failed'))
     renderComponent()
     const sortButton = screen.getByLabelText('Sort by JD')
     fireEvent.click(sortButton)
@@ -206,7 +206,7 @@ describe('WorkExperience', () => {
   })
 
   it('handles AI sort streaming updates', async () => {
-    ;(sortTechStackGraph as jest.Mock).mockImplementation((tech, jobDesc, options, onChunk) => {
+    ; (sortTechStackGraph as jest.Mock).mockImplementation((tech, jobDesc, options, onChunk) => {
       onChunk({ content: 'Analyzing 🚀', done: false })
       onChunk({ content: 'Sorting ⚡', done: false })
       return Promise.resolve(['Node', 'React'])
@@ -285,14 +285,14 @@ describe('WorkExperience', () => {
     const dataWithOneTech = {
       workExperience: [{ ...mockResumeData.workExperience[0], technologies: ['React'] }],
     }
-    ;(useArrayForm as jest.Mock).mockReturnValue({ ...mockArrayForm, data: dataWithOneTech.workExperience })
+      ; (useArrayForm as jest.Mock).mockReturnValue({ ...mockArrayForm, data: dataWithOneTech.workExperience })
 
-    renderComponent(dataWithOneTech as any)
+    renderComponent(dataWithOneTech as never)
     expect(screen.queryByLabelText('Sort by JD')).not.toBeInTheDocument()
   })
 
   it('prevents sort if not configured', () => {
-    ;(useAISettings as jest.Mock).mockReturnValue({ ...mockAISettings, isConfigured: false })
+    ; (useAISettings as jest.Mock).mockReturnValue({ ...mockAISettings, isConfigured: false })
     renderComponent()
 
     const sortButton = screen.getByLabelText('Sort by JD')
@@ -301,7 +301,7 @@ describe('WorkExperience', () => {
   })
 
   it('updates toast on subsequent chunks during AI sort', async () => {
-    ;(sortTechStackGraph as jest.Mock).mockImplementation((tech, jobDesc, options, onChunk) => {
+    ; (sortTechStackGraph as jest.Mock).mockImplementation((tech, jobDesc, options, onChunk) => {
       onChunk({ content: 'Chunk 1', done: false })
       onChunk({ content: 'Chunk 2', done: false })
       return Promise.resolve(['Node', 'React'])
@@ -321,13 +321,13 @@ describe('WorkExperience', () => {
 
   it('early returns in handlers if data drifts', () => {
     // Mock useArrayForm to return an item, but ResumeContext has none
-    ;(useArrayForm as jest.Mock).mockReturnValue({
+    ; (useArrayForm as jest.Mock).mockReturnValue({
       ...mockArrayForm,
       data: [{ organization: 'Ghost', position: 'Phantom', technologies: ['Invisibility'] }],
     })
 
     render(
-      <ResumeContext.Provider value={{ resumeData: { workExperience: [] }, setResumeData: mockSetResumeData } as any}>
+      <ResumeContext.Provider value={{ resumeData: { workExperience: [] }, setResumeData: mockSetResumeData } as unknown as React.ContextType<typeof ResumeContext>}>
         <WorkExperience />
       </ResumeContext.Provider>
     )
