@@ -1,14 +1,14 @@
 import { runAIGenerationPipeline } from '@/lib/ai/strands/pipeline'
-import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/jdRefinementGraph'
-import { generateSummaryGraph } from '@/lib/ai/strands/summaryGraph'
+import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/jd-refinement-graph'
+import { generateSummaryGraph } from '@/lib/ai/strands/summary-graph'
 import type { AgentConfig } from '@/lib/ai/strands/types'
 import type { ResumeData } from '@/types'
 
-jest.mock('../jdRefinementGraph', () => ({
+jest.mock('../jd-refinement-graph', () => ({
   analyzeJobDescriptionGraph: jest.fn(),
 }))
 
-jest.mock('../summaryGraph', () => ({
+jest.mock('../summary-graph', () => ({
   generateSummaryGraph: jest.fn(),
 }))
 

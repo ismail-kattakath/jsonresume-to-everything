@@ -1,4 +1,4 @@
-import { sortSkillsGraph } from '@/lib/ai/strands/skillsSortingGraph'
+import { sortSkillsGraph } from '@/lib/ai/strands/skills-sorting-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 import type { SkillGroup } from '@/types'

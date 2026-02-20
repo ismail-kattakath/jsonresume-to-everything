@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Header from '@/components/layout/Header'
-import MainLayout from '@/components/layout/MainLayout'
+import Header from '@/components/layout/header'
+import MainLayout from '@/components/layout/main-layout'
 import { Home, ArrowLeft } from 'lucide-react'
 
 /**

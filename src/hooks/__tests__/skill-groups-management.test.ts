@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import { renderHook, act } from '@testing-library/react'
-import { useSkillGroupsManagement } from '@/hooks/useSkillGroupsManagement'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useSkillGroupsManagement } from '@/hooks/use-skill-groups-management'
+import { ResumeContext } from '@/lib/contexts/document-context'
 
 jest.mock('sonner', () => ({
   toast: {

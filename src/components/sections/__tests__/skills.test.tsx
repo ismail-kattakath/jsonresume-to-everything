@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import Skills from '@/components/sections/Skills'
+import Skills from '@/components/sections/skills'
 
 jest.mock('framer-motion', () => ({
   motion: {

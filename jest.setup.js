@@ -26,21 +26,21 @@ jest.mock(
 
 // Mock IntersectionObserver for framer-motion
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  constructor() { }
+  disconnect() { }
+  observe() { }
   takeRecords() {
     return []
   }
-  unobserve() {}
+  unobserve() { }
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  constructor() { }
+  disconnect() { }
+  observe() { }
+  unobserve() { }
 }
 
 // Mock performance API for Next.js third-party scripts (Google Analytics)
@@ -56,7 +56,7 @@ global.fetch = jest.fn(() =>
 )
 
 // Mock DragAndDrop wrapper components for testing
-jest.mock('@/components/ui/DragAndDrop', () => ({
+jest.mock('@/components/ui/drag-and-drop', () => ({
   DnDContext: ({ children, onDragEnd }) => {
     // Expose for testing if needed
     if (typeof global !== 'undefined') {

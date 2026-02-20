@@ -1,17 +1,17 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
-import WorkExperience from '@/components/resume/forms/WorkExperience'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { useArrayForm } from '@/hooks/useArrayForm'
-import { useAccordion } from '@/hooks/useAccordion'
+import WorkExperience from '@/components/resume/forms/work-experience'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
+import { useArrayForm } from '@/hooks/use-array-form'
+import { useAccordion } from '@/hooks/use-accordion'
 import { sortTechStackGraph } from '@/lib/ai/strands/agent'
 import { toast } from 'sonner'
 
 // Mock dependencies
-jest.mock('@/lib/contexts/AISettingsContext')
-jest.mock('@/hooks/useArrayForm')
-jest.mock('@/hooks/useAccordion')
+jest.mock('@/lib/contexts/ai-settings-context')
+jest.mock('@/hooks/use-array-form')
+jest.mock('@/hooks/use-accordion')
 jest.mock('@/lib/ai/strands/agent')
 jest.mock('sonner', () => ({
   toast: Object.assign(
@@ -24,12 +24,12 @@ jest.mock('sonner', () => ({
   ),
 }))
 
-jest.mock('@/components/resume/forms/KeyAchievements', () => ({
+jest.mock('@/components/resume/forms/key-achievements', () => ({
   __esModule: true,
   default: () => <div data-testid="key-achievements">Key Achievements</div>,
 }))
 
-jest.mock('@/components/ui/SortableTagInput', () => ({
+jest.mock('@/components/ui/sortable-tag-input', () => ({
   __esModule: true,
   default: ({
     tags,
@@ -55,7 +55,7 @@ jest.mock('@/components/ui/SortableTagInput', () => ({
   ),
 }))
 
-jest.mock('@/components/ui/AIActionButton', () => ({
+jest.mock('@/components/ui/ai-action-button', () => ({
   __esModule: true,
   default: ({ onClick, label }: { onClick: () => void; label: string }) => (
     <button onClick={onClick} aria-label={label}>

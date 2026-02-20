@@ -1,7 +1,7 @@
 import { AgentConfig } from './types'
-import { analyzeJobDescriptionGraph } from './jdRefinementGraph'
-import { generateSummaryGraph } from './summaryGraph'
-// import { tailorExperienceToJDGraph } from './experienceTailoringGraph'
+import { analyzeJobDescriptionGraph } from './jd-refinement-graph'
+import { generateSummaryGraph } from './summary-graph'
+// import { tailorExperienceToJDGraph } from './experience-tailoring-graph'
 import type { ResumeData, WorkExperience } from '@/types'
 
 /**

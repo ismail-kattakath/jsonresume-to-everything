@@ -1,4 +1,4 @@
-import { extractSkillsGraph } from '@/lib/ai/strands/skillsExtractionGraph'
+import { extractSkillsGraph } from '@/lib/ai/strands/skills-extraction-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 
 import { Agent } from '@strands-agents/sdk'

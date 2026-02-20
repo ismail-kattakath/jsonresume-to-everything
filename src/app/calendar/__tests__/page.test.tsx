@@ -2,7 +2,7 @@ import { render } from '@testing-library/react'
 import CalendarPage from '@/app/calendar/page'
 
 // Mock ExternalRedirect
-jest.mock('@/components/ui/ExternalRedirect', () => ({
+jest.mock('@/components/ui/external-redirect', () => ({
   __esModule: true,
   default: ({ label }: { label: string }) => <div data-testid="external-redirect">{label}</div>,
 }))

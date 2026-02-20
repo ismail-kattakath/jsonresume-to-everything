@@ -1,17 +1,17 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
-import { SkillsSection } from '@/components/resume/forms/SkillsSection'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { useSkillGroupsManagement } from '@/hooks/useSkillGroupsManagement'
-import { useAccordion } from '@/hooks/useAccordion'
+import { SkillsSection } from '@/components/resume/forms/skills-section'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
+import { useSkillGroupsManagement } from '@/hooks/use-skill-groups-management'
+import { useAccordion } from '@/hooks/use-accordion'
 import { sortSkillsGraph, extractSkillsGraph } from '@/lib/ai/strands/agent'
 import { toast } from 'sonner'
 
 // Mock dependencies
-jest.mock('@/lib/contexts/AISettingsContext')
-jest.mock('@/hooks/useSkillGroupsManagement')
-jest.mock('@/hooks/useAccordion')
+jest.mock('@/lib/contexts/ai-settings-context')
+jest.mock('@/hooks/use-skill-groups-management')
+jest.mock('@/hooks/use-accordion')
 jest.mock('@/lib/ai/strands/agent')
 jest.mock('sonner', () => ({
   toast: Object.assign(
@@ -25,7 +25,7 @@ jest.mock('sonner', () => ({
 }))
 
 // Mock child components to simplify testing SkillsSection logic
-jest.mock('../SkillGroupHeader', () => ({
+jest.mock('../skill-group-header', () => ({
   SkillGroupHeader: ({
     title,
     onToggle,
@@ -46,12 +46,12 @@ jest.mock('../SkillGroupHeader', () => ({
   ),
 }))
 
-jest.mock('../Skill', () => ({
+jest.mock('../skill', () => ({
   __esModule: true,
   default: ({ title }: { title: string }) => <div data-testid="skill-list">{title} skills</div>,
 }))
 
-jest.mock('@/components/ui/AIActionButton', () => ({
+jest.mock('@/components/ui/ai-action-button', () => ({
   __esModule: true,
   default: ({
     onClick,
@@ -70,7 +70,7 @@ jest.mock('@/components/ui/AIActionButton', () => ({
   ),
 }))
 
-jest.mock('@/components/ui/FormTextarea', () => ({
+jest.mock('@/components/ui/form-textarea', () => ({
   FormTextarea: ({
     label,
     onAIAction,

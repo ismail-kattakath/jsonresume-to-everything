@@ -11,7 +11,7 @@ jest.mock('@/config/site', () => ({
 }))
 
 // Mock resumeAdapter
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'Test User',

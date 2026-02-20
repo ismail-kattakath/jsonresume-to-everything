@@ -4,7 +4,7 @@ import {
   formatUrl,
   normalizeUrlForDisplay,
   normalizeUrlForExternal,
-} from '@/lib/utils/urlHelpers'
+} from '@/lib/utils/url-helpers'
 
 describe('urlHelpers', () => {
   describe('stripProtocol', () => {

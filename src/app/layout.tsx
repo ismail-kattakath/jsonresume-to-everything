@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
-import BackgroundImage from '@/components/BackgroundImage'
+import BackgroundImage from '@/components/background-image'
 import { generateSiteMetadata } from '@/config/metadata'
 
 // Generate metadata from resumeData (single source of truth)

@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
-import { DocumentContext, DocumentContextType } from '@/lib/contexts/DocumentContext'
-import { AISettingsContext, AISettingsContextType } from '@/lib/contexts/AISettingsContext'
-import resumeData from '@/lib/resumeAdapter'
+import { DocumentContext, DocumentContextType } from '@/lib/contexts/document-context'
+import { AISettingsContext, AISettingsContextType } from '@/lib/contexts/ai-settings-context'
+import resumeData from '@/lib/resume-adapter'
 import type { ResumeData } from '@/types'
 
 /**

@@ -1,4 +1,4 @@
-import { generateCoverLetterGraph } from '@/lib/ai/strands/coverLetterGraph'
+import { generateCoverLetterGraph } from '@/lib/ai/strands/cover-letter-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 import type { ResumeData } from '@/types'

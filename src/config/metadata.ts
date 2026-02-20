@@ -1,4 +1,4 @@
-import resumeData from '@/lib/resumeAdapter'
+import resumeData from '@/lib/resume-adapter'
 import { SITE_URL } from '@/config/site'
 import type { Metadata } from 'next'
 

@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import ScaledPreviewWrapper from '@/components/document-builder/ui/ScaledPreviewWrapper'
-import * as usePreviewScalingModule from '@/hooks/usePreviewScaling'
+import ScaledPreviewWrapper from '@/components/document-builder/ui/scaled-preview-wrapper'
+import * as usePreviewScalingModule from '@/hooks/use-preview-scaling'
 
 // Mock the usePreviewScaling hook
-jest.mock('@/hooks/usePreviewScaling')
+jest.mock('@/hooks/use-preview-scaling')
 
 describe('ScaledPreviewWrapper', () => {
   const mockUsePreviewScaling = usePreviewScalingModule.usePreviewScaling as jest.Mock

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils/cn'
-import { formatUrl } from '@/lib/utils/formatUrl'
+import { formatUrl } from '@/lib/utils/format-url'
 
 describe('Utils - cn (Tailwind class merger)', () => {
   it('should merge class names correctly', () => {

@@ -1,8 +1,8 @@
 import React from 'react'
 import { act, waitFor } from '@testing-library/react'
-import SocialMedia from '@/components/document-builder/shared-forms/SocialMedia'
+import SocialMedia from '@/components/document-builder/shared-forms/social-media'
 import { renderWithContext, createMockResumeData, screen, fireEvent } from '@/lib/__tests__/test-utils'
-import type { DocumentContextType } from '@/lib/contexts/DocumentContext'
+import type { DocumentContextType } from '@/lib/contexts/document-context'
 import type { ResumeData } from '@/types'
 
 // Mock fetch API for URL validation
@@ -412,8 +412,7 @@ describe('SocialMedia Component', () => {
       await waitFor(() => {
         // Should show invalid indicator or warning text
         const invalidIndicator = container.querySelector('[title="URL may be unreachable"]')
-        const warningText = container.querySelector('p.text-xs')
-        expect(invalidIndicator || warningText).toBeTruthy()
+        expect(invalidIndicator).toBeTruthy()
       })
     })
   })

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import Skills from '@/components/resume/preview/Skills'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { AISettingsContext, AISettings } from '@/lib/contexts/AISettingsContext'
+import Skills from '@/components/resume/preview/skills'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { AISettingsContext, AISettings } from '@/lib/contexts/ai-settings-context'
 import type { ResumeData, SkillGroup } from '@/types/resume'
 
 const mockSkillGroup: SkillGroup = {

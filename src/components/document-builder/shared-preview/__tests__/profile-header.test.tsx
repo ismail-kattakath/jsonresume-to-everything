@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import ProfileHeader from '@/components/document-builder/shared-preview/ProfileHeader'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
+import ProfileHeader from '@/components/document-builder/shared-preview/profile-header'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { AISettingsContext } from '@/lib/contexts/ai-settings-context'
 import type { ResumeData } from '@/types/resume'
 
 // Mock Next.js Image component

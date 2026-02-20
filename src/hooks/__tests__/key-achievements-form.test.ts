@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import { renderHook, act } from '@testing-library/react'
-import { useKeyAchievementsForm } from '@/hooks/useKeyAchievementsForm'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useKeyAchievementsForm } from '@/hooks/use-key-achievements-form'
+import { ResumeContext } from '@/lib/contexts/document-context'
 
 const makeWorkExperience = (overrides = {}) => ({
   organization: 'Acme',

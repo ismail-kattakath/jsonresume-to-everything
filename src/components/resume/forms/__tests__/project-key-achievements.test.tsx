@@ -1,10 +1,10 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import ProjectKeyAchievements from '@/components/resume/forms/ProjectKeyAchievements'
-import { useProjectKeyAchievementsForm } from '@/hooks/useProjectKeyAchievementsForm'
+import ProjectKeyAchievements from '@/components/resume/forms/project-key-achievements'
+import { useProjectKeyAchievementsForm } from '@/hooks/use-project-key-achievements-form'
 
 // Mock the hook
-jest.mock('@/hooks/useProjectKeyAchievementsForm')
+jest.mock('@/hooks/use-project-key-achievements-form')
 
 describe('ProjectKeyAchievements', () => {
   const mockAchievements = [{ text: 'Achievement 1' }, { text: 'Achievement 2' }]

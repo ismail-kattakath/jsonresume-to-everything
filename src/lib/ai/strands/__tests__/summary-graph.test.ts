@@ -1,4 +1,4 @@
-import { generateSummaryGraph } from '@/lib/ai/strands/summaryGraph'
+import { generateSummaryGraph } from '@/lib/ai/strands/summary-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent, tool } from '@strands-agents/sdk'
 import type { ResumeData } from '@/types'

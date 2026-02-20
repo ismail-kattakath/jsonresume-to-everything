@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import { renderHook, act } from '@testing-library/react'
-import { useSimpleArrayForm } from '@/hooks/useSimpleArrayForm'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useSimpleArrayForm } from '@/hooks/use-simple-array-form'
+import { ResumeContext } from '@/lib/contexts/document-context'
 
 const makeCertification = (overrides = {}) => ({
   name: 'AWS Certified',

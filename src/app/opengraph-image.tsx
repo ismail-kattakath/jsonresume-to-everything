@@ -1,6 +1,6 @@
-import resumeData from '@/lib/resumeAdapter'
-import { generateOgImage } from '@/lib/utils/generateOgImage'
-import { OG_IMAGE_CONFIG } from '@/lib/utils/ogImageConfigs'
+import resumeData from '@/lib/resume-adapter'
+import { generateOgImage } from '@/lib/utils/generate-og-image'
+import { OG_IMAGE_CONFIG } from '@/lib/utils/og-image-configs'
 
 export const dynamic = 'force-static'
 

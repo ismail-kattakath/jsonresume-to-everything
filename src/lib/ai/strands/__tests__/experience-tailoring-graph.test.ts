@@ -1,4 +1,4 @@
-import { tailorExperienceToJDGraph } from '@/lib/ai/strands/experienceTailoringGraph'
+import { tailorExperienceToJDGraph } from '@/lib/ai/strands/experience-tailoring-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 
 jest.mock('@strands-agents/sdk', () => {

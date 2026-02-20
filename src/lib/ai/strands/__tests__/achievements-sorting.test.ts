@@ -1,4 +1,4 @@
-import { sortAchievementsGraph } from '@/lib/ai/strands/achievementsSortingGraph'
+import { sortAchievementsGraph } from '@/lib/ai/strands/achievements-sorting-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 

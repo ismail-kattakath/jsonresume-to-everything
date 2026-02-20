@@ -3,7 +3,7 @@
  * @jest-environment jsdom
  */
 
-import { registerServiceWorker, unregisterServiceWorker } from '@/lib/pwa/registerServiceWorker'
+import { registerServiceWorker, unregisterServiceWorker } from '@/lib/pwa/register-service-worker'
 
 describe('registerServiceWorker', () => {
   let mockRegister: jest.Mock

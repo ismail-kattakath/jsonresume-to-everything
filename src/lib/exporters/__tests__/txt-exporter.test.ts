@@ -1,4 +1,4 @@
-import { convertResumeToText } from '@/lib/exporters/txtExporter'
+import { convertResumeToText } from '@/lib/exporters/txt-exporter'
 import { ResumeData, WorkExperience, Project } from '@/types/resume'
 
 describe('txtExporter', () => {

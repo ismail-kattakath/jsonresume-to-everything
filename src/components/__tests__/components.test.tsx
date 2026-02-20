@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
-import BackgroundImage from '@/components/BackgroundImage'
-import { Logo } from '@/components/Logo'
+import BackgroundImage from '@/components/background-image'
+import { Logo } from '@/components/logo'
 
 describe('BackgroundImage', () => {
   it('renders without crashing', () => {

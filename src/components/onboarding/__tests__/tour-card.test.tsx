@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { TourCard } from '@/components/onboarding/TourCard'
+import { TourCard } from '@/components/onboarding/tour-card'
 import type { Step } from 'onborda'
 
 // Mock useOnborda hook

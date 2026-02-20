@@ -1,9 +1,9 @@
 import { generateSiteMetadata } from '@/config/metadata'
-import resumeData from '@/lib/resumeAdapter'
+import resumeData from '@/lib/resume-adapter'
 import { SITE_URL } from '@/config/site'
 
 // Mock the resume adapter
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'John Doe',

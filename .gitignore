@@ -12,6 +12,7 @@ qdrant_storage/
 test_results.json
 lint*.json
 *_report.*
+jsdoc_warnings.txt
 
 src/data/resume.json
 # Environment variables (ignore all except example)

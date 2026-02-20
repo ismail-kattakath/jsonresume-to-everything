@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import RootLayout, { metadata } from '@/app/layout'
 
 // Mock BackgroundImage component
-jest.mock('@/components/BackgroundImage', () => {
+jest.mock('@/components/background-image', () => {
   return function MockBackgroundImage({ withBlur, withOverlay }: { withBlur?: boolean; withOverlay?: boolean }) {
     return (
       <div data-testid="background-image" data-with-blur={withBlur} data-with-overlay={withOverlay}>

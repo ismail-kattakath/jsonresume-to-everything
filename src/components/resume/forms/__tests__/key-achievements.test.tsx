@@ -1,20 +1,20 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import KeyAchievements from '@/components/resume/forms/KeyAchievements'
-import { useKeyAchievementsForm } from '@/hooks/useKeyAchievementsForm'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import KeyAchievements from '@/components/resume/forms/key-achievements'
+import { useKeyAchievementsForm } from '@/hooks/use-key-achievements-form'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
+import { ResumeContext } from '@/lib/contexts/document-context'
 import { sortAchievementsGraph } from '@/lib/ai/strands/agent'
 import { toast } from 'sonner'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { DropResult } from '@hello-pangea/dnd'
-import { DnDContext } from '@/components/ui/DragAndDrop'
+import { DnDContext } from '@/components/ui/drag-and-drop'
 
 // Mock dependencies
-jest.mock('@/hooks/useKeyAchievementsForm')
-jest.mock('@/lib/contexts/AISettingsContext')
+jest.mock('@/hooks/use-key-achievements-form')
+jest.mock('@/lib/contexts/ai-settings-context')
 jest.mock('@/lib/ai/strands/agent')
 jest.mock('sonner', () => ({
   toast: Object.assign(
@@ -29,7 +29,7 @@ jest.mock('sonner', () => ({
 }))
 
 // Mock DnD components to just render children
-jest.mock('@/components/ui/DragAndDrop', () => ({
+jest.mock('@/components/ui/drag-and-drop', () => ({
   DnDContext: jest.fn(({ children, onDragEnd }: { children: React.ReactNode; onDragEnd: (res: unknown) => void }) => (
     <div data-testid="dnd-context" onClick={() => onDragEnd({ destination: { index: 1 }, source: { index: 0 } })}>
       {children}
@@ -42,7 +42,7 @@ jest.mock('@/components/ui/DragAndDrop', () => ({
 }))
 
 // Mock AIActionButton
-jest.mock('@/components/ui/AIActionButton', () => ({
+jest.mock('@/components/ui/ai-action-button', () => ({
   __esModule: true,
   default: ({ onClick, isLoading, label }: { onClick: () => void; isLoading: boolean; label: string }) => (
     <button data-testid="ai-action-button" onClick={onClick} disabled={isLoading}>
@@ -52,7 +52,7 @@ jest.mock('@/components/ui/AIActionButton', () => ({
 }))
 
 // Mock AILoadingToast
-jest.mock('@/components/ui/AILoadingToast', () => ({
+jest.mock('@/components/ui/ai-loading-toast', () => ({
   AILoadingToast: () => <div data-testid="ai-loading-toast" />,
 }))
 

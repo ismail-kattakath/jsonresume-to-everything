@@ -1,4 +1,4 @@
-import { generateResumeBuilderOgImage } from '@/lib/utils/generateResumeBuilderOgImage'
+import { generateResumeBuilderOgImage } from '@/lib/utils/generate-resume-builder-og-image'
 import { ImageResponse } from 'next/og'
 import { readFileSync } from 'fs'
 

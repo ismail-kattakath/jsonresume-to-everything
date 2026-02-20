@@ -1,12 +1,12 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import AISettings from '@/components/document-builder/shared-forms/AISettings'
-import { useAISettings } from '@/lib/contexts/AISettingsContext'
+import AISettings from '@/components/document-builder/shared-forms/ai-settings'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
 import { fetchAvailableModels } from '@/lib/ai/models'
 
 // Mock useAISettings
-jest.mock('@/lib/contexts/AISettingsContext', () => ({
+jest.mock('@/lib/contexts/ai-settings-context', () => ({
   useAISettings: jest.fn(),
 }))
 

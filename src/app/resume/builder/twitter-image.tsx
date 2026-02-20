@@ -1,5 +1,5 @@
-import { generateResumeBuilderOgImage } from '@/lib/utils/generateResumeBuilderOgImage'
-import { TWITTER_IMAGE_CONFIG } from '@/lib/utils/ogImageConfigs'
+import { generateResumeBuilderOgImage } from '@/lib/utils/generate-resume-builder-og-image'
+import { TWITTER_IMAGE_CONFIG } from '@/lib/utils/og-image-configs'
 
 export const dynamic = 'force-static'
 

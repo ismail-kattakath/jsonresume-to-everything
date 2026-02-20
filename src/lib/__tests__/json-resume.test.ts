@@ -1,8 +1,8 @@
-import { convertToJSONResume, convertFromJSONResume } from '@/lib/jsonResume'
+import { convertToJSONResume, convertFromJSONResume } from '@/lib/json-resume'
 import type { ResumeData, JSONResume } from '@/types'
 
 // Mock the modules that jsonResume depends on
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'Default User',
@@ -21,11 +21,11 @@ jest.mock('@/lib/resumeAdapter', () => ({
   },
 }))
 
-jest.mock('@/lib/jsonResumeSchema', () => ({
+jest.mock('@/lib/json-resume-schema', () => ({
   validateJSONResume: jest.fn(() => ({ valid: true, errors: [] })),
 }))
 
-jest.mock('@/lib/utils/urlHelpers', () => ({
+jest.mock('@/lib/utils/url-helpers', () => ({
   ensureProtocol: jest.fn((url: string) => {
     if (!url) return url
     if (url.startsWith('http://') || url.startsWith('https://')) return url
@@ -272,7 +272,7 @@ describe('convertToJSONResume', () => {
 })
 
 describe('convertFromJSONResume', () => {
-  const { validateJSONResume } = jest.requireMock('@/lib/jsonResumeSchema')
+  const { validateJSONResume } = jest.requireMock('@/lib/json-resume-schema')
 
   const makeJSONResume = (overrides: Partial<JSONResume> = {}): JSONResume => ({
     $schema: 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
@@ -465,10 +465,85 @@ describe('convertFromJSONResume', () => {
     expect(result!.projects?.[0]?.keyAchievements).toEqual([])
   })
 
+  it('handles project with missing optional fields', () => {
+    const jr = makeJSONResume({
+      projects: [
+        {
+          name: '', // or undefined if we use Partial
+          url: '',
+          description: '',
+          highlights: [],
+          keywords: [],
+          startDate: '',
+          endDate: '',
+        } as any,
+      ],
+    })
+    const result = convertFromJSONResume(jr)
+    expect(result!.projects![0]!.name).toBe('')
+    expect(result!.projects![0]!.link).toBe('')
+    expect(result!.projects![0]!.description).toBe('')
+    expect(result!.projects![0]!.startYear).toBe('')
+    expect(result!.projects![0]!.endYear).toBe('')
+  })
+
   it('constructs address from location parts', () => {
     const result = convertFromJSONResume(makeJSONResume())
     expect(result!.address).toContain('456 Oak Ave')
     expect(result!.address).toContain('Toronto')
+    expect(result!.address).toContain('ON')
+    expect(result!.address).toContain('M5V 1A1')
+  })
+
+  it('handles address without region/postal match', () => {
+    const data = {
+      ...makeResumeData(),
+      address: '123 Street, City, lowercase',
+    }
+    const jr = convertToJSONResume(data)
+    expect(jr.basics!.location!.postalCode).toBe('')
+    expect(jr.basics!.location!.region).toBe('ON') // Default in code Line 85
+  })
+
+  it('handles certifications with and without URLs', () => {
+    const data = {
+      ...makeResumeData(),
+      certifications: [
+        { name: 'C1', date: '2020', issuer: 'I1', url: 'example.com' },
+        { name: 'C2', date: '2021', issuer: 'I2', url: '' },
+      ],
+    }
+    const jr = convertToJSONResume(data)
+    expect(jr.certificates![0]!.url).toBe('https://example.com')
+    expect(jr.certificates![1]!.url).toBeUndefined()
+  })
+
+  it('handles job with specific end year', () => {
+    const data = {
+      ...makeResumeData(),
+      workExperience: [
+        {
+          organization: 'Org',
+          position: 'Pos',
+          keyAchievements: [],
+          startYear: '2020',
+          endYear: '2021',
+        } as any,
+      ],
+    }
+    const jr = convertToJSONResume(data)
+    expect(jr.work[0]!.endDate).toBe('2021')
+  })
+
+  it('handles missing skills and projects in convertFromJSONResume', () => {
+    const jr = {
+      basics: { name: 'John' },
+      skills: [],
+      projects: [],
+    } as any
+    const result = convertFromJSONResume(jr)
+    expect(result!.skills).toEqual([{ title: 'Skills', skills: [] }])
+    expect(result!.projects).toBeUndefined()
   })
 
   it('handles empty location gracefully', () => {

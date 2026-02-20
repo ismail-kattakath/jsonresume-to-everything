@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import AIPipelineButton from '@/components/document-builder/shared-forms/ai-settings/AIPipelineButton'
+import AIPipelineButton from '@/components/document-builder/shared-forms/ai-settings/ai-pipeline-button'
 
 describe('AIPipelineButton', () => {
   it('renders with Sparkles icon when not loading', () => {

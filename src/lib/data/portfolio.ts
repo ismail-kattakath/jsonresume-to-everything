@@ -1,5 +1,5 @@
 import { ContactInfo, Experience, Skill, Project } from '@/types/portfolio'
-import resumeData from '@/lib/resumeAdapter'
+import resumeData from '@/lib/resume-adapter'
 
 // Derive contact info from resumeData
 const linkedInProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'LinkedIn')

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
-import MainLayout from '@/components/layout/MainLayout'
+import MainLayout from '@/components/layout/main-layout'
 
 // Mock the Footer component
-jest.mock('@/components/layout/Footer', () => {
+jest.mock('@/components/layout/footer', () => {
   return function MockFooter() {
     return <footer data-testid="mock-footer">Footer</footer>
   }

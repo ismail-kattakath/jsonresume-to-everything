@@ -1,0 +1,233 @@
+'use client'
+
+import React, { useContext } from 'react'
+import { VscJson, VscRefresh } from 'react-icons/vsc'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { convertToJSONResume, convertFromJSONResume } from '@/lib/json-resume'
+import { validateJSONResume } from '@/lib/json-resume-schema'
+import { toast } from 'sonner'
+import { analytics } from '@/lib/analytics'
+import { generateJSONFilename } from '@/lib/filename-generator'
+import PrintButton from '@/components/document-builder/ui/print-button'
+import { BaseButton } from '@/components/ui/base-button'
+import type { ResumeData } from '@/types/resume'
+import defaultResumeData from '@/lib/resume-adapter'
+
+interface ImportExportProps {
+  preserveContent?: boolean
+  hidePrintButton?: boolean
+  hideExportButton?: boolean
+}
+
+const ImportExport = ({
+  preserveContent = false,
+  hidePrintButton = false,
+  hideExportButton = false,
+}: ImportExportProps) => {
+  const { resumeData, setResumeData } = useContext(ResumeContext)
+
+  // migrate old skills format to new format
+  const migrateSkillsData = (data: ResumeData) => {
+    const migratedData = { ...data }
+    if (migratedData.skills) {
+      migratedData.skills = migratedData.skills.map((skillCategory) => ({
+        ...skillCategory,
+        skills: skillCategory.skills.map((skill) => {
+          if (typeof skill === 'string') {
+            return { text: skill, highlight: false }
+          }
+          // Handle old 'underline' property
+          if ('underline' in skill && skill.highlight === undefined) {
+            return {
+              text: skill.text,
+              highlight: (skill as { underline: boolean }).underline,
+            }
+          }
+          return skill
+        }),
+      }))
+    }
+    return migratedData
+  }
+
+  // import resume data - supports both internal format and JSON Resume format
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      try {
+        toast.loading('Processing resume data...', { id: 'import-resume' })
+
+        const loadedData = JSON.parse(event.target?.result as string)
+
+        // Check if it's JSON Resume format (has $schema or basics field)
+        const isJSONResume = loadedData.$schema?.includes('jsonresume') || loadedData.basics
+
+        if (isJSONResume) {
+          // Validate JSON Resume format
+          const validation = validateJSONResume(loadedData)
+
+          if (!validation.valid) {
+            toast.error(`Invalid JSON Resume format:\n${validation.errors.join('\n')}`, {
+              id: 'import-resume',
+              duration: 5000,
+            })
+            return
+          }
+
+          // Convert from JSON Resume to internal format
+          const convertedData = convertFromJSONResume(loadedData)
+
+          if (!convertedData) {
+            toast.error('Failed to convert JSON Resume format', {
+              id: 'import-resume',
+            })
+            return
+          }
+
+          // Preserve cover letter content if flag is set
+          if (preserveContent && resumeData.content) {
+            convertedData.content = resumeData.content
+          }
+
+          setResumeData(convertedData)
+          toast.success('JSON Resume imported successfully!', {
+            id: 'import-resume',
+          })
+          analytics.resumeImport('JSON Resume', true)
+        } else {
+          // Handle internal format (legacy)
+          const migratedData = migrateSkillsData(loadedData)
+
+          // Preserve cover letter content if flag is set
+          if (preserveContent && resumeData.content) {
+            migratedData.content = resumeData.content
+          }
+
+          setResumeData(migratedData)
+          toast.success('Resume data imported successfully!', {
+            id: 'import-resume',
+          })
+          analytics.resumeImport('Internal Format', true)
+        }
+      } catch (error) {
+        toast.error(`Failed to import resume: ${(error as Error).message}`, {
+          id: 'import-resume',
+          duration: 5000,
+        })
+      }
+    }
+
+    reader.onerror = () => {
+      toast.error('Failed to read file', { id: 'import-resume' })
+    }
+
+    reader.readAsText(file)
+  }
+
+  // export resume data in JSON Resume format
+  const handleExport = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+
+    try {
+      toast.loading('Generating JSON Resume...', { id: 'export-resume' })
+
+      const jsonResumeData = convertToJSONResume(resumeData)
+      const jsonData = JSON.stringify(jsonResumeData, null, 2)
+      const blob = new Blob([jsonData], { type: 'application/json' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = generateJSONFilename(resumeData.name, resumeData.position)
+      link.click()
+
+      toast.success('JSON Resume exported successfully!', {
+        id: 'export-resume',
+      })
+
+      // Track export event
+      const sectionsCount = Object.keys(resumeData).filter((key) => resumeData[key as keyof ResumeData]).length
+      analytics.resumeExport('JSON', sectionsCount)
+    } catch (error) {
+      toast.error(`Failed to export resume: ${(error as Error).message}`, {
+        id: 'export-resume',
+        duration: 5000,
+      })
+    }
+  }
+
+  // reset resume data to default
+  const handleReset = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+
+    if (window.confirm('Are you sure you want to reset your resume? All your changes will be lost.')) {
+      localStorage.removeItem('resumeData')
+      setResumeData(defaultResumeData)
+      toast.success('Resume reset successfully', { id: 'reset-resume' })
+    }
+  }
+
+  return (
+    <div className="group">
+      <p className="mb-3 text-sm text-white/60">
+        Import or export your resume in JSON Resume format for portability across different resume tools.
+      </p>
+      <div className={`grid items-stretch gap-3 ${hidePrintButton ? 'sm:grid-cols-3' : 'sm:grid-cols-4'}`}>
+        <BaseButton
+          as="label"
+          variant="gradient-blue"
+          size="md"
+          fullWidth
+          icon={<VscJson className="text-base transition-transform group-hover/btn:rotate-12" />}
+          className="group/btn cursor-pointer"
+        >
+          Import
+          <input
+            aria-label="Import JSON Resume"
+            type="file"
+            className="hidden"
+            onChange={handleImport}
+            accept=".json"
+          />
+        </BaseButton>
+
+        {!hideExportButton && (
+          <BaseButton
+            type="button"
+            aria-label="Export JSON Resume"
+            variant="gradient-green"
+            size="md"
+            fullWidth
+            onClick={handleExport}
+            icon={<VscJson className="text-base transition-transform group-hover/btn:rotate-12" />}
+            className="group/btn"
+          >
+            Export
+          </BaseButton>
+        )}
+
+        <BaseButton
+          type="button"
+          aria-label="Reset"
+          variant="danger"
+          size="md"
+          fullWidth
+          onClick={handleReset}
+          icon={<VscRefresh className="text-base transition-transform group-hover/btn:-rotate-45" />}
+          className="group/btn"
+        >
+          Reset
+        </BaseButton>
+
+        {!hidePrintButton && (
+          <div className="flex">
+            <PrintButton variant="unified" className="w-full justify-center" resumeData={resumeData} />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default ImportExport

@@ -7,7 +7,7 @@ jest.mock('@/config/site', () => ({
   SITE_URL: 'https://test.example.com',
 }))
 
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'Test User',
@@ -21,7 +21,7 @@ jest.mock('@/lib/resumeAdapter', () => ({
   },
 }))
 
-jest.mock('@/components/seo/StructuredData', () => ({
+jest.mock('@/components/seo/structured-data', () => ({
   StructuredData: ({ data }: { data: object }) => (
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
   ),

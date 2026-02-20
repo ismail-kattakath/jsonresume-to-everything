@@ -1,8 +1,8 @@
 // @ts-nocheck
 import React from 'react'
 import { renderHook, act } from '@testing-library/react'
-import { useProjectKeyAchievementsForm } from '@/hooks/useProjectKeyAchievementsForm'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useProjectKeyAchievementsForm } from '@/hooks/use-project-key-achievements-form'
+import { ResumeContext } from '@/lib/contexts/document-context'
 import type { ResumeData } from '@/types'
 
 const makeProject = (overrides = {}) => ({

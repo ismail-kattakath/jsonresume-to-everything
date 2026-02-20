@@ -2,9 +2,9 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import CoverLetterContent from '@/components/cover-letter/forms/CoverLetterContent'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { AISettingsContext } from '@/lib/contexts/AISettingsContext'
+import CoverLetterContent from '@/components/cover-letter/forms/cover-letter-content'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { AISettingsContext } from '@/lib/contexts/ai-settings-context'
 import { renderWithContext, createMockResumeData, createMockAISettingsContext } from '@/lib/__tests__/test-utils'
 
 import { generateCoverLetterGraph } from '@/lib/ai/strands/agent'

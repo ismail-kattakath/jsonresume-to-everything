@@ -1,4 +1,4 @@
-import { StructuredData } from '@/components/seo/StructuredData'
+import { StructuredData } from '@/components/seo/structured-data'
 
 // Mock Next.js Script component
 jest.mock('next/script', () => {

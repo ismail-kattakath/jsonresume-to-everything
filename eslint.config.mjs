@@ -75,10 +75,7 @@ const eslintConfig = tseslint.config(
       'check-file/filename-naming-convention': [
         'error',
         {
-          'src/components/**/!(__tests__)/*.{ts,tsx}': 'PASCAL_CASE',
-          'src/lib/**/!(__tests__)/*.ts': 'CAMEL_CASE',
-          'src/types/**/*.ts': 'KEBAB_CASE',
-          '**/__tests__/**/*.{test,spec}.{ts,tsx}': 'KEBAB_CASE',
+          'src/**/*.{ts,tsx,js,jsx}': 'KEBAB_CASE',
         },
         {
           ignoreMiddleExtensions: true,

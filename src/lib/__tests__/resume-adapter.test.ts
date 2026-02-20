@@ -1,4 +1,4 @@
-import resumeData, { convertFromJSONResume } from '@/lib/resumeAdapter'
+import resumeData, { convertFromJSONResume } from '@/lib/resume-adapter'
 import jsonResumeData from '@/data/resume.json'
 import type { JSONResume, ResumeData } from '@/types'
 

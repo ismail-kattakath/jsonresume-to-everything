@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { renderHook, act } from '@testing-library/react'
-import { useUnifiedData } from '@/hooks/useUnifiedData'
+import { useUnifiedData } from '@/hooks/use-unified-data'
 
 // Mock the modules that read from the file system
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'Default User',

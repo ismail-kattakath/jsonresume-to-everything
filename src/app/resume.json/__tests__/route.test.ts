@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { GET, dynamic } from '@/app/resume.json/route'
 import { NextResponse } from 'next/server'
-import { convertToJSONResume } from '@/lib/jsonResume'
+import { convertToJSONResume } from '@/lib/json-resume'
 
 // Mock dependencies
-jest.mock('@/lib/jsonResume', () => ({
+jest.mock('@/lib/json-resume', () => ({
   convertToJSONResume: jest.fn(),
 }))
 

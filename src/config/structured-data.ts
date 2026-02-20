@@ -1,5 +1,5 @@
 import { SITE_URL } from '@/config/site'
-import resumeData from '@/lib/resumeAdapter'
+import resumeData from '@/lib/resume-adapter'
 
 /**
  * Structured Data (JSON-LD) Configurations

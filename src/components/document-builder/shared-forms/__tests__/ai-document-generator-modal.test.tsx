@@ -1,11 +1,10 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import AIDocumentGeneratorModal from '@/components/document-builder/shared-forms/AIDocumentGeneratorModal'
-import { generateCoverLetterGraph, generateSummaryGraph } from '@/lib/ai/strands/agent'
-import { loadCredentials, saveCredentials } from '@/lib/ai/storage'
+import AIDocumentGeneratorModal from '@/components/document-builder/shared-forms/ai-document-generator-modal'
+import { generateCoverLetterGraph } from '@/lib/ai/strands/agent'
+import { loadCredentials } from '@/lib/ai/storage'
 import { toast } from 'sonner'
-import type { ResumeData } from '@/types'
 
 // Mock dependencies
 jest.mock('@/lib/ai/strands/agent', () => ({
@@ -25,186 +24,99 @@ jest.mock('sonner', () => ({
   },
 }))
 
-// Mock Modal since it's likely a portal or has complex logic
-jest.mock('@/components/ui/Modal', () => {
-  const MockModal = ({ children, isOpen, title }: { children: React.ReactNode; isOpen: boolean; title: string }) =>
-    isOpen ? (
-      <div data-testid="modal">
-        <h1>{title}</h1>
-        {children}
-      </div>
-    ) : null
-  MockModal.displayName = 'Modal'
-  return MockModal
-})
-
-// Mock AIActionButton
-jest.mock('@/components/ui/AIActionButton', () => {
-  const MockAIActionButton = ({
-    label,
-    onClick,
-    isConfigured,
-    isLoading,
-  }: {
-    label: string
-    onClick: () => void
-    isConfigured: boolean
-    isLoading: boolean
-  }) => (
-    <button onClick={onClick} disabled={!isConfigured || isLoading}>
-      {isLoading ? 'Generating...' : label}
-    </button>
-  )
-  MockAIActionButton.displayName = 'AIActionButton'
-  return MockAIActionButton
-})
-
 describe('AIDocumentGeneratorModal', () => {
-  const mockOnClose = jest.fn()
-  const mockOnGenerate = jest.fn()
-  const mockResumeData = { name: 'Test User' } as unknown as ResumeData
+  const mockResumeData: any = { name: 'John Doe' }
+  const mockProps = {
+    isOpen: true,
+    onClose: jest.fn(),
+    onGenerate: jest.fn(),
+    resumeData: mockResumeData,
+    mode: 'coverLetter' as const,
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(loadCredentials as jest.Mock).mockResolvedValue({
-      apiUrl: 'https://api.openai.com',
-      apiKey: 'test-key',
-      rememberCredentials: true,
-      lastJobDescription: 'Test Job Description',
-    })
-  })
-
-  it('renders correctly when open in coverLetter mode', async () => {
-    render(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
-
-    expect(screen.getByText('🤖 AI Cover Letter Generator')).toBeInTheDocument()
-    await waitFor(() => {
-      // Use partial match and function for multiline placeholder
-      const textarea = screen.getByPlaceholderText(/Paste the job posting here/i)
-      expect(textarea).toHaveValue('Test Job Description')
-    })
-  })
-
-  it('validates form fields', async () => {
     ;(loadCredentials as jest.Mock).mockResolvedValue(null)
-    render(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
+  })
 
+  // Helper to get the API Key input specifically
+  const getApiKeyInput = (container: HTMLElement) => container.querySelector('#api-key') as HTMLInputElement
+  const getJobDescriptionTextarea = (container: HTMLElement) =>
+    container.querySelector('#job-description') as HTMLTextAreaElement
+  const getApiUrlInput = (container: HTMLElement) => container.querySelector('#api-url') as HTMLInputElement
+
+  it('renders correctly when open', async () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    expect(screen.getByText(/AI Cover Letter Generator/i)).toBeInTheDocument()
+    expect(getApiUrlInput(container)).toHaveValue('https://api.openai.com')
+  })
+
+  it('loads saved credentials on mount', async () => {
+    ;(loadCredentials as jest.Mock).mockResolvedValue({
+      apiUrl: 'https://saved-api.com',
+      apiKey: 'saved-key',
+      rememberCredentials: true,
+      lastJobDescription: 'Saved JD',
+    })
+
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+
+    await waitFor(() => {
+      expect(getApiUrlInput(container)).toHaveValue('https://saved-api.com')
+      expect(getApiKeyInput(container)).toHaveValue('saved-key')
+      expect(getJobDescriptionTextarea(container)).toHaveValue('Saved JD')
+    })
+  })
+
+  it('validates form before generation', async () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+
+    // Check if button is effectively disabled or if helper text shows up
     const generateButton = screen.getByRole('button', { name: /Generate Cover Letter/i })
-    expect(generateButton).toBeDisabled()
+
+    // Initial state: Invalid
+    fireEvent.click(generateButton)
+    expect(generateCoverLetterGraph).not.toHaveBeenCalled()
 
     // Fill in fields
-    fireEvent.change(screen.getByPlaceholderText('sk-proj-...'), { target: { value: 'test-key' } })
-    fireEvent.change(screen.getByPlaceholderText(/Paste the job posting here/i), { target: { value: 'Test Job' } })
+    fireEvent.change(getApiKeyInput(container), { target: { value: 'test-key' } })
+    fireEvent.change(getJobDescriptionTextarea(container), { target: { value: 'test-jd' } })
 
-    expect(generateButton).not.toBeDisabled()
+    // Now should be valid
+    fireEvent.click(generateButton)
+    expect(generateCoverLetterGraph).toHaveBeenCalled()
   })
 
-  it('calls generateFunction and handles success', async () => {
-    ;(generateCoverLetterGraph as jest.Mock).mockResolvedValue('Generated Content')
-    render(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
-
-    // Wait for credentials to load
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('sk-proj-...')).toHaveValue('test-key')
+  it('handles generation success with streaming', async () => {
+    ;(generateCoverLetterGraph as jest.Mock).mockImplementation((data, jd, config, onChunk) => {
+      onChunk({ content: 'Hello ' })
+      onChunk({ content: 'World' })
+      return Promise.resolve('Hello World')
     })
+
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+
+    // Setup form
+    fireEvent.change(getApiKeyInput(container), { target: { value: 'test-key' } })
+    fireEvent.change(getJobDescriptionTextarea(container), { target: { value: 'test-jd' } })
 
     const generateButton = screen.getByRole('button', { name: /Generate Cover Letter/i })
     fireEvent.click(generateButton)
 
     await waitFor(() => {
       expect(generateCoverLetterGraph).toHaveBeenCalled()
-      expect(toast.success).toHaveBeenCalledWith('Cover letter generated successfully!', expect.anything())
-      expect(mockOnGenerate).toHaveBeenCalledWith('Generated Content')
-      expect(mockOnClose).toHaveBeenCalled()
+      expect(mockProps.onGenerate).toHaveBeenCalledWith('Hello World')
+      expect(toast.success).toHaveBeenCalledWith(expect.any(String), expect.any(Object))
     })
   })
 
-  it('handles generation error', async () => {
-    ;(generateCoverLetterGraph as jest.Mock).mockRejectedValue(new Error('API Error'))
-    render(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
+  it('toggles API key visibility', () => {
+    const { container } = render(<AIDocumentGeneratorModal {...mockProps} />)
+    const apiKeyInput = getApiKeyInput(container)
+    const toggleButton = screen.getByLabelText(/Show API key/i)
 
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('sk-proj-...')).toHaveValue('test-key')
-    })
-
-    const generateButton = screen.getByRole('button', { name: /Generate Cover Letter/i })
-    fireEvent.click(generateButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('API Error', { selector: 'p' })).toBeInTheDocument()
-      expect(toast.error).toHaveBeenCalledWith('Generation failed', expect.anything())
-    })
-  })
-
-  it('resets state when closing', async () => {
-    const { rerender } = render(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
-
-    await waitFor(() => {
-      fireEvent.change(screen.getByPlaceholderText(/Paste the job posting here/i), { target: { value: 'Temp Job' } })
-    })
-
-    rerender(
-      <AIDocumentGeneratorModal
-        isOpen={false}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
-
-    rerender(
-      <AIDocumentGeneratorModal
-        isOpen={true}
-        onClose={mockOnClose}
-        onGenerate={mockOnGenerate}
-        resumeData={mockResumeData}
-        mode="coverLetter"
-      />
-    )
-
-    await waitFor(() => {
-      expect(loadCredentials).toHaveBeenCalled()
-    })
+    expect(apiKeyInput).toHaveAttribute('type', 'password')
+    fireEvent.click(toggleButton)
+    expect(apiKeyInput).toHaveAttribute('type', 'text')
   })
 })

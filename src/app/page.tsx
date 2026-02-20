@@ -1,10 +1,10 @@
-import Header from '@/components/layout/Header'
-import MainLayout from '@/components/layout/MainLayout'
-import Hero from '@/components/sections/Hero'
-import About from '@/components/sections/About'
-import Skills from '@/components/sections/Skills'
-import Experience from '@/components/sections/Experience'
-import Contact from '@/components/sections/Contact'
+import Header from '@/components/layout/header'
+import MainLayout from '@/components/layout/main-layout'
+import Hero from '@/components/sections/hero'
+import About from '@/components/sections/about'
+import Skills from '@/components/sections/skills'
+import Experience from '@/components/sections/experience'
+import Contact from '@/components/sections/contact'
 
 /**
  * The main portfolio landing page component.

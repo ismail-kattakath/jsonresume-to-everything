@@ -2,14 +2,14 @@ import { render, screen, waitFor } from '@testing-library/react'
 import ResumePage from '@/app/resume/page'
 
 // Mock Preview component
-jest.mock('@/components/resume/preview/Preview', () => {
+jest.mock('@/components/resume/preview/preview', () => {
   return function MockPreview() {
     return <div data-testid="mock-preview">Resume Preview</div>
   }
 })
 
 // Mock PrintButton component
-jest.mock('@/components/document-builder/ui/PrintButton', () => {
+jest.mock('@/components/document-builder/ui/print-button', () => {
   return function MockPrintButton({ name, documentType }: { name: string; documentType: string }) {
     return (
       <button data-testid="mock-print-button">
@@ -20,14 +20,14 @@ jest.mock('@/components/document-builder/ui/PrintButton', () => {
 })
 
 // Mock ScaledPreviewWrapper component
-jest.mock('@/components/document-builder/ui/ScaledPreviewWrapper', () => {
+jest.mock('@/components/document-builder/ui/scaled-preview-wrapper', () => {
   return function MockScaledPreviewWrapper({ children }: { children: React.ReactNode }) {
     return <div data-testid="scaled-preview-wrapper">{children}</div>
   }
 })
 
 // Mock resumeAdapter
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'John Doe',

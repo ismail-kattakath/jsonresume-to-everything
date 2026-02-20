@@ -1,4 +1,4 @@
-import { sortTechStackGraph } from '@/lib/ai/strands/techStackSortingGraph'
+import { sortTechStackGraph } from '@/lib/ai/strands/tech-stack-sorting-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 

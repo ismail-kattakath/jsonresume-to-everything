@@ -1,7 +1,7 @@
-import ExternalRedirect from '@/components/ui/ExternalRedirect'
-import resumeData from '@/lib/resumeAdapter'
-import MainLayout from '@/components/layout/MainLayout'
-import Header from '@/components/layout/Header'
+import ExternalRedirect from '@/components/ui/external-redirect'
+import resumeData from '@/lib/resume-adapter'
+import MainLayout from '@/components/layout/main-layout'
+import Header from '@/components/layout/header'
 
 /**
  * Page component for the calendar view, redirects to external calendar.

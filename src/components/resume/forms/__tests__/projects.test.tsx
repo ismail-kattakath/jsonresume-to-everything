@@ -1,17 +1,17 @@
 import React from 'react'
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import Projects from '@/components/resume/forms/Projects'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import { useArrayForm } from '@/hooks/useArrayForm'
+import Projects from '@/components/resume/forms/projects'
+import { ResumeContext } from '@/lib/contexts/document-context'
+import { useArrayForm } from '@/hooks/use-array-form'
 
 // Mock dependencies
-jest.mock('@/hooks/useArrayForm')
-jest.mock('@/components/resume/forms/ProjectKeyAchievements', () => ({
+jest.mock('@/hooks/use-array-form')
+jest.mock('@/components/resume/forms/project-key-achievements', () => ({
   __esModule: true,
   default: () => <div data-testid="project-achievements">Achievements</div>,
 }))
 
-jest.mock('@/components/ui/SortableTagInput', () => ({
+jest.mock('@/components/ui/sortable-tag-input', () => ({
   __esModule: true,
   default: ({
     tags,

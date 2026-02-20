@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/config/site'
-import resumeData from '@/lib/resumeAdapter'
-import { StructuredData } from '@/components/seo/StructuredData'
+import resumeData from '@/lib/resume-adapter'
+import { StructuredData } from '@/components/seo/structured-data'
 import {
   resumeBuilderStructuredData,
   resumeBuilderBreadcrumbData,

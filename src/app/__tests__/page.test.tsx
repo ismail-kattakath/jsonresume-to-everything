@@ -3,70 +3,43 @@ import { render, screen } from '@testing-library/react'
 import Home from '@/app/page'
 
 // Mock all child components to isolate page component testing
-jest.mock('@/components/layout/Header', () => {
+jest.mock('@/components/layout/header', () => {
   return function MockHeader() {
     return <header data-testid="header">Header</header>
   }
 })
 
-jest.mock('@/components/layout/Footer', () => {
+jest.mock('@/components/layout/footer', () => {
   return function MockFooter() {
     return <footer data-testid="footer">Footer</footer>
   }
 })
 
-jest.mock('@/components/sections/Hero', () => {
+jest.mock('@/components/sections/hero', () => {
   return function MockHero() {
     return <section data-testid="hero">Hero</section>
   }
 })
 
-jest.mock('@/components/sections/About', () => {
-  return function MockAbout() {
-    return <section data-testid="about">About</section>
-  }
-})
-import { render, screen } from '@testing-library/react'
-import Home from '@/app/page'
-
-// Mock all child components to isolate page component testing
-jest.mock('@/components/layout/Header', () => {
-  return function MockHeader() {
-    return <header data-testid="header">Header</header>
-  }
-})
-
-jest.mock('@/components/layout/Footer', () => {
-  return function MockFooter() {
-    return <footer data-testid="footer">Footer</footer>
-  }
-})
-
-jest.mock('@/components/sections/Hero', () => {
-  return function MockHero() {
-    return <section data-testid="hero">Hero</section>
-  }
-})
-
-jest.mock('@/components/sections/About', () => {
+jest.mock('@/components/sections/about', () => {
   return function MockAbout() {
     return <section data-testid="about">About</section>
   }
 })
 
-jest.mock('@/components/sections/Skills', () => {
+jest.mock('@/components/sections/skills', () => {
   return function MockSkills() {
     return <section data-testid="skills">Skills</section>
   }
 })
 
-jest.mock('@/components/sections/Experience', () => {
+jest.mock('@/components/sections/experience', () => {
   return function MockExperience() {
     return <section data-testid="experience">Experience</section>
   }
 })
 
-jest.mock('@/components/sections/Contact', () => {
+jest.mock('@/components/sections/contact', () => {
   return function MockContact() {
     return <section data-testid="contact">Contact</section>
   }

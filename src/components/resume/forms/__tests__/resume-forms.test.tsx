@@ -1,16 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import WorkExperience from '@/components/resume/forms/WorkExperience'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import WorkExperience from '@/components/resume/forms/work-experience'
+import { ResumeContext } from '@/lib/contexts/document-context'
 
 // Mock Hooks
-jest.mock('@/lib/contexts/AISettingsContext', () => ({
+jest.mock('@/lib/contexts/ai-settings-context', () => ({
   useAISettings: () => ({
     settings: {},
     updateSettings: jest.fn(),
     isConfigured: true,
   }),
 }))
-jest.mock('@/hooks/useArrayForm', () => ({
+jest.mock('@/hooks/use-array-form', () => ({
   useArrayForm: () => ({
     data: [{ organization: 'Test Org' }],
     handleChange: jest.fn(),
@@ -18,7 +18,7 @@ jest.mock('@/hooks/useArrayForm', () => ({
     remove: jest.fn(),
   }),
 }))
-jest.mock('@/hooks/useAccordion', () => ({
+jest.mock('@/hooks/use-accordion', () => ({
   useAccordion: () => ({
     isExpanded: () => true,
     toggleExpanded: jest.fn(),
@@ -28,7 +28,7 @@ jest.mock('@/hooks/useAccordion', () => ({
 }))
 
 // Mock drag and drop since it's hard to test directly
-jest.mock('@/components/ui/DragAndDrop', () => ({
+jest.mock('@/components/ui/drag-and-drop', () => ({
   DnDContext: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   DnDDroppable: ({ children }: { children: (provided: unknown) => React.ReactNode }) =>
     children({ droppableProps: {}, innerRef: jest.fn(), placeholder: null }),
@@ -36,7 +36,7 @@ jest.mock('@/components/ui/DragAndDrop', () => ({
     children({ dragHandleProps: {}, draggableProps: {}, innerRef: jest.fn() }, { isDragging: false }),
 }))
 
-jest.mock('../KeyAchievements', () => ({
+jest.mock('../key-achievements', () => ({
   __esModule: true,
   default: () => <div>Mocked Key Achievements</div>,
 }))

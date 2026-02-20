@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
-import { useSkillsForm } from '@/hooks/useSkillsForm'
-import { ResumeContext } from '@/lib/contexts/DocumentContext'
+import { useSkillsForm } from '@/hooks/use-skills-form'
+import { ResumeContext } from '@/lib/contexts/document-context'
 import type { ResumeData, SkillGroup } from '@/types'
 import { ReactNode } from 'react'
 

@@ -1,4 +1,4 @@
-import { generateJobTitleGraph } from '@/lib/ai/strands/jobTitleGraph'
+import { generateJobTitleGraph } from '@/lib/ai/strands/job-title-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 import type { ResumeData } from '@/types'

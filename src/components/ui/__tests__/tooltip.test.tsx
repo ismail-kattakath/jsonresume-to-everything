@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { render, act } from '@testing-library/react'
-import { Tooltip, CustomTooltip } from '@/components/ui/Tooltip'
+import { Tooltip, CustomTooltip } from '@/components/ui/tooltip'
 
 // Override the global react-tooltip mock from jest.setup.js for this file
 // since we need to test our wrapper component behavior

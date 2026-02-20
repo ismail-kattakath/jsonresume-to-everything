@@ -1,4 +1,4 @@
-import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/jdRefinementGraph'
+import { analyzeJobDescriptionGraph } from '@/lib/ai/strands/jd-refinement-graph'
 import { AgentConfig } from '@/lib/ai/strands/types'
 import { Agent } from '@strands-agents/sdk'
 

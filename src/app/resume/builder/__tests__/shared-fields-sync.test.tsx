@@ -21,7 +21,7 @@ jest.mock('next/dynamic', () => ({
 }))
 
 // Mock useKeyboardShortcut hook
-jest.mock('@/hooks/useKeyboardShortcut', () => ({
+jest.mock('@/hooks/use-keyboard-shortcut', () => ({
   __esModule: true,
   default: jest.fn(),
 }))

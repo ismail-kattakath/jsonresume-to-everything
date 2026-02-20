@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { convertToJSONResume } from '@/lib/jsonResume'
+import { convertToJSONResume } from '@/lib/json-resume'
 
 export const dynamic = 'force-static'
 

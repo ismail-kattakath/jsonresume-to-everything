@@ -1,13 +1,13 @@
-import { generateOgImage } from '@/lib/utils/generateOgImage'
+import { generateOgImage } from '@/lib/utils/generate-og-image'
 import TwitterImage, { dynamic, alt, size, contentType } from '@/app/twitter-image'
 
 // Mock the generateOgImage utility
-jest.mock('@/lib/utils/generateOgImage', () => ({
+jest.mock('@/lib/utils/generate-og-image', () => ({
   generateOgImage: jest.fn(),
 }))
 
 // Mock resumeAdapter
-jest.mock('@/lib/resumeAdapter', () => ({
+jest.mock('@/lib/resume-adapter', () => ({
   __esModule: true,
   default: {
     name: 'Jane Smith',
@@ -85,7 +85,7 @@ describe('twitter-image Route Handler', () => {
     it('should use "Portfolio" as fallback when name is empty', async () => {
       // Re-import with empty name mock
       jest.resetModules()
-      jest.mock('@/lib/resumeAdapter', () => ({
+      jest.mock('@/lib/resume-adapter', () => ({
         __esModule: true,
         default: {
           name: '',

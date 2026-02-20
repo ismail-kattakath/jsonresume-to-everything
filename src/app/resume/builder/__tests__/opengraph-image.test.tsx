@@ -1,8 +1,8 @@
-import { generateResumeBuilderOgImage } from '@/lib/utils/generateResumeBuilderOgImage'
+import { generateResumeBuilderOgImage } from '@/lib/utils/generate-resume-builder-og-image'
 import OgImage, { dynamic, alt, size, contentType } from '@/app/resume/builder/opengraph-image'
 
 // Mock the generateResumeBuilderOgImage utility
-jest.mock('@/lib/utils/generateResumeBuilderOgImage', () => ({
+jest.mock('@/lib/utils/generate-resume-builder-og-image', () => ({
   generateResumeBuilderOgImage: jest.fn(),
 }))
 

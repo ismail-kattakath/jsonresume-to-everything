@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { renderHook, act } from '@testing-library/react'
-import { useAccordion } from '@/hooks/useAccordion'
+import { useAccordion } from '@/hooks/use-accordion'
 
 describe('useAccordion', () => {
   it('initializes with no item expanded (null)', () => {
