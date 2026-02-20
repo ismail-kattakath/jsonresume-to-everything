@@ -61,7 +61,7 @@ describe('useSkillsForm', () => {
 
   it('should throw error when skill type not found', () => {
     // Suppress console.error for this test
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
 
     expect(() => {
       renderHook(() => useSkillsForm('NonExistent'), {

@@ -26,7 +26,17 @@ jest.mock('sonner', () => ({
 
 // Mock child components to simplify testing SkillsSection logic
 jest.mock('../SkillGroupHeader', () => ({
-  SkillGroupHeader: ({ title, onToggle, onRename, onDelete }: { title: string; onToggle: () => void; onRename: (s: string) => void; onDelete: () => void }) => (
+  SkillGroupHeader: ({
+    title,
+    onToggle,
+    onRename,
+    onDelete,
+  }: {
+    title: string
+    onToggle: () => void
+    onRename: (s: string) => void
+    onDelete: () => void
+  }) => (
     <div data-testid="skill-group-header">
       <span>{title}</span>
       <button onClick={onToggle}>Toggle</button>
@@ -43,7 +53,17 @@ jest.mock('../Skill', () => ({
 
 jest.mock('@/components/ui/AIActionButton', () => ({
   __esModule: true,
-  default: ({ onClick, label, isConfigured, title }: { onClick: () => void; label: string; isConfigured: boolean; title: string }) => (
+  default: ({
+    onClick,
+    label,
+    isConfigured,
+    title,
+  }: {
+    onClick: () => void
+    label: string
+    isConfigured: boolean
+    title: string
+  }) => (
     <button onClick={onClick} aria-label={label} title={title}>
       {label}
     </button>
@@ -51,7 +71,17 @@ jest.mock('@/components/ui/AIActionButton', () => ({
 }))
 
 jest.mock('@/components/ui/FormTextarea', () => ({
-  FormTextarea: ({ label, onAIAction, value, onChange }: { label: string; onAIAction: () => void; value: string; onChange: () => void }) => (
+  FormTextarea: ({
+    label,
+    onAIAction,
+    value,
+    onChange,
+  }: {
+    label: string
+    onAIAction: () => void
+    value: string
+    onChange: () => void
+  }) => (
     <div>
       <label htmlFor="textarea">{label}</label>
       <textarea id="textarea" value={value} onChange={onChange} aria-label={label} />
@@ -105,14 +135,14 @@ describe('SkillsSection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-      ; (useAISettings as jest.Mock).mockReturnValue(mockAISettings)
-      ; (useSkillGroupsManagement as jest.Mock).mockReturnValue(mockGroupsManagement)
-      ; (useAccordion as jest.Mock).mockReturnValue(mockAccordion)
-      ; (sortSkillsGraph as jest.Mock).mockResolvedValue({
-        groupOrder: ['Backend', 'Frontend'],
-        skillOrder: { Backend: ['Node'], Frontend: ['React'] },
-      })
-      ; (extractSkillsGraph as jest.Mock).mockResolvedValue('Extracted Skill')
+    ;(useAISettings as jest.Mock).mockReturnValue(mockAISettings)
+    ;(useSkillGroupsManagement as jest.Mock).mockReturnValue(mockGroupsManagement)
+    ;(useAccordion as jest.Mock).mockReturnValue(mockAccordion)
+    ;(sortSkillsGraph as jest.Mock).mockResolvedValue({
+      groupOrder: ['Backend', 'Frontend'],
+      skillOrder: { Backend: ['Node'], Frontend: ['React'] },
+    })
+    ;(extractSkillsGraph as jest.Mock).mockResolvedValue('Extracted Skill')
   })
 
   const renderComponent = (resumeData = mockResumeData) => {
@@ -196,7 +226,7 @@ describe('SkillsSection', () => {
   })
 
   it('shows error when job description is too short for extraction', async () => {
-    ; (useAISettings as jest.Mock).mockReturnValue({
+    ;(useAISettings as jest.Mock).mockReturnValue({
       ...mockAISettings,
       settings: { ...mockAISettings.settings, jobDescription: 'too short' },
     })
@@ -211,7 +241,7 @@ describe('SkillsSection', () => {
   })
 
   it('handles AI sort with streaming updates', async () => {
-    ; (sortSkillsGraph as jest.Mock).mockImplementation((skills, jobDesc, options, onChunk) => {
+    ;(sortSkillsGraph as jest.Mock).mockImplementation((skills, jobDesc, options, onChunk) => {
       onChunk({ content: 'Analyzing...', done: false })
       onChunk({ content: 'Sorting...', done: false })
       return Promise.resolve({
@@ -236,7 +266,7 @@ describe('SkillsSection', () => {
   })
 
   it('handles AI skill extraction with streaming and error', async () => {
-    ; (extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
+    ;(extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
       onChunk({ content: 'Extracting...', done: false })
       return Promise.reject(new Error('Extraction failed'))
     })
@@ -253,7 +283,7 @@ describe('SkillsSection', () => {
 
   it('handles AI sort with missing group/skill indices', async () => {
     // This triggers the index === -1 branches
-    ; (sortSkillsGraph as jest.Mock).mockResolvedValue({
+    ;(sortSkillsGraph as jest.Mock).mockResolvedValue({
       groupOrder: ['Backend'], // Only Backend, Frontend will be index -1
       skillOrder: { Backend: ['Node'] },
     })
@@ -272,8 +302,8 @@ describe('SkillsSection', () => {
   })
 
   it('handles AI sort failure', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { })
-      ; (sortSkillsGraph as jest.Mock).mockRejectedValue(new Error('Sort failed'))
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    ;(sortSkillsGraph as jest.Mock).mockRejectedValue(new Error('Sort failed'))
 
     renderComponent()
 
@@ -388,7 +418,7 @@ describe('SkillsSection', () => {
   })
 
   it('handles AI sort with unknown groups/skills in result', async () => {
-    ; (sortSkillsGraph as jest.Mock).mockResolvedValue({
+    ;(sortSkillsGraph as jest.Mock).mockResolvedValue({
       groupOrder: ['UnknownGroup'],
       skillOrder: { UnknownGroup: ['UnknownSkill'] },
     })
@@ -412,7 +442,7 @@ describe('SkillsSection', () => {
   })
 
   it('handles multiple streaming updates for AI sort', async () => {
-    ; (sortSkillsGraph as jest.Mock).mockImplementation((skills, jobDesc, options, onChunk) => {
+    ;(sortSkillsGraph as jest.Mock).mockImplementation((skills, jobDesc, options, onChunk) => {
       onChunk({ content: 'Analyzing...', done: false })
       onChunk({ content: 'Sorting...', done: false })
       onChunk({ content: 'Finalizing...', done: false })
@@ -448,12 +478,12 @@ describe('SkillsSection', () => {
       ],
     }
 
-      ; (sortSkillsGraph as jest.Mock).mockResolvedValue({
-        groupOrder: ['Frontend'],
-        skillOrder: {
-          Frontend: ['React', 'Vue'], // Angular is missing from order
-        },
-      })
+    ;(sortSkillsGraph as jest.Mock).mockResolvedValue({
+      groupOrder: ['Frontend'],
+      skillOrder: {
+        Frontend: ['React', 'Vue'], // Angular is missing from order
+      },
+    })
 
     renderComponent(complexResumeData)
 
@@ -478,7 +508,7 @@ describe('SkillsSection', () => {
   })
 
   it('handles extraction with multiple chunks', async () => {
-    ; (extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
+    ;(extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
       onChunk({ content: 'Step 1...', done: false })
       onChunk({ content: 'Step 2...', done: false })
       return Promise.resolve('Skill A, Skill B')
@@ -496,7 +526,7 @@ describe('SkillsSection', () => {
 
   it('prevents multiple concurrent sorts', () => {
     // First, make sort stay in progress
-    ; (sortSkillsGraph as jest.Mock).mockReturnValue(new Promise(() => { }))
+    ;(sortSkillsGraph as jest.Mock).mockReturnValue(new Promise(() => {}))
 
     renderComponent()
 
@@ -510,7 +540,7 @@ describe('SkillsSection', () => {
   })
 
   it('shows error if isConfigured is false in handleAISort', () => {
-    ; (useAISettings as jest.Mock).mockReturnValue({
+    ;(useAISettings as jest.Mock).mockReturnValue({
       ...mockAISettings,
       isConfigured: false,
     })
@@ -523,7 +553,7 @@ describe('SkillsSection', () => {
   })
 
   it('shows error if isConfigured is false in handleAIExtractSkills', () => {
-    ; (useAISettings as jest.Mock).mockReturnValue({
+    ;(useAISettings as jest.Mock).mockReturnValue({
       ...mockAISettings,
       isConfigured: false,
     })

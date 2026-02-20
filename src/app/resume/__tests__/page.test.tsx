@@ -116,7 +116,7 @@ describe('ResumePage', () => {
       socialMedia: {},
     }
 
-      ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(JSON.stringify(storedData))
+    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(JSON.stringify(storedData))
 
     render(<ResumePage />)
 
@@ -126,7 +126,7 @@ describe('ResumePage', () => {
   })
 
   it('should use default resume data when localStorage is empty', () => {
-    ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(null)
+    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(null)
 
     render(<ResumePage />)
 
@@ -150,7 +150,7 @@ describe('ResumePage', () => {
   })
 
   it('should format name with spaces correctly', () => {
-    ; (Storage.prototype.getItem as jest.Mock).mockReturnValue(
+    ;(Storage.prototype.getItem as jest.Mock).mockReturnValue(
       JSON.stringify({
         name: 'mary jane watson',
         position: 'Developer',

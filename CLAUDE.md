@@ -103,7 +103,7 @@ npm run format       # Prettier + Tailwind
 
 | Path                              | Purpose                     |
 | --------------------------------- | --------------------------- |
-| `src/data/resume.json`            | ⭐ Single source of truth    |
+| `src/data/resume.json`            | ⭐ Single source of truth   |
 | `src/lib/resumeAdapter.ts`        | JSON Resume → Internal      |
 | `src/types/`                      | Type definitions (4 layers) |
 | `src/app/page.tsx`                | Homepage                    |

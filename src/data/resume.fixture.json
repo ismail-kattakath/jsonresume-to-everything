@@ -1,105 +1,88 @@
 {
-    "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
-    "basics": {
-        "name": "Test User",
-        "label": "Software Engineer",
-        "image": "",
-        "email": "test@example.com",
-        "phone": "+1 (555) 000-0000",
-        "url": "https://example.com",
-        "calendar": "",
-        "summary": "A test user summary.",
-        "location": {
-            "address": "",
-            "city": "Toronto",
-            "countryCode": "CA",
-            "region": "ON"
-        },
-        "profiles": [
-            {
-                "network": "LinkedIn",
-                "username": "testuser",
-                "url": "https://linkedin.com/in/testuser"
-            },
-            {
-                "network": "Github",
-                "username": "testuser",
-                "url": "https://github.com/testuser"
-            }
-        ]
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Test User",
+    "label": "Software Engineer",
+    "image": "",
+    "email": "test@example.com",
+    "phone": "+1 (555) 000-0000",
+    "url": "https://example.com",
+    "calendar": "",
+    "summary": "A test user summary.",
+    "location": {
+      "address": "",
+      "city": "Toronto",
+      "countryCode": "CA",
+      "region": "ON"
     },
-    "work": [
-        {
-            "name": "Test Company",
-            "position": "Software Engineer",
-            "url": "https://testcompany.com",
-            "startDate": "2020-01",
-            "endDate": "2023-12",
-            "summary": "Built things.",
-            "highlights": [
-                "Did great work"
-            ],
-            "keywords": [
-                "TypeScript",
-                "React"
-            ]
-        }
-    ],
-    "education": [
-        {
-            "institution": "Test University",
-            "url": "https://testuniversity.edu",
-            "area": "Computer Science",
-            "studyType": "Bachelor",
-            "startDate": "2014-09",
-            "endDate": "2018-06"
-        }
-    ],
-    "skills": [
-        {
-            "name": "Frontend",
-            "keywords": [
-                "React",
-                "TypeScript",
-                "Next.js"
-            ]
-        },
-        {
-            "name": "Backend",
-            "keywords": [
-                "Node.js",
-                "Python"
-            ]
-        }
-    ],
-    "languages": [
-        {
-            "language": "English",
-            "fluency": "Native"
-        }
-    ],
-    "certificates": [
-        {
-            "name": "Test Certification",
-            "date": "2022-01-01",
-            "issuer": "Test Issuer",
-            "url": "https://example.com/cert"
-        }
-    ],
-    "projects": [
-        {
-            "name": "Test Project",
-            "description": "A test project",
-            "url": "https://testproject.com",
-            "startDate": "2021-01",
-            "endDate": "2022-01",
-            "highlights": [
-                "Built a cool feature"
-            ],
-            "keywords": [
-                "React",
-                "TypeScript"
-            ]
-        }
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "testuser",
+        "url": "https://linkedin.com/in/testuser"
+      },
+      {
+        "network": "Github",
+        "username": "testuser",
+        "url": "https://github.com/testuser"
+      }
     ]
+  },
+  "work": [
+    {
+      "name": "Test Company",
+      "position": "Software Engineer",
+      "url": "https://testcompany.com",
+      "startDate": "2020-01",
+      "endDate": "2023-12",
+      "summary": "Built things.",
+      "highlights": ["Did great work"],
+      "keywords": ["TypeScript", "React"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Test University",
+      "url": "https://testuniversity.edu",
+      "area": "Computer Science",
+      "studyType": "Bachelor",
+      "startDate": "2014-09",
+      "endDate": "2018-06"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Frontend",
+      "keywords": ["React", "TypeScript", "Next.js"]
+    },
+    {
+      "name": "Backend",
+      "keywords": ["Node.js", "Python"]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Native"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Test Certification",
+      "date": "2022-01-01",
+      "issuer": "Test Issuer",
+      "url": "https://example.com/cert"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Test Project",
+      "description": "A test project",
+      "url": "https://testproject.com",
+      "startDate": "2021-01",
+      "endDate": "2022-01",
+      "highlights": ["Built a cool feature"],
+      "keywords": ["React", "TypeScript"]
+    }
+  ]
 }

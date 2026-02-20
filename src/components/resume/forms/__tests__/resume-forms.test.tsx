@@ -30,7 +30,8 @@ jest.mock('@/hooks/useAccordion', () => ({
 // Mock drag and drop since it's hard to test directly
 jest.mock('@/components/ui/DragAndDrop', () => ({
   DnDContext: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  DnDDroppable: ({ children }: { children: (provided: unknown) => React.ReactNode }) => children({ droppableProps: {}, innerRef: jest.fn(), placeholder: null }),
+  DnDDroppable: ({ children }: { children: (provided: unknown) => React.ReactNode }) =>
+    children({ droppableProps: {}, innerRef: jest.fn(), placeholder: null }),
   DnDDraggable: ({ children }: { children: (provided: unknown, snapshot: unknown) => React.ReactNode }) =>
     children({ dragHandleProps: {}, draggableProps: {}, innerRef: jest.fn() }, { isDragging: false }),
 }))

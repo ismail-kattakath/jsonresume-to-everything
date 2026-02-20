@@ -2,7 +2,19 @@
 
 import { motion } from 'framer-motion'
 import { skills } from '@/lib/data/portfolio'
-import { Brain, Cloud, Shield, Cog, Server, Code, Database, Network, Monitor, Sparkles, type LucideIcon } from 'lucide-react'
+import {
+  Brain,
+  Cloud,
+  Shield,
+  Cog,
+  Server,
+  Code,
+  Database,
+  Network,
+  Monitor,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react'
 
 const iconMap: { [key: string]: LucideIcon } = {
   'AI/ML Stack': Brain,

@@ -5,9 +5,37 @@ import NotFound from '@/app/not-found'
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, initial, animate, transition, viewport, ...props }: React.ComponentProps<'div'> & { initial?: unknown; animate?: unknown; transition?: unknown; viewport?: unknown }) => <div {...props}>{children}</div>,
-    h1: ({ children, initial, animate, transition, ...props }: React.ComponentProps<'h1'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => <h1 {...props}>{children}</h1>,
-    h2: ({ children, initial, animate, transition, ...props }: React.ComponentProps<'h2'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => <h2 {...props}>{children}</h2>,
+    div: ({
+      children,
+      initial,
+      animate,
+      transition,
+      viewport,
+      ...props
+    }: React.ComponentProps<'div'> & {
+      initial?: unknown
+      animate?: unknown
+      transition?: unknown
+      viewport?: unknown
+    }) => <div {...props}>{children}</div>,
+    h1: ({
+      children,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: React.ComponentProps<'h1'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => (
+      <h1 {...props}>{children}</h1>
+    ),
+    h2: ({
+      children,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: React.ComponentProps<'h2'> & { initial?: unknown; animate?: unknown; transition?: unknown }) => (
+      <h2 {...props}>{children}</h2>
+    ),
   },
 }))
 
