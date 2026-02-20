@@ -7,6 +7,9 @@ import { generateSiteMetadata } from '@/config/metadata'
 // Generate metadata from resumeData (single source of truth)
 export const metadata: Metadata = generateSiteMetadata()
 
+/**
+ * Root layout component for the entire application, providing global styles and structure.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,21 +19,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#1a182a" />
-        <meta
-          name="theme-color"
-          media="(prefers-color-scheme: dark)"
-          content="#1a182a"
-        />
-        <meta
-          name="theme-color"
-          media="(prefers-color-scheme: light)"
-          content="#1a182a"
-        />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a182a" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1a182a" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="AI Resume Builder" />
         <link rel="icon" href="/favicon/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
@@ -45,9 +37,7 @@ export default function RootLayout({
         <BackgroundImage withBlur withOverlay />
         {children}
         {process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID'] && (
-          <GoogleAnalytics
-            gaId={process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID']}
-          />
+          <GoogleAnalytics gaId={process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID']} />
         )}
       </body>
     </html>

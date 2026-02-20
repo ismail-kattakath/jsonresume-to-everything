@@ -2,10 +2,7 @@
 import { generateSiteMetadata } from '@/config/metadata'
 import { SITE_URL } from '@/config/site'
 import { navItems } from '@/config/navigation'
-import {
-  BACKGROUND_IMAGE_PATH,
-  BACKGROUND_IMAGE_FILE_PATH,
-} from '@/config/background'
+import { BACKGROUND_IMAGE_PATH, BACKGROUND_IMAGE_FILE_PATH } from '@/config/background'
 
 describe('Config - Site', () => {
   it('should export SITE_URL constant', () => {
@@ -57,15 +54,11 @@ describe('Config - Navigation', () => {
     navItems.forEach((item) => {
       if (item.href) {
         // Should be either an anchor link or a path
-        expect(item.href.startsWith('#') || item.href.startsWith('/')).toBe(
-          true
-        )
+        expect(item.href.startsWith('#') || item.href.startsWith('/')).toBe(true)
       }
       if (item.submenu) {
         item.submenu.forEach((subItem) => {
-          expect(
-            subItem.href.startsWith('#') || subItem.href.startsWith('/')
-          ).toBe(true)
+          expect(subItem.href.startsWith('#') || subItem.href.startsWith('/')).toBe(true)
         })
       }
     })

@@ -28,14 +28,9 @@ const Skills = ({ title, skills }: SkillsProps) => {
     }
   }
 
-  const handleSkillChange = (
-    e: React.FocusEvent<HTMLSpanElement>,
-    skillIndex: number
-  ) => {
+  const handleSkillChange = (e: React.FocusEvent<HTMLSpanElement>, skillIndex: number) => {
     const newSkills = [...resumeData.skills]
-    const skillTypeIndex = newSkills.findIndex(
-      (skillType) => skillType.title === title
-    )
+    const skillTypeIndex = newSkills.findIndex((skillType) => skillType.title === title)
 
     if (skillTypeIndex === -1 || !newSkills[skillTypeIndex]) return
 
@@ -79,10 +74,7 @@ const Skills = ({ title, skills }: SkillsProps) => {
               suppressContentEditableWarning
               onBlur={(e) => handleSkillChange(e, index)}
             >
-              <Highlight
-                text={skill.text}
-                keywords={settings.skillsToHighlight}
-              />
+              <Highlight text={skill.text} keywords={settings.skillsToHighlight} />
             </span>
           </span>
         ))}

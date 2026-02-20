@@ -11,6 +11,9 @@ export const size = {
 
 export const contentType = 'image/png'
 
+/**
+ * Generates the OpenGraph image for the AI Resume Builder page.
+ */
 export default async function Image() {
   return generateResumeBuilderOgImage(OG_IMAGE_CONFIG)
 }

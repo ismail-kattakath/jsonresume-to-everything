@@ -9,6 +9,7 @@ import type { Achievement } from '@/types'
 export function useKeyAchievementsForm(workExperienceIndex: number) {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
+  // eslint-disable-next-line security/detect-object-injection
   const workExperience = resumeData.workExperience[workExperienceIndex]
 
   if (!workExperience) {
@@ -34,9 +35,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       workExperience: prevData.workExperience.map((exp, i) =>
-        i === workExperienceIndex
-          ? { ...exp, keyAchievements: newAchievements }
-          : exp
+        i === workExperienceIndex ? { ...exp, keyAchievements: newAchievements } : exp
       ),
     }))
   }
@@ -52,9 +51,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       workExperience: prevData.workExperience.map((exp, i) =>
-        i === workExperienceIndex
-          ? { ...exp, keyAchievements: newAchievements }
-          : exp
+        i === workExperienceIndex ? { ...exp, keyAchievements: newAchievements } : exp
       ),
     }))
   }
@@ -64,16 +61,12 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
    */
   const remove = (achievementIndex: number) => {
     if (!workExperience) return
-    const newAchievements = workExperience.keyAchievements.filter(
-      (_, i) => i !== achievementIndex
-    )
+    const newAchievements = workExperience.keyAchievements.filter((_, i) => i !== achievementIndex)
 
     setResumeData((prevData) => ({
       ...prevData,
       workExperience: prevData.workExperience.map((exp, i) =>
-        i === workExperienceIndex
-          ? { ...exp, keyAchievements: newAchievements }
-          : exp
+        i === workExperienceIndex ? { ...exp, keyAchievements: newAchievements } : exp
       ),
     }))
   }
@@ -92,9 +85,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       workExperience: prevData.workExperience.map((exp, i) =>
-        i === workExperienceIndex
-          ? { ...exp, keyAchievements: newAchievements }
-          : exp
+        i === workExperienceIndex ? { ...exp, keyAchievements: newAchievements } : exp
       ),
     }))
   }
@@ -106,9 +97,7 @@ export function useKeyAchievementsForm(workExperienceIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       workExperience: prevData.workExperience.map((exp, i) =>
-        i === workExperienceIndex
-          ? { ...exp, keyAchievements: newAchievements }
-          : exp
+        i === workExperienceIndex ? { ...exp, keyAchievements: newAchievements } : exp
       ),
     }))
   }

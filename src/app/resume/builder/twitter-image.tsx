@@ -11,6 +11,9 @@ export const size = {
 
 export const contentType = 'image/png'
 
+/**
+ * Generates the Twitter card image for the AI Resume Builder page.
+ */
 export default async function Image() {
   return generateResumeBuilderOgImage(TWITTER_IMAGE_CONFIG)
 }

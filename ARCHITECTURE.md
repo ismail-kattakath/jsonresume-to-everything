@@ -682,9 +682,7 @@ export async function generateCoverLetter(
   // Use streaming or standard request
   let content = onProgress
     ? await makeOpenAIStreamRequest(config, request, onProgress)
-    : await makeOpenAIRequest(config, request).then(
-        (r) => r.choices[0].message.content
-      )
+    : await makeOpenAIRequest(config, request).then((r) => r.choices[0].message.content)
 
   // Post-process and validate
   const processed = postProcessCoverLetter(content)
@@ -711,10 +709,7 @@ export async function generateCoverLetter(
 **File:** `src/lib/ai/document-prompts.ts`
 
 ```typescript
-export function buildCoverLetterPrompt(
-  resumeData: ResumeData,
-  jobDescription: string
-): string {
+export function buildCoverLetterPrompt(resumeData: ResumeData, jobDescription: string): string {
   return `
 Generate a professional cover letter for the following job.
 
@@ -733,11 +728,7 @@ ${job.keyAchievements}
   .join('\n')}
 
 SKILLS:
-${resumeData.skills
-  .map(
-    (group) => `${group.title}: ${group.skills.map((s) => s.text).join(', ')}`
-  )
-  .join('\n')}
+${resumeData.skills.map((group) => `${group.title}: ${group.skills.map((s) => s.text).join(', ')}`).join('\n')}
 
 JOB DESCRIPTION:
 ${jobDescription}
@@ -787,10 +778,7 @@ export function validateCoverLetter(content: string): {
 The summary generation prompt was fine-tuned through iterative testing with Claude Desktop to produce high-quality, job-tailored professional summaries.
 
 ```typescript
-export function buildSummaryPrompt(
-  resumeData: ResumeData,
-  jobDescription: string
-): string {
+export function buildSummaryPrompt(resumeData: ResumeData, jobDescription: string): string {
   // Key features:
   // - Comprehensive candidate data (all work history, skills, total years)
   // - Job-specific tailoring instructions
@@ -851,12 +839,7 @@ export function validateSummary(content: string): {
   }
 
   // Fabrication detection
-  const suspiciousPatterns = [
-    /certified in/i,
-    /degree in(?! Computer Science)/i,
-    /licensed to/i,
-    /awarded (the|a)/i,
-  ]
+  const suspiciousPatterns = [/certified in/i, /degree in(?! Computer Science)/i, /licensed to/i, /awarded (the|a)/i]
   // Warns but doesn't fail validation
 
   return { isValid: errors.length === 0, errors }
@@ -920,10 +903,7 @@ The cover letter generation prompt was enhanced with job-tailoring techniques fr
 **Key Features:**
 
 ```typescript
-export function buildCoverLetterPrompt(
-  resumeData: ResumeData,
-  jobDescription: string
-): string {
+export function buildCoverLetterPrompt(resumeData: ResumeData, jobDescription: string): string {
   // Key features:
   // - Job language mirroring (uses exact phrases from job description)
   // - Content prioritization (lead with most relevant experience first)
@@ -1241,10 +1221,7 @@ const customJestConfig = {
     '!src/**/*.stories.{js,jsx,ts,tsx}',
     '!src/**/__tests__/**',
   ],
-  testMatch: [
-    '**/__tests__/**/*.(test|spec).[jt]s?(x)',
-    '**/?(*.)+(spec|test).[jt]s?(x)',
-  ],
+  testMatch: ['**/__tests__/**/*.(test|spec).[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 }
 
 module.exports = createJestConfig(customJestConfig)

@@ -13,9 +13,7 @@ interface ScaledPreviewWrapperProps {
  * preview (8.5in × 11in) to fit mobile screens while preserving
  * typography, spacing, and layout proportions
  */
-export default function ScaledPreviewWrapper({
-  children,
-}: ScaledPreviewWrapperProps) {
+export default function ScaledPreviewWrapper({ children }: ScaledPreviewWrapperProps) {
   const { scale, isScaling } = usePreviewScaling()
 
   if (!isScaling) {

@@ -1,25 +1,10 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  ReactNode,
-} from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
 import type { AIProviderType } from '@/types/ai-provider'
-import {
-  loadCredentials,
-  saveCredentials,
-} from '@/lib/ai/storage'
-import {
-  testConnection,
-} from '@/lib/ai/api'
-import {
-  validateJobDescription,
-} from '@/lib/ai/utils'
+import { loadCredentials, saveCredentials } from '@/lib/ai/storage'
+import { testConnection } from '@/lib/ai/api'
+import { validateJobDescription } from '@/lib/ai/utils'
 import { getProviderByURL } from '@/lib/ai/providers'
 
 const DEFAULT_API_URL = 'https://api.openai.com/v1'
@@ -72,6 +57,9 @@ Vision care
 
 Work Location: Remote`
 
+/**
+ * Configuration settings for AI services and content generation.
+ */
 export interface AISettings {
   apiUrl: string
   apiKey: string
@@ -83,8 +71,14 @@ export interface AISettings {
   rememberCredentials: boolean
 }
 
+/**
+ * Progress and status of AI-related validation tasks.
+ */
 export type ValidationStatus = 'idle' | 'testing' | 'valid' | 'invalid'
 
+/**
+ * Context properties and methods for managing AI settings throughout the application.
+ */
 export interface AISettingsContextType {
   settings: AISettings
   updateSettings: (updates: Partial<AISettings>) => void
@@ -107,17 +101,16 @@ const defaultSettings: AISettings = {
   rememberCredentials: true,
 }
 
-export const AISettingsContext = createContext<
-  AISettingsContextType | undefined
->(undefined)
+export const AISettingsContext = createContext<AISettingsContextType | undefined>(undefined)
 
+/**
+ * Provider component that manages AI configuration state and persists credentials.
+ */
 export function AISettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AISettings>(defaultSettings)
   const [isInitialized, setIsInitialized] = useState(false)
-  const [connectionStatus, setConnectionStatus] =
-    useState<ValidationStatus>('idle')
-  const [jobDescriptionStatus, setJobDescriptionStatus] =
-    useState<ValidationStatus>('idle')
+  const [connectionStatus, setConnectionStatus] = useState<ValidationStatus>('idle')
+  const [jobDescriptionStatus, setJobDescriptionStatus] = useState<ValidationStatus>('idle')
   const [isPipelineActive, setIsPipelineActive] = useState(false)
 
   // Track last validated JD to avoid re-validating the same content
@@ -166,9 +159,7 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
 
     // Only check for API key if the provider explicitly requires it
     if (requiresAuth && !settings.apiKey.trim()) {
-      console.log(
-        '[AISettings] Validation failed: Missing API Key for auth-required provider'
-      )
+      console.log('[AISettings] Validation failed: Missing API Key for auth-required provider')
       setConnectionStatus('invalid')
       return false
     }
@@ -263,13 +254,7 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
     }, 500)
 
     return () => clearTimeout(timeoutId)
-  }, [
-    settings.apiUrl,
-    settings.apiKey,
-    settings.model,
-    isInitialized,
-    validateConnection,
-  ])
+  }, [settings.apiUrl, settings.apiKey, settings.model, isInitialized, validateConnection])
 
   // Validate JD when it changes (with debounce)
   useEffect(() => {
@@ -305,8 +290,7 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
   }, [settings, isInitialized])
 
   // isConfigured requires valid connection AND valid job description
-  const isConfigured =
-    connectionStatus === 'valid' && jobDescriptionStatus === 'valid'
+  const isConfigured = connectionStatus === 'valid' && jobDescriptionStatus === 'valid'
 
   return (
     <AISettingsContext.Provider
@@ -326,6 +310,10 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
   )
 }
 
+/**
+ * Hook to access AI settings and control methods from any component.
+ * @returns The AISettingsContext properties.
+ */
 export function useAISettings() {
   const context = useContext(AISettingsContext)
   if (!context) {

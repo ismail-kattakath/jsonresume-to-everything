@@ -9,9 +9,7 @@ import type { Skill } from '@/types'
 export function useSkillsForm(title: string) {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
-  const skillType = resumeData.skills.find(
-    (skillType) => skillType.title === title
-  )
+  const skillType = resumeData.skills.find((skillType) => skillType.title === title)
 
   if (!skillType) {
     throw new Error(`Skill type "${title}" not found`)
@@ -29,9 +27,7 @@ export function useSkillsForm(title: string) {
 
     setResumeData((prevData) => ({
       ...prevData,
-      skills: prevData.skills.map((skill) =>
-        skill.title === title ? { ...skill, skills: newSkills } : skill
-      ),
+      skills: prevData.skills.map((skill) => (skill.title === title ? { ...skill, skills: newSkills } : skill)),
     }))
   }
 
@@ -45,9 +41,7 @@ export function useSkillsForm(title: string) {
 
     setResumeData((prevData) => ({
       ...prevData,
-      skills: prevData.skills.map((skill) =>
-        skill.title === title ? { ...skill, skills: newSkills } : skill
-      ),
+      skills: prevData.skills.map((skill) => (skill.title === title ? { ...skill, skills: newSkills } : skill)),
     }))
   }
 
@@ -59,9 +53,7 @@ export function useSkillsForm(title: string) {
 
     setResumeData((prevData) => ({
       ...prevData,
-      skills: prevData.skills.map((skill) =>
-        skill.title === title ? { ...skill, skills: newSkills } : skill
-      ),
+      skills: prevData.skills.map((skill) => (skill.title === title ? { ...skill, skills: newSkills } : skill)),
     }))
   }
 
@@ -77,9 +69,7 @@ export function useSkillsForm(title: string) {
 
     setResumeData((prevData) => ({
       ...prevData,
-      skills: prevData.skills.map((skill) =>
-        skill.title === title ? { ...skill, skills: newSkills } : skill
-      ),
+      skills: prevData.skills.map((skill) => (skill.title === title ? { ...skill, skills: newSkills } : skill)),
     }))
   }
 

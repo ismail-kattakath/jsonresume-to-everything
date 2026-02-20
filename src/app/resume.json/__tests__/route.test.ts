@@ -84,9 +84,7 @@ describe('resume.json Route Handler', () => {
 
       const response = await GET()
 
-      expect(response.headers['Cache-Control']).toBe(
-        'public, max-age=3600, s-maxage=3600'
-      )
+      expect(response.headers['Cache-Control']).toBe('public, max-age=3600, s-maxage=3600')
     })
 
     it('should handle empty resume data', async () => {
@@ -95,10 +93,7 @@ describe('resume.json Route Handler', () => {
 
       const response = await GET()
 
-      expect(NextResponse.json).toHaveBeenCalledWith(
-        emptyResume,
-        expect.any(Object)
-      )
+      expect(NextResponse.json).toHaveBeenCalledWith(emptyResume, expect.any(Object))
       expect(response.data).toEqual(emptyResume)
     })
 

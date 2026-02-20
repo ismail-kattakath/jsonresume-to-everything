@@ -18,9 +18,7 @@ export function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
 
   // Add website if present AND not already in profiles (for backward compatibility)
   // New exports include Website in profiles array to preserve order
-  const hasWebsiteInProfiles = socialMedia.some(
-    (sm) => sm.socialMedia === 'Website'
-  )
+  const hasWebsiteInProfiles = socialMedia.some((sm) => sm.socialMedia === 'Website')
   if (basics.url && !hasWebsiteInProfiles) {
     socialMedia.unshift({
       socialMedia: 'Website',
@@ -89,11 +87,7 @@ export function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
 
   // Reconstruct location
   const location = basics.location || {}
-  const address = [
-    location.address,
-    location.city,
-    [location.region, location.postalCode].filter(Boolean).join(' '),
-  ]
+  const address = [location.address, location.city, [location.region, location.postalCode].filter(Boolean).join(' ')]
     .filter(Boolean)
     .join(', ')
 
@@ -104,8 +98,7 @@ export function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
     email: basics.email || '',
     address: address || '',
     profilePicture: basics.image || '',
-    calendarLink:
-      (basics as JSONResumeBasics & { calendar?: string }).calendar || '',
+    calendarLink: (basics as JSONResumeBasics & { calendar?: string }).calendar || '',
     socialMedia,
     summary: basics.summary || '',
     education,

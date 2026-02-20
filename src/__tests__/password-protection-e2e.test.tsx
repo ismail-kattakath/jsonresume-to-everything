@@ -6,9 +6,7 @@ import bcrypt from 'bcryptjs'
 
 // Mock the password config
 jest.mock('@/config/password', () => ({
-  getPasswordHash: jest.fn(
-    () => '$2b$10$DROkfTWOCqdekTKMKybP2eD9NIqTHNyAKFgsZCdpEXS9vC2honJfS'
-  ),
+  getPasswordHash: jest.fn(() => '$2b$10$DROkfTWOCqdekTKMKybP2eD9NIqTHNyAKFgsZCdpEXS9vC2honJfS'),
   isPasswordProtectionEnabled: jest.fn(() => true),
 }))
 
@@ -67,9 +65,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       // 5. Verify full editor is accessible (use getAllByText since text appears in forms and preview)
       expect(screen.getAllByText('Experience').length).toBeGreaterThan(0)
       expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
-      expect(
-        screen.getByRole('button', { name: /logout/i })
-      ).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
 
       // 6. Edit some data (verify form sections are accessible)
       expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
@@ -106,9 +102,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Incorrect password. Please try again.')
-        ).toBeInTheDocument()
+        expect(screen.getByText('Incorrect password. Please try again.')).toBeInTheDocument()
       })
 
       // Still on password screen
@@ -121,9 +115,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Incorrect password. Please try again.')
-        ).toBeInTheDocument()
+        expect(screen.getByText('Incorrect password. Please try again.')).toBeInTheDocument()
       })
 
       // 3. Successful attempt
@@ -234,9 +226,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       })
 
       // 2. Verify resume mode is active (should see resume-specific sections)
-      expect(
-        screen.getByRole('heading', { name: 'AI Resume Builder' })
-      ).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'AI Resume Builder' })).toBeInTheDocument()
       expect(screen.getAllByText('Experience').length).toBeGreaterThan(0)
       expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
 
@@ -318,10 +308,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        expect(bcrypt.compare).toHaveBeenCalledWith(
-          correctPassword,
-          expect.stringMatching(/^\$2b\$10\$/)
-        )
+        expect(bcrypt.compare).toHaveBeenCalledWith(correctPassword, expect.stringMatching(/^\$2b\$10\$/))
       })
     })
 
@@ -350,9 +337,7 @@ describe('Password Protection - End-to-End Workflows', () => {
 
       render(<ResumeEditPage />)
 
-      const passwordInput = screen.getByLabelText(
-        'Password'
-      ) as HTMLInputElement
+      const passwordInput = screen.getByLabelText('Password') as HTMLInputElement
 
       fireEvent.change(passwordInput, { target: { value: correctPassword } })
       expect(passwordInput.value).toBe(correctPassword)
@@ -370,9 +355,7 @@ describe('Password Protection - End-to-End Workflows', () => {
 
   describe('Error Recovery Workflows', () => {
     it('should handle bcrypt errors gracefully', async () => {
-      ;(bcrypt.compare as jest.Mock).mockRejectedValue(
-        new Error('Hash comparison failed')
-      )
+      ;(bcrypt.compare as jest.Mock).mockRejectedValue(new Error('Hash comparison failed'))
 
       render(<ResumeEditPage />)
 
@@ -382,9 +365,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Authentication error. Please try again.')
-        ).toBeInTheDocument()
+        expect(screen.getByText('Authentication error. Please try again.')).toBeInTheDocument()
       })
 
       // Should still be on password screen
@@ -434,9 +415,7 @@ describe('Password Protection - End-to-End Workflows', () => {
     it('should allow password visibility toggle', () => {
       render(<ResumeEditPage />)
 
-      const passwordInput = screen.getByLabelText(
-        'Password'
-      ) as HTMLInputElement
+      const passwordInput = screen.getByLabelText('Password') as HTMLInputElement
       const toggleButton = screen.getByRole('button', { name: '' }) // Eye icon
 
       // Initially hidden
@@ -494,9 +473,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       fireEvent.click(screen.getByRole('button', { name: /unlock/i }))
 
       await waitFor(() => {
-        expect(
-          screen.getAllByText('Personal Information').length
-        ).toBeGreaterThan(0)
+        expect(screen.getAllByText('Personal Information').length).toBeGreaterThan(0)
       })
 
       // 2. Verify forms rendered
@@ -514,9 +491,7 @@ describe('Password Protection - End-to-End Workflows', () => {
       render(<ResumeEditPage />)
 
       // 6. Should be authenticated via persisted session
-      expect(
-        screen.getAllByText('Personal Information').length
-      ).toBeGreaterThan(0)
+      expect(screen.getAllByText('Personal Information').length).toBeGreaterThan(0)
       expect(sessionStorage.getItem('edit-auth-token')).toBe(token)
       expect(sessionStorage.getItem('edit-auth-expiry')).toBe(expiry)
     })

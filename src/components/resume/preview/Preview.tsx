@@ -62,11 +62,7 @@ const HighlightMenu = dynamic(
 
 const Preview = () => {
   const { settings } = useAISettings()
-  const {
-    resumeData,
-    setResumeData,
-    editable = true,
-  } = useContext(ResumeContext)
+  const { resumeData, setResumeData, editable = true } = useContext(ResumeContext)
   const icons = [
     { name: 'github', icon: <FaGithub /> },
     { name: 'linkedin', icon: <FaLinkedin /> },
@@ -82,11 +78,7 @@ const Preview = () => {
 
     if (!destination) return
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    )
-      return
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return
 
     if (source.droppableId === 'work-experience') {
       const newWorkExperience = [...resumeData.workExperience]
@@ -130,10 +122,7 @@ const Preview = () => {
       }
     }
 
-    if (
-      source.droppableId.includes('PROJECTS_KEY_ACHIEVEMENT') &&
-      resumeData.projects
-    ) {
+    if (source.droppableId.includes('PROJECTS_KEY_ACHIEVEMENT') && resumeData.projects) {
       const newProjects = [...resumeData.projects]
       const projectIndex = parseInt(source.droppableId.split('-')[1])
       const project = newProjects[projectIndex]
@@ -149,20 +138,8 @@ const Preview = () => {
     }
   }
 
-  const MenuButton = ({
-    title,
-    icon,
-    onClick,
-  }: {
-    title: string
-    icon: React.ReactNode
-    onClick: () => void
-  }) => (
-    <button
-      onClick={onClick}
-      title={title}
-      className="rounded p-2 font-semibold hover:bg-gray-200"
-    >
+  const MenuButton = ({ title, icon, onClick }: { title: string; icon: React.ReactNode; onClick: () => void }) => (
+    <button onClick={onClick} title={title} className="rounded p-2 font-semibold hover:bg-gray-200">
       {icon}
     </button>
   )
@@ -197,47 +174,15 @@ const Preview = () => {
           allowedPlacements={['top', 'bottom']}
           menu={() => (
             <>
-              <MenuButton
-                title="Bold (Ctrl+B)"
-                icon={<FaBold />}
-                onClick={toggleBold}
-              />
-              <MenuButton
-                title="Italic (Ctrl+I)"
-                icon={<FaItalic />}
-                onClick={toggleItalic}
-              />
-              <MenuButton
-                title="Underline (Ctrl+U)"
-                icon={<FaUnderline />}
-                onClick={toggleUnderline}
-              />
-              <MenuButton
-                title="Increase Font Size"
-                icon={<FaPlus />}
-                onClick={() => changeFontSize('4')}
-              />
-              <MenuButton
-                title="Decrease Font Size"
-                icon={<FaMinus />}
-                onClick={() => changeFontSize('2')}
-              />
+              <MenuButton title="Bold (Ctrl+B)" icon={<FaBold />} onClick={toggleBold} />
+              <MenuButton title="Italic (Ctrl+I)" icon={<FaItalic />} onClick={toggleItalic} />
+              <MenuButton title="Underline (Ctrl+U)" icon={<FaUnderline />} onClick={toggleUnderline} />
+              <MenuButton title="Increase Font Size" icon={<FaPlus />} onClick={() => changeFontSize('4')} />
+              <MenuButton title="Decrease Font Size" icon={<FaMinus />} onClick={() => changeFontSize('2')} />
 
-              <MenuButton
-                title="Align Left"
-                icon={<FaAlignLeft />}
-                onClick={() => alignText('Left')}
-              />
-              <MenuButton
-                title="Align Center"
-                icon={<FaAlignCenter />}
-                onClick={() => alignText('Center')}
-              />
-              <MenuButton
-                title="Align Right"
-                icon={<FaAlignRight />}
-                onClick={() => alignText('Right')}
-              />
+              <MenuButton title="Align Left" icon={<FaAlignLeft />} onClick={() => alignText('Left')} />
+              <MenuButton title="Align Center" icon={<FaAlignCenter />} onClick={() => alignText('Center')} />
+              <MenuButton title="Align Right" icon={<FaAlignRight />} onClick={() => alignText('Right')} />
             </>
           )}
         />
@@ -254,18 +199,10 @@ const Preview = () => {
                 />
               </div>
             )}
-            <h1
-              className="name editable"
-              contentEditable={editable}
-              suppressContentEditableWarning
-            >
+            <h1 className="name editable" contentEditable={editable} suppressContentEditableWarning>
               {resumeData.name}
             </h1>
-            <h2
-              className="profession editable"
-              contentEditable={editable}
-              suppressContentEditableWarning
-            >
+            <h2 className="profession editable" contentEditable={editable} suppressContentEditableWarning>
               {resumeData.position}
             </h2>
             <ContactInfo
@@ -278,11 +215,9 @@ const Preview = () => {
               emailicon={<MdEmail />}
               addressicon={<MdLocationOn />}
             />
-            <div className="social-media-container flex flex-row gap-4 mb-1">
+            <div className="social-media-container mb-1 flex flex-row gap-4">
               {resumeData.socialMedia.map((socialMedia, index) => {
-                const handleSocialMediaBlur = (
-                  e: React.FocusEvent<HTMLAnchorElement>
-                ) => {
+                const handleSocialMediaBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
                   const newSocialMedia = [...resumeData.socialMedia]
                   const item = newSocialMedia[index]
                   if (item) {
@@ -306,9 +241,9 @@ const Preview = () => {
                     contentEditable={editable}
                     suppressContentEditableWarning
                     onBlur={handleSocialMediaBlur}
-                  // Prevent text overflowing, If the socialMedia.link string is longer than 32 characters, apply the wordWrap and display styles to this <a> tag.
-                  // wordWrap: "break-word" breaks the text onto the next line if it's too long,
-                  // display: "inline-block" is necessary for wordWrap to work on an inline element like <a>.
+                    // Prevent text overflowing, If the socialMedia.link string is longer than 32 characters, apply the wordWrap and display styles to this <a> tag.
+                    // wordWrap: "break-word" breaks the text onto the next line if it's too long,
+                    // display: "inline-block" is necessary for wordWrap to work on an inline element like <a>.
                   >
                     {icons.map((icon, index) => {
                       if (icon.name === socialMedia.socialMedia.toLowerCase()) {
@@ -333,22 +268,13 @@ const Preview = () => {
                   >
                     Summary
                   </h2>
-                  <p
-                    className="content editable break-words"
-                    contentEditable={editable}
-                    suppressContentEditableWarning
-                  >
-                    {splitTextIntoSentences(resumeData.summary).map(
-                      (sentence, index, array) => (
-                        <React.Fragment key={index}>
-                          <Highlight
-                            text={`⦿ ${sentence}`}
-                            keywords={settings.skillsToHighlight}
-                          />
-                          {index < array.length - 1 && <br />}
-                        </React.Fragment>
-                      )
-                    )}
+                  <p className="content editable break-words" contentEditable={editable} suppressContentEditableWarning>
+                    {splitTextIntoSentences(resumeData.summary).map((sentence, index, array) => (
+                      <React.Fragment key={index}>
+                        <Highlight text={`⦿ ${sentence}`} keywords={settings.skillsToHighlight} />
+                        {index < array.length - 1 && <br />}
+                      </React.Fragment>
+                    ))}
                   </p>
                 </div>
               )}
@@ -357,19 +283,15 @@ const Preview = () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
                     {resumeData.skills.map((skill, index) => (
-                      <Draggable
-                        key={`SKILLS-${index}`}
-                        draggableId={`SKILLS-${index}`}
-                        index={index}
-                      >
+                      <Draggable key={`SKILLS-${index}`} draggableId={`SKILLS-${index}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`mb-1 cursor-grab active:cursor-grabbing ${snapshot.isDragging &&
-                              'bg-white outline-2 outline-gray-400 outline-dashed'
-                              }`}
+                            className={`mb-1 cursor-grab active:cursor-grabbing ${
+                              snapshot.isDragging && 'bg-white outline-2 outline-gray-400 outline-dashed'
+                            }`}
                           >
                             <Skills title={skill.title} skills={skill.skills} />
                           </div>
@@ -404,17 +326,10 @@ const Preview = () => {
                           {project.name}
                         </a>
                       </div>
-                      <p
-                        className="content editable"
-                        contentEditable={editable}
-                        suppressContentEditableWarning
-                      >
+                      <p className="content editable" contentEditable={editable} suppressContentEditableWarning>
                         {project.description}
                       </p>
-                      <Droppable
-                        droppableId={`PROJECTS_KEY_ACHIEVEMENT-${index}`}
-                        type="PROJECTS_KEY_ACHIEVEMENT"
-                      >
+                      <Droppable droppableId={`PROJECTS_KEY_ACHIEVEMENT-${index}`} type="PROJECTS_KEY_ACHIEVEMENT">
                         {(provided) => (
                           <ul
                             className="content mt-1 list-disc ps-3.5"
@@ -433,9 +348,9 @@ const Preview = () => {
                                       ref={provided.innerRef}
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
-                                      className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${snapshot.isDragging &&
-                                        'bg-white outline-2 outline-gray-400 outline-dashed'
-                                        }`}
+                                      className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${
+                                        snapshot.isDragging && 'bg-white outline-2 outline-gray-400 outline-dashed'
+                                      }`}
                                     >
                                       <Highlight
                                         text={achievement.text}
@@ -456,10 +371,7 @@ const Preview = () => {
                       {project.keywords && project.keywords.length > 0 && (
                         <div className="mt-1">
                           <span className="content select-all">
-                            <Highlight
-                              text={project.keywords.join(', ')}
-                              keywords={settings.skillsToHighlight}
-                            />
+                            <Highlight text={project.keywords.join(', ')} keywords={settings.skillsToHighlight} />
                           </span>
                         </div>
                       )}
@@ -518,10 +430,7 @@ const Preview = () => {
               </div>
 
               <Language title="Languages" languages={resumeData.languages} />
-              <Certification
-                title="Certifications"
-                certifications={resumeData.certifications}
-              />
+              <Certification title="Certifications" certifications={resumeData.certifications} />
             </div>
 
             <div className="col-span-5 space-y-2">
@@ -547,12 +456,11 @@ const Preview = () => {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className={`mb-2 cursor-grab active:cursor-grabbing ${index !== resumeData.workExperience.length - 1
-                                ? 'border-b-2 border-dashed border-gray-300 pb-1'
-                                : ''
-                                } ${snapshot.isDragging &&
-                                'bg-white outline-2 outline-gray-400 outline-dashed'
-                                }`}
+                              className={`mb-2 cursor-grab active:cursor-grabbing ${
+                                index !== resumeData.workExperience.length - 1
+                                  ? 'border-b-2 border-dashed border-gray-300 pb-1'
+                                  : ''
+                              } ${snapshot.isDragging && 'bg-white outline-2 outline-gray-400 outline-dashed'}`}
                             >
                               <div className="flex flex-row justify-between space-y-1">
                                 <a
@@ -563,10 +471,7 @@ const Preview = () => {
                                   contentEditable={editable}
                                   suppressContentEditableWarning
                                 >
-                                  <Highlight
-                                    text={item.organization}
-                                    keywords={settings.skillsToHighlight}
-                                  />
+                                  <Highlight text={item.organization} keywords={settings.skillsToHighlight} />
                                 </a>
                                 <DateRange
                                   startYear={item.startYear}
@@ -579,20 +484,10 @@ const Preview = () => {
                                 contentEditable={editable}
                                 suppressContentEditableWarning
                               >
-                                <Highlight
-                                  text={item.position}
-                                  keywords={settings.skillsToHighlight}
-                                />
+                                <Highlight text={item.position} keywords={settings.skillsToHighlight} />
                               </p>
-                              <p
-                                className="content editable"
-                                contentEditable={editable}
-                                suppressContentEditableWarning
-                              >
-                                <Highlight
-                                  text={item.description}
-                                  keywords={settings.skillsToHighlight}
-                                />
+                              <p className="content editable" contentEditable={editable} suppressContentEditableWarning>
+                                <Highlight text={item.description} keywords={settings.skillsToHighlight} />
                               </p>
                               <Droppable
                                 droppableId={`WORK_EXPERIENCE_KEY_ACHIEVEMENT-${index}`}
@@ -605,54 +500,49 @@ const Preview = () => {
                                     ref={provided.innerRef}
                                   >
                                     {Array.isArray(item.keyAchievements) &&
-                                      item.keyAchievements.map(
-                                        (achievement, subIndex) => (
-                                          <Draggable
-                                            key={`${item.organization}-${index}-${subIndex}`}
-                                            draggableId={`WORK_EXPERIENCE_KEY_ACHIEVEMENT-${index}-${subIndex}`}
-                                            index={subIndex}
-                                          >
-                                            {(provided, snapshot) => (
-                                              <li
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${snapshot.isDragging &&
-                                                  'bg-white outline-2 outline-gray-400 outline-dashed'
-                                                  }`}
-                                              >
-                                                <Highlight
-                                                  text={achievement.text}
-                                                  keywords={settings.skillsToHighlight}
-                                                  isHTML={true}
-                                                  className="editable-block"
-                                                  contentEditable={editable}
-                                                  suppressContentEditableWarning
-                                                />
-                                              </li>
-                                            )}
-                                          </Draggable>
-                                        )
-                                      )}
+                                      item.keyAchievements.map((achievement, subIndex) => (
+                                        <Draggable
+                                          key={`${item.organization}-${index}-${subIndex}`}
+                                          draggableId={`WORK_EXPERIENCE_KEY_ACHIEVEMENT-${index}-${subIndex}`}
+                                          index={subIndex}
+                                        >
+                                          {(provided, snapshot) => (
+                                            <li
+                                              ref={provided.innerRef}
+                                              {...provided.draggableProps}
+                                              {...provided.dragHandleProps}
+                                              className={`cursor-grab hover:outline-2 hover:outline-gray-400 hover:outline-dashed active:cursor-grabbing ${
+                                                snapshot.isDragging &&
+                                                'bg-white outline-2 outline-gray-400 outline-dashed'
+                                              }`}
+                                            >
+                                              <Highlight
+                                                text={achievement.text}
+                                                keywords={settings.skillsToHighlight}
+                                                isHTML={true}
+                                                className="editable-block"
+                                                contentEditable={editable}
+                                                suppressContentEditableWarning
+                                              />
+                                            </li>
+                                          )}
+                                        </Draggable>
+                                      ))}
                                     {provided.placeholder}
                                   </ul>
                                 )}
                               </Droppable>
-                              {item.showTechnologies !== false &&
-                                item.technologies &&
-                                item.technologies.length > 0 && (
-                                  <div className="mt-1">
-                                    <span className="content i-bold">
-                                      Tech Stack:{' '}
-                                    </span>
-                                    <span className="content select-all">
-                                      <Highlight
-                                        text={item.technologies.join(', ')}
-                                        keywords={settings.skillsToHighlight}
-                                      />
-                                    </span>
-                                  </div>
-                                )}
+                              {item.showTechnologies !== false && item.technologies && item.technologies.length > 0 && (
+                                <div className="mt-1">
+                                  <span className="content i-bold">Tech Stack: </span>
+                                  <span className="content select-all">
+                                    <Highlight
+                                      text={item.technologies.join(', ')}
+                                      keywords={settings.skillsToHighlight}
+                                    />
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           )}
                         </Draggable>
@@ -666,7 +556,7 @@ const Preview = () => {
           </div>
         </DragDropContext>
       </A4PageWrapper>
-    </div >
+    </div>
   )
 }
 
@@ -682,11 +572,7 @@ const A4PageWrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  return (
-    <div className="w-8.5in" onLoad={alertA4Size}>
-      {children}
-    </div>
-  )
+  return <div className="w-8.5in">{children}</div>
 }
 
 export default Preview

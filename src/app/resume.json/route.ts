@@ -3,6 +3,9 @@ import { convertToJSONResume } from '@/lib/jsonResume'
 
 export const dynamic = 'force-static'
 
+/**
+ * API route that returns the resume data in JSON Resume format.
+ */
 export async function GET() {
   const jsonResume = convertToJSONResume()
 

@@ -6,13 +6,14 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { navItems } from '@/config/navigation'
 import { Logo } from '@/components/Logo'
 
+/**
+ * The site-wide navigation header component with scroll effects and mobile menu.
+ */
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-  const [mobileExpandedMenu, setMobileExpandedMenu] = useState<string | null>(
-    null
-  )
+  const [mobileExpandedMenu, setMobileExpandedMenu] = useState<string | null>(null)
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -77,9 +78,7 @@ export default function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
       className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-[var(--md-sys-color-surface-container)]/80 shadow-lg backdrop-blur-xl'
-          : 'bg-transparent'
+        isScrolled ? 'bg-[var(--md-sys-color-surface-container)]/80 shadow-lg backdrop-blur-xl' : 'bg-transparent'
       }`}
     >
       <nav className="mx-auto max-w-6xl px-6 py-4">
@@ -91,12 +90,14 @@ export default function Header() {
               if (isHomePage) {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
               } else {
-                window.location.href = '/'
+                window.location.assign('/')
               }
             }}
             className="group flex cursor-pointer items-center gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Go to homepage"
+            data-testid="logo-button"
           >
             <div className="h-14 w-24">
               <Logo width={96} height={54} fill="#ffffff" />
@@ -113,9 +114,7 @@ export default function Header() {
                 onMouseLeave={handleMouseLeave}
               >
                 <motion.button
-                  onClick={() =>
-                    item.href ? handleNavigation(item.href) : null
-                  }
+                  onClick={() => (item.href ? handleNavigation(item.href) : null)}
                   className="md3-label-large group relative flex cursor-pointer items-center gap-1 px-5 py-3 text-[var(--md-sys-color-on-surface)] transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -131,10 +130,7 @@ export default function Header() {
                       size={16}
                       className="transition-transform group-hover:text-[var(--md-sys-color-primary)]"
                       style={{
-                        transform:
-                          activeDropdown === item.name
-                            ? 'rotate(180deg)'
-                            : 'rotate(0deg)',
+                        transform: activeDropdown === item.name ? 'rotate(180deg)' : 'rotate(0deg)',
                       }}
                     />
                   )}
@@ -214,10 +210,7 @@ export default function Header() {
                           size={20}
                           className="transition-transform"
                           style={{
-                            transform:
-                              mobileExpandedMenu === item.name
-                                ? 'rotate(180deg)'
-                                : 'rotate(0deg)',
+                            transform: mobileExpandedMenu === item.name ? 'rotate(180deg)' : 'rotate(0deg)',
                           }}
                         />
                       </motion.button>

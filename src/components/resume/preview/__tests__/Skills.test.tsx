@@ -51,12 +51,7 @@ const mockAISettings: AISettings = {
 const mockUpdateSettings = jest.fn()
 const mockValidateAll = jest.fn()
 
-const renderWithContext = (
-  title: string,
-  skills: any[],
-  editable = true,
-  resumeData = mockResumeData
-) => {
+const renderWithContext = (title: string, skills: any[], editable = true, resumeData = mockResumeData) => {
   return render(
     <AISettingsContext.Provider
       value={{
@@ -173,12 +168,7 @@ describe('Skills Component', () => {
         ],
       }
 
-      renderWithContext(
-        'Frameworks',
-        [{ text: 'React' }],
-        true,
-        resumeDataWithMultipleGroups
-      )
+      renderWithContext('Frameworks', [{ text: 'React' }], true, resumeDataWithMultipleGroups)
 
       const titleElement = screen.getByText('Frameworks')
       titleElement.innerText = 'Libraries & Frameworks'
@@ -216,10 +206,7 @@ describe('Skills Component', () => {
     })
 
     it('skill elements have blur handler attached', () => {
-      const { container } = renderWithContext(
-        'Programming Languages',
-        mockSkillGroup.skills
-      )
+      const { container } = renderWithContext('Programming Languages', mockSkillGroup.skills)
 
       const editableSkills = container.querySelectorAll('.editable')
       expect(editableSkills.length).toBeGreaterThan(0)
@@ -252,12 +239,7 @@ describe('Skills Component', () => {
         ],
       }
 
-      renderWithContext(
-        'Frameworks',
-        [{ text: 'React' }, { text: 'Next.js' }],
-        true,
-        resumeDataWithMultipleGroups
-      )
+      renderWithContext('Frameworks', [{ text: 'React' }, { text: 'Next.js' }], true, resumeDataWithMultipleGroups)
 
       // Should show Frameworks group
       expect(screen.getByText('Frameworks')).toBeInTheDocument()
@@ -265,9 +247,7 @@ describe('Skills Component', () => {
       expect(screen.getByText('Next.js')).toBeInTheDocument()
 
       // Should not show Programming Languages group
-      expect(
-        screen.queryByText('Programming Languages')
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText('Programming Languages')).not.toBeInTheDocument()
       expect(screen.queryByText('JavaScript')).not.toBeInTheDocument()
     })
 
@@ -283,12 +263,7 @@ describe('Skills Component', () => {
         ],
       }
 
-      renderWithContext(
-        'Frameworks',
-        [{ text: 'React' }, { text: 'Next.js' }],
-        true,
-        resumeDataWithMultipleGroups
-      )
+      renderWithContext('Frameworks', [{ text: 'React' }, { text: 'Next.js' }], true, resumeDataWithMultipleGroups)
 
       const reactSkill = screen.getByText('React')
       reactSkill.innerText = 'React 19'
@@ -315,10 +290,7 @@ describe('Skills Component', () => {
     })
 
     it('handles skill with special characters', () => {
-      renderWithContext('Frameworks', [
-        { text: 'React.js' },
-        { text: 'Node.js' },
-      ])
+      renderWithContext('Frameworks', [{ text: 'React.js' }, { text: 'Node.js' }])
 
       expect(screen.getByText('React.js')).toBeInTheDocument()
       expect(screen.getByText('Node.js')).toBeInTheDocument()
@@ -328,8 +300,7 @@ describe('Skills Component', () => {
       renderWithContext('Programming Languages', mockSkillGroup.skills)
 
       const container = screen.getByText('Programming Languages').nextSibling
-      const skillElements =
-        screen.getByText('JavaScript').parentElement?.parentElement
+      const skillElements = screen.getByText('JavaScript').parentElement?.parentElement
 
       // Verify all 3 skills are rendered
       expect(screen.getByText('JavaScript')).toBeInTheDocument()

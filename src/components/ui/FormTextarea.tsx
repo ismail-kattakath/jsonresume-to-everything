@@ -106,17 +106,12 @@ export function FormTextarea({
           <div
             className={`pointer-events-none absolute right-3 bottom-[18px] rounded bg-white/5 px-2 py-1 text-xs text-white/50 ${onAIAction ? 'mr-10' : ''}`}
           >
-            {maxLength
-              ? `${value.length}/${maxLength}`
-              : `${value.length} chars`}
+            {maxLength ? `${(value || '').length}/${maxLength}` : `${(value || '').length} chars`}
           </div>
         )}
         {onAIAction && (
           /* DO NOT CHANGE: This positioning (bottom-4, right-8+scrollbar) is the user-confirmed "sweet spot". */
-          <div
-            className="absolute bottom-4 transition-all duration-200"
-            style={{ right: `${8 + scrollbarWidth}px` }}
-          >
+          <div className="absolute bottom-4 transition-all duration-200" style={{ right: `${8 + scrollbarWidth}px` }}>
             <AIActionButton
               isConfigured={isAIConfigured}
               isLoading={!!isAILoading}

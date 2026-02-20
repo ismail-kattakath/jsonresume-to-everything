@@ -6,17 +6,9 @@ import AIActionButton from '@/components/ui/AIActionButton'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import {
-  generateCoverLetterGraph,
-  generateSummaryGraph,
-} from '@/lib/ai/strands/agent'
-import {
-  AIAPIError,
-  sanitizeAIError,
-} from '@/lib/ai/api'
-import {
-  fetchAvailableModels,
-} from '@/lib/ai/models'
+import { generateCoverLetterGraph, generateSummaryGraph } from '@/lib/ai/strands/agent'
+import { AIAPIError, sanitizeAIError } from '@/lib/ai/api'
+import { fetchAvailableModels } from '@/lib/ai/models'
 import { analytics } from '@/lib/analytics'
 import { AILoadingToast } from '@/components/ui/AILoadingToast'
 import { FormTextarea } from '@/components/ui/FormTextarea'
@@ -58,8 +50,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
     summary: {
       label: 'Professional Summary',
       successMessage: 'Professional summary generated successfully!',
-      successDescription:
-        'The AI has crafted your tailored professional summary.',
+      successDescription: 'The AI has crafted your tailored professional summary.',
       errorMessage: 'Failed to generate professional summary',
     },
     coverLetter: {
@@ -87,14 +78,13 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
     if (!isConfigured) {
       console.log(`[DEBUG] NOT CONFIGURED`)
       toast.error('AI not configured', {
-        description:
-          'Please fill in the API settings and job description in the Generative AI Settings section above.',
+        description: 'Please fill in the API settings and job description in the Generative AI Settings section above.',
       })
       return
     }
 
     setIsGenerating(true)
-    let streamedContent = ''
+    const streamedContent = ''
     const startTime = Date.now()
     let toastId: string | number | undefined
 
@@ -115,16 +105,22 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           (chunk) => {
             if (chunk.content) {
               // Filter out internal critique messages from Reviewer agent
-              const isCritique = chunk.content.includes('CRITIQUE:') ||
+              const isCritique =
+                chunk.content.includes('CRITIQUE:') ||
                 chunk.content.includes('❌') ||
                 chunk.content.startsWith('**CRITIQUE:**')
 
               if (!isCritique) {
                 const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
                 if (!toastId) {
-                  toastId = toast(<AILoadingToast message={cleanMessage} />, { duration: Infinity })
+                  toastId = toast(<AILoadingToast message={cleanMessage} />, {
+                    duration: Infinity,
+                  })
                 } else {
-                  toast(<AILoadingToast message={cleanMessage} />, { id: toastId, duration: Infinity })
+                  toast(<AILoadingToast message={cleanMessage} />, {
+                    id: toastId,
+                    duration: Infinity,
+                  })
                 }
               }
             }
@@ -145,9 +141,14 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
             if (chunk.content) {
               const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
               if (!toastId) {
-                toastId = toast(<AILoadingToast message={cleanMessage} />, { duration: Infinity })
+                toastId = toast(<AILoadingToast message={cleanMessage} />, {
+                  duration: Infinity,
+                })
               } else {
-                toast(<AILoadingToast message={cleanMessage} />, { id: toastId, duration: Infinity })
+                toast(<AILoadingToast message={cleanMessage} />, {
+                  id: toastId,
+                  duration: Infinity,
+                })
               }
             }
           }
@@ -157,11 +158,11 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 
       // Strip markdown formatting from the final content
       const cleanContent = content
-        .replace(/\*\*(.+?)\*\*/g, '$1')  // Remove bold **text**
-        .replace(/\*(.+?)\*/g, '$1')      // Remove italic *text*
-        .replace(/_(.+?)_/g, '$1')        // Remove italic _text_
-        .replace(/~~(.+?)~~/g, '$1')      // Remove strikethrough ~~text~~
-        .replace(/`(.+?)`/g, '$1')        // Remove inline code `text`
+        .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold **text**
+        .replace(/\*(.+?)\*/g, '$1') // Remove italic *text*
+        .replace(/_(.+?)_/g, '$1') // Remove italic _text_
+        .replace(/~~(.+?)~~/g, '$1') // Remove strikethrough ~~text~~
+        .replace(/`(.+?)`/g, '$1') // Remove inline code `text`
         .trim()
 
       // Final update with complete content
@@ -169,11 +170,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 
       // Track generation success
       const responseTimeMs = Date.now() - startTime
-      analytics.aiGenerationSuccess(
-        settings.providerType,
-        settings.model,
-        responseTimeMs
-      )
+      analytics.aiGenerationSuccess(settings.providerType, settings.model, responseTimeMs)
 
       toast.success(currentConfig.successMessage, {
         description: currentConfig.successDescription,

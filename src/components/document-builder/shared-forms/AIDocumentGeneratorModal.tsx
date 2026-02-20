@@ -4,14 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import Modal from '@/components/ui/Modal'
 import { Sparkles, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
-import {
-  generateCoverLetterGraph,
-  generateSummaryGraph,
-} from '@/lib/ai/strands/agent'
-import {
-  saveCredentials,
-  loadCredentials,
-} from '@/lib/ai/storage'
+import { generateCoverLetterGraph, generateSummaryGraph } from '@/lib/ai/strands/agent'
+import { saveCredentials, loadCredentials } from '@/lib/ai/storage'
 import { AIAPIError, sanitizeAIError } from '@/lib/ai/api'
 import { getProviderByURL } from '@/lib/ai/providers'
 import AIActionButton from '@/components/ui/AIActionButton'
@@ -28,13 +22,7 @@ interface AIGenerateModalProps {
 const DEFAULT_API_URL = 'https://api.openai.com'
 const DEFAULT_MODEL = 'gpt-4o-mini'
 
-const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
-  isOpen,
-  onClose,
-  onGenerate,
-  resumeData,
-  mode,
-}) => {
+const AIGenerateModal: React.FC<AIGenerateModalProps> = ({ isOpen, onClose, onGenerate, resumeData, mode }) => {
   // Form state
   const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL)
   const [apiKey, setApiKey] = useState('')
@@ -63,8 +51,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
       title: '🤖 AI Professional Summary Generator',
       label: 'Professional Summary',
       successMessage: 'Professional summary generated successfully!',
-      successDescription:
-        'The AI has crafted your tailored professional summary.',
+      successDescription: 'The AI has crafted your tailored professional summary.',
       errorMessage: 'Failed to generate professional summary',
       streamingMessage: 'AI is crafting your professional summary...',
       generateFunction: generateSummaryGraph,
@@ -108,14 +95,12 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
   // Auto-scroll to bottom when streaming content updates
   useEffect(() => {
     if (streamContainerRef.current) {
-      streamContainerRef.current.scrollTop =
-        streamContainerRef.current.scrollHeight
+      streamContainerRef.current.scrollTop = streamContainerRef.current.scrollHeight
     }
   }, [streamedContent])
 
   // Validate form
-  const isFormValid =
-    apiUrl.trim() !== '' && apiKey.trim() !== '' && jobDescription.trim() !== ''
+  const isFormValid = apiUrl.trim() !== '' && apiKey.trim() !== '' && jobDescription.trim() !== ''
 
   // Handle form submission
   const handleGenerate = async () => {
@@ -194,28 +179,17 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={currentConfig.title}
-      maxWidth="lg"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={currentConfig.title} maxWidth="lg">
       <div className="space-y-5">
         {/* Collapsible API Settings */}
         <details className="group" open={!apiKey}>
           <summary className="cursor-pointer list-none">
             <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3 transition-colors hover:bg-white/10">
               <div className="flex items-center gap-2">
-                <div className="text-sm font-medium text-white/80">
-                  🔑 API Configuration
-                </div>
-                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-300">
-                  Required
-                </span>
+                <div className="text-sm font-medium text-white/80">🔑 API Configuration</div>
+                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-300">Required</span>
                 {apiKey && rememberCredentials && (
-                  <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-300">
-                    Saved
-                  </span>
+                  <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-300">Saved</span>
                 )}
               </div>
               <svg
@@ -224,12 +198,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </summary>
@@ -237,14 +206,9 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
           <div className="mt-4 space-y-4 rounded-lg border border-white/10 bg-white/5 p-4">
             {/* API URL */}
             <div className="space-y-2">
-              <label
-                htmlFor="api-url"
-                className="flex items-center gap-2 text-sm font-medium text-white"
-              >
+              <label htmlFor="api-url" className="flex items-center gap-2 text-sm font-medium text-white">
                 API URL
-                <span className="text-xs font-normal text-white/50">
-                  (OpenAI or compatible)
-                </span>
+                <span className="text-xs font-normal text-white/50">(OpenAI or compatible)</span>
               </label>
               <input
                 id="api-url"
@@ -259,10 +223,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
 
             {/* API Key */}
             <div className="space-y-2">
-              <label
-                htmlFor="api-key"
-                className="flex items-center gap-2 text-sm font-medium text-white"
-              >
+              <label htmlFor="api-key" className="flex items-center gap-2 text-sm font-medium text-white">
                 API Key
                 <a
                   href="https://platform.openai.com/api-keys"
@@ -304,14 +265,10 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
                 className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-2 focus:ring-blue-400/20"
                 disabled={isGenerating}
               />
-              <label
-                htmlFor="remember-credentials"
-                className="cursor-pointer text-sm leading-snug text-white/80"
-              >
+              <label htmlFor="remember-credentials" className="cursor-pointer text-sm leading-snug text-white/80">
                 Remember my API credentials
                 <span className="mt-0.5 block text-xs text-white/50">
-                  Stored securely in your browser. Job description always saved
-                  separately.
+                  Stored securely in your browser. Job description always saved separately.
                 </span>
               </label>
             </div>
@@ -323,12 +280,8 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
           <summary className="cursor-pointer list-none">
             <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3 transition-colors hover:bg-white/10">
               <div className="flex items-center gap-2">
-                <div className="text-sm font-medium text-white/80">
-                  📄 Job Description
-                </div>
-                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-300">
-                  Required
-                </span>
+                <div className="text-sm font-medium text-white/80">📄 Job Description</div>
+                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-300">Required</span>
                 {jobDescription && (
                   <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-300">
                     {jobDescription.length} characters
@@ -341,21 +294,13 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </summary>
 
           <div className="mt-4 space-y-2 rounded-lg border border-white/10 bg-white/5 p-4">
-            <label
-              htmlFor="job-description"
-              className="block text-sm font-medium text-white"
-            >
+            <label htmlFor="job-description" className="block text-sm font-medium text-white">
               Job Description
             </label>
             <textarea
@@ -396,9 +341,7 @@ const AIGenerateModal: React.FC<AIGenerateModalProps> = ({
             >
               {streamedContent ? (
                 <>
-                  <p className="text-[10px] leading-relaxed whitespace-pre-wrap text-white/80">
-                    {streamedContent}
-                  </p>
+                  <p className="text-[10px] leading-relaxed whitespace-pre-wrap text-white/80">{streamedContent}</p>
                   <div className="mt-2 flex items-center gap-1.5 text-[10px] text-blue-400">
                     <Loader2 className="h-2.5 w-2.5 animate-spin" />
                     <span>Generating...</span>

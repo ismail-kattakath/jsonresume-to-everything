@@ -54,8 +54,7 @@ describe('generateSiteMetadata', () => {
       })
 
       // Restore
-      jest.mocked(resumeData).position =
-        'Senior Software Engineer | Technical Lead'
+      jest.mocked(resumeData).position = 'Senior Software Engineer | Technical Lead'
     })
 
     it('should fallback to "Portfolio" if both name and position are missing', () => {
@@ -68,8 +67,7 @@ describe('generateSiteMetadata', () => {
 
       // Restore
       jest.mocked(resumeData).name = 'John Doe'
-      jest.mocked(resumeData).position =
-        'Senior Software Engineer | Technical Lead'
+      jest.mocked(resumeData).position = 'Senior Software Engineer | Technical Lead'
     })
   })
 
@@ -77,14 +75,11 @@ describe('generateSiteMetadata', () => {
     it('should use first sentence from summary', () => {
       const metadata = generateSiteMetadata()
 
-      expect(metadata.description).toBe(
-        'Experienced software engineer with 10 years in full-stack development'
-      )
+      expect(metadata.description).toBe('Experienced software engineer with 10 years in full-stack development')
     })
 
     it('should add second sentence if first is too short', () => {
-      jest.mocked(resumeData).summary =
-        'Short. This is a longer second sentence to meet the minimum requirement.'
+      jest.mocked(resumeData).summary = 'Short. This is a longer second sentence to meet the minimum requirement.'
 
       const metadata = generateSiteMetadata()
 
@@ -135,14 +130,11 @@ describe('generateSiteMetadata', () => {
     })
 
     it('should handle summary with no sentence terminators', () => {
-      jest.mocked(resumeData).summary =
-        'A summary without any proper sentence endings'
+      jest.mocked(resumeData).summary = 'A summary without any proper sentence endings'
 
       const metadata = generateSiteMetadata()
 
-      expect(metadata.description).toBe(
-        'A summary without any proper sentence endings'
-      )
+      expect(metadata.description).toBe('A summary without any proper sentence endings')
 
       // Restore
       jest.mocked(resumeData).summary =
@@ -179,8 +171,7 @@ describe('generateSiteMetadata', () => {
       expect(metadata.keywords).toContain('TypeScript')
 
       // Restore
-      jest.mocked(resumeData).position =
-        'Senior Software Engineer | Technical Lead'
+      jest.mocked(resumeData).position = 'Senior Software Engineer | Technical Lead'
     })
 
     it('should split position by pipe and comma', () => {
@@ -194,8 +185,7 @@ describe('generateSiteMetadata', () => {
       expect(keywords).toContain('Tech Lead')
 
       // Restore
-      jest.mocked(resumeData).position =
-        'Senior Software Engineer | Technical Lead'
+      jest.mocked(resumeData).position = 'Senior Software Engineer | Technical Lead'
     })
   })
 
@@ -207,9 +197,7 @@ describe('generateSiteMetadata', () => {
     })
 
     it('should handle missing LinkedIn profile', () => {
-      jest.mocked(resumeData).socialMedia = [
-        { socialMedia: 'GitHub', link: 'github.com/johndoe' },
-      ]
+      jest.mocked(resumeData).socialMedia = [{ socialMedia: 'GitHub', link: 'github.com/johndoe' }]
 
       const metadata = generateSiteMetadata()
 
@@ -243,8 +231,7 @@ describe('generateSiteMetadata', () => {
 
       expect(metadata.openGraph).toEqual({
         title: 'John Doe - Senior Software Engineer | Technical Lead',
-        description:
-          'Experienced software engineer with 10 years in full-stack development',
+        description: 'Experienced software engineer with 10 years in full-stack development',
         url: SITE_URL,
         siteName: 'John Doe',
         type: 'website',
@@ -264,10 +251,7 @@ describe('generateSiteMetadata', () => {
       const metadata = generateSiteMetadata()
 
       expect(metadata.twitter).toHaveProperty('card', 'summary_large_image')
-      expect(metadata.twitter).toHaveProperty(
-        'title',
-        'John Doe - Senior Software Engineer | Technical Lead'
-      )
+      expect(metadata.twitter).toHaveProperty('title', 'John Doe - Senior Software Engineer | Technical Lead')
       expect(metadata.twitter).toHaveProperty(
         'description',
         'Experienced software engineer with 10 years in full-stack development'

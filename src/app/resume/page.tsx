@@ -11,6 +11,9 @@ import { generatePDFFilename } from '@/lib/filenameGenerator'
 import '@/styles/document-builder.css'
 import '@/styles/resume-preview.css'
 
+/**
+ * Page component for previewing and downloading the resume as PDF.
+ */
 export default function ResumeDownloadPage() {
   const [resumeData, setResumeData] = useState(defaultResumeData)
 
@@ -31,11 +34,7 @@ export default function ResumeDownloadPage() {
 
     // Set document title for PDF filename
     if (loadedData.name && loadedData.position) {
-      document.title = generatePDFFilename(
-        loadedData.name,
-        loadedData.position,
-        'Resume'
-      )
+      document.title = generatePDFFilename(loadedData.name, loadedData.position, 'Resume')
     }
 
     // Auto-trigger print dialog after a short delay
@@ -51,8 +50,8 @@ export default function ResumeDownloadPage() {
       value={{
         resumeData,
         setResumeData,
-        handleProfilePicture: () => { },
-        handleChange: () => { },
+        handleProfilePicture: () => {},
+        handleChange: () => {},
         editable: false,
       }}
     >
@@ -60,11 +59,7 @@ export default function ResumeDownloadPage() {
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 print:bg-white">
           {/* Floating Print Button - Hidden on print */}
           <div className="exclude-print fixed right-8 bottom-8 z-50">
-            <PrintButton
-              name={resumeData.name}
-              position={resumeData.position}
-              documentType="Resume"
-            />
+            <PrintButton name={resumeData.name} position={resumeData.position} documentType="Resume" />
           </div>
 
           {/* Resume Content */}

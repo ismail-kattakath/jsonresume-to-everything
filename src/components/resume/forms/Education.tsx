@@ -5,11 +5,7 @@ import { AccordionCard, AccordionHeader } from '@/components/ui/AccordionCard'
 import { useArrayForm } from '@/hooks/useArrayForm'
 import { useAccordion } from '@/hooks/useAccordion'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
 
 /**
@@ -31,8 +27,7 @@ const Education = () => {
     { urlFields: ['url'] }
   )
 
-  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } =
-    useAccordion()
+  const { isExpanded, toggleExpanded, expandNew, updateAfterReorder } = useAccordion()
 
   const handleAdd = () => {
     add()
@@ -60,17 +55,9 @@ const Education = () => {
       <DnDContext onDragEnd={onDragEnd}>
         <DnDDroppable droppableId="education">
           {(provided) => (
-            <div
-              className="space-y-3"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div className="space-y-3" {...provided.droppableProps} ref={provided.innerRef}>
               {data.map((education, index) => (
-                <DnDDraggable
-                  key={`EDUCATION-${index}`}
-                  draggableId={`EDUCATION-${index}`}
-                  index={index}
-                >
+                <DnDDraggable key={`EDUCATION-${index}`} draggableId={`EDUCATION-${index}`} index={index}>
                   {(dragProvided, snapshot) => (
                     <AccordionCard
                       isDragging={snapshot.isDragging}

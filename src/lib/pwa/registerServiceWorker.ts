@@ -3,6 +3,9 @@
  * Enables offline functionality and app installation
  */
 
+/**
+ * Registers the service worker for PWA functionality.
+ */
 export function registerServiceWorker(): void {
   if (typeof window === 'undefined') {
     return // Skip on server-side
@@ -20,10 +23,7 @@ export function registerServiceWorker(): void {
             const newWorker = registration.installing
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
-                if (
-                  newWorker.state === 'installed' &&
-                  navigator.serviceWorker.controller
-                ) {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                   console.log('🔄 New version available - reload to update')
                 }
               })

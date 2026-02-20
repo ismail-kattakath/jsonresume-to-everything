@@ -5,12 +5,7 @@ import type { ResumeData } from '@/types'
 
 interface UseArrayFormOptions<T> {
   urlFields?: (keyof T)[]
-  transformValue?: (
-    fieldName: keyof T,
-    value: string,
-    item: T,
-    index: number
-  ) => string
+  transformValue?: (fieldName: keyof T, value: string, item: T, index: number) => string
 }
 
 /**
@@ -36,15 +31,13 @@ export function useArrayForm<T extends Record<string, any>>(
 ) {
   const context = useContext(ResumeContext)
   const { resumeData, setResumeData } = context
+  // eslint-disable-next-line security/detect-object-injection
   const data = (resumeData[dataKey] as unknown as T[]) || []
 
   /**
    * Handle input change for array items
    */
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
     const newData = [...data]
     const { name, value } = e.target
 
@@ -57,15 +50,11 @@ export function useArrayForm<T extends Record<string, any>>(
 
     // Apply custom transformation if provided
     if (options.transformValue) {
-      processedValue = options.transformValue(
-        name as keyof T,
-        processedValue,
-        newData[index]!,
-        index
-      )
+      processedValue = options.transformValue(name as keyof T, processedValue, newData[index]!, index)
     }
 
     newData[index] = { ...newData[index], [name]: processedValue } as T
+
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
@@ -84,19 +73,17 @@ export function useArrayForm<T extends Record<string, any>>(
    */
   const remove = (index: number) => {
     const newData = data.filter((_, i) => i !== index)
+
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 
   /**
    * Update specific field in an item (useful for complex updates)
    */
-  const updateField = <K extends keyof T>(
-    index: number,
-    fieldName: K,
-    value: T[K]
-  ) => {
+  const updateField = <K extends keyof T>(index: number, fieldName: K, value: T[K]) => {
     const newData = [...data]
     newData[index] = { ...newData[index], [fieldName]: value } as T
+
     setResumeData({ ...resumeData, [dataKey]: newData })
   }
 

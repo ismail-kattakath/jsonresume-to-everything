@@ -1,16 +1,10 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import {
-  Loader2,
-} from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useAISettings } from '@/lib/contexts/AISettingsContext'
 import { fetchAvailableModels } from '@/lib/ai/models'
-import {
-  PROVIDER_PRESETS,
-  getProviderByURL,
-  CUSTOM_PROVIDER,
-} from '@/lib/ai/providers'
+import { PROVIDER_PRESETS, getProviderByURL, CUSTOM_PROVIDER } from '@/lib/ai/providers'
 
 // Sub-components
 import ConnectionStatusIndicator from './ai-settings/ConnectionStatusIndicator'
@@ -19,12 +13,7 @@ import APIKeyInput from './ai-settings/APIKeyInput'
 import ModelSelector from './ai-settings/ModelSelector'
 
 const AISettings = () => {
-  const {
-    settings,
-    updateSettings,
-    isConfigured,
-    connectionStatus,
-  } = useAISettings()
+  const { settings, updateSettings, isConfigured, connectionStatus } = useAISettings()
 
   const [availableModels, setAvailableModels] = useState<string[]>([])
   const [loadingModels, setLoadingModels] = useState(false)
@@ -47,10 +36,12 @@ const AISettings = () => {
   }, [settings.apiUrl])
 
   // Get current provider for common models fallback
-  const currentProvider = useMemo(() =>
-    PROVIDER_PRESETS.find((p) => p.name === selectedProvider) ||
-    (selectedProvider === CUSTOM_PROVIDER.name ? CUSTOM_PROVIDER : null)
-    , [selectedProvider])
+  const currentProvider = useMemo(
+    () =>
+      PROVIDER_PRESETS.find((p) => p.name === selectedProvider) ||
+      (selectedProvider === CUSTOM_PROVIDER.name ? CUSTOM_PROVIDER : null),
+    [selectedProvider]
+  )
 
   const requiresKey = currentProvider ? currentProvider.requiresAuth : true
 
@@ -138,10 +129,13 @@ const AISettings = () => {
     updateSettings({ apiUrl: url })
   }
 
-  const providerOptions = useMemo(() => [
-    ...PROVIDER_PRESETS.map((p) => ({ value: p.name, label: p.name })),
-    { value: CUSTOM_PROVIDER.name, label: CUSTOM_PROVIDER.name },
-  ], [])
+  const providerOptions = useMemo(
+    () => [
+      ...PROVIDER_PRESETS.map((p) => ({ value: p.name, label: p.name })),
+      { value: CUSTOM_PROVIDER.name, label: CUSTOM_PROVIDER.name },
+    ],
+    []
+  )
 
   const modelOptions = useMemo(() => {
     const hasApiModels = availableModels.length > 0
@@ -149,19 +143,22 @@ const AISettings = () => {
     const shouldUseFallback = hasCommonModels && (!hasApiModels || !currentProvider?.supportsModels)
 
     if (hasApiModels) {
-      return availableModels.map(m => ({ value: m, label: m }))
+      return availableModels.map((m) => ({ value: m, label: m }))
     }
     if (shouldUseFallback) {
-      return currentProvider!.commonModels!.map(m => ({ value: m, label: m }))
+      return currentProvider!.commonModels!.map((m) => ({ value: m, label: m }))
     }
     return []
   }, [availableModels, currentProvider])
 
   const connectionStatusMsg = useMemo(() => {
     switch (connectionStatus) {
-      case 'valid': return { text: '✓ Connected', color: 'text-green-400' }
-      case 'invalid': return { text: '✗ Invalid Credentials', color: 'text-red-400' }
-      default: return { text: '○ Not Configured', color: 'text-white/20' }
+      case 'valid':
+        return { text: '✓ Connected', color: 'text-green-400' }
+      case 'invalid':
+        return { text: '✗ Invalid Credentials', color: 'text-red-400' }
+      default:
+        return { text: '○ Not Configured', color: 'text-white/20' }
     }
   }, [connectionStatus])
 
@@ -217,6 +214,5 @@ const AISettings = () => {
     </div>
   )
 }
-
 
 export default AISettings

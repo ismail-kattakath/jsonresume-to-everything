@@ -11,6 +11,7 @@ import type {
   Achievement,
   Certification,
   JSONResume,
+  JSONResumeBasics,
   JSONResumeProfile,
   JSONResumeWork,
   JSONResumeEducation,
@@ -47,9 +48,7 @@ export function convertToJSONResume(customData?: ResumeData) {
     startDate: job.startYear,
     endDate: job.endYear === 'Present' ? '' : job.endYear,
     summary: job.description,
-    highlights: job.keyAchievements.map(
-      (achievement: Achievement) => achievement.text
-    ),
+    highlights: job.keyAchievements.map((achievement: Achievement) => achievement.text),
     keywords: job.technologies || [],
   }))
 
@@ -86,16 +85,8 @@ export function convertToJSONResume(customData?: ResumeData) {
     region: addressParts[2]?.match(/[A-Z]{2}/)?.[0] || 'ON',
   }
 
-  // Keep Website in profiles array to preserve ordering
-  // The JSON Resume standard has basics.url but no ordering concept
-  // By keeping Website as a profile, we preserve drag-and-drop order
-  const websiteProfile = profiles.find(
-    (p: { network: string; username: string; url: string }) =>
-      p.network === 'Website'
-  )
-
   // Build basics object without url field (kept in profiles for order preservation)
-  const basics: any = {
+  const basics: JSONResumeBasics = {
     name: data.name,
     label: data.position,
     image: data.profilePicture || '',
@@ -107,20 +98,18 @@ export function convertToJSONResume(customData?: ResumeData) {
   }
 
   // Process certifications - add https:// to URLs and omit empty URLs
-  const certificates = (data.certifications || []).map(
-    (cert: Certification) => {
-      const certObj: any = {
-        name: cert.name,
-        date: cert.date,
-        issuer: cert.issuer,
-      }
-      // Only include url if it's not empty
-      if (cert.url && cert.url.trim()) {
-        certObj.url = ensureProtocol(cert.url)
-      }
-      return certObj
+  const certificates = (data.certifications || []).map((cert: Certification) => {
+    const certObj: JSONResumeCertificate = {
+      name: cert.name,
+      date: cert.date,
+      issuer: cert.issuer,
     }
-  )
+    // Only include url if it's not empty
+    if (cert.url && cert.url.trim()) {
+      certObj.url = ensureProtocol(cert.url)
+    }
+    return certObj
+  })
 
   // Convert projects
   const projects = (data.projects || []).map((project: Project) => ({
@@ -134,8 +123,7 @@ export function convertToJSONResume(customData?: ResumeData) {
   }))
 
   const jsonResume = {
-    $schema:
-      'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
+    $schema: 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
     basics,
     work,
     volunteer: [],
@@ -157,9 +145,7 @@ export function convertToJSONResume(customData?: ResumeData) {
  * Converts JSON Resume format back to our internal resumeData format
  * Returns null if conversion fails
  */
-export function convertFromJSONResume(
-  jsonResume: JSONResume
-): ResumeData | null {
+export function convertFromJSONResume(jsonResume: JSONResume): ResumeData | null {
   try {
     // Validate first
     const validation = validateJSONResume(jsonResume)
@@ -186,58 +172,49 @@ export function convertFromJSONResume(
     }
 
     // Convert work experience back
-    const workExperience = (jsonResume.work || []).map(
-      (job: JSONResumeWork) => ({
-        organization: job.name || '',
-        url: job.url?.replace(/^https?:\/\//, '') || '',
-        position: job.position || '',
-        description: job.summary || '',
-        keyAchievements: (job.highlights || []).map((highlight: string) => ({
-          text: highlight,
-        })),
-        startYear: job.startDate || '',
-        endYear: job.endDate || 'Present',
-        technologies: job.keywords || [],
-      })
-    )
+    const workExperience = (jsonResume.work || []).map((job: JSONResumeWork) => ({
+      organization: job.name || '',
+      url: job.url?.replace(/^https?:\/\//, '') || '',
+      position: job.position || '',
+      description: job.summary || '',
+      keyAchievements: (job.highlights || []).map((highlight: string) => ({
+        text: highlight,
+      })),
+      startYear: job.startDate || '',
+      endYear: job.endDate || 'Present',
+      technologies: job.keywords || [],
+    }))
 
     // Convert education back
-    const education = (jsonResume.education || []).map(
-      (edu: JSONResumeEducation) => ({
-        school: edu.institution || '',
-        url: edu.url?.replace(/^https?:\/\//, '') || '',
-        studyType: edu.studyType || '',
-        area: edu.area || '',
-        startYear: edu.startDate || '',
-        endYear: edu.endDate || '',
-      })
-    )
+    const education = (jsonResume.education || []).map((edu: JSONResumeEducation) => ({
+      school: edu.institution || '',
+      url: edu.url?.replace(/^https?:\/\//, '') || '',
+      studyType: edu.studyType || '',
+      area: edu.area || '',
+      startYear: edu.startDate || '',
+      endYear: edu.endDate || '',
+    }))
 
     // Convert skills back - merge all skill keywords into categories
-    const skills = (jsonResume.skills || []).map(
-      (skillGroup: JSONResumeSkill) => ({
-        title: skillGroup.name || 'Skills',
-        skills: (skillGroup.keywords || []).map((keyword: string) => ({
-          text: keyword,
-        })),
-      })
-    )
+    const skills = (jsonResume.skills || []).map((skillGroup: JSONResumeSkill) => ({
+      title: skillGroup.name || 'Skills',
+      skills: (skillGroup.keywords || []).map((keyword: string) => ({
+        text: keyword,
+      })),
+    }))
 
     // Convert languages back
-    const languages = (jsonResume.languages || []).map(
-      (lang: JSONResumeLanguage | string) =>
-        typeof lang === 'string' ? lang : lang.language || ''
+    const languages = (jsonResume.languages || []).map((lang: JSONResumeLanguage | string) =>
+      typeof lang === 'string' ? lang : lang.language || ''
     )
 
     // Convert certifications back
-    const certifications: Certification[] = (jsonResume.certificates || []).map(
-      (cert: JSONResumeCertificate) => ({
-        name: cert.name || '',
-        date: cert.date || '',
-        issuer: cert.issuer || '',
-        url: cert.url || '',
-      })
-    )
+    const certifications: Certification[] = (jsonResume.certificates || []).map((cert: JSONResumeCertificate) => ({
+      name: cert.name || '',
+      date: cert.date || '',
+      issuer: cert.issuer || '',
+      url: cert.url || '',
+    }))
 
     // Convert projects back
     const projects = (jsonResume.projects || []).map((project: JSONResumeProject) => ({
@@ -252,11 +229,7 @@ export function convertFromJSONResume(
 
     // Reconstruct location
     const location = basics.location || {}
-    const address = [
-      location.address,
-      location.city,
-      [location.region, location.postalCode].filter(Boolean).join(' '),
-    ]
+    const address = [location.address, location.city, [location.region, location.postalCode].filter(Boolean).join(' ')]
       .filter(Boolean)
       .join(', ')
 

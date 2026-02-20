@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { ResumeContext } from '@/lib/contexts/DocumentContext'
-import type { Achievement } from '@/types'
+// import type { Achievement } from '@/types'
 
 /**
  * Specialized hook for managing key achievements in projects
@@ -9,6 +9,7 @@ import type { Achievement } from '@/types'
 export function useProjectKeyAchievementsForm(projectIndex: number) {
   const { resumeData, setResumeData } = useContext(ResumeContext)
 
+  // eslint-disable-next-line security/detect-object-injection
   const project = resumeData.projects?.[projectIndex]
 
   if (!project) {
@@ -30,9 +31,7 @@ export function useProjectKeyAchievementsForm(projectIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
-        i === projectIndex
-          ? { ...proj, keyAchievements: newAchievements }
-          : proj
+        i === projectIndex ? { ...proj, keyAchievements: newAchievements } : proj
       ),
     }))
   }
@@ -47,9 +46,7 @@ export function useProjectKeyAchievementsForm(projectIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
-        i === projectIndex
-          ? { ...proj, keyAchievements: newAchievements }
-          : proj
+        i === projectIndex ? { ...proj, keyAchievements: newAchievements } : proj
       ),
     }))
   }
@@ -64,9 +61,7 @@ export function useProjectKeyAchievementsForm(projectIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
-        i === projectIndex
-          ? { ...proj, keyAchievements: newAchievements }
-          : proj
+        i === projectIndex ? { ...proj, keyAchievements: newAchievements } : proj
       ),
     }))
   }
@@ -85,9 +80,7 @@ export function useProjectKeyAchievementsForm(projectIndex: number) {
     setResumeData((prevData) => ({
       ...prevData,
       projects: prevData.projects?.map((proj, i) =>
-        i === projectIndex
-          ? { ...proj, keyAchievements: newAchievements }
-          : proj
+        i === projectIndex ? { ...proj, keyAchievements: newAchievements } : proj
       ),
     }))
   }

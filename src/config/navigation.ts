@@ -2,6 +2,9 @@
  * Centralized navigation menu configuration
  */
 
+/**
+ * Represents a navigation menu item with an optional nested submenu.
+ */
 export interface NavItem {
   name: string
   href?: string

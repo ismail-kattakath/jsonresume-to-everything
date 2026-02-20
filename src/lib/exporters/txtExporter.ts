@@ -55,12 +55,8 @@ export function convertResumeToText(data: ResumeData): string {
     lines.push('')
     data.workExperience.forEach((job, index) => {
       if (index > 0) lines.push('')
-      lines.push(
-        `### ${job.position} @ [${job.organization}](${job.url ? ensureProtocol(job.url) : '#'})`
-      )
-      lines.push(
-        `${job.startYear} - ${job.endYear === 'Present' ? 'Present' : job.endYear}`
-      )
+      lines.push(`### ${job.position} @ [${job.organization}](${job.url ? ensureProtocol(job.url) : '#'})`)
+      lines.push(`${job.startYear} - ${job.endYear === 'Present' ? 'Present' : job.endYear}`)
       if (job.description) {
         lines.push(job.description)
       }
@@ -69,11 +65,7 @@ export function convertResumeToText(data: ResumeData): string {
           lines.push(`- ${achievement.text}`)
         })
       }
-      if (
-        job.technologies &&
-        job.technologies.length > 0 &&
-        job.showTechnologies !== false
-      ) {
+      if (job.technologies && job.technologies.length > 0 && job.showTechnologies !== false) {
         lines.push(`> Tech Stack: ${job.technologies.join(', ')}`)
       }
     })

@@ -87,11 +87,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ResumeBuilderLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+/**
+ * Layout component for the AI Resume Builder interface.
+ */
+export default function ResumeBuilderLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <StructuredData data={resumeBuilderStructuredData} />

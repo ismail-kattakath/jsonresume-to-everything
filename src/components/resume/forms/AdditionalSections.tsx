@@ -3,18 +3,8 @@ import { AccordionCard } from '@/components/ui/AccordionCard'
 import { useAccordion } from '@/hooks/useAccordion'
 import Language from '@/components/resume/forms/Language'
 import Certification from '@/components/resume/forms/Certification'
-import {
-  Languages,
-  Award,
-  GripVertical,
-  ChevronUp,
-  ChevronDown,
-} from 'lucide-react'
-import {
-  DnDContext,
-  DnDDroppable,
-  DnDDraggable,
-} from '@/components/ui/DragAndDrop'
+import { Languages, Award, GripVertical, ChevronUp, ChevronDown } from 'lucide-react'
+import { DnDContext, DnDDroppable, DnDDraggable } from '@/components/ui/DragAndDrop'
 import type { DropResult } from '@hello-pangea/dnd'
 
 /**
@@ -72,17 +62,9 @@ const AdditionalSections = () => {
     <DnDContext onDragEnd={handleDragEnd}>
       <DnDDroppable droppableId="additional-sections">
         {(provided) => (
-          <div
-            className="space-y-3"
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-          >
+          <div className="space-y-3" {...provided.droppableProps} ref={provided.innerRef}>
             {sections.map((section, index) => (
-              <DnDDraggable
-                key={section.id}
-                draggableId={`additional-${section.id}`}
-                index={index}
-              >
+              <DnDDraggable key={section.id} draggableId={`additional-${section.id}`} index={index}>
                 {(dragProvided, snapshot) => (
                   <AccordionCard
                     isDragging={snapshot.isDragging}
@@ -116,11 +98,7 @@ const AdditionalSections = () => {
                           className="rounded p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white/60"
                           title={isExpanded(index) ? 'Collapse' : 'Expand'}
                         >
-                          {isExpanded(index) ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
+                          {isExpanded(index) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                         </button>
                       </div>
                     }

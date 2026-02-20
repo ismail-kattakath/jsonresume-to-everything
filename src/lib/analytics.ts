@@ -10,29 +10,20 @@
 // Type definitions for gtag
 declare global {
   interface Window {
-    gtag?: (
-      command: 'config' | 'event' | 'set',
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void
+    gtag?: (command: 'config' | 'event' | 'set', targetId: string, config?: Record<string, unknown>) => void
   }
 }
 
 /**
  * Google Analytics Measurement ID from environment variables
  */
-export const GA_MEASUREMENT_ID =
-  process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID'] || ''
+export const GA_MEASUREMENT_ID = process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID'] || ''
 
 /**
  * Check if Google Analytics is enabled and available
  */
 export const isAnalyticsEnabled = (): boolean => {
-  return !!(
-    GA_MEASUREMENT_ID &&
-    typeof window !== 'undefined' &&
-    typeof window.gtag === 'function'
-  )
+  return !!(GA_MEASUREMENT_ID && typeof window !== 'undefined' && typeof window.gtag === 'function')
 }
 
 /**
@@ -67,10 +58,7 @@ export const pageview = (url: string): void => {
  * })
  * ```
  */
-export const event = (
-  action: string,
-  params?: Record<string, unknown>
-): void => {
+export const event = (action: string, params?: Record<string, unknown>): void => {
   if (!isAnalyticsEnabled()) return
 
   window.gtag?.('event', action, params)
@@ -116,11 +104,7 @@ export const analytics = {
     })
   },
 
-  aiGenerationSuccess: (
-    provider: string,
-    model: string,
-    responseTimeMs: number
-  ) => {
+  aiGenerationSuccess: (provider: string, model: string, responseTimeMs: number) => {
     event('ai_generation_success', {
       provider,
       model,

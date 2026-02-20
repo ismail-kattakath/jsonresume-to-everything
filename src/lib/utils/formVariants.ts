@@ -3,15 +3,10 @@
  * Centralized to maintain consistency across FormInput and FormTextarea components
  */
 
-export type FormVariant =
-  | 'teal'
-  | 'indigo'
-  | 'pink'
-  | 'purple'
-  | 'emerald'
-  | 'violet'
-  | 'blue'
-  | 'amber'
+/**
+ * Union type for supported color themes in form interactive elements.
+ */
+export type FormVariant = 'teal' | 'indigo' | 'pink' | 'purple' | 'emerald' | 'violet' | 'blue' | 'amber'
 
 /**
  * Tailwind classes for form variants

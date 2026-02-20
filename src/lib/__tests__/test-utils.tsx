@@ -1,22 +1,14 @@
 import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
-import {
-  DocumentContext,
-  DocumentContextType,
-} from '@/lib/contexts/DocumentContext'
-import {
-  AISettingsContext,
-  AISettingsContextType,
-} from '@/lib/contexts/AISettingsContext'
+import { DocumentContext, DocumentContextType } from '@/lib/contexts/DocumentContext'
+import { AISettingsContext, AISettingsContextType } from '@/lib/contexts/AISettingsContext'
 import resumeData from '@/lib/resumeAdapter'
 import type { ResumeData } from '@/types'
 
 /**
  * Creates a mock DocumentContext value for testing
  */
-export const createMockDocumentContext = (
-  overrides?: Partial<DocumentContextType>
-): DocumentContextType => {
+export const createMockDocumentContext = (overrides?: Partial<DocumentContextType>): DocumentContextType => {
   return {
     resumeData: resumeData,
     setResumeData: jest.fn(),
@@ -30,9 +22,7 @@ export const createMockDocumentContext = (
 /**
  * Creates mock resume data for testing
  */
-export const createMockResumeData = (
-  overrides?: Partial<ResumeData>
-): ResumeData => {
+export const createMockResumeData = (overrides?: Partial<ResumeData>): ResumeData => {
   return {
     name: 'Test User',
     position: 'Test Position',
@@ -56,9 +46,7 @@ export const createMockResumeData = (
 /**
  * Creates a mock AISettingsContext value for testing
  */
-export const createMockAISettingsContext = (
-  overrides?: Partial<AISettingsContextType>
-): AISettingsContextType => {
+export const createMockAISettingsContext = (overrides?: Partial<AISettingsContextType>): AISettingsContextType => {
   return {
     settings: {
       apiUrl: 'https://api.openai.com',
@@ -101,10 +89,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 /**
  * Custom render function that wraps components with DocumentContext and AISettingsContext
  */
-export const renderWithContext = (
-  ui: ReactElement,
-  options?: CustomRenderOptions
-) => {
+export const renderWithContext = (ui: ReactElement, options?: CustomRenderOptions) => {
   const {
     contextValue,
     aiSettingsValue,
@@ -132,10 +117,7 @@ export const renderWithContext = (
   if (aiSettings) {
     aiSettingsOverrides.settings = aiSettings
     aiSettingsOverrides.isConfigured =
-      !!aiSettings.apiUrl &&
-      !!aiSettings.apiKey &&
-      !!aiSettings.model &&
-      !!aiSettings.jobDescription
+      !!aiSettings.apiUrl && !!aiSettings.apiKey && !!aiSettings.model && !!aiSettings.jobDescription
   }
 
   const mockContextValue = createMockDocumentContext(contextOverrides)
@@ -143,9 +125,7 @@ export const renderWithContext = (
 
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <AISettingsContext.Provider value={mockAISettingsValue}>
-      <DocumentContext.Provider value={mockContextValue}>
-        {children}
-      </DocumentContext.Provider>
+      <DocumentContext.Provider value={mockContextValue}>{children}</DocumentContext.Provider>
     </AISettingsContext.Provider>
   )
 
@@ -165,9 +145,7 @@ export const renderWithProviders = renderWithContext
  * Helper to get form elements by their floating labels
  */
 export const getInputByLabel = (container: HTMLElement, labelText: string) => {
-  const label = Array.from(container.querySelectorAll('.floating-label')).find(
-    (el) => el.textContent === labelText
-  )
+  const label = Array.from(container.querySelectorAll('.floating-label')).find((el) => el.textContent === labelText)
 
   if (!label) {
     throw new Error(`Could not find input with label: ${labelText}`)
@@ -186,11 +164,7 @@ export const getInputByLabel = (container: HTMLElement, labelText: string) => {
 /**
  * Helper to simulate user typing in an input
  */
-export const typeInInput = (
-  input: Element,
-  value: string,
-  eventName = 'change'
-) => {
+export const typeInInput = (input: Element, value: string, eventName = 'change') => {
   const event = new Event(eventName, { bubbles: true })
   Object.defineProperty(event, 'target', {
     writable: false,

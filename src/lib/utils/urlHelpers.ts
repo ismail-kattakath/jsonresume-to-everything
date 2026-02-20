@@ -33,10 +33,7 @@ export function stripProtocol(url: string): string {
  * ensureProtocol('http://example.com')  // => 'http://example.com'
  * ensureProtocol('https://example.com') // => 'https://example.com'
  */
-export function ensureProtocol(
-  url: string,
-  protocol: 'http' | 'https' = 'https'
-): string {
+export function ensureProtocol(url: string, protocol: 'http' | 'https' = 'https'): string {
   if (!url) return ''
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url

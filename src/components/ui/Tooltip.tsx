@@ -29,6 +29,9 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import 'react-tooltip/dist/react-tooltip.css'
 import { useState, useEffect } from 'react'
 
+/**
+ * A global tooltip component that provides descriptive overlays for UI elements.
+ */
 export function Tooltip() {
   const [isMobile, setIsMobile] = useState(false)
 
@@ -68,8 +71,7 @@ export function Tooltip() {
         fontSize: '0.875rem',
         lineHeight: '1.25rem',
         fontWeight: '400',
-        boxShadow:
-          '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       }}
     />
   )
@@ -107,6 +109,9 @@ const variantStyles = {
   },
 }
 
+/**
+ * A customizable tooltip component with support for different visual variants.
+ */
 export function CustomTooltip({
   id = 'custom-tooltip',
   className = '',
@@ -147,8 +152,7 @@ export function CustomTooltip({
         fontSize: '0.875rem',
         lineHeight: '1.25rem',
         fontWeight: '400',
-        boxShadow:
-          '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       }}
     />
   )

@@ -84,10 +84,7 @@ export interface IAIProvider {
   /**
    * Generate content (streaming)
    */
-  generateContentStream(
-    request: AIRequest,
-    onProgress: StreamCallback
-  ): Promise<string>
+  generateContentStream(request: AIRequest, onProgress: StreamCallback): Promise<string>
 
   /**
    * Test connection to provider

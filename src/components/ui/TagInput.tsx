@@ -22,8 +22,7 @@ const TagInput: React.FC<TagInputProps> = ({
   const [inputValue, setInputValue] = useState('')
 
   const variantStyles = {
-    purple:
-      'border-purple-400/30 focus:border-purple-400 hover:border-purple-400/50',
+    purple: 'border-purple-400/30 focus:border-purple-400 hover:border-purple-400/50',
     pink: 'border-pink-400/30 focus:border-pink-400 hover:border-pink-400/50',
     teal: 'border-teal-400/30 focus:border-teal-400 hover:border-teal-400/50',
     blue: 'border-blue-400/30 focus:border-blue-400 hover:border-blue-400/50',

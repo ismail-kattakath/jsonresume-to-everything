@@ -1,0 +1,176 @@
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/book/layout.tsx
+  24:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/book/page.tsx
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/calendar/layout.tsx
+  24:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/calendar/page.tsx
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/layout.tsx
+  10:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/not-found.tsx
+  9:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/opengraph-image.tsx
+  15:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/page.tsx
+  9:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume.json/route.ts
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/builder/layout.tsx
+  90:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/builder/opengraph-image.tsx
+  14:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/builder/page.tsx
+  10:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/builder/twitter-image.tsx
+  14:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/layout.tsx
+  24:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/resume/page.tsx
+  14:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/app/twitter-image.tsx
+  15:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/BackgroundImage.tsx
+  11:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/Logo.tsx
+  7:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/auth/PasswordProtection.tsx
+  16:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/document-builder/ui/PrintButton.tsx
+  18:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/layout/Footer.tsx
+  11:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/layout/Header.tsx
+  9:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/resume/forms/UnifiedEditor.tsx
+  49:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/sections/About.tsx
+  8:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/sections/Contact.tsx
+  7:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/sections/Experience.tsx
+  7:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+   3:10  warning  'memo' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   9:1   warning  Missing JSDoc block description                                         jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/sections/Projects.tsx
+  7:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+   7:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:1   warning  Missing JSDoc block description           jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/ui/BaseButton.tsx
+   5:1   warning  Missing JSDoc block description             jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/ui/ExternalRedirect.tsx
+  12:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/components/ui/Tooltip.tsx
+   32:1   warning  Missing JSDoc block description             jsdoc/require-description
+  112:1   warning  Missing JSDoc block description             jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/config/navigation.ts
+  5:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/config/password.ts
+  28:1   warning  Missing JSDoc block description           jsdoc/require-description
+--
+  34:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  53:1   warning  Missing JSDoc block description           jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/config/tooltips.ts
+  183:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/hooks/useUnifiedData.ts
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/ai/api.ts
+   9:3   warning  Missing JSDoc block description                                               jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/ai/providers.ts
+   3:1  warning  Missing JSDoc block description  jsdoc/require-description
+  92:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/ai/strands/pipeline.ts
+   7:1  warning  Missing JSDoc block description  jsdoc/require-description
+  21:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/contexts/AISettingsContext.tsx
+   60:1  warning  Missing JSDoc block description  jsdoc/require-description
+   74:1  warning  Missing JSDoc block description  jsdoc/require-description
+   79:1  warning  Missing JSDoc block description  jsdoc/require-description
+  106:1  warning  Missing JSDoc block description  jsdoc/require-description
+  313:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/pwa/__tests__/register-service-worker.test.ts
+   1:1   warning  Missing JSDoc block description           jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/pwa/registerServiceWorker.ts
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/utils/cn.ts
+  4:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/lib/utils/formVariants.ts
+  6:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/types/json-resume.ts
+    9:1  warning  Missing JSDoc block description  jsdoc/require-description
+   30:1  warning  Missing JSDoc block description  jsdoc/require-description
+   39:1  warning  Missing JSDoc block description  jsdoc/require-description
+   53:1  warning  Missing JSDoc block description  jsdoc/require-description
+   67:1  warning  Missing JSDoc block description  jsdoc/require-description
+   76:1  warning  Missing JSDoc block description  jsdoc/require-description
+   84:1  warning  Missing JSDoc block description  jsdoc/require-description
+   94:1  warning  Missing JSDoc block description  jsdoc/require-description
+  110:1  warning  Missing JSDoc block description  jsdoc/require-description
+  120:1  warning  Missing JSDoc block description  jsdoc/require-description
+  133:1  warning  Missing JSDoc block description  jsdoc/require-description
+  144:1  warning  Missing JSDoc block description  jsdoc/require-description
+  152:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/types/openai.ts
+    6:1  warning  Missing JSDoc block description  jsdoc/require-description
+   15:1  warning  Missing JSDoc block description  jsdoc/require-description
+   23:1  warning  Missing JSDoc block description  jsdoc/require-description
+   38:1  warning  Missing JSDoc block description  jsdoc/require-description
+   47:1  warning  Missing JSDoc block description  jsdoc/require-description
+   56:1  warning  Missing JSDoc block description  jsdoc/require-description
+   68:1  warning  Missing JSDoc block description  jsdoc/require-description
+   81:1  warning  Missing JSDoc block description  jsdoc/require-description
+   97:1  warning  Missing JSDoc block description  jsdoc/require-description
+  105:1  warning  Missing JSDoc block description  jsdoc/require-description
+  114:1  warning  Missing JSDoc block description  jsdoc/require-description
+  126:1  warning  Missing JSDoc block description  jsdoc/require-description
+--
+/Users/aloshy/aloshy-ai/jsonresume-to-everything/src/types/portfolio.ts
+   1:1  warning  Missing JSDoc block description  jsdoc/require-description
+  14:1  warning  Missing JSDoc block description  jsdoc/require-description
+  22:1  warning  Missing JSDoc block description  jsdoc/require-description
+  32:1  warning  Missing JSDoc block description  jsdoc/require-description

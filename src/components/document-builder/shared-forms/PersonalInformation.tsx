@@ -3,8 +3,7 @@ import { ResumeContext } from '@/lib/contexts/DocumentContext'
 import AIInputWithButton from './AIInputWithButton'
 
 const PersonalInformation = ({}) => {
-  const { resumeData, handleProfilePicture, handleChange, setResumeData } =
-    useContext(ResumeContext)
+  const { resumeData, handleProfilePicture, handleChange, setResumeData } = useContext(ResumeContext)
 
   const handleJobTitleGenerate = (generatedTitle: string) => {
     setResumeData({ ...resumeData, position: generatedTitle })

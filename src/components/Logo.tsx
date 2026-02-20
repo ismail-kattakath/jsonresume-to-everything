@@ -4,11 +4,10 @@ interface LogoProps {
   fill?: string
 }
 
-export function Logo({
-  width = 1280,
-  height = 720,
-  fill = '#ffffff',
-}: LogoProps) {
+/**
+ * Renders the SVG logo for the application.
+ */
+export function Logo({ width = 1280, height = 720, fill = '#ffffff' }: LogoProps) {
   return (
     <svg
       width={width}

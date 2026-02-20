@@ -12,15 +12,11 @@ interface ResumeBuilderOgImageConfig {
  * Generate OpenGraph/Twitter card image for Resume Builder page
  * Custom design showcasing AI Resume Builder capabilities
  */
-export async function generateResumeBuilderOgImage(
-  config: ResumeBuilderOgImageConfig
-) {
+export async function generateResumeBuilderOgImage(config: ResumeBuilderOgImageConfig) {
   const { width, height } = config
 
   // Read background image from filesystem during build
-  const backgroundImageBuffer = readFileSync(
-    join(process.cwd(), BACKGROUND_IMAGE_FILE_PATH)
-  )
+  const backgroundImageBuffer = readFileSync(join(process.cwd(), BACKGROUND_IMAGE_FILE_PATH))
   const backgroundImageData = backgroundImageBuffer.buffer.slice(
     backgroundImageBuffer.byteOffset,
     backgroundImageBuffer.byteOffset + backgroundImageBuffer.byteLength
@@ -39,9 +35,9 @@ export async function generateResumeBuilderOgImage(
         }}
       >
         {/* Background Image - Same as homepage with stronger blur */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          src={backgroundImageData as any}
+          src={backgroundImageData as unknown as string}
           alt="Background"
           style={{
             position: 'absolute',
@@ -102,8 +98,7 @@ export async function generateResumeBuilderOgImage(
               marginBottom: '32px',
               letterSpacing: '-4px',
               lineHeight: 1,
-              textShadow:
-                '0 8px 32px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(102, 126, 234, 0.3)',
+              textShadow: '0 8px 32px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(102, 126, 234, 0.3)',
             }}
           >
             AI Resume Builder
@@ -117,8 +112,7 @@ export async function generateResumeBuilderOgImage(
               background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
               borderRadius: '4px',
               marginBottom: '40px',
-              boxShadow:
-                '0 0 24px rgba(102, 126, 234, 0.8), 0 8px 32px rgba(118, 75, 162, 0.5)',
+              boxShadow: '0 0 24px rgba(102, 126, 234, 0.8), 0 8px 32px rgba(118, 75, 162, 0.5)',
             }}
           />
 
@@ -134,8 +128,7 @@ export async function generateResumeBuilderOgImage(
               textShadow: '0 4px 16px rgba(0, 0, 0, 0.7)',
             }}
           >
-            Build JD-tailored ATS resumes with AI - from JSON Resume or start
-            fresh
+            Build JD-tailored ATS resumes with AI - from JSON Resume or start fresh
           </div>
 
           {/* Feature Pills - Glassmorphism with depth */}
@@ -152,15 +145,13 @@ export async function generateResumeBuilderOgImage(
                 display: 'flex',
                 alignItems: 'center',
                 padding: '16px 32px',
-                background:
-                  'linear-gradient(135deg, rgba(102, 126, 234, 0.30) 0%, rgba(102, 126, 234, 0.20) 100%)',
+                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.30) 0%, rgba(102, 126, 234, 0.20) 100%)',
                 border: '2.5px solid rgba(102, 126, 234, 0.6)',
                 borderRadius: '60px',
                 color: '#ddd6fe',
                 fontSize: '26px',
                 fontWeight: 700,
-                boxShadow:
-                  '0 12px 32px rgba(102, 126, 234, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 12px 32px rgba(102, 126, 234, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(8px)',
               }}
             >
@@ -171,15 +162,13 @@ export async function generateResumeBuilderOgImage(
                 display: 'flex',
                 alignItems: 'center',
                 padding: '16px 32px',
-                background:
-                  'linear-gradient(135deg, rgba(168, 85, 247, 0.30) 0%, rgba(168, 85, 247, 0.20) 100%)',
+                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.30) 0%, rgba(168, 85, 247, 0.20) 100%)',
                 border: '2.5px solid rgba(168, 85, 247, 0.6)',
                 borderRadius: '60px',
                 color: '#f3e8ff',
                 fontSize: '26px',
                 fontWeight: 700,
-                boxShadow:
-                  '0 12px 32px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 12px 32px rgba(168, 85, 247, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(8px)',
               }}
             >
@@ -190,15 +179,13 @@ export async function generateResumeBuilderOgImage(
                 display: 'flex',
                 alignItems: 'center',
                 padding: '16px 32px',
-                background:
-                  'linear-gradient(135deg, rgba(236, 72, 153, 0.30) 0%, rgba(236, 72, 153, 0.20) 100%)',
+                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.30) 0%, rgba(236, 72, 153, 0.20) 100%)',
                 border: '2.5px solid rgba(236, 72, 153, 0.6)',
                 borderRadius: '60px',
                 color: '#fce7f3',
                 fontSize: '26px',
                 fontWeight: 700,
-                boxShadow:
-                  '0 12px 32px rgba(236, 72, 153, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 12px 32px rgba(236, 72, 153, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(8px)',
               }}
             >

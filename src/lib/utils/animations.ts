@@ -3,7 +3,7 @@
  * Centralized to maintain consistency across homepage sections
  */
 
-import type { Variant } from 'framer-motion'
+// import type { Variants } from 'framer-motion'
 
 /**
  * Common viewport configuration for animations

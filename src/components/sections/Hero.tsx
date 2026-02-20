@@ -1,32 +1,21 @@
-// @ts-nocheck
 'use client'
 
+import { memo } from 'react'
 import { motion } from 'framer-motion'
-import {
-  ChevronDown,
-  Linkedin,
-  Github,
-  Mail,
-  Calendar,
-  Download,
-  Sparkles,
-} from 'lucide-react'
+import { ChevronDown, Linkedin, Github, Mail, Calendar, Download, Sparkles } from 'lucide-react'
 import resumeData from '@/lib/resumeAdapter'
 import { contactInfo } from '@/lib/data/portfolio'
 
+/**
+ * The hero section of the portfolio, featuring profile image, introduction, and social links.
+ */
 export default function Hero() {
-  const linkedInProfile = resumeData.socialMedia.find(
-    (s) => s.socialMedia === 'LinkedIn'
-  )
-  const githubProfile = resumeData.socialMedia.find(
-    (s) => s.socialMedia === 'Github'
-  )
+  const linkedInProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'LinkedIn')
+  const githubProfile = resumeData.socialMedia.find((s) => s.socialMedia === 'Github')
   const linkedInUrl = linkedInProfile?.link.startsWith('http')
     ? linkedInProfile.link
     : `https://${linkedInProfile?.link}`
-  const githubUrl = githubProfile?.link.startsWith('http')
-    ? githubProfile.link
-    : `https://${githubProfile?.link}`
+  const githubUrl = githubProfile?.link.startsWith('http') ? githubProfile.link : `https://${githubProfile?.link}`
   const profileImage = resumeData.profilePicture || './images/profile.jpg'
 
   const containerVariants = {
@@ -45,7 +34,7 @@ export default function Hero() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
+      transition: { duration: 0.6, ease: 'easeOut' as any },
     },
   }
 
@@ -59,17 +48,9 @@ export default function Hero() {
       ></div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 py-24">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center"
-        >
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center">
           {/* Profile Image with enhanced styling */}
-          <motion.div
-            variants={itemVariants}
-            className="relative mb-8 inline-block"
-          >
+          <motion.div variants={itemVariants} className="relative mb-8 inline-block">
             <div className="relative">
               {/* Animated ring */}
               <motion.div
@@ -121,14 +102,8 @@ export default function Hero() {
           </motion.h1>
 
           {/* Position with icon */}
-          <motion.div
-            variants={itemVariants}
-            className="mb-6 flex items-center justify-center gap-2"
-          >
-            <Sparkles
-              className="text-[var(--md-sys-color-primary)]"
-              size={20}
-            />
+          <motion.div variants={itemVariants} className="mb-6 flex items-center justify-center gap-2">
+            <Sparkles className="text-[var(--md-sys-color-primary)]" size={20} />
             <p className="md3-headline-small font-medium text-[var(--md-sys-color-on-surface)]">
               {resumeData.position}
             </p>
@@ -143,10 +118,7 @@ export default function Hero() {
           </motion.p>
 
           {/* Primary CTAs */}
-          <motion.div
-            variants={itemVariants}
-            className="mb-8 flex flex-wrap items-center justify-center gap-4"
-          >
+          <motion.div variants={itemVariants} className="mb-8 flex flex-wrap items-center justify-center gap-4">
             <motion.a
               href="#contact"
               whileHover={{ scale: 1.05, y: -2 }}
@@ -169,10 +141,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Social links */}
-          <motion.div
-            variants={itemVariants}
-            className="flex items-center justify-center gap-3"
-          >
+          <motion.div variants={itemVariants} className="flex items-center justify-center gap-3">
             <motion.a
               href={linkedInUrl}
               target="_blank"
@@ -182,10 +151,7 @@ export default function Hero() {
               className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--md-sys-color-surface-container-high)] shadow-md transition-shadow hover:shadow-lg"
               title="LinkedIn Profile"
             >
-              <Linkedin
-                size={20}
-                className="text-[var(--md-sys-color-primary)]"
-              />
+              <Linkedin size={20} className="text-[var(--md-sys-color-primary)]" />
             </motion.a>
 
             <motion.a
@@ -197,10 +163,7 @@ export default function Hero() {
               className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--md-sys-color-surface-container-high)] shadow-md transition-shadow hover:shadow-lg"
               title="GitHub Profile"
             >
-              <Github
-                size={20}
-                className="text-[var(--md-sys-color-primary)]"
-              />
+              <Github size={20} className="text-[var(--md-sys-color-primary)]" />
             </motion.a>
 
             <motion.a
@@ -212,10 +175,7 @@ export default function Hero() {
               className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--md-sys-color-surface-container-high)] shadow-md transition-shadow hover:shadow-lg"
               title="Schedule a Meeting"
             >
-              <Calendar
-                size={20}
-                className="text-[var(--md-sys-color-primary)]"
-              />
+              <Calendar size={20} className="text-[var(--md-sys-color-primary)]" />
             </motion.a>
           </motion.div>
         </motion.div>
@@ -232,20 +192,13 @@ export default function Hero() {
             opacity: { delay: 1.5 },
             y: { repeat: Infinity, duration: 2, ease: 'easeInOut' },
           }}
-          onClick={() =>
-            document
-              .getElementById('about')
-              ?.scrollIntoView({ behavior: 'smooth' })
-          }
+          onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <div className="flex flex-col items-center gap-2">
             <span className="md3-label-small tracking-wider text-[var(--md-sys-color-on-surface-variant)] uppercase">
               Scroll
             </span>
-            <ChevronDown
-              className="text-[var(--md-sys-color-primary)]"
-              size={24}
-            />
+            <ChevronDown className="text-[var(--md-sys-color-primary)]" size={24} />
           </div>
         </motion.div>
       </div>

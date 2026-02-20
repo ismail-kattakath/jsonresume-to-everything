@@ -25,6 +25,10 @@ function isBrowser(): boolean {
 }
 
 // For client components, export a function that gets the hash
+/**
+ * Retrieves the stored password hash from window or environment variables.
+ * @returns The password hash or undefined if not set.
+ */
 export function getPasswordHash(): string | undefined {
   // Try to get from window object (injected at build time)
   if (isBrowser() && (window as any).__PASSWORD_HASH__) {
@@ -38,11 +42,7 @@ export function getPasswordHash(): string | undefined {
 
   // Browser environment but no window hash - check if we have process.env (build time)
   // This handles the case where we're in a browser-like test environment
-  if (
-    typeof process !== 'undefined' &&
-    process.env &&
-    process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
-  ) {
+  if (typeof process !== 'undefined' && process.env && process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']) {
     return process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
   }
 
@@ -51,6 +51,10 @@ export function getPasswordHash(): string | undefined {
 }
 
 // Check if password protection is enabled
+/**
+ * Checks if password protection is currently enabled based on the presence of a hash.
+ * @returns True if password protection is enabled.
+ */
 export function isPasswordProtectionEnabled(): boolean {
   return getPasswordHash() !== undefined
 }

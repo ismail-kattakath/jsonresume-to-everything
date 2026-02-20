@@ -1,16 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import {
-  Mail,
-  Github,
-  Linkedin,
-  Calendar,
-  Send,
-  MessageCircle,
-} from 'lucide-react'
+import { Mail, Github, Linkedin, Calendar, Send, MessageCircle } from 'lucide-react'
 import { contactInfo } from '@/lib/data/portfolio'
 
+/**
+ * The 'Contact' section providing various ways to reach out, including email and social media.
+ */
 export default function Contact() {
   const contactMethods = [
     {
@@ -52,10 +48,7 @@ export default function Contact() {
   ]
 
   return (
-    <section
-      id="contact"
-      className="relative overflow-hidden py-24 backdrop-blur-sm"
-    >
+    <section id="contact" className="relative overflow-hidden py-24 backdrop-blur-sm">
       {/* Decorative background */}
       <div className="absolute top-0 left-1/3 h-96 w-96 rounded-full bg-[var(--md-sys-color-primary)]/5 blur-3xl"></div>
       <div className="absolute right-1/3 bottom-0 h-80 w-80 rounded-full bg-[var(--md-sys-color-tertiary)]/5 blur-3xl"></div>
@@ -75,10 +68,7 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <MessageCircle
-              size={16}
-              className="text-[var(--md-sys-color-on-tertiary-container)]"
-            />
+            <MessageCircle size={16} className="text-[var(--md-sys-color-on-tertiary-container)]" />
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-tertiary-container)]">
               Let&apos;s Connect
             </span>
@@ -86,8 +76,8 @@ export default function Contact() {
 
           <h2 className="md3-headline-large mb-4">Get In Touch</h2>
           <p className="md3-body-large md3-on-surface-variant mx-auto max-w-2xl">
-            Have a project in mind or want to discuss opportunities? I&apos;m
-            always open to interesting conversations and collaborations.
+            Have a project in mind or want to discuss opportunities? I&apos;m always open to interesting conversations
+            and collaborations.
           </p>
         </motion.div>
 
@@ -117,9 +107,7 @@ export default function Contact() {
 
                   {/* Content */}
                   <div className="min-w-0 flex-1">
-                    <h3 className="md3-title-large mb-1 font-semibold">
-                      {method.title}
-                    </h3>
+                    <h3 className="md3-title-large mb-1 font-semibold">{method.title}</h3>
                     <p className="md3-body-medium mb-1 break-all text-[var(--md-sys-color-on-surface)]">
                       {method.value}
                     </p>
@@ -130,10 +118,7 @@ export default function Contact() {
 
                   {/* Arrow indicator */}
                   <div className="flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Send
-                      size={20}
-                      className="text-[var(--md-sys-color-primary)]"
-                    />
+                    <Send size={20} className="text-[var(--md-sys-color-primary)]" />
                   </div>
                 </div>
               </div>

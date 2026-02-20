@@ -11,9 +11,7 @@ export function useSkillGroupsManagement() {
   const context = useContext(ResumeContext)
 
   if (!context) {
-    throw new Error(
-      'useSkillGroupsManagement must be used within ResumeContext'
-    )
+    throw new Error('useSkillGroupsManagement must be used within ResumeContext')
   }
 
   const { resumeData, setResumeData } = context
@@ -29,9 +27,7 @@ export function useSkillGroupsManagement() {
       }
 
       // Check for duplicate titles
-      const exists = resumeData.skills.some(
-        (group) => group.title.toLowerCase() === title.toLowerCase()
-      )
+      const exists = resumeData.skills.some((group) => group.title.toLowerCase() === title.toLowerCase())
 
       if (exists) {
         toast.error(`Skill group "${title}" already exists`)
@@ -58,9 +54,7 @@ export function useSkillGroupsManagement() {
    */
   const removeGroup = useCallback(
     (title: string) => {
-      const updatedSkills = resumeData.skills.filter(
-        (group) => group.title !== title
-      )
+      const updatedSkills = resumeData.skills.filter((group) => group.title !== title)
 
       setResumeData({
         ...resumeData,
@@ -84,9 +78,7 @@ export function useSkillGroupsManagement() {
 
       // Check for duplicate titles (excluding the current one)
       const exists = resumeData.skills.some(
-        (group) =>
-          group.title !== oldTitle &&
-          group.title.toLowerCase() === newTitle.toLowerCase()
+        (group) => group.title !== oldTitle && group.title.toLowerCase() === newTitle.toLowerCase()
       )
 
       if (exists) {

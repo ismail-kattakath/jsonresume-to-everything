@@ -8,10 +8,10 @@ interface BackgroundImageProps {
   withOverlay?: boolean
 }
 
-export default function BackgroundImage({
-  withBlur = false,
-  withOverlay = false,
-}: BackgroundImageProps = {}) {
+/**
+ * Renders a full-screen background image with optional blur and dark overlay effects.
+ */
+export default function BackgroundImage({ withBlur = false, withOverlay = false }: BackgroundImageProps = {}) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -47,12 +47,7 @@ export default function BackgroundImage({
       />
 
       {/* Optional Dark Overlay */}
-      {withOverlay && (
-        <div
-          className="fixed inset-0 bg-black/50 print:hidden"
-          style={{ zIndex: -1 }}
-        />
-      )}
+      {withOverlay && <div className="fixed inset-0 bg-black/50 print:hidden" style={{ zIndex: -1 }} />}
     </>
   )
 }

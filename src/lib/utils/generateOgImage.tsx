@@ -19,9 +19,7 @@ export async function generateOgImage(config: OgImageConfig) {
   const { width, height, logoWidth, logoHeight } = config
 
   // Read background image from filesystem during build
-  const backgroundImageBuffer = readFileSync(
-    join(process.cwd(), BACKGROUND_IMAGE_FILE_PATH)
-  )
+  const backgroundImageBuffer = readFileSync(join(process.cwd(), BACKGROUND_IMAGE_FILE_PATH))
   const backgroundImageData = backgroundImageBuffer.buffer.slice(
     backgroundImageBuffer.byteOffset,
     backgroundImageBuffer.byteOffset + backgroundImageBuffer.byteLength
@@ -40,9 +38,9 @@ export async function generateOgImage(config: OgImageConfig) {
         }}
       >
         {/* Background Image with blur effect */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          src={backgroundImageData as any}
+          src={backgroundImageData as unknown as string}
           alt="Background"
           style={{
             position: 'absolute',

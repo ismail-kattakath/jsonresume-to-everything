@@ -5,12 +5,7 @@ interface DateRangeProps {
   showOnlyEndDate?: boolean
 }
 
-const DateRange = ({
-  startYear,
-  endYear,
-  id,
-  showOnlyEndDate = false,
-}: DateRangeProps) => {
+const DateRange = ({ startYear, endYear, id, showOnlyEndDate = false }: DateRangeProps) => {
   // Helper function to parse date string and create Date object in local time
   const parseDate = (dateString: string | undefined): Date | null => {
     if (!dateString) return null
@@ -31,8 +26,7 @@ const DateRange = ({
     if (end && !isNaN(end.getTime())) {
       return (
         <p id={id} className="content whitespace-nowrap">
-          {end.toLocaleString('default', { month: 'short' })},{' '}
-          {end.getFullYear()}
+          {end.toLocaleString('default', { month: 'short' })}, {end.getFullYear()}
         </p>
       )
     }
@@ -53,12 +47,9 @@ const DateRange = ({
 
   return (
     <p id={id} className="content whitespace-nowrap">
-      {start.toLocaleString('default', { month: 'short' })},{' '}
-      {start.getFullYear()} -{' '}
+      {start.toLocaleString('default', { month: 'short' })}, {start.getFullYear()} -{' '}
       {end && !isNaN(end.getTime())
-        ? end.toLocaleString('default', { month: 'short' }) +
-          ', ' +
-          end.getFullYear()
+        ? end.toLocaleString('default', { month: 'short' }) + ', ' + end.getFullYear()
         : 'Present'}
     </p>
   )

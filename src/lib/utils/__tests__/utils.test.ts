@@ -8,9 +8,7 @@ describe('Utils - cn (Tailwind class merger)', () => {
 
   it('should handle conditional classes', () => {
     expect(cn('base-class', false && 'conditional-class')).toBe('base-class')
-    expect(cn('base-class', true && 'conditional-class')).toBe(
-      'base-class conditional-class'
-    )
+    expect(cn('base-class', true && 'conditional-class')).toBe('base-class conditional-class')
   })
 
   it('should merge conflicting Tailwind classes correctly', () => {
@@ -61,15 +59,11 @@ describe('Utils - formatUrl', () => {
   })
 
   it('should handle URLs with paths', () => {
-    expect(formatUrl('example.com/path/to/page')).toBe(
-      'http://example.com/path/to/page'
-    )
+    expect(formatUrl('example.com/path/to/page')).toBe('http://example.com/path/to/page')
   })
 
   it('should handle URLs with query parameters', () => {
-    expect(formatUrl('example.com?query=value')).toBe(
-      'http://example.com?query=value'
-    )
+    expect(formatUrl('example.com?query=value')).toBe('http://example.com?query=value')
   })
 
   it('should handle URLs with ports', () => {

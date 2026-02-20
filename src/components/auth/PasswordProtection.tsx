@@ -13,9 +13,10 @@ interface PasswordProtectionProps {
   children: React.ReactNode
 }
 
-export default function PasswordProtection({
-  children,
-}: PasswordProtectionProps) {
+/**
+ * A wrapper component that provides password-based authentication for its children.
+ */
+export default function PasswordProtection({ children }: PasswordProtectionProps) {
   const passwordHash = getPasswordHash()
   const isProtectionEnabled = isPasswordProtectionEnabled()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -69,9 +70,7 @@ export default function PasswordProtection({
     try {
       // Check if password hash is configured
       if (!passwordHash) {
-        setError(
-          'Password protection is not configured. Please set NEXT_PUBLIC_EDIT_PASSWORD_HASH.'
-        )
+        setError('Password protection is not configured. Please set NEXT_PUBLIC_EDIT_PASSWORD_HASH.')
         setIsLoading(false)
         return
       }
@@ -150,20 +149,13 @@ export default function PasswordProtection({
         </div>
 
         {/* Header */}
-        <h2 className="mb-2 text-center text-2xl font-bold text-white">
-          Protected Area
-        </h2>
-        <p className="mb-6 text-center text-sm text-white/60">
-          Enter password to access the editor
-        </p>
+        <h2 className="mb-2 text-center text-2xl font-bold text-white">Protected Area</h2>
+        <p className="mb-6 text-center text-sm text-white/60">Enter password to access the editor</p>
 
         {/* Password Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-white/80"
-            >
+            <label htmlFor="password" className="mb-2 block text-sm font-medium text-white/80">
               Password
             </label>
             <div className="relative">
@@ -208,9 +200,7 @@ export default function PasswordProtection({
 
         {/* Info */}
         <div className="mt-6 rounded-lg border border-blue-500/20 bg-blue-500/10 p-4">
-          <p className="text-center text-xs text-blue-300">
-            Session expires after 24 hours of inactivity
-          </p>
+          <p className="text-center text-xs text-blue-300">Session expires after 24 hours of inactivity</p>
         </div>
       </div>
     </div>

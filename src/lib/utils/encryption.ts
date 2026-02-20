@@ -14,13 +14,7 @@ async function deriveKey(masterKey: string): Promise<CryptoKey> {
   const keyData = encoder.encode(masterKey)
 
   // Import the raw key data
-  const baseKey = await window.crypto.subtle.importKey(
-    'raw',
-    keyData,
-    'PBKDF2',
-    false,
-    ['deriveKey']
-  )
+  const baseKey = await window.crypto.subtle.importKey('raw', keyData, 'PBKDF2', false, ['deriveKey'])
 
   // Derive the actual AES-GCM key
   return window.crypto.subtle.deriveKey(
@@ -40,10 +34,7 @@ async function deriveKey(masterKey: string): Promise<CryptoKey> {
 /**
  * Encrypts a string using AES-GCM
  */
-export async function encryptData(
-  data: string,
-  masterKey: string
-): Promise<string> {
+export async function encryptData(data: string, masterKey: string): Promise<string> {
   if (!data) return ''
 
   const cryptoKey = await deriveKey(masterKey)
@@ -72,10 +63,7 @@ export async function encryptData(
 /**
  * Decrypts a string using AES-GCM
  */
-export async function decryptData(
-  encryptedBase64: string,
-  masterKey: string
-): Promise<string> {
+export async function decryptData(encryptedBase64: string, masterKey: string): Promise<string> {
   if (!encryptedBase64) return ''
 
   try {
@@ -102,9 +90,7 @@ export async function decryptData(
     return decoder.decode(decrypted)
   } catch (error) {
     console.error('[Encryption] Decryption failed:', error)
-    throw new Error(
-      'Decryption failed. Data might be corrupted or key mismatch.'
-    )
+    throw new Error('Decryption failed. Data might be corrupted or key mismatch.')
   }
 }
 
@@ -114,7 +100,5 @@ export async function decryptData(
 export function generateVaultKey(): string {
   const array = new Uint8Array(32)
   window.crypto.getRandomValues(array)
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join(
-    ''
-  )
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }

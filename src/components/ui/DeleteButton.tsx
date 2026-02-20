@@ -12,11 +12,7 @@ interface DeleteButtonProps {
  * Reusable delete button with consistent styling
  * Eliminates 15+ instances of delete button duplication
  */
-export function DeleteButton({
-  onClick,
-  label = 'Delete',
-  className = '',
-}: DeleteButtonProps) {
+export function DeleteButton({ onClick, label = 'Delete', className = '' }: DeleteButtonProps) {
   return (
     <BaseButton
       type="button"

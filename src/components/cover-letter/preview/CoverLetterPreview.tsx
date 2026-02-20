@@ -9,9 +9,7 @@ const CoverLetterPreview = () => {
   const capitalizedName = resumeData.name
     ? resumeData.name
         .split(' ')
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(' ')
     : ''
 
@@ -22,11 +20,7 @@ const CoverLetterPreview = () => {
       {/* Cover Letter Content */}
       <div className="mx-auto mt-4 max-w-2xl">
         <p className="content mb-2">Dear Hiring Manager,</p>
-        <p
-          className="content editable whitespace-pre-wrap"
-          contentEditable
-          suppressContentEditableWarning
-        >
+        <p className="content editable whitespace-pre-wrap" contentEditable suppressContentEditableWarning>
           {resumeData.content}
         </p>
         <div className="content mt-4">

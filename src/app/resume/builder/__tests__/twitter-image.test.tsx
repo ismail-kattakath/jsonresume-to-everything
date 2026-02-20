@@ -1,10 +1,5 @@
 import { generateResumeBuilderOgImage } from '@/lib/utils/generateResumeBuilderOgImage'
-import TwitterImage, {
-  dynamic,
-  alt,
-  size,
-  contentType,
-} from '@/app/resume/builder/twitter-image'
+import TwitterImage, { dynamic, alt, size, contentType } from '@/app/resume/builder/twitter-image'
 
 // Mock the generateResumeBuilderOgImage utility
 jest.mock('@/lib/utils/generateResumeBuilderOgImage', () => ({
@@ -40,9 +35,7 @@ describe('Resume Builder Twitter Image Route Handler', () => {
   describe('Image Generation', () => {
     it('should call generateResumeBuilderOgImage with correct Twitter parameters', async () => {
       const mockImageResponse = { ok: true }
-      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(
-        mockImageResponse
-      )
+      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(mockImageResponse)
 
       const result = await TwitterImage()
 
@@ -59,21 +52,16 @@ describe('Resume Builder Twitter Image Route Handler', () => {
       const mockError = new Error('Twitter image generation failed')
       ;(generateResumeBuilderOgImage as jest.Mock).mockRejectedValue(mockError)
 
-      await expect(TwitterImage()).rejects.toThrow(
-        'Twitter image generation failed'
-      )
+      await expect(TwitterImage()).rejects.toThrow('Twitter image generation failed')
     })
 
     it('should use TWITTER_IMAGE_CONFIG dimensions', async () => {
       const mockImageResponse = { ok: true }
-      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(
-        mockImageResponse
-      )
+      ;(generateResumeBuilderOgImage as jest.Mock).mockResolvedValue(mockImageResponse)
 
       await TwitterImage()
 
-      const callArgs = (generateResumeBuilderOgImage as jest.Mock).mock
-        .calls[0][0]
+      const callArgs = (generateResumeBuilderOgImage as jest.Mock).mock.calls[0][0]
       expect(callArgs.width).toBe(1200)
       expect(callArgs.height).toBe(600)
     })

@@ -8,9 +8,7 @@ interface AIGenerateCoverLetterModalProps {
   resumeData: ResumeData
 }
 
-const AIGenerateCoverLetterModal: React.FC<AIGenerateCoverLetterModalProps> = (
-  props
-) => {
+const AIGenerateCoverLetterModal: React.FC<AIGenerateCoverLetterModalProps> = (props) => {
   return <AIDocumentGeneratorModal {...props} mode="coverLetter" />
 }
 

@@ -1,14 +1,6 @@
 import { useContext } from 'react'
 import Image from 'next/image'
-import {
-  FaGithub,
-  FaLinkedin,
-  FaTwitter,
-  FaFacebook,
-  FaInstagram,
-  FaYoutube,
-  FaGlobe,
-} from 'react-icons/fa'
+import { FaGithub, FaLinkedin, FaTwitter, FaFacebook, FaInstagram, FaYoutube, FaGlobe } from 'react-icons/fa'
 import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
 import ContactInfo from '@/components/document-builder/shared-preview/ContactInfo'
 import { formatUrl } from '@/lib/utils/formatUrl'
@@ -47,18 +39,10 @@ const ProfileHeader = () => {
           />
         </div>
       )}
-      <h1
-        className="name editable"
-        contentEditable={editable}
-        suppressContentEditableWarning
-      >
+      <h1 className="name editable" contentEditable={editable} suppressContentEditableWarning>
         {resumeData.name}
       </h1>
-      <h2
-        className="profession editable"
-        contentEditable={editable}
-        suppressContentEditableWarning
-      >
+      <h2 className="profession editable" contentEditable={editable} suppressContentEditableWarning>
         {resumeData.position}
       </h2>
       <ContactInfo
@@ -73,46 +57,43 @@ const ProfileHeader = () => {
       />
       <div className="grid grid-cols-3 gap-1">
         {resumeData.socialMedia &&
-          resumeData.socialMedia.map(
-            (socialMedia: SocialMediaLink, index: number) => {
-              const handleSocialMediaBlur = (
-                e: React.FocusEvent<HTMLAnchorElement>
-              ) => {
-                const newSocialMedia = [...resumeData.socialMedia]
-                newSocialMedia[index] = {
-                  ...newSocialMedia[index]!,
-                  link: (e.target as HTMLElement).innerText,
-                }
-                setResumeData({
-                  ...resumeData,
-                  socialMedia: newSocialMedia,
-                })
-              }
-
-              return (
-                <a
-                  href={formatUrl(socialMedia.link)}
-                  aria-label={socialMedia.socialMedia}
-                  key={index}
-                  title={socialMedia.socialMedia}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="content align-center editable inline-flex items-center justify-center gap-1 text-blue-700 hover:underline"
-                  contentEditable={editable}
-                  suppressContentEditableWarning
-                  onBlur={handleSocialMediaBlur}
-                >
-                  {(() => {
-                    const icon = icons.find(
-                      (i) => i.name === socialMedia.socialMedia.toLowerCase()
-                    )
-                    return icon ? <span>{icon.icon}</span> : null
-                  })()}
-                  {socialMedia.link}
-                </a>
+          resumeData.socialMedia.map((socialMedia: SocialMediaLink, index: number) => {
+            const handleSocialMediaBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+              const newSocialMedia = resumeData.socialMedia.map((item, i) =>
+                i === index
+                  ? {
+                      ...item,
+                      link: (e.target as HTMLElement).innerText,
+                    }
+                  : item
               )
+              setResumeData({
+                ...resumeData,
+                socialMedia: newSocialMedia,
+              })
             }
-          )}
+
+            return (
+              <a
+                href={formatUrl(socialMedia.link)}
+                aria-label={socialMedia.socialMedia}
+                key={index}
+                title={socialMedia.socialMedia}
+                target="_blank"
+                rel="noreferrer"
+                className="content align-center editable inline-flex items-center justify-center gap-1 text-blue-700 hover:underline"
+                contentEditable={editable}
+                suppressContentEditableWarning
+                onBlur={handleSocialMediaBlur}
+              >
+                {(() => {
+                  const icon = icons.find((i) => i.name === socialMedia.socialMedia.toLowerCase())
+                  return icon ? <span>{icon.icon}</span> : null
+                })()}
+                {socialMedia.link}
+              </a>
+            )
+          })}
       </div>
     </div>
   )

@@ -37,9 +37,7 @@ describe('ResumeLayout', () => {
         </ResumeLayout>
       )
 
-      expect(
-        container.querySelector('[data-testid="test-child"]')
-      ).toBeInTheDocument()
+      expect(container.querySelector('[data-testid="test-child"]')).toBeInTheDocument()
     })
 
     it('should render children in React fragment', () => {

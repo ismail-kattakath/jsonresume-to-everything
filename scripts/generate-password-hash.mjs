@@ -27,9 +27,7 @@ async function generateHash(password) {
     console.log('4. Name: NEXT_PUBLIC_EDIT_PASSWORD_HASH')
     console.log('5. Value: Paste the hash above')
     console.log('6. Click "Add secret"\n')
-    console.log(
-      '⚠️  WARNING: Keep this hash secret! Anyone with it can generate valid passwords.\n'
-    )
+    console.log('⚠️  WARNING: Keep this hash secret! Anyone with it can generate valid passwords.\n')
     return hash
   } catch (error) {
     console.error('❌ Error generating hash:', error)
@@ -44,22 +42,17 @@ async function promptForPassword() {
   })
 
   return new Promise((resolve) => {
-    rl.question(
-      'Enter password to hash (or press Ctrl+C to cancel): ',
-      (password) => {
-        rl.close()
-        if (!password || password.trim().length === 0) {
-          console.error('❌ Password cannot be empty')
-          process.exit(1)
-        }
-        if (password.length < 8) {
-          console.warn(
-            '\n⚠️  WARNING: Password is shorter than 8 characters. Consider using a longer password.\n'
-          )
-        }
-        resolve(password)
+    rl.question('Enter password to hash (or press Ctrl+C to cancel): ', (password) => {
+      rl.close()
+      if (!password || password.trim().length === 0) {
+        console.error('❌ Password cannot be empty')
+        process.exit(1)
       }
-    )
+      if (password.length < 8) {
+        console.warn('\n⚠️  WARNING: Password is shorter than 8 characters. Consider using a longer password.\n')
+      }
+      resolve(password)
+    })
   })
 }
 
@@ -71,9 +64,7 @@ async function main() {
 
   if (password) {
     if (password.length < 8) {
-      console.warn(
-        '⚠️  WARNING: Password is shorter than 8 characters. Consider using a longer password.\n'
-      )
+      console.warn('⚠️  WARNING: Password is shorter than 8 characters. Consider using a longer password.\n')
     }
     await generateHash(password)
   } else {

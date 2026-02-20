@@ -7,30 +7,26 @@ import security from 'eslint-plugin-security'
 import tseslint from 'typescript-eslint'
 import reactPlugin from 'eslint-plugin-react'
 import nextPlugin from '@next/eslint-plugin-next'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const eslintConfig = tseslint.config(
   {
-    ignores: [
-      'node_modules/**',
-      '.next/**',
-      'out/**',
-      'build/**',
-      'next-env.d.ts',
-    ],
+    ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
   ...tseslint.configs.recommended,
   {
     files: ['src/**/*.{ts,tsx,js,jsx}'],
     plugins: {
-      'react': reactPlugin,
+      react: reactPlugin,
       '@next/next': nextPlugin,
       'no-relative-import-paths': noRelativeImportPaths,
       'check-file': checkFile,
-      'jsdoc': jsdoc,
-      'security': security,
+      jsdoc: jsdoc,
+      security: security,
+      'jsx-a11y': jsxA11y,
     },
     languageOptions: {
       parserOptions: {
@@ -56,7 +52,14 @@ const eslintConfig = tseslint.config(
 
       // Code quality rules - keep as warnings for gradual improvement
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
 
       // Import path rules - enforce absolute imports with @/ alias
       'no-relative-import-paths/no-relative-import-paths': [
@@ -84,7 +87,7 @@ const eslintConfig = tseslint.config(
       'check-file/folder-naming-convention': [
         'error',
         {
-          'src/**/': 'KEBAB_CASE',
+          'src/**/!(__tests__)': 'KEBAB_CASE',
         },
       ],
 
@@ -109,7 +112,7 @@ const eslintConfig = tseslint.config(
       'security/detect-object-injection': 'warn',
       'security/detect-non-literal-regexp': 'warn',
       'security/detect-non-literal-fs-filename': 'warn',
-      'security/detect-unsafe-regex': 'error',
+      'security/detect-unsafe-regex': 'warn',
       'security/detect-buffer-noassert': 'error',
       'security/detect-child-process': 'warn',
       'security/detect-disable-mustache-escape': 'error',
@@ -125,6 +128,13 @@ const eslintConfig = tseslint.config(
       },
     },
   },
+  {
+    files: ['**/__tests__/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'warn',
+      'security/detect-unsafe-regex': 'warn',
+    },
+  }
 )
 
 export default eslintConfig

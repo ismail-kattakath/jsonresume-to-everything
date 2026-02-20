@@ -24,20 +24,11 @@ const gradientClasses: Record<FormVariant, string> = {
  * Eliminates 8+ instances of header duplication
  * Supports optional action elements (toggle switches, etc.)
  */
-export function SectionHeader({
-  title,
-  variant = 'teal',
-  action,
-  className = '',
-}: SectionHeaderProps) {
+export function SectionHeader({ title, variant = 'teal', action, className = '' }: SectionHeaderProps) {
   return (
-    <div
-      className={`flex flex-col justify-between gap-3 sm:flex-row sm:items-center ${className}`}
-    >
+    <div className={`flex flex-col justify-between gap-3 sm:flex-row sm:items-center ${className}`}>
       <div className="flex items-center gap-2">
-        <div
-          className={`h-6 w-1 rounded-full bg-gradient-to-b ${gradientClasses[variant]}`}
-        ></div>
+        <div className={`h-6 w-1 rounded-full bg-gradient-to-b ${gradientClasses[variant]}`}></div>
         <h2 className="text-lg font-semibold text-white">{title}</h2>
       </div>
       {action}

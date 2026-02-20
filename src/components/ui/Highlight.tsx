@@ -12,17 +12,17 @@ interface HighlightProps {
  * It splits the text by keywords and wraps matches in a <mark> tag.
  * If isHTML is true, it avoids highlighting within HTML tags.
  */
-export const Highlight: React.FC<
-  HighlightProps & React.HTMLAttributes<HTMLSpanElement>
-> = ({ text, keywords, className = '', isHTML = false, ...props }) => {
+export const Highlight: React.FC<HighlightProps & React.HTMLAttributes<HTMLSpanElement>> = ({
+  text,
+  keywords,
+  className = '',
+  isHTML = false,
+  ...props
+}) => {
   if (!text) return null
   if (!keywords || !keywords.trim()) {
     return isHTML ? (
-      <span
-        className={className}
-        dangerouslySetInnerHTML={{ __html: text }}
-        {...props}
-      />
+      <span className={className} dangerouslySetInnerHTML={{ __html: text }} {...props} />
     ) : (
       <span className={className} {...props}>
         {text}
@@ -38,11 +38,7 @@ export const Highlight: React.FC<
 
   if (keywordArray.length === 0) {
     return isHTML ? (
-      <span
-        className={className}
-        dangerouslySetInnerHTML={{ __html: text }}
-        {...props}
-      />
+      <span className={className} dangerouslySetInnerHTML={{ __html: text }} {...props} />
     ) : (
       <span className={className} {...props}>
         {text}
@@ -51,9 +47,7 @@ export const Highlight: React.FC<
   }
 
   // Escape special characters and create a regex with lookarounds for whole word matching
-  const escapedKeywords = keywordArray
-    .map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|')
+  const escapedKeywords = keywordArray.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')
   const regex = new RegExp(`(?<!\\w)(${escapedKeywords})(?!\\w)`, 'gi')
 
   if (isHTML) {
@@ -73,13 +67,7 @@ export const Highlight: React.FC<
       })
       .join('')
 
-    return (
-      <span
-        className={className}
-        dangerouslySetInnerHTML={{ __html: highlightedHTML }}
-        {...props}
-      />
-    )
+    return <span className={className} dangerouslySetInnerHTML={{ __html: highlightedHTML }} {...props} />
   }
 
   // Plain text mode: Split text by the regex matches
@@ -88,9 +76,7 @@ export const Highlight: React.FC<
   return (
     <span className={className} {...props}>
       {parts.map((part, i) => {
-        const isMatch = keywordArray.some(
-          (k) => k.toLowerCase() === part.toLowerCase()
-        )
+        const isMatch = keywordArray.some((k) => k.toLowerCase() === part.toLowerCase())
 
         return isMatch ? (
           <mark key={i} className="rounded bg-yellow-200/50 px-0.5 text-black">
