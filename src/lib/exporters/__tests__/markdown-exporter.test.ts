@@ -99,9 +99,10 @@ describe('markdownExporter', () => {
     it('should format education correctly', () => {
       const result = convertResumeToMarkdown(mockResumeData)
 
-      expect(result).toContain('### Bachelor of Science @ [University of California](https://berkeley.edu)')
+      expect(result).toContain(
+        '### Bachelor of Science in Computer Science @ [University of California](https://berkeley.edu)'
+      )
       expect(result).toContain('2010 - 2014')
-      expect(result).toContain('Major: Computer Science')
     })
 
     it('should include social media links', () => {
@@ -335,18 +336,11 @@ describe('markdownExporter', () => {
 
       const result = convertResumeToMarkdown(dataWithPartialEdu)
 
-      expect(result).toContain('### Cert @ [Self Taught](#)')
+      expect(result).toContain('### Cert in Web Development @ [Self Taught](#)')
       // Check that the line after the header doesn't contain a date range
       const lines = result.split('\n')
-      const headerIndex = lines.findIndex((l) => l.includes('### Cert @ [Self Taught]'))
+      const headerIndex = lines.findIndex((l) => l.includes('### Cert in Web Development @ [Self Taught]'))
       expect(lines[headerIndex + 1]).not.toContain(' - ')
-      expect(result).toContain('Major: Web Development')
-    })
-
-    it('should add spacing between education years and major when both are present', () => {
-      const result = convertResumeToMarkdown(mockResumeData)
-      const expectedSection = '2010 - 2014\n\nMajor: Computer Science'
-      expect(result).toContain(expectedSection)
     })
 
     it('should handle multiple projects', () => {
