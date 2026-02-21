@@ -13,8 +13,11 @@ const customJestConfig = {
     // Map resume.json to a fixture file for CI environments where the real file is gitignored
     '^@/data/resume\\.json$': '<rootDir>/src/data/resume.fixture.json',
     '^@/(.*)$': '<rootDir>/src/$1',
+    // Mock @ismail-kattakath/mediapipe-react (uses import.meta.url / Web Workers, not compatible with Jest)
+    '^@ismail-kattakath/mediapipe-react/genai$': '<rootDir>/src/__mocks__/@ismail-kattakath/mediapipe-react/genai.ts',
+    '^@ismail-kattakath/mediapipe-react$': '<rootDir>/src/__mocks__/@ismail-kattakath/mediapipe-react/index.ts',
   },
-  transformIgnorePatterns: ['node_modules/(?!(onborda|react-tooltip|@strands-agents|@google/genai))'],
+  transformIgnorePatterns: ['node_modules/(?!(onborda|react-tooltip|@strands-agents|@google/genai|@ismail-kattakath))'],
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',

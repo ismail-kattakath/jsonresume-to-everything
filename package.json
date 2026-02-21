@@ -49,7 +49,9 @@
   "dependencies": {
     "@google/genai": "^1.41.0",
     "@hello-pangea/dnd": "^18.0.1",
+    "@ismail-kattakath/mediapipe-react": "^0.2.0",
     "@lottiefiles/dotlottie-react": "^0.17.14",
+    "@mediapipe/tasks-genai": "^0.10.26",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@next/third-parties": "^16.0.5",
     "@radix-ui/react-portal": "^1.1.10",

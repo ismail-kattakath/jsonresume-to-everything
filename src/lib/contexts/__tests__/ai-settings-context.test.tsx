@@ -10,12 +10,21 @@ jest.mock('@/lib/ai/storage', () => ({
 }))
 
 describe('AISettingsContext', () => {
-  it('handles validateAll with invalid connection', async () => {
+  it('handles validateAll with invalid connection for a cloud provider', async () => {
     ;(api.testConnection as jest.Mock).mockResolvedValue({ success: false })
 
     const wrapper = ({ children }: { children: React.ReactNode }) => <AISettingsProvider>{children}</AISettingsProvider>
 
     const { result } = renderHook(() => useAISettings(), { wrapper })
+
+    // Switch to a cloud provider first (default is on-device which always validates)
+    await act(async () => {
+      result.current.updateSettings({
+        apiUrl: 'https://api.openai.com/v1',
+        providerType: 'openai-compatible',
+        apiKey: '',
+      })
+    })
 
     // Wait for initial validation
     await act(async () => {
@@ -42,7 +51,10 @@ describe('AISettingsContext', () => {
     const { result } = renderHook(() => useAISettings(), { wrapper })
 
     await act(async () => {
-      result.current.updateSettings({ apiUrl: 'http://localhost:1234/v1' }) // LM Studio URL pattern
+      result.current.updateSettings({
+        apiUrl: 'http://localhost:1234/v1', // LM Studio URL pattern
+        providerType: 'openai-compatible',
+      })
     })
 
     // Wait for debounce

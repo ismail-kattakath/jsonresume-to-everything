@@ -13,6 +13,12 @@ import { analytics } from '@/lib/analytics'
 import { AILoadingToast } from '@/components/ui/ai-loading-toast'
 import { FormTextarea } from '@/components/ui/form-textarea'
 import { FormVariant } from '@/lib/utils/form-variants'
+import { OnDeviceGenerator } from '@/components/document-builder/shared-forms/on-device-generator'
+import {
+  buildOnDeviceCoverLetterPrompt,
+  buildOnDeviceSummaryPrompt,
+  buildOnDeviceWorkExperiencePrompt,
+} from '@/lib/ai/on-device/prompts'
 
 interface AIContentGeneratorProps {
   label?: string
@@ -57,6 +63,9 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   const { settings, isConfigured, setIsAnyAIActionActive } = useAISettings()
   const { resumeData } = useContext(ResumeContext)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [showOnDevicePanel, setShowOnDevicePanel] = useState(false)
+
+  const isOnDevice = settings.providerType === 'on-device'
 
   const config = {
     summary: {
@@ -95,6 +104,12 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
 
   /* istanbul ignore next */
   const handleGenerate = async () => {
+    // On-device path: show the on-device generator panel
+    if (isOnDevice) {
+      setShowOnDevicePanel(true)
+      return
+    }
+
     // ... exactly the same generate logic ...
     if (!isConfigured) {
       console.log(`[DEBUG] NOT CONFIGURED`)
@@ -290,27 +305,55 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
     }
   }
 
+  // Build on-device prompt for the current mode
+  const buildOnDevicePrompt = (): string => {
+    if (mode === 'coverLetter') {
+      return buildOnDeviceCoverLetterPrompt(resumeData, settings.jobDescription)
+    } else if (mode === 'workExperience') {
+      return buildOnDeviceWorkExperiencePrompt(
+        value,
+        experienceData?.position || '',
+        experienceData?.organization || '',
+        experienceData?.achievements || [],
+        settings.jobDescription
+      )
+    }
+    return buildOnDeviceSummaryPrompt(resumeData, settings.jobDescription)
+  }
+
   return (
-    <FormTextarea
-      label={currentConfig.label}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e)} // onChange expects event
-      maxLength={maxLength}
-      showCounter={showCharacterCount}
-      minHeight={minHeight}
-      rows={rows}
-      className={className}
-      disabled={isGenerating || disabled}
-      variant={variant}
-      onAIAction={handleGenerate}
-      isAILoading={isGenerating}
-      isAIConfigured={isConfigured}
-      aiButtonTitle="Generate by JD"
-      aiShowLabel={false}
-      aiVariant="amber"
-    />
+    <div className="flex flex-col gap-2">
+      <FormTextarea
+        label={currentConfig.label}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e)} // onChange expects event
+        maxLength={maxLength}
+        showCounter={showCharacterCount}
+        minHeight={minHeight}
+        rows={rows}
+        className={className}
+        disabled={isGenerating || disabled}
+        variant={variant}
+        onAIAction={handleGenerate}
+        isAILoading={isGenerating}
+        isAIConfigured={isConfigured || isOnDevice}
+        aiButtonTitle={isOnDevice ? '🔒 On-Device AI' : 'Generate by JD'}
+        aiShowLabel={false}
+        aiVariant={isOnDevice ? 'green' : 'amber'}
+      />
+      {showOnDevicePanel && isOnDevice && (
+        <OnDeviceGenerator
+          prompt={buildOnDevicePrompt()}
+          onComplete={(text) => {
+            updateValue(text)
+            setShowOnDevicePanel(false)
+          }}
+          onDismiss={() => setShowOnDevicePanel(false)}
+        />
+      )}
+    </div>
   )
 }
 
