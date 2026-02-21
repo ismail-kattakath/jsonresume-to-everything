@@ -87,6 +87,7 @@ jobs:
         env:
           NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
           NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}
 
       - name: Add .nojekyll to output
         run: touch out/.nojekyll
