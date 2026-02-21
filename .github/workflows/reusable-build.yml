@@ -1,0 +1,100 @@
+name: Build Application
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: '20.18.1'
+      sync-markdown:
+        description: 'Whether to sync resume markdown to Gist'
+        type: boolean
+        default: false
+      is-gh-pages:
+        description: 'Whether this build is for GitHub Pages'
+        type: boolean
+        default: false
+      RESUME_MD_GIST:
+        required: false
+        type: string
+    secrets:
+      NEXT_PUBLIC_EDIT_PASSWORD_HASH:
+        required: true
+      NEXT_PUBLIC_HF_TOKEN:
+        required: true
+      GIST_TOKEN:
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      RESUME_JSON_GIST: ${{ vars.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Project
+        uses: ./.github/actions/setup-project
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+            nextjs-${{ runner.os }}-
+
+      - name: Create .nojekyll file
+        if: ${{ inputs.is-gh-pages }}
+        run: touch .nojekyll
+
+      - name: Download resume data
+        run: npm run download-resume-json
+
+      - name: Sync resume markdown to Gist
+        if: ${{ inputs.sync-markdown }}
+        run: npm run sync-resume-markdown
+        env:
+          RESUME_MD_GIST: ${{ inputs.RESUME_MD_GIST }}
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+
+      - name: Validate HuggingFace Token
+        run: |
+          URL="${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}"
+          if [ -z "$URL" ]; then
+            URL="https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/main/gemma3-1b-it-int4.task?download=true"
+          fi
+          echo "Validating access to model URL..."
+          RESPONSE=$(curl -s -o /dev/null -L -w "%{http_code}" -I \
+            -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}" \
+            "$URL")
+          if [ "$RESPONSE" != "200" ]; then
+            echo "::error::HuggingFace token validation failed with HTTP $RESPONSE"
+            echo "Check if NEXT_PUBLIC_HF_TOKEN is set correctly in GitHub Secrets."
+            echo "URL attempted: $URL"
+            exit 1
+          fi
+          echo "Token validation successful (HTTP $RESPONSE)"
+        env:
+          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+
+      - name: Build with Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
+          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}
+
+      - name: Add .nojekyll to output
+        if: ${{ inputs.is-gh-pages }}
+        run: touch out/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
