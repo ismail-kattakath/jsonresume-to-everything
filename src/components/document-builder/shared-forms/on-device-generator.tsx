@@ -18,6 +18,8 @@ interface OnDeviceGeneratorProps {
  * (done) with no intermediate events. To show real progress we stream-download first.
  */
 const MODEL_CACHE_KEY = 'on-device-model-blob'
+/** HuggingFace access token — required for gated Gemma models */
+const HF_TOKEN = process.env['NEXT_PUBLIC_HF_TOKEN'] || ''
 
 async function downloadWithProgress(
   url: string,
@@ -31,7 +33,10 @@ async function downloadWithProgress(
     return cached
   }
 
-  const response = await fetch(url, { signal })
+  const headers: HeadersInit = {}
+  if (HF_TOKEN) headers['Authorization'] = `Bearer ${HF_TOKEN}`
+
+  const response = await fetch(url, { signal, headers })
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 
   const contentLength = response.headers.get('content-length')
