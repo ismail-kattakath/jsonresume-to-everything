@@ -10,6 +10,10 @@ interface ContactInfoProps {
   telicon?: React.ReactNode
   emailicon?: React.ReactNode
   addressicon?: React.ReactNode
+  nationalitydata?: string
+  visadata?: string
+  nationalityicon?: React.ReactNode
+  visaicon?: React.ReactNode
 }
 
 const ContactInfo = ({
@@ -21,6 +25,10 @@ const ContactInfo = ({
   telicon,
   emailicon,
   addressicon,
+  nationalitydata = '',
+  visadata = '',
+  nationalityicon,
+  visaicon,
 }: ContactInfoProps) => {
   const { resumeData, setResumeData, editable = true } = useContext(ResumeContext)
 
@@ -42,6 +50,14 @@ const ContactInfo = ({
 
   const handleAddressBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
     setResumeData({ ...resumeData, address: e.currentTarget.innerText })
+  }
+
+  const handleNationalityBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+    setResumeData({ ...resumeData, nationality: e.currentTarget.innerText })
+  }
+
+  const handleVisaBlur = (e: React.FocusEvent<HTMLAnchorElement>) => {
+    setResumeData({ ...resumeData, visaStatus: e.currentTarget.innerText })
   }
 
   return (
@@ -82,6 +98,28 @@ const ContactInfo = ({
           onBlur={handleAddressBlur}
         >
           {addressicon} {addressdata}
+        </a>
+      )}
+      {nationalitydata && nationalitydata.trim() !== '' && (
+        <a
+          aria-label="Nationality"
+          className={`${linkclass} editable`}
+          contentEditable={editable}
+          suppressContentEditableWarning
+          onBlur={handleNationalityBlur}
+        >
+          {nationalityicon} {nationalitydata}
+        </a>
+      )}
+      {visadata && visadata.trim() !== '' && (
+        <a
+          aria-label="Visa Status"
+          className={`${linkclass} editable`}
+          contentEditable={editable}
+          suppressContentEditableWarning
+          onBlur={handleVisaBlur}
+        >
+          {visaicon} {visadata}
         </a>
       )}
     </div>

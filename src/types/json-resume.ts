@@ -16,6 +16,8 @@ export interface JSONResumeBasics {
   email?: string
   phone?: string
   url?: string
+  nationality?: string
+  visaStatus?: string
   summary?: string
   location?: {
     address?: string

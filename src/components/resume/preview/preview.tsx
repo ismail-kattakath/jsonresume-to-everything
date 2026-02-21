@@ -15,7 +15,7 @@ import {
   FaUnderline,
   FaGlobe,
 } from 'react-icons/fa'
-import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
+import { MdEmail, MdLocationOn, MdPhone, MdPublic, MdWorkOutline } from 'react-icons/md'
 import Skills from '@/components/resume/preview/skills'
 import DateRange from '@/lib/utils/date-range'
 import ContactInfo from '@/components/document-builder/shared-preview/contact-info'
@@ -188,9 +188,9 @@ const Preview = () => {
           )}
         />
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="mb-2 flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-1">
+          <div className="relative mb-2 flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-1">
             {resumeData.profilePicture && resumeData.profilePicture.length > 0 && (
-              <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-[black]">
+              <div className="absolute top-0 left-0 h-24 w-24 overflow-hidden border border-[black]">
                 <Image
                   src={resumeData.profilePicture}
                   alt="profile"
@@ -212,9 +212,13 @@ const Preview = () => {
               teldata={resumeData.contactInformation}
               emaildata={resumeData.email}
               addressdata={resumeData.address}
+              nationalitydata={resumeData.nationality}
+              visadata={resumeData.visaStatus}
               telicon={<MdPhone />}
               emailicon={<MdEmail />}
               addressicon={<MdLocationOn />}
+              nationalityicon={<MdPublic />}
+              visaicon={<MdWorkOutline />}
             />
             <div className="social-media-container mb-1 flex flex-row gap-4">
               {resumeData.socialMedia.map((socialMedia, index) => {

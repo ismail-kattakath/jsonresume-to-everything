@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import Image from 'next/image'
 import { FaGithub, FaLinkedin, FaTwitter, FaFacebook, FaInstagram, FaYoutube, FaGlobe } from 'react-icons/fa'
-import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
+import { MdEmail, MdLocationOn, MdPhone, MdPublic, MdWorkOutline } from 'react-icons/md'
 import ContactInfo from '@/components/document-builder/shared-preview/contact-info'
 import { formatUrl } from '@/lib/utils/format-url'
 import { ResumeContext } from '@/lib/contexts/document-context'
@@ -27,9 +27,9 @@ const ProfileHeader = () => {
   ]
 
   return (
-    <div className="mb-2 flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-1">
+    <div className="relative mb-2 flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-1">
       {resumeData.profilePicture && resumeData.profilePicture.length > 0 && (
-        <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-[black]">
+        <div className="absolute top-0 left-0 h-24 w-24 overflow-hidden border border-[black]">
           <Image
             src={resumeData.profilePicture}
             alt="profile"
@@ -51,9 +51,13 @@ const ProfileHeader = () => {
         teldata={resumeData.contactInformation}
         emaildata={resumeData.email}
         addressdata={resumeData.address}
+        nationalitydata={resumeData.nationality}
+        visadata={resumeData.visaStatus}
         telicon={<MdPhone />}
         emailicon={<MdEmail />}
         addressicon={<MdLocationOn />}
+        nationalityicon={<MdPublic />}
+        visaicon={<MdWorkOutline />}
       />
       <div className="grid grid-cols-3 gap-1">
         {resumeData.socialMedia &&

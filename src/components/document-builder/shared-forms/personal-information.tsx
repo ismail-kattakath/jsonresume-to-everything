@@ -64,6 +64,28 @@ const PersonalInformation = ({}) => {
           />
           <label className="floating-label">Address</label>
         </div>
+        <div className="floating-label-group">
+          <input
+            type="text"
+            placeholder="Nationality"
+            name="nationality"
+            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            value={resumeData.nationality || ''}
+            onChange={handleChange}
+          />
+          <label className="floating-label">Nationality</label>
+        </div>
+        <div className="floating-label-group">
+          <input
+            type="text"
+            placeholder="Visa Status"
+            name="visaStatus"
+            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white transition-all outline-none placeholder:text-white/40 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+            value={resumeData.visaStatus || ''}
+            onChange={handleChange}
+          />
+          <label className="floating-label">Visa Status</label>
+        </div>
         <div className="floating-label-group md:col-span-2">
           <input
             type="file"

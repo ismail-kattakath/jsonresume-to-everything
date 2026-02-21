@@ -25,6 +25,8 @@ const jsonResumeSchema = {
         email: { type: 'string', format: 'email' },
         phone: { type: 'string' },
         url: { type: 'string', format: 'uri' },
+        nationality: { type: 'string' },
+        visaStatus: { type: 'string' },
         summary: { type: 'string' },
         location: {
           type: 'object',

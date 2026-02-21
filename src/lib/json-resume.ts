@@ -92,6 +92,8 @@ export function convertToJSONResume(customData?: ResumeData) {
     image: data.profilePicture || '',
     email: data.email,
     phone: data.contactInformation,
+    nationality: data.nationality,
+    visaStatus: data.visaStatus,
     summary: data.summary,
     location,
     profiles: profiles, // Keep all profiles including Website for order preservation
@@ -239,6 +241,8 @@ export function convertFromJSONResume(jsonResume: JSONResume): ResumeData | null
       contactInformation: basics.phone || '',
       email: basics.email || '',
       address: address || '',
+      nationality: basics.nationality || '',
+      visaStatus: basics.visaStatus || '',
       profilePicture: basics.image || '',
       socialMedia,
       summary: basics.summary || '',

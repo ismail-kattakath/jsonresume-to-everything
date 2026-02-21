@@ -97,6 +97,8 @@ export function convertFromJSONResume(jsonResume: JSONResume): ResumeData {
     contactInformation: basics.phone || '',
     email: basics.email || '',
     address: address || '',
+    nationality: basics.nationality || '',
+    visaStatus: basics.visaStatus || '',
     profilePicture: basics.image || '',
     calendarLink: (basics as JSONResumeBasics & { calendar?: string }).calendar || '',
     socialMedia,

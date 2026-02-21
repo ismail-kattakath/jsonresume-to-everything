@@ -94,6 +94,8 @@ export interface ResumeData {
   contactInformation: string
   email: string
   address: string
+  nationality?: string
+  visaStatus?: string
   profilePicture: string
   profileImage?: string
   calendarLink?: string
