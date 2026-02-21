@@ -30,10 +30,10 @@ jobs:
     with:
       sync-markdown: true
       is-gh-pages: true
+      RESUME_MD_GIST: ${{ vars.RESUME_MD_GIST }}
     secrets:
       NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
       NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
-      RESUME_MD_GIST: ${{ vars.RESUME_MD_GIST }}
       GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
 
   deploy:
