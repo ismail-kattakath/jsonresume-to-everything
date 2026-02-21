@@ -9,35 +9,23 @@ import Experience from '@/components/sections/experience'
 import Projects from '@/components/sections/projects'
 
 // Mock framer-motion to avoid animation issues in tests
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <div {...props}>{children}</div>
-    ),
-    h1: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <h1 {...props}>{children}</h1>
-    ),
-    h2: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <h2 {...props}>{children}</h2>
-    ),
-    p: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <p {...props}>{children}</p>
-    ),
-    a: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <a {...props}>{children}</a>
-    ),
-    img: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <img {...props}>{children}</img>
-    ),
-    li: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <li {...props}>{children}</li>
-    ),
-    span: ({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }) => (
-      <span {...props}>{children}</span>
-    ),
-  },
-  AnimatePresence: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
-}))
+jest.mock('framer-motion', () => {
+  const motionMock = {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
+    h2: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+    a: ({ children, ...props }: any) => <a {...props}>{children}</a>,
+    img: ({ children, ...props }: any) => <img {...props}>{children}</img>,
+    li: ({ children, ...props }: any) => <li {...props}>{children}</li>,
+    span: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+  }
+  return {
+    motion: motionMock,
+    m: motionMock,
+    AnimatePresence: ({ children }: any) => <>{children}</>,
+  }
+})
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({

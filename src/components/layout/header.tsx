@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { navItems } from '@/config/navigation'
@@ -66,7 +66,7 @@ export function Header() {
   }
 
   return (
-    <motion.header
+    <m.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
@@ -77,7 +77,7 @@ export function Header() {
       <nav className="mx-auto max-w-6xl px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
-          <motion.button
+          <m.button
             onClick={() => {
               const isHomePage = window.location.pathname === '/'
               if (isHomePage) {
@@ -95,7 +95,7 @@ export function Header() {
             <div className="h-14 w-24">
               <Logo width={192} height={108} fill="var(--md-sys-color-primary)" />
             </div>
-          </motion.button>
+          </m.button>
 
           {/* Desktop Navigation */}
           <div className="hidden items-center space-x-1 md:flex">
@@ -107,7 +107,7 @@ export function Header() {
                 onMouseLeave={handleMouseLeave}
                 data-testid={`nav-item-${item.name.toLowerCase()}`}
               >
-                <motion.button
+                <m.button
                   onClick={() => (item.href ? handleNavigation(item.href) : null)}
                   className="md3-label-large group relative flex cursor-pointer items-center gap-1 px-5 py-3 text-[var(--md-sys-color-on-surface)] transition-colors"
                   whileHover={{ scale: 1.05 }}
@@ -130,18 +130,18 @@ export function Header() {
                     />
                   )}
                   {!item.submenu && (
-                    <motion.span
+                    <m.span
                       className="absolute bottom-0 left-1/2 h-0.5 rounded-full bg-[var(--md-sys-color-primary)]"
                       initial={{ width: 0, x: '-50%' }}
                       whileHover={{ width: '80%' }}
                       transition={{ duration: 0.3 }}
                     />
                   )}
-                </motion.button>
+                </m.button>
 
                 <AnimatePresence>
                   {activeDropdown === item.name && item.submenu && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -149,7 +149,7 @@ export function Header() {
                       className="absolute top-full left-0 mt-2 min-w-[200px] rounded-2xl border border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container)] p-2 shadow-lg"
                     >
                       {item.submenu.map((subItem, subIndex) => (
-                        <motion.button
+                        <m.button
                           key={subItem.name}
                           onClick={() => handleNavigation(subItem.href)}
                           className="md3-label-large w-full rounded-xl px-4 py-3 text-left text-[var(--md-sys-color-on-surface)] transition-colors hover:bg-[var(--md-sys-color-surface-container-highest)] hover:text-[var(--md-sys-color-primary)]"
@@ -160,9 +160,9 @@ export function Header() {
                           data-testid={`submenu-desktop-${subItem.name.toLowerCase()}`}
                         >
                           {subItem.name}
-                        </motion.button>
+                        </m.button>
                       ))}
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
@@ -170,21 +170,21 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <motion.button
+          <m.button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 text-[var(--md-sys-color-on-surface)] md:hidden"
             whileTap={{ scale: 0.95 }}
             data-testid="menu-toggle"
           >
             {isMobileMenuOpen ? <X size={24} data-testid="x-icon" /> : <Menu size={24} data-testid="menu-icon" />}
-          </motion.button>
+          </m.button>
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -196,7 +196,7 @@ export function Header() {
                 <div key={item.name} className="flex flex-col space-y-2">
                   {item.submenu ? (
                     <>
-                      <motion.button
+                      <m.button
                         onClick={() => toggleMobileSubmenu(item.name)}
                         className="md3-btn-tonal flex w-full items-center justify-between"
                         initial={{ opacity: 0, x: -20 }}
@@ -211,17 +211,17 @@ export function Header() {
                             transform: mobileExpandedMenu === item.name ? 'rotate(180deg)' : 'rotate(0deg)',
                           }}
                         />
-                      </motion.button>
+                      </m.button>
                       <AnimatePresence>
                         {mobileExpandedMenu === item.name && (
-                          <motion.div
+                          <m.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
                             className="flex flex-col space-y-2 pl-4"
                           >
                             {item.submenu.map((subItem, subIndex) => (
-                              <motion.button
+                              <m.button
                                 key={subItem.name}
                                 onClick={() => handleNavigation(subItem.href)}
                                 className="md3-label-large w-full rounded-xl bg-[var(--md-sys-color-surface-container)] px-4 py-3 text-left text-[var(--md-sys-color-on-surface)] transition-colors hover:bg-[var(--md-sys-color-surface-container-highest)]"
@@ -234,14 +234,14 @@ export function Header() {
                                 data-testid={`submenu-mobile-${subItem.name.toLowerCase()}`}
                               >
                                 {subItem.name}
-                              </motion.button>
+                              </m.button>
                             ))}
-                          </motion.div>
+                          </m.div>
                         )}
                       </AnimatePresence>
                     </>
                   ) : (
-                    <motion.button
+                    <m.button
                       onClick={() => item.href && handleNavigation(item.href)}
                       className="md3-btn-filled w-full text-left"
                       initial={{ opacity: 0, x: -20 }}
@@ -250,14 +250,14 @@ export function Header() {
                       data-testid={`mobile-direct-${item.name.toLowerCase()}`}
                     >
                       {item.name}
-                    </motion.button>
+                    </m.button>
                   )}
                 </div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </m.header>
   )
 }

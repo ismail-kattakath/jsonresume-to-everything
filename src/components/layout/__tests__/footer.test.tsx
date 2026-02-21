@@ -25,16 +25,19 @@ jest.mock('framer-motion', () => {
     return MockComponent
   }
 
+  const motionMock = {
+    footer: mockMotion('footer'),
+    div: mockMotion('div'),
+    button: mockMotion('button'),
+    p: mockMotion('p'),
+    a: mockMotion('a'),
+    li: mockMotion('li'),
+    h3: mockMotion('h3'),
+  }
+
   return {
-    motion: {
-      footer: mockMotion('footer'),
-      div: mockMotion('div'),
-      button: mockMotion('button'),
-      p: mockMotion('p'),
-      a: mockMotion('a'),
-      li: mockMotion('li'),
-      h3: mockMotion('h3'),
-    },
+    motion: motionMock,
+    m: motionMock,
   }
 })
 

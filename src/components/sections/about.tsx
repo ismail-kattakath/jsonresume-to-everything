@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { summary } from '@/lib/data/portfolio'
 import { Award, Users, Rocket, TrendingUp, Code2, Globe } from 'lucide-react'
 import { fadeInUp, scaleIn, fadeInUpWithDelay } from '@/lib/utils/animations'
@@ -48,8 +48,8 @@ export default function About() {
       <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-[var(--md-sys-color-primary)]/5 blur-3xl"></div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">
-        <motion.div {...fadeInUp} className="mb-16 text-center">
-          <motion.div
+        <m.div {...fadeInUp} className="mb-16 text-center">
+          <m.div
             {...scaleIn}
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-primary-container)] px-4 py-2"
           >
@@ -57,17 +57,17 @@ export default function About() {
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-primary-container)]">
               Principal Software Engineer
             </span>
-          </motion.div>
+          </m.div>
 
           <h2 className="md3-headline-large mb-4">About Me</h2>
           <p className="md3-body-medium md3-on-surface-variant mx-auto max-w-2xl">
             Transforming ideas into scalable, high-performance solutions
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="mb-12 grid gap-8 lg:grid-cols-2">
           {/* Main summary card */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -93,10 +93,10 @@ export default function About() {
 
             {/* Bottom accent */}
             <div className="h-1 bg-gradient-to-r from-[var(--md-sys-color-primary)] via-[var(--md-sys-color-secondary)] to-[var(--md-sys-color-tertiary)]"></div>
-          </motion.div>
+          </m.div>
 
           {/* Stats grid */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -104,7 +104,7 @@ export default function About() {
             className="grid grid-cols-2 gap-4"
           >
             {stats.map((stat, index) => (
-              <motion.div
+              <m.div
                 key={stat.label}
                 {...fadeInUpWithDelay(index)}
                 whileHover={{ y: -4 }}
@@ -121,13 +121,13 @@ export default function About() {
                 </div>
 
                 <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">{stat.label}</div>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Key highlights */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -156,7 +156,7 @@ export default function About() {
                 icon: Users,
               },
             ].map((competency, index) => (
-              <motion.div
+              <m.div
                 key={competency.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -169,10 +169,10 @@ export default function About() {
                 <p className="md3-body-small leading-relaxed text-[var(--md-sys-color-on-surface-variant)]">
                   {competency.description}
                 </p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

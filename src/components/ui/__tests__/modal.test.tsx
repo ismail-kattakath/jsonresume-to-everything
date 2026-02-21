@@ -4,12 +4,16 @@ import '@testing-library/jest-dom'
 import Modal from '@/components/ui/modal'
 
 // Mock framer-motion to simplify testing components that use AnimatePresence and motion
-jest.mock('framer-motion', () => ({
-  motion: {
+jest.mock('framer-motion', () => {
+  const motionMock = {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
-}))
+  }
+  return {
+    motion: motionMock,
+    m: motionMock,
+    AnimatePresence: ({ children }: any) => <>{children}</>,
+  }
+})
 
 describe('Modal', () => {
   const mockOnClose = jest.fn()

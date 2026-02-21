@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { projects } from '@/lib/data/portfolio'
 import { Code } from 'lucide-react'
 
@@ -11,7 +11,7 @@ export default function Projects() {
   return (
     <section id="projects" className="py-24 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -19,11 +19,11 @@ export default function Projects() {
           className="mb-16 text-center"
         >
           <h2 className="md3-headline-large mb-4">Projects</h2>
-        </motion.div>
+        </m.div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, index) => (
-            <motion.div
+            <m.div
               key={project.name}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export default function Projects() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

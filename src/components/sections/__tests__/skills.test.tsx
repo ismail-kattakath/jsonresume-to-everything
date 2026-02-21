@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import Skills from '@/components/sections/skills'
 
-jest.mock('framer-motion', () => ({
-  motion: {
+jest.mock('framer-motion', () => {
+  const motionMock = {
     div: ({
       children,
       variants,
@@ -14,27 +14,13 @@ jest.mock('framer-motion', () => ({
       viewport,
       style,
       ...props
-    }: Record<string, unknown> & { children?: React.ReactNode }) => <div {...props}>{children}</div>,
-    h2: ({
-      children,
-      variants,
-      initial,
-      animate,
-      whileInView,
-      transition,
-      viewport,
-      ...props
-    }: Record<string, unknown> & { children?: React.ReactNode }) => <h2 {...props}>{children}</h2>,
-    h3: ({
-      children,
-      variants,
-      initial,
-      animate,
-      whileInView,
-      transition,
-      viewport,
-      ...props
-    }: Record<string, unknown> & { children?: React.ReactNode }) => <h3 {...props}>{children}</h3>,
+    }: any) => <div {...props}>{children}</div>,
+    h2: ({ children, variants, initial, animate, whileInView, transition, viewport, ...props }: any) => (
+      <h2 {...props}>{children}</h2>
+    ),
+    h3: ({ children, variants, initial, animate, whileInView, transition, viewport, ...props }: any) => (
+      <h3 {...props}>{children}</h3>
+    ),
     span: ({
       children,
       variants,
@@ -46,9 +32,13 @@ jest.mock('framer-motion', () => ({
       viewport,
       style,
       ...props
-    }: Record<string, unknown> & { children?: React.ReactNode }) => <span {...props}>{children}</span>,
-  },
-}))
+    }: any) => <span {...props}>{children}</span>,
+  }
+  return {
+    motion: motionMock,
+    m: motionMock,
+  }
+})
 
 describe('Skills', () => {
   it('renders skills section', () => {

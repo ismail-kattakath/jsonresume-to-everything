@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { skills } from '@/lib/data/portfolio'
 import {
   Brain,
@@ -51,14 +51,14 @@ export default function Skills() {
       <div className="absolute top-1/3 right-0 h-80 w-80 rounded-full bg-[var(--md-sys-color-tertiary)]/5 blur-3xl"></div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
           className="mb-16 text-center"
         >
-          <motion.div
+          <m.div
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-secondary-container)] px-4 py-2"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -69,14 +69,14 @@ export default function Skills() {
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-secondary-container)]">
               Tech Stack
             </span>
-          </motion.div>
+          </m.div>
 
           <h2 className="md3-headline-large mb-4">Technical Expertise</h2>
           <p className="md3-body-large md3-on-surface-variant mx-auto max-w-3xl">
             Comprehensive technical skills across AI/ML, cloud platforms, and modern development frameworks built over
             15+ years of experience.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {skills.map((skillCategory, categoryIndex) => {
@@ -86,7 +86,7 @@ export default function Skills() {
               'from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-secondary)]'
 
             return (
-              <motion.div
+              <m.div
                 key={skillCategory.category}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -121,7 +121,7 @@ export default function Skills() {
                 <div className="p-6 pt-4">
                   <div className="flex flex-wrap gap-2">
                     {skillCategory.items.map((skill, skillIndex) => (
-                      <motion.span
+                      <m.span
                         key={skill}
                         initial={{ opacity: 0, scale: 0.8 }}
                         whileInView={{ opacity: 1, scale: 1 }}
@@ -131,17 +131,17 @@ export default function Skills() {
                         className="md3-label-small cursor-default rounded-lg bg-[var(--md-sys-color-surface-container-high)] px-3 py-1.5 font-medium text-[var(--md-sys-color-on-surface-variant)] shadow-sm transition-colors hover:bg-[var(--md-sys-color-surface-container-highest)]"
                       >
                         {skill}
-                      </motion.span>
+                      </m.span>
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             )
           })}
         </div>
 
         {/* Bottom stats */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -176,7 +176,7 @@ export default function Skills() {
               <div className="md3-label-medium text-[var(--md-sys-color-on-surface-variant)]">Years of Practice</div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

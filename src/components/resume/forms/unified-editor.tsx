@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Toaster } from 'sonner'
 import {
   ArrowDownUp,
@@ -23,24 +24,28 @@ import MainLayout from '@/components/layout/main-layout'
 import PrintButton from '@/components/document-builder/ui/print-button'
 import CollapsibleSection from '@/components/document-builder/ui/collapsible-section'
 import ScaledPreviewWrapper from '@/components/document-builder/ui/scaled-preview-wrapper'
-import ImportExport from '@/components/document-builder/shared-forms/import-export'
-import AISettings from '@/components/document-builder/shared-forms/ai-settings'
-import JobDescriptionSection from '@/components/document-builder/shared-forms/job-description-section'
-import PersonalInformation from '@/components/document-builder/shared-forms/personal-information'
-import SocialMedia from '@/components/document-builder/shared-forms/social-media'
-import Summary from '@/components/resume/forms/summary'
-import Education from '@/components/resume/forms/education'
-import WorkExperience from '@/components/resume/forms/work-experience'
-import { SkillsSection } from '@/components/resume/forms/skills-section'
-import Projects from '@/components/resume/forms/projects'
-import AdditionalSections from '@/components/resume/forms/additional-sections'
-import CoverLetterContent from '@/components/cover-letter/forms/cover-letter-content'
-import Preview from '@/components/resume/preview/preview'
-import CoverLetterPreview from '@/components/cover-letter/preview/cover-letter-preview'
 import { AISettingsStatusIndicator } from '@/components/document-builder/ui/ai-settings-status-indicator'
 import { Tooltip } from '@/components/ui/tooltip'
 import { BaseButton } from '@/components/ui/base-button'
 import { registerServiceWorker } from '@/lib/pwa/register-service-worker'
+
+// Dynamically import heavy components to reduce initial bundle size
+const ImportExport = dynamic(() => import('@/components/document-builder/shared-forms/import-export'))
+const AISettings = dynamic(() => import('@/components/document-builder/shared-forms/ai-settings'))
+const JobDescriptionSection = dynamic(
+  () => import('@/components/document-builder/shared-forms/job-description-section')
+)
+const PersonalInformation = dynamic(() => import('@/components/document-builder/shared-forms/personal-information'))
+const SocialMedia = dynamic(() => import('@/components/document-builder/shared-forms/social-media'))
+const Summary = dynamic(() => import('@/components/resume/forms/summary'))
+const Education = dynamic(() => import('@/components/resume/forms/education'))
+const WorkExperience = dynamic(() => import('@/components/resume/forms/work-experience'))
+const SkillsSection = dynamic(() => import('@/components/resume/forms/skills-section').then((mod) => mod.SkillsSection))
+const Projects = dynamic(() => import('@/components/resume/forms/projects'))
+const AdditionalSections = dynamic(() => import('@/components/resume/forms/additional-sections'))
+const CoverLetterContent = dynamic(() => import('@/components/cover-letter/forms/cover-letter-content'))
+const Preview = dynamic(() => import('@/components/resume/preview/preview'))
+const CoverLetterPreview = dynamic(() => import('@/components/cover-letter/preview/cover-letter-preview'))
 
 import type { ResumeData } from '@/types'
 

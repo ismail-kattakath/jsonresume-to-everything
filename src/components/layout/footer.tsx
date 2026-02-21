@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Github, Linkedin, Mail, Globe, Heart, Sparkles, ArrowUp } from 'lucide-react'
 import { contactInfo } from '@/lib/data/portfolio'
 import resumeData from '@/lib/resume-adapter'
@@ -33,7 +33,7 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="mb-12 grid gap-12 md:grid-cols-3">
           {/* Brand Section */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -41,7 +41,7 @@ export default function Footer() {
             className="md:col-span-2"
           >
             <div className="mb-6">
-              <motion.button
+              <m.button
                 onClick={() => navigateTo('/')}
                 className="mb-4 h-27 w-48 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
@@ -50,7 +50,7 @@ export default function Footer() {
                 data-testid="logo-button"
               >
                 <Logo width={192} height={108} fill="var(--md-sys-color-primary)" />
-              </motion.button>
+              </m.button>
               <h3 className="md3-title-large mb-2 bg-gradient-to-r from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)] bg-clip-text font-semibold text-transparent">
                 {resumeData.position}
               </h3>
@@ -61,7 +61,7 @@ export default function Footer() {
 
             {/* Social Links with gradient backgrounds */}
             <div className="flex gap-3">
-              <motion.a
+              <m.a
                 href={`https://${contactInfo.github}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -73,9 +73,9 @@ export default function Footer() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900 opacity-90 transition-opacity group-hover:opacity-100"></div>
                 <Github size={20} className="relative text-white" />
-              </motion.a>
+              </m.a>
 
-              <motion.a
+              <m.a
                 href={`https://${contactInfo.linkedin}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -87,9 +87,9 @@ export default function Footer() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-700 opacity-90 transition-opacity group-hover:opacity-100"></div>
                 <Linkedin size={20} className="relative text-white" />
-              </motion.a>
+              </m.a>
 
-              <motion.a
+              <m.a
                 href={`mailto:${contactInfo.email}`}
                 onClick={() => analytics.contactClick('email')}
                 whileHover={{ scale: 1.1, y: -4 }}
@@ -99,10 +99,10 @@ export default function Footer() {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 opacity-90 transition-opacity group-hover:opacity-100"></div>
                 <Mail size={20} className="relative text-white" />
-              </motion.a>
+              </m.a>
 
               {contactInfo.website && (
-                <motion.a
+                <m.a
                   href={`https://${contactInfo.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -113,13 +113,13 @@ export default function Footer() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-green-500 opacity-90 transition-opacity group-hover:opacity-100"></div>
                   <Globe size={20} className="relative text-white" />
-                </motion.a>
+                </m.a>
               )}
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Quick Links with enhanced design */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -131,7 +131,7 @@ export default function Footer() {
             </div>
             <ul className="space-y-3">
               {navItems.map((item, index) => (
-                <motion.li
+                <m.li
                   key={item.name}
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -191,12 +191,12 @@ export default function Footer() {
                       {item.name}
                     </button>
                   )}
-                </motion.li>
+                </m.li>
               ))}
             </ul>
 
             {/* Back to top button */}
-            <motion.button
+            <m.button
               onClick={scrollToTop}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
@@ -205,12 +205,12 @@ export default function Footer() {
             >
               <ArrowUp size={16} />
               Back to Top
-            </motion.button>
-          </motion.div>
+            </m.button>
+          </m.div>
         </div>
 
         {/* Enhanced Bottom Bar */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -275,7 +275,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </footer>
   )

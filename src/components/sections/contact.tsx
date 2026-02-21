@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Mail, Github, Linkedin, Calendar, Send, MessageCircle } from 'lucide-react'
 import { contactInfo } from '@/lib/data/portfolio'
 
@@ -54,14 +54,14 @@ export default function Contact() {
       <div className="absolute right-1/3 bottom-0 h-80 w-80 rounded-full bg-[var(--md-sys-color-tertiary)]/5 blur-3xl"></div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
           className="mb-16 text-center"
         >
-          <motion.div
+          <m.div
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--md-sys-color-tertiary-container)] px-4 py-2"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -72,19 +72,19 @@ export default function Contact() {
             <span className="md3-label-medium font-medium text-[var(--md-sys-color-on-tertiary-container)]">
               Let&apos;s Connect
             </span>
-          </motion.div>
+          </m.div>
 
           <h2 className="md3-headline-large mb-4">Get In Touch</h2>
           <p className="md3-body-large md3-on-surface-variant mx-auto max-w-2xl">
             Have a project in mind or want to discuss opportunities? I&apos;m always open to interesting conversations
             and collaborations.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Contact methods grid */}
         <div className="mb-12 grid gap-6 md:grid-cols-2">
           {contactMethods.map((method, index) => (
-            <motion.a
+            <m.a
               key={method.title}
               href={method.action}
               target={method.isExternal ? '_blank' : undefined}
@@ -127,12 +127,12 @@ export default function Contact() {
               <div
                 className={`h-1 bg-gradient-to-r ${method.gradient} origin-left scale-x-0 transform transition-transform group-hover:scale-x-100`}
               ></div>
-            </motion.a>
+            </m.a>
           ))}
         </div>
 
         {/* CTA */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -144,7 +144,7 @@ export default function Contact() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <motion.a
+            <m.a
               href={`mailto:${contactInfo.email}`}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
@@ -152,9 +152,9 @@ export default function Contact() {
             >
               <Mail size={20} />
               Send Me an Email
-            </motion.a>
+            </m.a>
 
-            <motion.a
+            <m.a
               href={contactInfo.calendar}
               target="_blank"
               rel="noopener noreferrer"
@@ -164,9 +164,9 @@ export default function Contact() {
             >
               <Calendar size={20} />
               Book a Meeting
-            </motion.a>
+            </m.a>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

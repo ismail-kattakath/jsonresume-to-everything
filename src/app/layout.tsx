@@ -3,6 +3,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
 import BackgroundImage from '@/components/background-image'
 import { generateSiteMetadata } from '@/config/metadata'
+import { FramerMotionProvider } from '@/components/providers/framer-motion-provider'
 
 // Generate metadata from resumeData (single source of truth)
 export const metadata: Metadata = generateSiteMetadata()
@@ -34,8 +35,10 @@ export default function RootLayout({
           minHeight: '100vh',
         }}
       >
-        <BackgroundImage withBlur withOverlay />
-        {children}
+        <FramerMotionProvider>
+          <BackgroundImage withBlur withOverlay />
+          {children}
+        </FramerMotionProvider>
         {process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID'] && (
           <GoogleAnalytics gaId={process.env['NEXT_PUBLIC_GA_MEASUREMENT_ID']} />
         )}

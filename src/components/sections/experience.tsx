@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { experience } from '@/lib/data/portfolio'
 import { Calendar, Briefcase, Sparkles } from 'lucide-react'
 
@@ -11,7 +11,7 @@ export default function Experience() {
   return (
     <section id="experience" className="py-24 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -19,11 +19,11 @@ export default function Experience() {
           className="mb-16 text-center"
         >
           <h2 className="md3-headline-large mb-4">Professional Experience</h2>
-        </motion.div>
+        </m.div>
 
         <div className="mx-auto max-w-5xl">
           {experience.map((exp, index) => (
-            <motion.div
+            <m.div
               key={`${exp.organization}-${index}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -39,31 +39,27 @@ export default function Experience() {
               {/* Modern card with left accent border */}
               <div className="relative">
                 {/* Animated left accent */}
-                <motion.div
+                <m.div
                   className="absolute top-0 bottom-0 left-0 w-1 rounded-l-2xl bg-gradient-to-b from-[var(--md-sys-color-primary)] to-[var(--md-sys-color-tertiary)]"
                   initial={{ scaleY: 0 }}
                   whileInView={{ scaleY: 1 }}
                   transition={{ duration: 0.8, delay: index * 0.15 + 0.3 }}
                   viewport={{ once: true }}
-                ></motion.div>
+                ></m.div>
 
                 {/* Timeline marker with icon */}
                 <div className="absolute top-6 -left-[23px] z-10">
-                  <motion.div
+                  <m.div
                     className="flex h-11 w-11 items-center justify-center rounded-full border-4 border-[var(--md-sys-color-surface-container-lowest)] bg-[var(--md-sys-color-primary-container)] shadow-lg"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ type: 'spring', stiffness: 400 }}
                   >
                     <Briefcase className="text-[var(--md-sys-color-on-primary-container)]" size={20} />
-                  </motion.div>
+                  </m.div>
                 </div>
 
                 {/* Card content */}
-                <motion.div
-                  className="md3-card ml-8 overflow-hidden"
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                >
+                <m.div className="md3-card ml-8 overflow-hidden" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
                   {/* Header section with gradient background */}
                   <div className="relative border-b border-[var(--md-sys-color-outline-variant)]/30 bg-gradient-to-br from-[var(--md-sys-color-surface-container-low)] to-[var(--md-sys-color-surface-container)] p-6 pb-5">
                     <div className="flex items-start justify-between gap-4">
@@ -104,7 +100,7 @@ export default function Experience() {
 
                     <ul className="mb-6 space-y-3">
                       {exp.description.map((desc, descIndex) => (
-                        <motion.li
+                        <m.li
                           key={descIndex}
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
@@ -122,7 +118,7 @@ export default function Experience() {
                           <span className="md3-body-medium flex-1 leading-relaxed text-[var(--md-sys-color-on-surface)]">
                             {desc}
                           </span>
-                        </motion.li>
+                        </m.li>
                       ))}
                     </ul>
 
@@ -133,7 +129,7 @@ export default function Experience() {
                       </h5>
                       <div className="flex flex-wrap gap-2">
                         {exp.technologies.map((tech, techIndex) => (
-                          <motion.span
+                          <m.span
                             key={tech}
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -146,14 +142,14 @@ export default function Experience() {
                             className="md3-label-medium relative cursor-default rounded-lg bg-[var(--md-sys-color-surface-container-high)] px-3 py-1.5 font-medium text-[var(--md-sys-color-on-surface-variant)] shadow-sm transition-colors hover:bg-[var(--md-sys-color-surface-container-highest)]"
                           >
                             {tech}
-                          </motion.span>
+                          </m.span>
                         ))}
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>
