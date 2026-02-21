@@ -30,6 +30,10 @@ async function syncResumeMarkdown() {
         const markdown = convertResumeToMarkdown(internalResumeData);
 
         if (!githubToken) {
+            if (process.env['GITHUB_ACTIONS']) {
+                console.error('GH_TOKEN is not defined in GitHub Actions. This is required to update the Gist.');
+                process.exit(1);
+            }
             console.warn('GH_TOKEN is not defined. Printing Markdown to console instead of updating Gist.');
             console.log('--- GENERATED MARKDOWN (Snippet) ---');
             console.log(markdown.substring(0, 500) + '...');
