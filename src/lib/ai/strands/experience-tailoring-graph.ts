@@ -59,7 +59,7 @@ export async function tailorExperienceToJDGraph(
       '2. **EMPHASIZE RELEVANCE**: Highlight aspects that align with JD requirements\n' +
       '3. **HONEST FRAMING**: Frame responsibilities using JD-relevant terminology when accurate\n' +
       '4. **ACKNOWLEDGE LIMITS**: If experience is tangentially related, be honest about it\n' +
-      '5. **CONCISE**: 2-3 sentences maximum\n' +
+      '5. **CONCISE**: 1 sentence maximum\n' +
       '6. **NO FABRICATION**: Do not add technologies, skills, or responsibilities not in original\n\n' +
       'Example Transformation:\n' +
       'Original: "Developed web applications using React and Node.js"\n' +
