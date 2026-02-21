@@ -93,7 +93,7 @@ export function Header() {
             data-testid="logo-button"
           >
             <div className="h-14 w-24">
-              <Logo width={192} height={108} fill="var(--md-sys-color-primary)" />
+              <Logo width="100%" height="100%" fill="var(--md-sys-color-on-surface)" />
             </div>
           </m.button>
 
