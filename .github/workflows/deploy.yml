@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   install:
-    name: Install dependencies
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,8 +23,8 @@ jobs:
       - name: Setup Project
         uses: ./.github/actions/setup-project
 
-  build:
-    name: Build
+  build-app:
+    name: Application Build
     needs: install
     uses: ./.github/workflows/reusable-build.yml
     with:
@@ -42,7 +42,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-app
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

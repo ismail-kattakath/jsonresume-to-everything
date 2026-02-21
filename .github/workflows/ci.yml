@@ -6,7 +6,7 @@ on:
 
 jobs:
   install:
-    name: Install dependencies
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,7 +15,7 @@ jobs:
         uses: ./.github/actions/setup-project
 
   typecheck:
-    name: Type check
+    name: Type Check
     needs: install
     runs-on: ubuntu-latest
     env:
@@ -33,7 +33,7 @@ jobs:
         run: npx tsc --noEmit
 
   test:
-    name: Tests & coverage
+    name: Unit Tests
     needs: install
     runs-on: ubuntu-latest
     env:
@@ -67,8 +67,8 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build:
-    name: Build
+  build-app:
+    name: Application Build
     needs: install
     uses: ./.github/workflows/reusable-build.yml
     secrets:
