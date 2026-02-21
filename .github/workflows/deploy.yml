@@ -41,6 +41,7 @@ jobs:
   build:
     name: Build
     needs: [install]
+    environment: github-pages
     runs-on: ubuntu-latest
     env:
       RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
