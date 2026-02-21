@@ -4,7 +4,7 @@ import { convertFromJSONResume } from '../src/lib/resume-adapter';
 async function syncResumeMarkdown() {
     const gistUrl = process.env['RESUME_JSON_GIST'];
     const mdGistId = process.env['RESUME_MD_GIST'];
-    const githubToken = process.env['GH_TOKEN'];
+    const githubToken = process.env['GH_TOKEN'] || process.env['GIST_TOKEN'];
 
     if (!gistUrl) {
         console.error('RESUME_JSON_GIST is not defined.');
