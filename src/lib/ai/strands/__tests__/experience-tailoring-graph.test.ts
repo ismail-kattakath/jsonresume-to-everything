@@ -85,8 +85,10 @@ const defaultAgentMock = ({ systemPrompt }: { systemPrompt: string }) => {
 jest.mock('@strands-agents/sdk', () => {
   return {
     Agent: jest.fn().mockImplementation((args) => defaultAgentMock(args)),
+    tool: jest.fn().mockImplementation((config) => config),
   }
 })
+
 
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue({ toString: () => 'mock-model' }),

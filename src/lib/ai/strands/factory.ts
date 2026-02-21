@@ -1,7 +1,7 @@
 import { Model } from '@strands-agents/sdk'
 import { OpenAIModel } from '@strands-agents/sdk/openai'
 import { GeminiModel } from '@strands-agents/sdk/gemini'
-import { AgentConfig } from './types'
+import { AgentConfig } from '@/lib/ai/strands/types'
 
 /**
  * Creates a Model instance based on the provided configuration.

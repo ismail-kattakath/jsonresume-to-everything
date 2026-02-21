@@ -10,8 +10,10 @@ jest.mock('@strands-agents/sdk', () => {
       stream: jest.fn(),
     })),
     Model: jest.fn(),
+    tool: jest.fn().mockImplementation((config) => config),
   }
 })
+
 
 jest.mock('@strands-agents/sdk/openai', () => {
   return {
@@ -47,12 +49,12 @@ describe('JD Refinement', () => {
       const mockReviewerInvoke = jest.fn().mockResolvedValue({ toString: () => 'APPROVED: Highly professional' })
 
       let agentCount = 0
-      ;(Agent as jest.Mock).mockImplementation(() => {
-        agentCount++
-        return {
-          invoke: agentCount === 1 ? mockRefinerInvoke : mockReviewerInvoke,
-        }
-      })
+        ; (Agent as jest.Mock).mockImplementation(() => {
+          agentCount++
+          return {
+            invoke: agentCount === 1 ? mockRefinerInvoke : mockReviewerInvoke,
+          }
+        })
 
       const onProgress = jest.fn()
       const result = await analyzeJobDescriptionGraph(mockJD, mockConfig, onProgress)
@@ -81,12 +83,12 @@ describe('JD Refinement', () => {
         .mockResolvedValueOnce(mockReviewer2Value)
 
       let agentCount = 0
-      ;(Agent as jest.Mock).mockImplementation(() => {
-        agentCount++
-        return {
-          invoke: agentCount === 1 ? mockRefineInvoke : mockReviewInvoke,
-        }
-      })
+        ; (Agent as jest.Mock).mockImplementation(() => {
+          agentCount++
+          return {
+            invoke: agentCount === 1 ? mockRefineInvoke : mockReviewInvoke,
+          }
+        })
 
       const result = await analyzeJobDescriptionGraph(mockJD, mockConfig)
 
@@ -101,12 +103,12 @@ describe('JD Refinement', () => {
       const mockReviewInvoke = jest.fn().mockResolvedValue({ toString: () => 'CRITIQUE: Loop' })
 
       let agentCount = 0
-      ;(Agent as jest.Mock).mockImplementation(() => {
-        agentCount++
-        return {
-          invoke: agentCount === 1 ? mockRefineInvoke : mockReviewInvoke,
-        }
-      })
+        ; (Agent as jest.Mock).mockImplementation(() => {
+          agentCount++
+          return {
+            invoke: agentCount === 1 ? mockRefineInvoke : mockReviewInvoke,
+          }
+        })
 
       const result = await analyzeJobDescriptionGraph(mockJD, mockConfig)
 
