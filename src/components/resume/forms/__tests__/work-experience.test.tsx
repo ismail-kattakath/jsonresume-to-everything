@@ -57,7 +57,7 @@ jest.mock('@/components/ui/sortable-tag-input', () => ({
 
 jest.mock('@/components/ui/ai-action-button', () => ({
   __esModule: true,
-  default: ({ onClick, label }: { onClick: () => void; label: string }) => (
+  default: ({ onClick, label, isConfigured }: { onClick: () => void; label: string; isConfigured: boolean }) => (
     <button onClick={onClick} aria-label={label}>
       {label}
     </button>
@@ -116,6 +116,12 @@ describe('WorkExperience', () => {
       jobDescription: 'test job description '.repeat(10),
     },
     isConfigured: true,
+    isPipelineActive: false,
+    setIsPipelineActive: jest.fn(),
+    isAnyAIActionActive: false,
+    setIsAnyAIActionActive: jest.fn(),
+    isAIWorking: false,
+    resetAll: jest.fn(),
   }
 
   const mockArrayForm = {

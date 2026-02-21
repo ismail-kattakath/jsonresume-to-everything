@@ -24,7 +24,7 @@ import type { DropResult } from '@hello-pangea/dnd'
  */
 export function SkillsSection() {
   const context = useContext(ResumeContext)
-  const { settings, updateSettings, isConfigured } = useAISettings()
+  const { settings, updateSettings, isConfigured, setIsAnyAIActionActive } = useAISettings()
   const [isSorting, setIsSorting] = useState(false)
   const [isExtractingSkills, setIsExtractingSkills] = useState(false)
 
@@ -67,6 +67,7 @@ export function SkillsSection() {
     if (!isConfigured || isSorting) return
 
     setIsSorting(true)
+    setIsAnyAIActionActive(true)
     try {
       let toastId: string | number | undefined
 
@@ -131,6 +132,7 @@ export function SkillsSection() {
       console.error('AI Skills sort error:', error)
     } finally {
       setIsSorting(false)
+      setIsAnyAIActionActive(false)
     }
   }
 
@@ -150,6 +152,7 @@ export function SkillsSection() {
     }
 
     setIsExtractingSkills(true)
+    setIsAnyAIActionActive(true)
     let toastId: string | number | undefined
 
     const extractPromise = extractSkillsGraph(
@@ -183,10 +186,12 @@ export function SkillsSection() {
 
       updateSettings({ skillsToHighlight: skills })
       setIsExtractingSkills(false)
+      setIsAnyAIActionActive(false)
       toast.success('Skills extracted and aligned with your resume!')
     } catch (err: unknown) {
       if (toastId) toast.dismiss(toastId)
       setIsExtractingSkills(false)
+      setIsAnyAIActionActive(false)
       toast.error(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }

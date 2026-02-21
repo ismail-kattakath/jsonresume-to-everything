@@ -117,6 +117,12 @@ describe('SkillsSection', () => {
     },
     updateSettings: mockUpdateSettings,
     isConfigured: true,
+    isPipelineActive: false,
+    setIsPipelineActive: jest.fn(),
+    isAnyAIActionActive: false,
+    setIsAnyAIActionActive: jest.fn(),
+    isAIWorking: false,
+    resetAll: jest.fn(),
   }
 
   const mockGroupsManagement = {

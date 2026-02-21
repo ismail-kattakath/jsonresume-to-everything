@@ -24,7 +24,7 @@ import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
  */
 const TechStackSortButton = ({ workExperienceIndex }: { workExperienceIndex: number }) => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
-  const { settings, isConfigured } = useAISettings()
+  const { settings, isConfigured, setIsAnyAIActionActive } = useAISettings()
   const [isSorting, setIsSorting] = useState(false)
 
   const workExperience = resumeData.workExperience[workExperienceIndex]
@@ -37,9 +37,10 @@ const TechStackSortButton = ({ workExperienceIndex }: { workExperienceIndex: num
 
   /* istanbul ignore next */
   const handleAISort = async () => {
-    if (!isConfigured || isSorting) return
+    if (!isConfigured) return
 
     setIsSorting(true)
+    setIsAnyAIActionActive(true)
     let toastId: string | number | undefined
 
     const sortPromise = sortTechStackGraph(
@@ -82,10 +83,12 @@ const TechStackSortButton = ({ workExperienceIndex }: { workExperienceIndex: num
       }
       setResumeData({ ...resumeData, workExperience: newWorkExperience })
       setIsSorting(false)
+      setIsAnyAIActionActive(false)
       toast.success('Tech stack sorted by job relevance')
     } catch (err: unknown) {
       if (toastId) toast.dismiss(toastId)
       setIsSorting(false)
+      setIsAnyAIActionActive(false)
       toast.error(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
     }
   }

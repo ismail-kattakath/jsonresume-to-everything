@@ -4,7 +4,7 @@ import { createModel } from '@/lib/ai/strands/factory'
 import { SYSTEM_PROMPTS } from '@/lib/ai/strands/tech-stack-sorting/prompts'
 
 /**
- *
+ * Creates optimizer, scribe, and editor agents for tech stack sorting
  */
 export function createTechStackAgents(config: AgentConfig) {
   const model = createModel(config)
@@ -29,6 +29,6 @@ export function createTechStackAgents(config: AgentConfig) {
 }
 
 /**
- *
+ * Type definition for tech stack sorting agents
  */
 export type TechStackAgents = ReturnType<typeof createTechStackAgents>

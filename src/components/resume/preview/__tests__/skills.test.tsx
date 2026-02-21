@@ -68,6 +68,10 @@ const renderWithContext = (
         validateAll: mockValidateAll,
         isPipelineActive: false,
         setIsPipelineActive: jest.fn(),
+        isAnyAIActionActive: false,
+        setIsAnyAIActionActive: jest.fn(),
+        isAIWorking: false,
+        resetAll: jest.fn(),
       }}
     >
       <ResumeContext.Provider

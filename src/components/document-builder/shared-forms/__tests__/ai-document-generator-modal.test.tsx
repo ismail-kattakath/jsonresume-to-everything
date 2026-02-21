@@ -24,6 +24,15 @@ jest.mock('sonner', () => ({
   },
 }))
 
+jest.mock('@/components/ui/ai-action-button', () => ({
+  __esModule: true,
+  default: ({ onClick, label }: any) => (
+    <button onClick={onClick} aria-label={label}>
+      {label}
+    </button>
+  ),
+}))
+
 describe('AIDocumentGeneratorModal', () => {
   const mockResumeData: any = { name: 'John Doe' }
   const mockProps = {

@@ -5,7 +5,7 @@ import { SYSTEM_PROMPTS } from '@/lib/ai/strands/summary/prompts'
 import { createValidateSkillsTool } from '@/lib/ai/strands/summary/tools'
 
 /**
- *
+ * Creates analyst, writer, and reviewer agents for professional summary generation
  */
 export function createSummaryAgents(config: AgentConfig, allowedSkills: string[]) {
   const model = createModel(config)
@@ -31,6 +31,6 @@ export function createSummaryAgents(config: AgentConfig, allowedSkills: string[]
 }
 
 /**
- *
+ * Type definition for summary agents
  */
 export type SummaryAgents = ReturnType<typeof createSummaryAgents>

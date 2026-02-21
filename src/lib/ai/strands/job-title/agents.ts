@@ -4,7 +4,7 @@ import { createModel } from '@/lib/ai/strands/factory'
 import { SYSTEM_PROMPTS } from '@/lib/ai/strands/job-title/prompts'
 
 /**
- *
+ * Creates analyst, writer, and reviewer agents for job title generation
  */
 export function createJobTitleAgents(config: AgentConfig) {
   const model = createModel(config)
@@ -29,6 +29,6 @@ export function createJobTitleAgents(config: AgentConfig) {
 }
 
 /**
- *
+ * Type definition for job title agents
  */
 export type JobTitleAgents = ReturnType<typeof createJobTitleAgents>

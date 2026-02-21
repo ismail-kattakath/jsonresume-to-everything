@@ -296,6 +296,10 @@ describe('CoverLetterContent Component', () => {
         isConfigured: true,
         connectionStatus: 'valid' as const,
         jobDescriptionStatus: 'valid' as const,
+        isAnyAIActionActive: false,
+        setIsAnyAIActionActive: jest.fn(),
+        isAIWorking: false,
+        resetAll: jest.fn(),
       })
 
       render(

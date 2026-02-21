@@ -3,6 +3,7 @@
 import React from 'react'
 import { Sparkles, Loader2 } from 'lucide-react'
 import { BaseButton } from './base-button'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
 
 interface AIActionButtonProps {
   /** Whether AI is currently configured and ready */
@@ -47,6 +48,7 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
   fullWidth = false,
   variant = 'blue',
 }) => {
+  const { isAIWorking } = useAISettings()
   const iconSize = (() => {
     switch (size) {
       case 'lg':
@@ -71,16 +73,19 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
     }
   })() as 'gradient-blue' | 'gradient-amber' | 'gradient-green'
 
-  const isActuallyDisabled = !isConfigured || isLoading || explicitlyDisabled
-  const showTooltip = !showLabel || (isActuallyDisabled && !isLoading)
+  const isActuallyDisabled = !isConfigured || isLoading || explicitlyDisabled || isAIWorking
+  const isSelfLoading = isLoading
+  const showLoadingState = isLoading || isAIWorking
+
+  const showTooltip = !showLabel || (isActuallyDisabled && !showLoadingState)
   const tooltipText =
-    explicitlyDisabled && !isLoading
+    explicitlyDisabled && !showLoadingState
       ? 'Disabled while optimization is running'
-      : !isConfigured && !isLoading
+      : !isConfigured && !showLoadingState
         ? disabledTooltip
         : label
 
-  const icon = isLoading ? (
+  const icon = showLoadingState ? (
     <Loader2 className={`${iconSize} animate-spin`} />
   ) : (
     <Sparkles className={`${iconSize} transition-transform group-hover:rotate-12`} />

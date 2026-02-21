@@ -5,7 +5,7 @@ import { SYSTEM_PROMPTS } from '@/lib/ai/strands/jd-refinement/prompts'
 import { validateJDFormatTool } from '@/lib/ai/strands/jd-refinement/tools'
 
 /**
- *
+ * Creates refiner and reviewer agents for job description refinement
  */
 export function createJDRefinementAgents(config: AgentConfig) {
   const model = createModel(config)
@@ -26,6 +26,6 @@ export function createJDRefinementAgents(config: AgentConfig) {
 }
 
 /**
- *
+ * Type definition for JD refinement agents
  */
 export type JDRefinementAgents = ReturnType<typeof createJDRefinementAgents>

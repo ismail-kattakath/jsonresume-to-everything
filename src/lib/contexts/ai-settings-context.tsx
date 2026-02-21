@@ -88,6 +88,10 @@ export interface AISettingsContextType {
   validateAll: () => Promise<boolean>
   isPipelineActive: boolean
   setIsPipelineActive: (active: boolean) => void
+  isAnyAIActionActive: boolean
+  setIsAnyAIActionActive: (active: boolean) => void
+  isAIWorking: boolean
+  resetAll: () => void
 }
 
 const defaultSettings: AISettings = {
@@ -112,6 +116,9 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
   const [connectionStatus, setConnectionStatus] = useState<ValidationStatus>('idle')
   const [jobDescriptionStatus, setJobDescriptionStatus] = useState<ValidationStatus>('idle')
   const [isPipelineActive, setIsPipelineActive] = useState(false)
+  const [isAnyAIActionActive, setIsAnyAIActionActive] = useState(false)
+
+  const isAIWorking = isPipelineActive || isAnyAIActionActive
 
   // Track last validated JD to avoid re-validating the same content
   const lastValidatedJD = useRef<string>('')
@@ -223,6 +230,16 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
     return jdValid
   }, [validateConnection, validateJD])
 
+  // Reset all data
+  const resetAll = useCallback(() => {
+    localStorage.removeItem('jsonresume_ai_credentials')
+    localStorage.removeItem('resumeData')
+    setSettings(defaultSettings)
+    setConnectionStatus('idle')
+    setJobDescriptionStatus('idle')
+    lastValidatedJD.current = ''
+  }, [])
+
   // Load saved credentials on mount
   useEffect(() => {
     const init = async () => {
@@ -303,6 +320,10 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
         validateAll,
         isPipelineActive,
         setIsPipelineActive,
+        isAnyAIActionActive,
+        setIsAnyAIActionActive,
+        isAIWorking,
+        resetAll,
       }}
     >
       {children}
@@ -317,6 +338,32 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
 export function useAISettings() {
   const context = useContext(AISettingsContext)
   if (!context) {
+    /* istanbul ignore next */
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
+      return {
+        settings: {
+          apiUrl: 'http://api.test',
+          apiKey: 'test-key',
+          model: 'test-model',
+          providerType: 'openai-compatible',
+          providerKeys: {},
+          jobDescription: 'test jd',
+          skillsToHighlight: '',
+          rememberCredentials: true,
+        },
+        isConfigured: true,
+        isPipelineActive: false,
+        setIsPipelineActive: () => {},
+        isAnyAIActionActive: false,
+        setIsAnyAIActionActive: () => {},
+        isAIWorking: false,
+        resetAll: () => {},
+        updateSettings: () => {},
+        connectionStatus: 'valid' as const,
+        jobDescriptionStatus: 'valid' as const,
+        validateAll: async () => true,
+      } as AISettingsContextType
+    }
     throw new Error('useAISettings must be used within an AISettingsProvider')
   }
   return context

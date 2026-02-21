@@ -84,10 +84,11 @@ describe('JobDescriptionSection', () => {
             isConfigured: settings.isConfigured,
             isPipelineActive: false,
             setIsPipelineActive,
-            connectionStatus: 'connected',
-            jobDescriptionStatus: 'valid',
             validateAll: jest.fn(),
-            togglePipeline: jest.fn(),
+            isAnyAIActionActive: false,
+            setIsAnyAIActionActive: jest.fn(),
+            isAIWorking: false,
+            resetAll: jest.fn(),
           } as any
         }
       >
@@ -132,7 +133,10 @@ describe('JobDescriptionSection', () => {
             connectionStatus: 'connected',
             jobDescriptionStatus: 'valid',
             validateAll: jest.fn(),
-            togglePipeline: jest.fn(),
+            isAnyAIActionActive: false,
+            setIsAnyAIActionActive: jest.fn(),
+            isAIWorking: false,
+            resetAll: jest.fn(),
           } as any
         }
       >
@@ -182,7 +186,10 @@ describe('JobDescriptionSection', () => {
             connectionStatus: 'connected',
             jobDescriptionStatus: 'valid',
             validateAll: jest.fn(),
-            togglePipeline: jest.fn(),
+            isAnyAIActionActive: false,
+            setIsAnyAIActionActive: jest.fn(),
+            isAIWorking: false,
+            resetAll: jest.fn(),
           } as any
         }
       >
@@ -317,7 +324,10 @@ describe('JobDescriptionSection', () => {
             connectionStatus: 'connected',
             jobDescriptionStatus: 'valid',
             validateAll: jest.fn(),
-            togglePipeline: jest.fn(),
+            isAnyAIActionActive: false,
+            setIsAnyAIActionActive: jest.fn(),
+            isAIWorking: false,
+            resetAll: jest.fn(),
           } as any
         }
       >

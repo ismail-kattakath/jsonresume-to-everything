@@ -54,6 +54,10 @@ const mockAISettings = {
   validateAll: jest.fn(),
   isPipelineActive: false,
   setIsPipelineActive: jest.fn(),
+  isAnyAIActionActive: false,
+  setIsAnyAIActionActive: jest.fn(),
+  isAIWorking: false,
+  resetAll: jest.fn(),
 }
 
 const renderWithContext = (resumeData: ResumeData = mockResumeData, editable = true) => {

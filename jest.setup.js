@@ -111,6 +111,23 @@ jest.mock('@strands-agents/sdk/gemini', () => ({
 jest.mock('@lottiefiles/dotlottie-react', () => ({
   DotLottieReact: () => React.createElement('div', { 'data-testid': 'lottie-spinner' }),
 }))
+
+// Mock AIActionButton to have consistent semantics in tests
+jest.mock('@/components/ui/ai-action-button', () => ({
+  __esModule: true,
+  default: ({ onClick, label, isConfigured = true, isLoading = false }) =>
+    React.createElement(
+      'button',
+      {
+        onClick: (e) => {
+          if (isConfigured && !isLoading) onClick(e)
+        },
+        'aria-label': label,
+        disabled: !isConfigured || isLoading,
+      },
+      label
+    ),
+}))
 // Suppress React act() warnings and intentional test console.errors
 const originalError = console.error
 const originalLog = console.log

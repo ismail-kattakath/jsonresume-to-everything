@@ -12,7 +12,7 @@ import {
  */
 export class TelemetryHookProvider implements HookProvider {
   /**
-   *
+   * Registers telemetry callbacks with the hook registry
    */
   registerCallbacks(registry: HookRegistry): void {
     registry.addCallback(BeforeInvocationEvent, (ev) => this.logRequestStart(ev))

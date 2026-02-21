@@ -54,7 +54,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   experienceData,
   variant = 'amber',
 }) => {
-  const { settings, isConfigured } = useAISettings()
+  const { settings, isConfigured, setIsAnyAIActionActive } = useAISettings()
   const { resumeData } = useContext(ResumeContext)
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -105,6 +105,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
     }
 
     setIsGenerating(true)
+    setIsAnyAIActionActive(true)
     const streamedContent = ''
     const startTime = Date.now()
     let toastId: string | number | undefined
@@ -285,6 +286,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       })
     } finally {
       setIsGenerating(false)
+      setIsAnyAIActionActive(false)
     }
   }
 

@@ -99,8 +99,20 @@ const JobDescriptionSection = () => {
             incrementalUpdate.summary = progress.summary
             hasResumeUpdate = true
           }
+          if (progress.jobTitle) {
+            incrementalUpdate.position = progress.jobTitle
+            hasResumeUpdate = true
+          }
           if (progress.workExperiences) {
             incrementalUpdate.workExperience = progress.workExperiences
+            hasResumeUpdate = true
+          }
+          if (progress.skills) {
+            incrementalUpdate.skills = progress.skills
+            hasResumeUpdate = true
+          }
+          if (progress.coverLetter) {
+            incrementalUpdate.content = progress.coverLetter
             hasResumeUpdate = true
           }
 
@@ -117,23 +129,20 @@ const JobDescriptionSection = () => {
       )
 
       console.log('[Pipeline] Pipeline completed. Result:', result)
-      console.log('[Pipeline] Refined JD length:', result.refinedJD?.length)
-      console.log('[Pipeline] Summary length:', result.summary?.length)
-      console.log('[Pipeline] Work experiences count:', result.workExperiences?.length)
 
       // Update AI settings with refined JD
       if (result.refinedJD) {
-        console.log('[Pipeline] Updating job description in settings...')
-        console.log('[Pipeline] Refined JD preview:', result.refinedJD.substring(0, 100))
         updateSettings({ jobDescription: result.refinedJD })
-        console.log('[Pipeline] updateSettings called. New settings.jobDescription length:', result.refinedJD.length)
       }
 
       // Update resume with results
       const updatedData = {
         ...resumeData,
+        position: result.jobTitle,
         summary: result.summary,
         workExperience: result.workExperiences,
+        skills: result.skills,
+        content: result.coverLetter,
       }
       console.log('[Pipeline] Updating resume data...', updatedData)
       setResumeData(updatedData)

@@ -13,7 +13,7 @@ import {
 } from './tools'
 
 /**
- *
+ * Creates a suite of agents for tailoring work experience to a job description
  */
 export function createTailoringAgents(config: AgentConfig) {
   const model = createModel(config)
@@ -107,6 +107,6 @@ export function createTailoringAgents(config: AgentConfig) {
 }
 
 /**
- *
+ * Type definition for work experience tailoring agents
  */
 export type TailoringAgents = ReturnType<typeof createTailoringAgents>

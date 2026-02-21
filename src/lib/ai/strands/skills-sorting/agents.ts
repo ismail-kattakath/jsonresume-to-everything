@@ -5,7 +5,7 @@ import { SYSTEM_PROMPTS } from '@/lib/ai/strands/skills-sorting/prompts'
 import { validateSkillsJsonTool } from '@/lib/ai/strands/skills-sorting/tools'
 
 /**
- *
+ * Creates strategy, scribe, and editor agents for skills sorting
  */
 export function createSkillsSortingAgents(config: AgentConfig, numGroups: number) {
   const model = createModel(config)
@@ -31,6 +31,6 @@ export function createSkillsSortingAgents(config: AgentConfig, numGroups: number
 }
 
 /**
- *
+ * Type definition for skills sorting agents
  */
 export type SkillsSortingAgents = ReturnType<typeof createSkillsSortingAgents>

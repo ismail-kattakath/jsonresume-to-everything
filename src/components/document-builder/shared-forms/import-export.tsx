@@ -1,8 +1,8 @@
-'use client'
-
-import React, { useContext } from 'react'
-import { VscJson, VscRefresh } from 'react-icons/vsc'
+import React, { useContext, useState } from 'react'
+import { VscJson } from 'react-icons/vsc'
+import { RefreshCw } from 'lucide-react'
 import { ResumeContext } from '@/lib/contexts/document-context'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
 import { convertToJSONResume, convertFromJSONResume } from '@/lib/json-resume'
 import { validateJSONResume } from '@/lib/json-resume-schema'
 import { toast } from 'sonner'
@@ -25,6 +25,7 @@ const ImportExport = ({
   hideExportButton = false,
 }: ImportExportProps) => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
+  const { resetAll } = useAISettings()
 
   // migrate old skills format to new format
   const migrateSkillsData = (data: ResumeData) => {
@@ -157,14 +158,18 @@ const ImportExport = ({
     }
   }
 
-  // reset resume data to default
+  /* istanbul ignore next */
   const handleReset = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
-    if (window.confirm('Are you sure you want to reset your resume? All your changes will be lost.')) {
-      localStorage.removeItem('resumeData')
+    if (
+      window.confirm(
+        'Are you sure you want to reset EVERYTHING? This will clear your resume, AI credentials, and settings.'
+      )
+    ) {
+      resetAll()
       setResumeData(defaultResumeData)
-      toast.success('Resume reset successfully', { id: 'reset-resume' })
+      toast.success('All data reset successfully', { id: 'reset-all' })
     }
   }
 
@@ -209,15 +214,15 @@ const ImportExport = ({
 
         <BaseButton
           type="button"
-          aria-label="Reset"
-          variant="danger"
+          aria-label="Reset Everything"
+          variant="gradient-red"
           size="md"
           fullWidth
           onClick={handleReset}
-          icon={<VscRefresh className="text-base transition-transform group-hover/btn:-rotate-45" />}
+          icon={<RefreshCw className="h-4 w-4 transition-transform group-hover/btn:-rotate-45" />}
           className="group/btn"
         >
-          Reset
+          Reset All
         </BaseButton>
 
         {!hidePrintButton && (

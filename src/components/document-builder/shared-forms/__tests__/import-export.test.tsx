@@ -8,6 +8,17 @@ import { analytics } from '@/lib/analytics'
 import { createMockResumeData } from '@/lib/__tests__/test-utils'
 import * as jsonResume from '@/lib/json-resume'
 import * as jsonResumeSchema from '@/lib/json-resume-schema'
+import AIActionButton from '@/components/ui/ai-action-button'
+
+// Mock AIActionButton locally to avoid AISettingsContext requirements
+jest.mock('@/components/ui/ai-action-button', () => ({
+  __esModule: true,
+  default: ({ onClick, label }: any) => (
+    <button onClick={onClick} aria-label={label}>
+      {label}
+    </button>
+  ),
+}))
 
 // Mock dependencies
 jest.mock('sonner', () => ({
@@ -82,7 +93,7 @@ describe('ImportExport', () => {
     renderComponent()
     expect(screen.getByText('Import')).toBeInTheDocument()
     expect(screen.getByText('Export')).toBeInTheDocument()
-    expect(screen.getByText('Reset')).toBeInTheDocument()
+    expect(screen.getByText('Reset All')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /print/i })).toBeInTheDocument()
   })
 
@@ -94,18 +105,18 @@ describe('ImportExport', () => {
 
   it('handles reset correctly when confirmed', () => {
     renderComponent()
-    const resetButton = screen.getByText('Reset')
+    const resetButton = screen.getByText('Reset All')
     fireEvent.click(resetButton)
 
     expect(window.confirm).toHaveBeenCalled()
     expect(mockSetResumeData).toHaveBeenCalled()
-    expect(toast.success).toHaveBeenCalledWith('Resume reset successfully', expect.any(Object))
+    expect(toast.success).toHaveBeenCalledWith('All data reset successfully', expect.any(Object))
   })
 
   it('does not reset when cancelled', () => {
     ;(window.confirm as jest.Mock).mockReturnValue(false)
     renderComponent()
-    const resetButton = screen.getByText('Reset')
+    const resetButton = screen.getByText('Reset All')
     fireEvent.click(resetButton)
 
     expect(mockSetResumeData).not.toHaveBeenCalled()
@@ -217,10 +228,10 @@ describe('ImportExport', () => {
     const linkSpy = { click: jest.fn(), href: '', download: '' }
 
     // Use a spy that only intercepts 'a' and calls original otherwise
-    const originalCreateElement = document.createElement.bind(document)
+    const nativeCreateElement = Document.prototype.createElement
     const createElementSpy = jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
       if (tagName === 'a') return linkSpy as any
-      return originalCreateElement(tagName)
+      return nativeCreateElement.call(document, tagName)
     })
 
     renderComponent()
@@ -235,9 +246,9 @@ describe('ImportExport', () => {
 
   it('returns early in handleImportClick if click is missing', () => {
     // Mock ref missing click
-    const originalCreateElement = document.createElement.bind(document)
+    const nativeCreateElement = Document.prototype.createElement
     jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
-      const el = originalCreateElement(tagName)
+      const el = nativeCreateElement.call(document, tagName)
       if (tagName === 'input') {
         Object.defineProperty(el, 'click', { value: undefined, configurable: true })
       }

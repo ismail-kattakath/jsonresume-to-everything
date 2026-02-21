@@ -99,7 +99,8 @@ export const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>(
       transition-all duration-200
       cursor-pointer
       ${sizeClasses}
-      ${isDisabled ? 'cursor-not-allowed opacity-50' : variantClasses}
+      ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}
+      ${variantClasses}
       ${fullWidth ? 'w-full' : ''}
       ${variant.startsWith('gradient') ? 'hover:scale-[1.02] active:scale-[0.98]' : ''}
       ${className}
