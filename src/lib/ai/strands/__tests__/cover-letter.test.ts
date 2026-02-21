@@ -7,12 +7,12 @@ jest.mock('@strands-agents/sdk', () => {
   return {
     Agent: jest.fn().mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
       invoke: jest.fn().mockImplementation((prompt: string) => {
-        if (systemPrompt.includes('Professional Cover Letter Writer')) {
+        if (systemPrompt.includes('ambitious, modern professional')) {
           if (prompt.includes('Refine')) {
             return Promise.resolve({ toString: () => 'Refined Cover Letter' })
           }
           return Promise.resolve({ toString: () => 'Draft Cover Letter' })
-        } else if (systemPrompt.includes('Master Resume Reviewer')) {
+        } else if (systemPrompt.includes('Master Reviewer and Fact-Checker')) {
           if (prompt.includes('Draft Cover Letter') && !prompt.includes('Refined')) {
             return Promise.resolve({
               toString: () => 'CRITIQUE: Needs more punch',
