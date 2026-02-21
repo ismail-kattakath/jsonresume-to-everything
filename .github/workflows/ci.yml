@@ -34,7 +34,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ vars.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,7 +62,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ vars.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -107,7 +107,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ vars.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -140,3 +140,5 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
+          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}

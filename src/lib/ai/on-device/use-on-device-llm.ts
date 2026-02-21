@@ -12,7 +12,8 @@ import { useLlm } from '@ismail-kattakath/mediapipe-react/genai'
  * Falls back to the hardcoded HuggingFace URL if the env var is not set.
  */
 export const ON_DEVICE_MODEL_URL =
-  process.env['NEXT_PUBLIC_ON_DEVICE_MODEL_URL'] ||
+  // @ts-expect-error - Next.js requires dot notation for build-time replacement
+  process.env.NEXT_PUBLIC_ON_DEVICE_MODEL_URL ||
   'https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/main/gemma3-1b-it-int4.task?download=true'
 
 export interface OnDeviceLlmState {

@@ -19,7 +19,8 @@ interface OnDeviceGeneratorProps {
  */
 const MODEL_CACHE_KEY = 'on-device-model-blob'
 /** HuggingFace access token — required for gated Gemma models */
-const HF_TOKEN = process.env['NEXT_PUBLIC_HF_TOKEN'] || ''
+// @ts-expect-error - Next.js requires dot notation for build-time replacement
+const HF_TOKEN = process.env.NEXT_PUBLIC_HF_TOKEN || ''
 
 export interface DownloadStatus {
   loadedBytes: number
