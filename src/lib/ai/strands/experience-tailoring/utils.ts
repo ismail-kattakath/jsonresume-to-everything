@@ -66,22 +66,47 @@ export async function runAgentStream(
   contextMessage: string = ''
 ): Promise<string> {
   let fullText = ''
+  let buffer = ''
+  const BUFFER_THRESHOLD = 40
+
   for await (const event of stream) {
     if (event.type === 'agentResult') {
+      // Flush any remaining buffer before returning
+      if (buffer.trim().length > 0) {
+        onProgress?.({ content: buffer, done: false })
+      }
       return event.toString().trim()
     }
 
     if (event.type === 'modelContentBlockStartEvent' && event.start?.type === 'toolUseStart') {
+      // Flush buffer before tool execution message
+      if (buffer.trim().length > 0) {
+        onProgress?.({ content: buffer, done: false })
+        buffer = ''
+      }
       onProgress?.({
         content: `${contextMessage ? contextMessage + ' ' : ''}[Executing tool: ${event.start.name}]`,
         done: false,
       })
     } else if (event.type === 'modelContentBlockDeltaEvent' && event.delta.type === 'textDelta') {
-      fullText += event.delta.text
-      if (fullText.trim().length > 0) {
-        onProgress?.({ content: fullText, done: false })
+      const deltaText = event.delta.text
+      fullText += deltaText
+      buffer += deltaText
+
+      // Only emit if buffer contains a newline or exceeds threshold
+      if (buffer.includes('\n') || buffer.length >= BUFFER_THRESHOLD) {
+        if (buffer.trim().length > 0) {
+          onProgress?.({ content: buffer, done: false })
+        }
+        buffer = ''
       }
     }
   }
+
+  // Final flush
+  if (buffer.trim().length > 0) {
+    onProgress?.({ content: buffer, done: false })
+  }
+
   return fullText
 }
