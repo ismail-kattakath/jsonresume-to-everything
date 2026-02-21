@@ -300,9 +300,18 @@ const WorkExperience = () => {
                             handleChange(e as any, index)
                           }
                         }}
-                        onGenerated={(val) => {
+                        onGenerated={(val, achievements) => {
                           const newWorkExperience = [...resumeData.workExperience]
-                          newWorkExperience[index] = { ...workExperience, description: val }
+                          const updatedExperience = { ...workExperience, description: val }
+
+                          // Update achievements if provided by AI
+                          if (achievements && achievements.length > 0) {
+                            updatedExperience.keyAchievements = achievements.map((text) => ({
+                              text,
+                            }))
+                          }
+
+                          newWorkExperience[index] = updatedExperience
                           setResumeData({ ...resumeData, workExperience: newWorkExperience })
                         }}
                         variant="teal"

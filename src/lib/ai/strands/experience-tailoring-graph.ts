@@ -82,6 +82,7 @@ export async function tailorExperienceToJDGraph(
       '4. **QUANTIFY**: Maintain or enhance quantifiable metrics\n' +
       '5. **NO FABRICATION**: If achievement does not relate to JD, keep it concise\n' +
       '6. **ONE PER LINE**: Return each achievement on a separate line\n\n' +
+      '7. **PRESERVE ORIGINAL COUNT**: Return the same number of achievements as the original\n\n' +
       'OUTPUT: Rewritten achievements, one per line, preserving the original count.',
     printer: false,
   })

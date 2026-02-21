@@ -75,7 +75,7 @@ jest.mock('@/components/document-builder/shared-forms/ai-content-generator', () 
     label?: string
     value: string
     onChange: (e: any) => void
-    onGenerated: (v: string) => void
+    onGenerated: (v: string, a?: string[]) => void
   }) => (
     <div data-testid="ai-generator">
       {label && <label htmlFor="description-input">{label}</label>}
@@ -83,7 +83,10 @@ jest.mock('@/components/document-builder/shared-forms/ai-content-generator', () 
       <button data-testid="trigger-string-change" onClick={() => onChange('New String Description')}>
         String Change
       </button>
-      <button data-testid="trigger-generated" onClick={() => onGenerated('AI Generated Description')}>
+      <button
+        data-testid="trigger-generated"
+        onClick={() => onGenerated('AI Generated Description', ['New Achievement'])}
+      >
         Generate
       </button>
     </div>
@@ -325,13 +328,18 @@ describe('WorkExperience', () => {
     )
   })
 
-  it('handles AIContentGenerator generated content', () => {
+  it('handles AIContentGenerator generated content including achievements', () => {
     renderComponent()
     const generateButton = screen.getByTestId('trigger-generated')
     fireEvent.click(generateButton)
     expect(mockSetResumeData).toHaveBeenCalledWith(
       expect.objectContaining({
-        workExperience: [expect.objectContaining({ description: 'AI Generated Description' })],
+        workExperience: [
+          expect.objectContaining({
+            description: 'AI Generated Description',
+            keyAchievements: [{ text: 'New Achievement' }],
+          }),
+        ],
       })
     )
   })

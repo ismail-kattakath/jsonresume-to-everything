@@ -18,7 +18,7 @@ interface AIContentGeneratorProps {
   label?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void
-  onGenerated: (value: string) => void
+  onGenerated: (value: string, achievements?: string[]) => void
   placeholder?: string
   name: string
   rows?: number
@@ -84,9 +84,9 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   }
 
   // Helper to update textarea value
-  const updateValue = (newValue: string) => {
+  const updateValue = (newValue: string, achievements?: string[]) => {
     if (onGenerated) {
-      onGenerated(newValue)
+      onGenerated(newValue, achievements)
     } else {
       onChange(newValue)
     }
@@ -184,7 +184,29 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           }
         )
         content = result.description
+        const achievements = result.achievements
         if (toastId) toast.dismiss(toastId)
+
+        // Special handling for workExperience to update achievements too
+        const cleanContent = content
+          .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold **text**
+          .replace(/\*(.+?)\*/g, '$1') // Remove italic *text*
+          .replace(/_(.+?)_/g, '$1') // Remove italic _text_
+          .replace(/~~(.+?)~~/g, '$1') // Remove strikethrough ~~text~~
+          .replace(/`(.+?)`/g, '$1') // Remove inline code `text`
+          .trim()
+
+        updateValue(cleanContent, achievements)
+
+        // Track generation success
+        const responseTimeMs = Date.now() - startTime
+        analytics.aiGenerationSuccess(settings.providerType, settings.model, responseTimeMs)
+
+        toast.success(currentConfig.successMessage, {
+          description: currentConfig.successDescription,
+        })
+        setIsGenerating(false)
+        return
       } else {
         content = await generateCoverLetterGraph(
           resumeData,
