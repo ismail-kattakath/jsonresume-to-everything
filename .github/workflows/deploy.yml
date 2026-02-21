@@ -82,6 +82,19 @@ jobs:
           RESUME_MD_GIST: ${{ vars.RESUME_MD_GIST }}
           GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
 
+      - name: Validate HuggingFace Token
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -I \
+            -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}" \
+            "${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}")
+          if [ "$RESPONSE" != "200" ]; then
+            echo "Error: HuggingFace token validation failed with HTTP $RESPONSE"
+            exit 1
+          fi
+        env:
+          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}
+
       - name: Build with Next.js
         run: npm run build
         env:
