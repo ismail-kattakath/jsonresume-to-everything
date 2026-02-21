@@ -34,7 +34,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_GIST_URL: ${{ secrets.RESUME_GIST_URL || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Download resume data
-        run: npm run download-resume
+        run: npm run download-resume-json
 
       - name: Type check
         run: npx tsc --noEmit
@@ -62,7 +62,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_GIST_URL: ${{ secrets.RESUME_GIST_URL || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Download resume data
-        run: npm run download-resume
+        run: npm run download-resume-json
 
       - name: Run tests and collect coverage
         run: npm run test:coverage -- --coverageThreshold='{}'
@@ -99,7 +99,7 @@ jobs:
     needs: install
     runs-on: ubuntu-latest
     env:
-      RESUME_GIST_URL: ${{ secrets.RESUME_GIST_URL || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
+      RESUME_JSON_GIST: ${{ secrets.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -126,7 +126,7 @@ jobs:
             nextjs-${{ runner.os }}-
 
       - name: Download resume data
-        run: npm run download-resume
+        run: npm run download-resume-json
 
       - name: Build with Next.js
         run: npm run build

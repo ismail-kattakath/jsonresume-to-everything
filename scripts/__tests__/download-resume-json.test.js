@@ -10,18 +10,18 @@ describe('downloadResume', () => {
   let downloadResume
 
   beforeAll(async () => {
-    const module = await import('../download-resume.mjs')
+    const module = await import('../download-resume-json.mjs')
     downloadResume = module.downloadResume
   })
 
   beforeEach(() => {
     jest.clearAllMocks()
-    delete process.env.RESUME_GIST_URL
+    delete process.env.RESUME_JSON_GIST
 
-    mockLog = jest.spyOn(console, 'log').mockImplementation(() => {})
-    mockWarn = jest.spyOn(console, 'warn').mockImplementation(() => {})
-    mockError = jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {})
+    mockLog = jest.spyOn(console, 'log').mockImplementation(() => { })
+    mockWarn = jest.spyOn(console, 'warn').mockImplementation(() => { })
+    mockError = jest.spyOn(console, 'error').mockImplementation(() => { })
+    mockExit = jest.spyOn(process, 'exit').mockImplementation(() => { })
   })
 
   afterEach(() => {
@@ -31,21 +31,21 @@ describe('downloadResume', () => {
     mockExit.mockRestore()
   })
 
-  it('should skip download if RESUME_GIST_URL is missing', async () => {
+  it('should skip download if RESUME_JSON_GIST is missing', async () => {
     fs.existsSync.mockReturnValue(true)
     await downloadResume()
-    expect(mockWarn).toHaveBeenCalledWith(expect.stringContaining('RESUME_GIST_URL is not defined'))
+    expect(mockWarn).toHaveBeenCalledWith(expect.stringContaining('RESUME_JSON_GIST is not defined'))
     expect(mockLog).not.toHaveBeenCalledWith(expect.stringContaining('Downloading resume'))
   })
 
-  it('should log error if RESUME_GIST_URL is missing and file does not exist', async () => {
+  it('should log error if RESUME_JSON_GIST is missing and file does not exist', async () => {
     fs.existsSync.mockReturnValue(false)
     await downloadResume()
     expect(mockError).toHaveBeenCalledWith(expect.stringContaining('src/data/resume.json does not exist'))
   })
 
-  it('should download and save resume if RESUME_GIST_URL is present', async () => {
-    process.env.RESUME_GIST_URL = 'https://example.com/resume.json'
+  it('should download and save resume if RESUME_JSON_GIST is present', async () => {
+    process.env.RESUME_JSON_GIST = 'https://example.com/resume.json'
     const mockData = { name: 'Test' }
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -68,7 +68,7 @@ describe('downloadResume', () => {
   })
 
   it('should handle fetch errors', async () => {
-    process.env.RESUME_GIST_URL = 'https://example.com/resume.json'
+    process.env.RESUME_JSON_GIST = 'https://example.com/resume.json'
 
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,

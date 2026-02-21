@@ -6,13 +6,13 @@ const scriptFilename = fileURLToPath(import.meta.url)
 const scriptDirname = path.dirname(scriptFilename)
 
 export async function downloadResume() {
-  const gistUrl = process.env.RESUME_GIST_URL
+  const gistUrl = process.env.RESUME_JSON_GIST
 
   if (!gistUrl) {
-    console.warn('RESUME_GIST_URL is not defined in environment variables. Skipping download.')
+    console.warn('RESUME_JSON_GIST is not defined in environment variables. Skipping download.')
     const targetPath = path.join(scriptDirname, '../src/data/resume.json')
     if (!fs.existsSync(targetPath)) {
-      console.error('src/data/resume.json does not exist and RESUME_GIST_URL is missing.')
+      console.error('src/data/resume.json does not exist and RESUME_JSON_GIST is missing.')
     }
     return
   }
