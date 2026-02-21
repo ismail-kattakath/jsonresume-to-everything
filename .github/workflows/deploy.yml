@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/setup-project
 
   build-app:
-    name: Application Build
+    name: Build
     needs: install
     uses: ./.github/workflows/reusable-build.yml
     with:

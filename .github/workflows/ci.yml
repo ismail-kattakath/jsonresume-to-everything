@@ -68,7 +68,7 @@ jobs:
           fail_ci_if_error: false
 
   build-app:
-    name: Application Build
+    name: Build
     needs: install
     uses: ./.github/workflows/reusable-build.yml
     secrets:
