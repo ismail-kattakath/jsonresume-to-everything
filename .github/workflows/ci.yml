@@ -67,10 +67,18 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build:
-    name: Build
+  run-build:
+    name: Build Process
     needs: install
     uses: ./.github/workflows/reusable-build.yml
     secrets:
       NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
       NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+
+  # Proxy job to satisfy branch protection rule named "Build"
+  # Reusable workflows report as "JobName / SubJobName", which breaks exact-match rules.
+  Build:
+    needs: run-build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Build verified"
