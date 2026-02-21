@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   install:
-    name: Install dependencies
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
