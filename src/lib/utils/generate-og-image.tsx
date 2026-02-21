@@ -26,49 +26,47 @@ export async function generateOgImage(config: OgImageConfig) {
   )
 
   return new ImageResponse(
-    (
-      <div
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}
+    >
+      {/* Background Image with blur effect */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={backgroundImageData as unknown as string}
+        alt="Background"
         style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
           width: '100%',
           height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
+          objectFit: 'cover',
+          filter: 'blur(4px)',
         }}
-      >
-        {/* Background Image with blur effect */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={backgroundImageData as unknown as string}
-          alt="Background"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            filter: 'blur(4px)',
-          }}
-        />
+      />
 
-        {/* Dark Overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.5)',
-          }}
-        />
+      {/* Dark Overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+        }}
+      />
 
-        {/* SVG Logo - Centered */}
-        <Logo width={logoWidth} height={logoHeight} />
-      </div>
-    ),
+      {/* SVG Logo - Centered */}
+      <Logo width={logoWidth} height={logoHeight} />
+    </div>,
     {
       width,
       height,

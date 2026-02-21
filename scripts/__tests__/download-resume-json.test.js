@@ -18,10 +18,10 @@ describe('downloadResume', () => {
     jest.clearAllMocks()
     delete process.env.RESUME_JSON_GIST
 
-    mockLog = jest.spyOn(console, 'log').mockImplementation(() => { })
-    mockWarn = jest.spyOn(console, 'warn').mockImplementation(() => { })
-    mockError = jest.spyOn(console, 'error').mockImplementation(() => { })
-    mockExit = jest.spyOn(process, 'exit').mockImplementation(() => { })
+    mockLog = jest.spyOn(console, 'log').mockImplementation(() => {})
+    mockWarn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    mockError = jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {})
   })
 
   afterEach(() => {

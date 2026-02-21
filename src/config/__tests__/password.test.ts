@@ -312,9 +312,8 @@ describe('Password Configuration', () => {
       delete process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH']
 
       jest.resetModules()
-      const { getPasswordHash: freshGetPasswordHash, isPasswordProtectionEnabled: freshIsEnabled } = await import(
-        '../password'
-      )
+      const { getPasswordHash: freshGetPasswordHash, isPasswordProtectionEnabled: freshIsEnabled } =
+        await import('../password')
 
       const hash = freshGetPasswordHash()
       const isEnabled = freshIsEnabled()
@@ -331,9 +330,8 @@ describe('Password Configuration', () => {
       process.env['NEXT_PUBLIC_EDIT_PASSWORD_HASH'] = mockHash
 
       jest.resetModules()
-      const { getPasswordHash: freshGetPasswordHash, isPasswordProtectionEnabled: freshIsEnabled } = await import(
-        '../password'
-      )
+      const { getPasswordHash: freshGetPasswordHash, isPasswordProtectionEnabled: freshIsEnabled } =
+        await import('../password')
 
       const hash = freshGetPasswordHash()
       const isEnabled = freshIsEnabled()

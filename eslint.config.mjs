@@ -119,7 +119,7 @@ const eslintConfig = [
       'jsdoc/require-jsdoc': 'off',
       '@next/next/no-img-element': 'off',
     },
-  }
+  },
 ]
 
 export default eslintConfig
