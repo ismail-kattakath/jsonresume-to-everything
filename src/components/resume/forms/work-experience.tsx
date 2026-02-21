@@ -15,6 +15,7 @@ import AIActionButton from '@/components/ui/ai-action-button'
 import { useAISettings } from '@/lib/contexts/ai-settings-context'
 import { sortSkillsGraph, sortTechStackGraph } from '@/lib/ai/strands/agent'
 import { AILoadingToast } from '@/components/ui/ai-loading-toast'
+import AIContentGenerator from '@/components/document-builder/shared-forms/ai-content-generator'
 import type { DropResult } from '@hello-pangea/dnd'
 import type { WorkExperience as WorkExperienceType, Achievement } from '@/types'
 
@@ -285,16 +286,35 @@ const WorkExperience = () => {
                         variant="teal"
                       />
 
-                      <FormTextarea
+                      <AIContentGenerator
                         label="Description"
                         name="description"
                         placeholder="Brief company/role description..."
                         value={workExperience.description}
-                        onChange={(e) => handleChange(e, index)}
+                        onChange={(e) => {
+                          if (typeof e === 'string') {
+                            const newWorkExperience = [...resumeData.workExperience]
+                            newWorkExperience[index] = { ...workExperience, description: e }
+                            setResumeData({ ...resumeData, workExperience: newWorkExperience })
+                          } else {
+                            handleChange(e as any, index)
+                          }
+                        }}
+                        onGenerated={(val) => {
+                          const newWorkExperience = [...resumeData.workExperience]
+                          newWorkExperience[index] = { ...workExperience, description: val }
+                          setResumeData({ ...resumeData, workExperience: newWorkExperience })
+                        }}
                         variant="teal"
                         maxLength={250}
-                        showCounter={false}
+                        showCharacterCount={false}
                         minHeight="100px"
+                        mode="workExperience"
+                        experienceData={{
+                          organization: workExperience.organization,
+                          position: workExperience.position,
+                          achievements: (workExperience.keyAchievements || []).map((a) => a.text),
+                        }}
                       />
 
                       <div>
