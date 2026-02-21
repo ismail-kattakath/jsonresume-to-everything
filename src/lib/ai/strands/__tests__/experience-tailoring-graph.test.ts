@@ -5,74 +5,90 @@ let mockFactCheckResponse = 'APPROVED'
 let mockRelevanceResponse = 'APPROVED'
 let mockIntegrityResponse = 'APPROVED'
 
-jest.mock('@strands-agents/sdk', () => {
+const defaultAgentMock = ({ systemPrompt }: { systemPrompt: string }) => {
   return {
-    Agent: jest.fn().mockImplementation(({ systemPrompt }: { systemPrompt: string }) => {
-      return {
-        systemPrompt,
-        invoke: jest.fn().mockImplementation((prompt: string) => {
-          const sp = (systemPrompt || '').toLowerCase()
-          const p = (prompt || '').toLowerCase()
+    systemPrompt,
+    invoke: jest.fn().mockImplementation((prompt: string) => {
+      const sp = (systemPrompt || '').toLowerCase()
+      const p = (prompt || '').toLowerCase()
 
-          // Agent 1: Analyzer
-          if (sp.includes('alignment analyst')) {
-            return Promise.resolve({ toString: () => 'Analysis: Strong alignment in backend development' })
-          }
-
-          // Agent 2: Description Writer
-          if (sp.includes('resume writer')) {
-            if (p.includes('invalid_json')) return Promise.resolve({ toString: () => 'INVALID' })
-            return Promise.resolve({ toString: () => 'Tailored description' })
-          }
-
-          // Agent 3a: Keyword Extractor
-          if (sp.includes('keyword extraction specialist')) {
-            return Promise.resolve({
-              toString: () =>
-                '{"missingKeywords":["Kubernetes","Terraform"],"criticalKeywords":["Kubernetes"],"niceToHaveKeywords":["Terraform"]}',
-            })
-          }
-
-          // Agent 3b: Enrichment Classifier
-          if (sp.includes('keyword injection auditor') || sp.includes('enrichment classifier')) {
-            return Promise.resolve({
-              toString: () =>
-                '{"enrichmentMap":{"0":["Kubernetes"],"1":[]},"rationale":"k8s implied by container deployment context"}',
-            })
-          }
-
-          // Agent 3c: Achievements Optimizer
-          if (sp.includes('keyword enrichment capability')) {
-            return Promise.resolve({
-              toString: () =>
-                'Deployed containerized services using Kubernetes for zero-downtime releases\nImproved team velocity by 30%',
-            })
-          }
-
-          // Agent 3d: Integrity Auditor
-          if (sp.includes('integrity auditor') && !sp.includes('keyword injection auditor')) {
-            const res = mockIntegrityResponse
-            return Promise.resolve({ toString: () => res })
-          }
-
-          // Agent 4: Fact Checker
-          if (sp.includes('fact-checking auditor')) {
-            const res = mockFactCheckResponse
-            return Promise.resolve({ toString: () => res })
-          }
-
-          // Agent 5: Relevance Evaluator
-          if (sp.includes('alignment evaluator')) {
-            const res = mockRelevanceResponse
-            return Promise.resolve({ toString: () => res })
-          }
-
-          return Promise.resolve({ toString: () => 'Tailored' })
-        }),
+      // Agent 1: Analyzer
+      if (sp.includes('alignment analyst')) {
+        return Promise.resolve({ toString: () => 'Analysis: Strong alignment in backend development' })
       }
+
+      // Agent 2: Description Writer
+      if (sp.includes('resume writer')) {
+        if (p.includes('invalid_json')) return Promise.resolve({ toString: () => 'INVALID' })
+        return Promise.resolve({ toString: () => 'Tailored description' })
+      }
+
+      // Agent 3a: Keyword Extractor
+      if (sp.includes('keyword extraction specialist')) {
+        return Promise.resolve({
+          toString: () =>
+            '{"missingKeywords":["Kubernetes","Terraform"],"criticalKeywords":["Kubernetes"],"niceToHaveKeywords":["Terraform"]}',
+        })
+      }
+
+      // Agent 3b: Enrichment Classifier
+      if (sp.includes('keyword injection auditor') || sp.includes('enrichment classifier')) {
+        return Promise.resolve({
+          toString: () =>
+            '{"enrichmentMap":{"0":["Kubernetes"],"1":[]},"rationale":"k8s implied by container deployment context"}',
+        })
+      }
+
+      // Agent 3c: Achievements Optimizer
+      if (sp.includes('keyword enrichment capability')) {
+        return Promise.resolve({
+          toString: () =>
+            'Deployed containerized services using Kubernetes for zero-downtime releases\nImproved team velocity by 30%',
+        })
+      }
+
+      // Agent 3d: Integrity Auditor
+      if (sp.includes('integrity auditor') && !sp.includes('keyword injection auditor')) {
+        const res = mockIntegrityResponse
+        return Promise.resolve({ toString: () => res })
+      }
+
+      // Agent 4a: Tech Stack Aligner
+      if (sp.includes('tech stack ats alignment specialist')) {
+        return Promise.resolve({
+          toString: () => '{"techStack":["Kubernetes","Node.js"],"rationale":"normalized k8s"}',
+        })
+      }
+
+      // Agent 4b: Tech Stack Validator
+      if (sp.includes('tech stack alignment auditor')) {
+        return Promise.resolve({ toString: () => 'APPROVED' })
+      }
+
+      // Agent 5: Fact Checker
+      if (sp.includes('fact-checking auditor')) {
+        const res = mockFactCheckResponse
+        return Promise.resolve({ toString: () => res })
+      }
+
+      // Agent 6: Relevance Evaluator
+      if (sp.includes('alignment evaluator')) {
+        const res = mockRelevanceResponse
+        return Promise.resolve({ toString: () => res })
+      }
+
+      return Promise.resolve({ toString: () => 'Tailored' })
     }),
   }
+}
+
+jest.mock('@strands-agents/sdk', () => {
+  return {
+    Agent: jest.fn().mockImplementation((args) => defaultAgentMock(args)),
+    tool: jest.fn().mockImplementation((config) => config),
+  }
 })
+
 
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue({ toString: () => 'mock-model' }),
@@ -81,6 +97,8 @@ jest.mock('../factory', () => ({
 describe('experienceTailoringGraph', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    const { Agent } = jest.requireMock('@strands-agents/sdk') as { Agent: jest.Mock }
+    Agent.mockImplementation(defaultAgentMock)
     mockFactCheckResponse = 'APPROVED'
     mockRelevanceResponse = 'APPROVED'
     mockIntegrityResponse = 'APPROVED'
@@ -102,6 +120,7 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes, Terraform, CI/CD',
+      [],
       mockConfig
     )
     expect(result).toBeDefined()
@@ -116,6 +135,7 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes',
+      [],
       mockConfig
     )
     // The optimizer mock returns Kubernetes in the first achievement
@@ -124,7 +144,7 @@ describe('experienceTailoringGraph', () => {
   })
 
   it('should handle invalid JSON from keyword extractor gracefully', async () => {
-    const result = await tailorExperienceToJDGraph('INVALID_JSON', achievements, 'Pos', 'Org', 'JD', mockConfig)
+    const result = await tailorExperienceToJDGraph('INVALID_JSON', achievements, 'Pos', 'Org', 'JD', [], mockConfig)
     expect(result).toBeDefined()
     expect(result.description).toBeDefined()
     expect(result.achievements.length).toBeGreaterThan(0)
@@ -138,6 +158,7 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes',
+      [],
       mockConfig
     )
     // Verify that the result was produced (classifier ran without errors)
@@ -186,6 +207,9 @@ describe('experienceTailoringGraph', () => {
           return Promise.resolve({
             toString: () => 'Deployed services using Kubernetes\nImproved velocity by 30%',
           })
+        if (sp.includes('tech stack ats alignment specialist'))
+          return Promise.resolve({ toString: () => '{"techStack":[],"rationale":""}' })
+        if (sp.includes('tech stack alignment auditor')) return Promise.resolve({ toString: () => 'APPROVED' })
         if (sp.includes('fact-checking auditor')) return Promise.resolve({ toString: () => 'APPROVED' })
         if (sp.includes('alignment evaluator')) return Promise.resolve({ toString: () => 'APPROVED' })
         return Promise.resolve({ toString: () => 'Tailored' })
@@ -198,6 +222,7 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes',
+      [],
       mockConfig
     )
     expect(integrityCallCount).toBe(2)
@@ -226,6 +251,9 @@ describe('experienceTailoringGraph', () => {
           return Promise.resolve({ toString: () => '{"enrichmentMap":{},"rationale":"none"}' })
         if (sp.includes('keyword enrichment capability'))
           return Promise.resolve({ toString: () => 'Achievement A\nAchievement B' })
+        if (sp.includes('tech stack ats alignment specialist'))
+          return Promise.resolve({ toString: () => '{"techStack":[],"rationale":""}' })
+        if (sp.includes('tech stack alignment auditor')) return Promise.resolve({ toString: () => 'APPROVED' })
         if (sp.includes('fact-checking auditor')) return Promise.resolve({ toString: () => 'APPROVED' })
         if (sp.includes('alignment evaluator')) return Promise.resolve({ toString: () => 'APPROVED' })
         return Promise.resolve({ toString: () => 'Tailored' })
@@ -238,6 +266,7 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes',
+      [],
       mockConfig
     )
     expect(result).toBeDefined()
@@ -246,14 +275,14 @@ describe('experienceTailoringGraph', () => {
 
   it('should handle fact check refinement', async () => {
     mockFactCheckResponse = 'CRITIQUE: Factual error in metrics'
-    const result = await tailorExperienceToJDGraph('Desc', achievements, 'Pos', 'Org', 'JD', mockConfig)
+    const result = await tailorExperienceToJDGraph('Desc', achievements, 'Pos', 'Org', 'JD', [], mockConfig)
     expect(result).toBeDefined()
     expect(result.description).toBeDefined()
   })
 
   it('should handle relevance enhancement', async () => {
     mockRelevanceResponse = 'CRITIQUE: Low relevance to JD'
-    const result = await tailorExperienceToJDGraph('Desc', achievements, 'Pos', 'Org', 'JD', mockConfig)
+    const result = await tailorExperienceToJDGraph('Desc', achievements, 'Pos', 'Org', 'JD', [], mockConfig)
     expect(result).toBeDefined()
     expect(result.description).toBeDefined()
   })
@@ -270,8 +299,9 @@ describe('experienceTailoringGraph', () => {
       'Pos',
       'Org',
       'JD',
+      ['k8s'],
       mockConfig,
-      onProgress as Parameters<typeof tailorExperienceToJDGraph>[6]
+      onProgress as Parameters<typeof tailorExperienceToJDGraph>[7]
     )
 
     expect(progressMessages).toContain('Analyzing job requirements and experience fit...')
@@ -318,9 +348,87 @@ describe('experienceTailoringGraph', () => {
       'DevOps Engineer',
       'Acme Corp',
       'Requires Kubernetes',
+      [],
       mockConfig
     )
     expect(result).toBeDefined()
     expect(result.achievements.length).toBeGreaterThan(0)
+  })
+
+  it('should align tech stack when provided', async () => {
+    const result = await tailorExperienceToJDGraph(
+      'Built backend services',
+      achievements,
+      'DevOps Engineer',
+      'Acme Corp',
+      'Requires Kubernetes',
+      ['k8s', 'nodejs'],
+      mockConfig
+    )
+    expect(result.techStack).toBeDefined()
+    expect(result.techStack).toEqual(['Kubernetes', 'Node.js']) // Matches our mock aligner
+  })
+
+  it('should handle tech stack aligner returning invalid JSON gracefully', async () => {
+    const { Agent } = jest.requireMock('@strands-agents/sdk') as {
+      Agent: jest.Mock
+    }
+    Agent.mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+      systemPrompt,
+      invoke: jest.fn().mockImplementation(() => {
+        const sp = (systemPrompt || '').toLowerCase()
+        if (sp.includes('tech stack ats alignment specialist'))
+          return Promise.resolve({ toString: () => 'INVALID_JSON_RESPONSE' })
+        if (sp.includes('tech stack alignment auditor')) return Promise.resolve({ toString: () => 'APPROVED' })
+        // Return standard mock responses for others
+        return Promise.resolve({ toString: () => 'APPROVED' })
+      }),
+    }))
+
+    const result = await tailorExperienceToJDGraph(
+      'Built backend services',
+      achievements,
+      'DevOps Engineer',
+      'Acme Corp',
+      'Requires Kubernetes',
+      ['Original Tech'],
+      mockConfig
+    )
+    expect(result.techStack).toBeDefined()
+    expect(result.techStack).toEqual(['Original Tech']) // Falls back to original stack
+  })
+
+  it('should run tech stack validator critique-then-approve loop', async () => {
+    let validatorCallCount = 0
+    const { Agent } = jest.requireMock('@strands-agents/sdk') as {
+      Agent: jest.Mock
+    }
+    Agent.mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+      systemPrompt,
+      invoke: jest.fn().mockImplementation(() => {
+        const sp = (systemPrompt || '').toLowerCase()
+        if (sp.includes('tech stack alignment auditor')) {
+          validatorCallCount++
+          return Promise.resolve({
+            toString: () => (validatorCallCount === 1 ? 'CRITIQUE: Removed a phantom addition' : 'APPROVED'),
+          })
+        }
+        if (sp.includes('tech stack ats alignment specialist'))
+          return Promise.resolve({ toString: () => '{"techStack":["Safe Tech"],"rationale":"test"}' })
+        return Promise.resolve({ toString: () => 'APPROVED' })
+      }),
+    }))
+
+    const result = await tailorExperienceToJDGraph(
+      'Built backend services',
+      achievements,
+      'DevOps Engineer',
+      'Acme Corp',
+      'Requires Kubernetes',
+      ['Original Tech'],
+      mockConfig
+    )
+    expect(validatorCallCount).toBe(2)
+    expect(result.techStack).toBeDefined()
   })
 })

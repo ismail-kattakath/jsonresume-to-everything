@@ -33,8 +33,10 @@ jest.mock('@strands-agents/sdk', () => {
         return Promise.resolve({ toString: () => 'Default' })
       }),
     })),
+    tool: jest.fn().mockImplementation((config) => config),
   }
 })
+
 
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue('mock-model'),
@@ -54,6 +56,7 @@ describe('experienceTailoringGraph', () => {
       'Dev',
       'Company',
       'JD',
+      [],
       mockConfig
     )
 
@@ -69,6 +72,7 @@ describe('experienceTailoringGraph', () => {
       'Dev',
       'Company',
       'JD',
+      [],
       mockConfig
     )
 
@@ -82,6 +86,7 @@ describe('experienceTailoringGraph', () => {
       'Dev',
       'Company',
       'JD',
+      [],
       mockConfig
     )
 

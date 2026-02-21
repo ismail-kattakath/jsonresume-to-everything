@@ -18,7 +18,7 @@ interface AIContentGeneratorProps {
   label?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void
-  onGenerated: (value: string, achievements?: string[]) => void
+  onGenerated: (value: string, achievements?: string[], techStack?: string[]) => void
   placeholder?: string
   name: string
   rows?: number
@@ -32,6 +32,7 @@ interface AIContentGeneratorProps {
     organization: string
     position: string
     achievements: string[]
+    technologies?: string[]
   }
   variant?: FormVariant
 }
@@ -84,9 +85,9 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   }
 
   // Helper to update textarea value
-  const updateValue = (newValue: string, achievements?: string[]) => {
+  const updateValue = (newValue: string, achievements?: string[], techStack?: string[]) => {
     if (onGenerated) {
-      onGenerated(newValue, achievements)
+      onGenerated(newValue, achievements, techStack)
     } else {
       onChange(newValue)
     }
@@ -154,6 +155,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           experienceData?.position || '',
           experienceData?.organization || '',
           settings.jobDescription,
+          experienceData?.technologies || [],
           {
             apiUrl: settings.apiUrl,
             apiKey: settings.apiKey,
@@ -185,6 +187,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
         )
         content = result.description
         const achievements = result.achievements
+        const techStack = result.techStack
         if (toastId) toast.dismiss(toastId)
 
         // Special handling for workExperience to update achievements too
@@ -196,7 +199,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           .replace(/`(.+?)`/g, '$1') // Remove inline code `text`
           .trim()
 
-        updateValue(cleanContent, achievements)
+        updateValue(cleanContent, achievements, techStack)
 
         // Track generation success
         const responseTimeMs = Date.now() - startTime

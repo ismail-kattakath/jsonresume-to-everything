@@ -61,6 +61,7 @@ describe('AIContentGenerator', () => {
     ;(tailorExperienceToJDGraph as jest.Mock).mockResolvedValue({
       description: 'Tailored description',
       achievements: ['A1'],
+      techStack: ['Node.js', 'React'],
     })
   })
 
@@ -92,7 +93,7 @@ describe('AIContentGenerator', () => {
 
     await waitFor(() => {
       expect(generateSummaryGraph).toHaveBeenCalled()
-      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Generated summary content', undefined)
+      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Generated summary content', undefined, undefined)
     })
   })
 
@@ -103,7 +104,7 @@ describe('AIContentGenerator', () => {
 
     await waitFor(() => {
       expect(generateCoverLetterGraph).toHaveBeenCalled()
-      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Generated cover letter content', undefined)
+      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Generated cover letter content', undefined, undefined)
     })
   })
 
@@ -117,7 +118,7 @@ describe('AIContentGenerator', () => {
 
     await waitFor(() => {
       expect(tailorExperienceToJDGraph).toHaveBeenCalled()
-      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Tailored description', ['A1'])
+      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Tailored description', ['A1'], ['Node.js', 'React'])
     })
   })
 
@@ -163,7 +164,7 @@ describe('AIContentGenerator', () => {
     fireEvent.click(genButton)
 
     await waitFor(() => {
-      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Bold and Italic', undefined)
+      expect(defaultProps.onGenerated).toHaveBeenCalledWith('Bold and Italic', undefined, undefined)
     })
   })
 

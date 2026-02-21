@@ -26,21 +26,21 @@ jest.mock(
 
 // Mock IntersectionObserver for framer-motion
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  constructor() { }
+  disconnect() { }
+  observe() { }
   takeRecords() {
     return []
   }
-  unobserve() {}
+  unobserve() { }
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  constructor() { }
+  disconnect() { }
+  observe() { }
+  unobserve() { }
 }
 
 // Mock performance API for Next.js third-party scripts (Google Analytics)
@@ -95,6 +95,8 @@ jest.mock('@strands-agents/sdk', () => ({
     invoke: jest.fn(),
     stream: jest.fn(),
   })),
+  // tool() is a no-op in tests — the returned object is passed as a tool config but never invoked
+  tool: jest.fn().mockImplementation((config) => config),
 }))
 
 jest.mock('@strands-agents/sdk/openai', () => ({
