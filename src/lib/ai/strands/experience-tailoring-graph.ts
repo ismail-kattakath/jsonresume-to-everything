@@ -12,15 +12,36 @@ export interface ExperienceTailoringResult {
 }
 
 /**
+ * Structured output from the keyword extractor agent.
+ */
+export interface KeywordExtractionResult {
+  missingKeywords: string[]
+  criticalKeywords: string[]
+  niceToHaveKeywords: string[]
+}
+
+/**
+ * Structured output from the keyword enrichment classifier agent.
+ * Maps achievement index (as string) to a list of approved injectable keywords.
+ */
+export interface EnrichmentMapResult {
+  enrichmentMap: Record<string, string[]>
+  rationale: string
+}
+
+/**
  * Multi-agent graph that tailors work experience to align with a job description
  * while maintaining factual accuracy.
  *
  * Agents:
- * 1. Analyzer - Assesses alignment potential
- * 2. Description Writer - Rewrites description emphasizing relevant aspects
- * 3. Achievements Optimizer - Reframes achievements for impact
- * 4. Fact Checker - Validates factual accuracy (max 2 iterations)
- * 5. Relevance Evaluator - Ensures effective JD alignment (max 2 iterations)
+ * 1.  Analyzer              - Assesses alignment potential
+ * 2.  Description Writer    - Rewrites description emphasizing relevant aspects
+ * 3a. Keyword Extractor     - Identifies JD keywords missing from achievements
+ * 3b. Enrichment Classifier - Gates which keywords are legitimately injectable per achievement
+ * 3c. Achievements Optimizer- Rewrites achievements with approved keyword seeds
+ * 3d. Integrity Auditor     - Verifies injected keywords are interview-defensible (max 2 iterations)
+ * 4.  Fact Checker          - Validates overall factual accuracy (max 2 iterations)
+ * 5.  Relevance Evaluator   - Ensures effective JD alignment (max 2 iterations)
  */
 export async function tailorExperienceToJDGraph(
   description: string,
@@ -69,21 +90,85 @@ export async function tailorExperienceToJDGraph(
     printer: false,
   })
 
-  // Agent 3: The Achievements Optimizer - Rewrites achievements
+  // Agent 3a: The Keyword Extractor - Surfaces JD keywords missing from achievements
+  const keywordExtractor = new Agent({
+    model,
+    systemPrompt:
+      'You are a JD Keyword Extraction Specialist.\n\n' +
+      'Given a job description and original achievements, identify JD keywords MISSING from the achievements that could improve ATS keyword matching.\n\n' +
+      'CATEGORIES:\n' +
+      '1. **Technologies**: Specific tools, languages, frameworks (e.g., Kubernetes, Terraform, React)\n' +
+      '2. **Methodologies**: Practices and processes (e.g., Agile, CI/CD, TDD, DevSecOps)\n' +
+      '3. **Domains**: Business/functional areas (e.g., FinTech, MLOps, Edge Computing)\n' +
+      '4. **Soft Skills**: Only include if JD explicitly weights them (e.g., stakeholder management)\n\n' +
+      'CRITICAL: Only list keywords that are ABSENT from the original achievements text.\n\n' +
+      'OUTPUT FORMAT (strict JSON, no markdown, no code blocks):\n' +
+      '{"missingKeywords":["kw1","kw2"],"criticalKeywords":["must-have"],"niceToHaveKeywords":["optional"]}\n\n' +
+      'criticalKeywords = appear 2+ times in JD or explicitly listed as required skills\n' +
+      'niceToHaveKeywords = appear once or in desired/preferred qualifications',
+    printer: false,
+  })
+
+  // Agent 3b: The Enrichment Classifier - Gates keyword injection per achievement
+  const keywordEnrichmentClassifier = new Agent({
+    model,
+    systemPrompt:
+      'You are an Achievement Keyword Injection Auditor — a strict gatekeeper.\n\n' +
+      'For each achievement, evaluate which JD keywords can be LEGITIMATELY woven in without fabrication.\n\n' +
+      'CRITERIA FOR LEGITIMATE INJECTION (must satisfy at least one):\n' +
+      '1. **Conceptual overlap**: The keyword represents a concept the achievement genuinely demonstrates (e.g., "automated deployments" ↔ CI/CD)\n' +
+      '2. **Technology umbrella**: The achievement uses a sub/super-technology of the keyword (e.g., "ECS task deployment" ↔ containerization)\n' +
+      "3. **Domain alignment**: The achievement operates in the keyword's domain\n" +
+      '4. **Inferred tool**: Achievement describes an outcome typically achieved with the keyword tool (e.g., "zero-downtime deploys" ↔ rolling updates)\n\n' +
+      'STRICT REJECTIONS — never approve if:\n' +
+      '- Keyword names a specific tool/language not referenced or conceptually implied\n' +
+      '- Adding keyword would require expertise clearly absent from the achievement context\n' +
+      '- Keyword would change what was actually accomplished\n' +
+      '- Keyword is aspirational, not evidential\n\n' +
+      'OUTPUT FORMAT (strict JSON, no markdown, no code blocks):\n' +
+      '{"enrichmentMap":{"0":["kw1","kw2"],"1":["kw3"],"2":[]},"rationale":"brief justification"}\n\n' +
+      'Keys are achievement indices as strings (0-based). Empty array = no injection allowed for that achievement.',
+    printer: false,
+  })
+
+  // Agent 3c: The Achievements Optimizer - Rewrites with approved keyword seeds
   const achievementsOptimizer = new Agent({
     model,
     systemPrompt:
-      'You are a Resume Achievement Optimizer.\n\n' +
-      'Rewrite achievements to emphasize JD-relevant impact while maintaining factual accuracy.\n\n' +
+      'You are a Resume Achievement Optimizer with Keyword Enrichment capability.\n\n' +
+      'Rewrite achievements to: (a) emphasize JD-relevant impact, and (b) naturally weave in ONLY the approved keyword seeds for each achievement.\n\n' +
       'RULES:\n' +
-      '1. **PRESERVE FACTS**: Keep all metrics, technologies, and outcomes accurate\n' +
-      '2. **REFRAME IMPACT**: Emphasize aspects relevant to JD requirements\n' +
-      '3. **TECHNICAL ALIGNMENT**: Use JD-relevant terminology when describing tech stack\n' +
-      '4. **QUANTIFY**: Maintain or enhance quantifiable metrics\n' +
-      '5. **NO FABRICATION**: If achievement does not relate to JD, keep it concise\n' +
-      '6. **ONE PER LINE**: Return each achievement on a separate line\n\n' +
-      '7. **PRESERVE ORIGINAL COUNT**: Return the same number of achievements as the original\n\n' +
-      'OUTPUT: Rewritten achievements, one per line, preserving the original count.',
+      '1. **APPROVED SEEDS ONLY**: Only inject keywords explicitly listed as approved for each achievement index — never add other JD keywords\n' +
+      '2. **NATURAL INTEGRATION**: Keywords must read naturally, never keyword-stuffed\n' +
+      '   BAD:  "Led team (Agile, Scrum, Kanban, SAFe) to deliver project"\n' +
+      '   GOOD: "Led cross-functional team using Agile/Scrum to deliver..."\n' +
+      '3. **PRESERVE FACTS**: All metrics, outcomes, and scope must remain unchanged\n' +
+      '4. **HONEST FRAMING**: If a keyword does not fit naturally, skip it — do not force awkward insertions\n' +
+      '5. **QUANTIFY**: Maintain or enhance all quantifiable metrics\n' +
+      '6. **ONE PER LINE**: Return each achievement on a separate line\n' +
+      '7. **PRESERVE COUNT**: Return the same number of achievements as input\n\n' +
+      'INPUT FORMAT:\n' +
+      'Achievement [N]: <original text>\n' +
+      'Approved keywords for [N]: keyword_a, keyword_b (or "none" if empty)\n\n' +
+      'OUTPUT: Rewritten achievements, one per line, in the same order as input.',
+    printer: false,
+  })
+
+  // Agent 3d: The Achievement Integrity Auditor - Verifies injection defensibility
+  const achievementIntegrityAuditor = new Agent({
+    model,
+    systemPrompt:
+      'You are an Achievement Integrity Auditor specializing in keyword injection detection.\n\n' +
+      'For each rewritten achievement, verify that any newly introduced keywords or terminology are DEFENSIBLE in an actual technical interview.\n\n' +
+      'AUDIT CRITERIA:\n' +
+      '1. **Injection Traceability**: Every new keyword maps back to a real concept in the original achievement\n' +
+      '2. **Interview Defensibility**: Candidate could explain the keyword in its stated context without embarrassment\n' +
+      '3. **No Credential Inflation**: Achievement does not imply deeper ownership or expertise than the original\n' +
+      '4. **Natural Language**: Injected terminology flows naturally and is not keyword-stuffed\n\n' +
+      'VERDICTS:\n' +
+      '- "APPROVED" — all achievements pass audit\n' +
+      '- "CRITIQUE: [index]: <issue> | Corrected: <rewritten achievement>" — flag specific issues with corrected text\n\n' +
+      'Be strict but fair. Conceptually honest injections should pass.',
     printer: false,
   })
 
@@ -143,25 +228,143 @@ export async function tailorExperienceToJDGraph(
   let rewrittenDescription = descriptionResult.toString().trim()
 
   onProgress?.({
-    content: 'Optimizing achievements for relevance...',
+    content: 'Extracting JD keywords for ATS optimization...',
     done: false,
   })
 
-  // Stage 3: Rewrite achievements
-  const achievementsPrompt = `Analysis:\n${analysis}\n\nOriginal Achievements:\n${achievements.join('\n')}\n\nJob Description:\n${jobDescription}`
-  const achievementsResult = await achievementsOptimizer.invoke(achievementsPrompt)
-  const rewrittenAchievements = achievementsResult
-    .toString()
-    .trim()
-    .split('\n')
-    .filter((a) => a.trim())
+  // Stage 3a: Extract missing JD keywords
+  const keywordExtractionPrompt =
+    `Job Description:\n${jobDescription}\n\n` +
+    `Original Achievements:\n${achievements.join('\n')}\n\n` +
+    `Identify JD keywords missing from the achievements for ATS optimization.`
+
+  const keywordExtractionResult = await keywordExtractor.invoke(keywordExtractionPrompt)
+  let extractedKeywords: KeywordExtractionResult = {
+    missingKeywords: [],
+    criticalKeywords: [],
+    niceToHaveKeywords: [],
+  }
+  try {
+    const rawJson = keywordExtractionResult
+      .toString()
+      .trim()
+      .replace(/```json\n?/g, '')
+      .replace(/```\n?/g, '')
+      .trim()
+    extractedKeywords = JSON.parse(rawJson) as KeywordExtractionResult
+  } catch {
+    // Fallback: proceed without keyword extraction
+  }
+
+  onProgress?.({
+    content: 'Classifying keyword injection eligibility...',
+    done: false,
+  })
+
+  // Stage 3b: Gate keywords per achievement via enrichment classifier
+  const allCandidateKeywords = [
+    ...extractedKeywords.criticalKeywords,
+    ...extractedKeywords.niceToHaveKeywords,
+    ...extractedKeywords.missingKeywords.filter(
+      (k) => !extractedKeywords.criticalKeywords.includes(k) && !extractedKeywords.niceToHaveKeywords.includes(k)
+    ),
+  ]
+
+  let enrichmentMap: Record<string, string[]> = {}
+  if (allCandidateKeywords.length > 0) {
+    const classifierPrompt =
+      `Candidate JD Keywords: ${allCandidateKeywords.join(', ')}\n\n` +
+      `Original Achievements (indexed):\n` +
+      achievements.map((a, i) => `[${i}] ${a}`).join('\n') +
+      `\n\nJob Description:\n${jobDescription}\n\n` +
+      `For each achievement index, determine which candidate keywords can be legitimately injected.`
+
+    const classifierResult = await keywordEnrichmentClassifier.invoke(classifierPrompt)
+    try {
+      const rawJson = classifierResult
+        .toString()
+        .trim()
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?/g, '')
+        .trim()
+      const parsed = JSON.parse(rawJson) as EnrichmentMapResult
+      enrichmentMap = parsed.enrichmentMap ?? {}
+    } catch {
+      // Fallback: no keyword enrichment seeds — optimizer runs with reframing only
+    }
+  }
+
+  onProgress?.({
+    content: 'Enriching achievements with relevant keywords...',
+    done: false,
+  })
+
+  // Stage 3c: Build seeded input for the optimizer
+  const seededAchievementsInput = achievements
+    .map((a, i) => {
+      const seeds = enrichmentMap[String(i)] ?? []
+      const seedLine = seeds.length > 0 ? seeds.join(', ') : 'none'
+      return `Achievement [${i}]: ${a}\nApproved keywords for [${i}]: ${seedLine}`
+    })
+    .join('\n\n')
+
+  const achievementsPrompt =
+    `Analysis:\n${analysis}\n\n` + `Job Description:\n${jobDescription}\n\n` + `${seededAchievementsInput}`
+
+  const runAchievementsOptimizer = async (prompt: string): Promise<string[]> => {
+    const result = await achievementsOptimizer.invoke(prompt)
+    return result
+      .toString()
+      .trim()
+      .split('\n')
+      .filter((a) => a.trim())
+  }
+
+  let rewrittenAchievements = await runAchievementsOptimizer(achievementsPrompt)
+
+  onProgress?.({
+    content: 'Auditing achievement keyword integrity...',
+    done: false,
+  })
+
+  // Stage 3d: Achievement Integrity Auditor loop (max 2 iterations)
+  const maxIntegrityIterations = 2
+  for (let i = 0; i < maxIntegrityIterations; i++) {
+    const integrityPrompt =
+      `Original Achievements:\n${achievements.map((a, idx) => `[${idx}] ${a}`).join('\n')}\n\n` +
+      `Rewritten Achievements:\n${rewrittenAchievements.map((a, idx) => `[${idx}] ${a}`).join('\n')}\n\n` +
+      `Injected keyword seeds per achievement:\n` +
+      achievements
+        .map((_, idx) => {
+          const seeds = enrichmentMap[String(idx)] ?? []
+          return `[${idx}]: ${seeds.length > 0 ? seeds.join(', ') : 'none'}`
+        })
+        .join('\n')
+
+    const integrityResult = await achievementIntegrityAuditor.invoke(integrityPrompt)
+    const integrityText = integrityResult.toString().trim()
+
+    if (integrityText.startsWith('APPROVED')) {
+      break
+    } else if (i < maxIntegrityIterations - 1) {
+      // Extract corrected achievements from CRITIQUE response and re-run optimizer
+      const refinedPrompt =
+        `${achievementsPrompt}\n\n` +
+        `Integrity Audit Feedback:\n${integrityText}\n\n` +
+        `Please revise to address the flagged issues, keeping only legitimately defensible keyword usage.`
+      rewrittenAchievements = await runAchievementsOptimizer(refinedPrompt)
+    }
+  }
 
   // Stage 4: Fact checking loop (max 2 iterations)
   onProgress?.({ content: 'Validating factual accuracy...', done: false })
 
   const maxFactCheckIterations = 2
   for (let i = 0; i < maxFactCheckIterations; i++) {
-    const factCheckPrompt = `Original Description: ${description}\nRewritten Description: ${rewrittenDescription}\n\nOriginal Achievements:\n${achievements.join('\n')}\n\nRewritten Achievements:\n${rewrittenAchievements.join('\n')}`
+    const factCheckPrompt =
+      `Original Description: ${description}\nRewritten Description: ${rewrittenDescription}\n\n` +
+      `Original Achievements:\n${achievements.join('\n')}\n\n` +
+      `Rewritten Achievements:\n${rewrittenAchievements.join('\n')}`
 
     const factCheckResult = await factChecker.invoke(factCheckPrompt)
     const factCheckText = factCheckResult.toString().trim()
@@ -181,7 +384,9 @@ export async function tailorExperienceToJDGraph(
 
   const maxRelevanceIterations = 2
   for (let i = 0; i < maxRelevanceIterations; i++) {
-    const relevancePrompt = `Job Description:\n${jobDescription}\n\nRewritten Content:\nDescription: ${rewrittenDescription}\nAchievements:\n${rewrittenAchievements.join('\n')}`
+    const relevancePrompt =
+      `Job Description:\n${jobDescription}\n\n` +
+      `Rewritten Content:\nDescription: ${rewrittenDescription}\nAchievements:\n${rewrittenAchievements.join('\n')}`
 
     const relevanceResult = await relevanceEvaluator.invoke(relevancePrompt)
     const relevanceText = relevanceResult.toString().trim()
