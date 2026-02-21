@@ -190,7 +190,7 @@ const Preview = () => {
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="relative mb-2 flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-1">
             {resumeData.profilePicture && resumeData.profilePicture.length > 0 && (
-              <div className="absolute top-6 left-6 h-24 w-24 overflow-hidden rounded-full border-2 border-[black]">
+              <div className="absolute top-0 left-0 h-24 w-24 overflow-hidden rounded-full border-2 border-[black]">
                 <Image
                   src={resumeData.profilePicture}
                   alt="profile"
