@@ -59,7 +59,7 @@ export async function tailorExperienceToJDGraph(
       '2. **EMPHASIZE RELEVANCE**: Highlight aspects that align with JD requirements\n' +
       '3. **HONEST FRAMING**: Frame responsibilities using JD-relevant terminology when accurate\n' +
       '4. **ACKNOWLEDGE LIMITS**: If experience is tangentially related, be honest about it\n' +
-      '5. **CONCISE**: 2-3 sentences maximum\n' +
+      '5. **CONCISE**: 1 sentence maximum\n' +
       '6. **NO FABRICATION**: Do not add technologies, skills, or responsibilities not in original\n\n' +
       'Example Transformation:\n' +
       'Original: "Developed web applications using React and Node.js"\n' +
@@ -82,6 +82,7 @@ export async function tailorExperienceToJDGraph(
       '4. **QUANTIFY**: Maintain or enhance quantifiable metrics\n' +
       '5. **NO FABRICATION**: If achievement does not relate to JD, keep it concise\n' +
       '6. **ONE PER LINE**: Return each achievement on a separate line\n\n' +
+      '7. **PRESERVE ORIGINAL COUNT**: Return the same number of achievements as the original\n\n' +
       'OUTPUT: Rewritten achievements, one per line, preserving the original count.',
     printer: false,
   })

@@ -64,6 +64,35 @@ jest.mock('@/components/ui/ai-action-button', () => ({
   ),
 }))
 
+jest.mock('@/components/document-builder/shared-forms/ai-content-generator', () => ({
+  __esModule: true,
+  default: ({
+    label,
+    value,
+    onChange,
+    onGenerated,
+  }: {
+    label?: string
+    value: string
+    onChange: (e: any) => void
+    onGenerated: (v: string, a?: string[]) => void
+  }) => (
+    <div data-testid="ai-generator">
+      {label && <label htmlFor="description-input">{label}</label>}
+      <textarea id="description-input" data-testid="description-input" value={value} onChange={(e) => onChange(e)} />
+      <button data-testid="trigger-string-change" onClick={() => onChange('New String Description')}>
+        String Change
+      </button>
+      <button
+        data-testid="trigger-generated"
+        onClick={() => onGenerated('AI Generated Description', ['New Achievement'])}
+      >
+        Generate
+      </button>
+    </div>
+  ),
+}))
+
 describe('WorkExperience', () => {
   const mockSetResumeData = jest.fn()
 
@@ -279,6 +308,40 @@ describe('WorkExperience', () => {
       fireEvent.change(input, { target: { value } })
       expect(mockArrayForm.handleChange).toHaveBeenCalled()
     })
+  })
+
+  it('handles accordion toggle', () => {
+    renderComponent()
+    const toggleButton = screen.getByRole('button', { name: /Old Corp/i })
+    fireEvent.click(toggleButton)
+    expect(mockAccordion.toggleExpanded).toHaveBeenCalledWith(0)
+  })
+
+  it('handles AIContentGenerator string change', () => {
+    renderComponent()
+    const stringChangeButton = screen.getByTestId('trigger-string-change')
+    fireEvent.click(stringChangeButton)
+    expect(mockSetResumeData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workExperience: [expect.objectContaining({ description: 'New String Description' })],
+      })
+    )
+  })
+
+  it('handles AIContentGenerator generated content including achievements', () => {
+    renderComponent()
+    const generateButton = screen.getByTestId('trigger-generated')
+    fireEvent.click(generateButton)
+    expect(mockSetResumeData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workExperience: [
+          expect.objectContaining({
+            description: 'AI Generated Description',
+            keyAchievements: [{ text: 'New Achievement' }],
+          }),
+        ],
+      })
+    )
   })
 
   it('ignores drag if destination is same as source', () => {

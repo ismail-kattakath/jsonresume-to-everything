@@ -6,17 +6,19 @@ import AIActionButton from '@/components/ui/ai-action-button'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/ai-settings-context'
 import { ResumeContext } from '@/lib/contexts/document-context'
-import { generateCoverLetterGraph, generateSummaryGraph } from '@/lib/ai/strands/agent'
+import { generateCoverLetterGraph, generateSummaryGraph, tailorExperienceToJDGraph } from '@/lib/ai/strands/agent'
 import { AIAPIError, sanitizeAIError } from '@/lib/ai/api'
 import { fetchAvailableModels } from '@/lib/ai/models'
 import { analytics } from '@/lib/analytics'
 import { AILoadingToast } from '@/components/ui/ai-loading-toast'
 import { FormTextarea } from '@/components/ui/form-textarea'
+import { FormVariant } from '@/lib/utils/form-variants'
 
 interface AIContentGeneratorProps {
+  label?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void
-  onGenerated: (value: string) => void
+  onGenerated: (value: string, achievements?: string[]) => void
   placeholder?: string
   name: string
   rows?: number
@@ -24,11 +26,18 @@ interface AIContentGeneratorProps {
   maxLength?: number
   showCharacterCount?: boolean
   className?: string
-  mode: 'coverLetter' | 'summary'
+  mode: 'coverLetter' | 'summary' | 'workExperience'
   disabled?: boolean
+  experienceData?: {
+    organization: string
+    position: string
+    achievements: string[]
+  }
+  variant?: FormVariant
 }
 
 const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
+  label,
   value,
   onChange,
   onGenerated,
@@ -41,6 +50,8 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
   className = '',
   mode,
   disabled = false,
+  experienceData,
+  variant = 'amber',
 }) => {
   const { settings, isConfigured } = useAISettings()
   const { resumeData } = useContext(ResumeContext)
@@ -59,14 +70,23 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       successDescription: 'The AI has crafted your personalized cover letter.',
       errorMessage: 'Failed to generate cover letter',
     },
+    workExperience: {
+      label: 'Description',
+      successMessage: 'Experience description tailored successfully!',
+      successDescription: 'The AI has optimized your experience for the job requirements.',
+      errorMessage: 'Failed to tailor experience',
+    },
   }
 
-  const currentConfig = config[mode]
+  const currentConfig = {
+    ...config[mode],
+    label: label || config[mode].label,
+  }
 
   // Helper to update textarea value
-  const updateValue = (newValue: string) => {
+  const updateValue = (newValue: string, achievements?: string[]) => {
     if (onGenerated) {
-      onGenerated(newValue)
+      onGenerated(newValue, achievements)
     } else {
       onChange(newValue)
     }
@@ -127,6 +147,66 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
           }
         )
         if (toastId) toast.dismiss(toastId)
+      } else if (mode === 'workExperience') {
+        const result = await tailorExperienceToJDGraph(
+          value,
+          experienceData?.achievements || [],
+          experienceData?.position || '',
+          experienceData?.organization || '',
+          settings.jobDescription,
+          {
+            apiUrl: settings.apiUrl,
+            apiKey: settings.apiKey,
+            model: settings.model,
+            providerType: settings.providerType,
+          },
+          (chunk) => {
+            if (chunk.content) {
+              const isCritique =
+                chunk.content.includes('CRITIQUE:') ||
+                chunk.content.includes('❌') ||
+                chunk.content.startsWith('**CRITIQUE:**')
+
+              if (!isCritique) {
+                const cleanMessage = chunk.content.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, '').trim()
+                if (!toastId) {
+                  toastId = toast(<AILoadingToast message={cleanMessage} />, {
+                    duration: Infinity,
+                  })
+                } else {
+                  toast(<AILoadingToast message={cleanMessage} />, {
+                    id: toastId,
+                    duration: Infinity,
+                  })
+                }
+              }
+            }
+          }
+        )
+        content = result.description
+        const achievements = result.achievements
+        if (toastId) toast.dismiss(toastId)
+
+        // Special handling for workExperience to update achievements too
+        const cleanContent = content
+          .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold **text**
+          .replace(/\*(.+?)\*/g, '$1') // Remove italic *text*
+          .replace(/_(.+?)_/g, '$1') // Remove italic _text_
+          .replace(/~~(.+?)~~/g, '$1') // Remove strikethrough ~~text~~
+          .replace(/`(.+?)`/g, '$1') // Remove inline code `text`
+          .trim()
+
+        updateValue(cleanContent, achievements)
+
+        // Track generation success
+        const responseTimeMs = Date.now() - startTime
+        analytics.aiGenerationSuccess(settings.providerType, settings.model, responseTimeMs)
+
+        toast.success(currentConfig.successMessage, {
+          description: currentConfig.successDescription,
+        })
+        setIsGenerating(false)
+        return
       } else {
         content = await generateCoverLetterGraph(
           resumeData,
@@ -218,7 +298,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       rows={rows}
       className={className}
       disabled={isGenerating || disabled}
-      variant="amber"
+      variant={variant}
       onAIAction={handleGenerate}
       isAILoading={isGenerating}
       isAIConfigured={isConfigured}
