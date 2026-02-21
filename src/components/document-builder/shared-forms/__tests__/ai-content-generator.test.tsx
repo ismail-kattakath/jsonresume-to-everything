@@ -30,9 +30,12 @@ jest.mock('@/components/ui/ai-action-button', () => ({
     </button>
   ),
 }))
-jest.mock('@/components/document-builder/shared-forms/on-device-generator', () => ({
-  OnDeviceGenerator: ({ onComplete }: { onComplete: (text: string) => void }) => (
-    <button onClick={() => onComplete('On-device generated content')}>Mock OnDeviceGenerator</button>
+jest.mock('../on-device-generator', () => ({
+  OnDeviceGenerator: ({ onComplete, onDismiss }: any) => (
+    <div data-testid="on-device-generator">
+      <button onClick={() => onComplete('On-device result')}>Complete</button>
+      <button onClick={onDismiss}>Dismiss</button>
+    </div>
   ),
 }))
 
@@ -90,7 +93,14 @@ describe('AIContentGenerator', () => {
     await waitFor(() => expect(generateSummaryGraph).toHaveBeenCalled())
   })
 
-  it('shows OnDeviceGenerator', async () => {
+  it('handles onChange with event', () => {
+    renderComponent()
+    const textarea = screen.getByLabelText('Professional Summary')
+    fireEvent.change(textarea, { target: { value: 'New value' } })
+    expect(defaultProps.onChange).toHaveBeenCalled()
+  })
+
+  it('shows OnDeviceGenerator and handles onComplete/onDismiss', async () => {
     ;(useAISettings as jest.Mock).mockReturnValue({
       ...mockAISettings,
       settings: { ...mockAISettings.settings, providerType: 'on-device' },
@@ -99,10 +109,49 @@ describe('AIContentGenerator', () => {
     renderComponent()
     fireEvent.click(screen.getByRole('button', { name: /🔒 On-Device AI/i }))
 
-    const mockGenerator = screen.getByText('Mock OnDeviceGenerator')
-    expect(mockGenerator).toBeInTheDocument()
-    fireEvent.click(mockGenerator)
-    // Accept that the call happened with the content (ignoring extra undefined args if any)
-    expect(defaultProps.onGenerated).toHaveBeenCalledWith('On-device generated content', undefined, undefined)
+    expect(screen.getByTestId('on-device-generator')).toBeInTheDocument()
+
+    // Test Dismiss
+    fireEvent.click(screen.getByText('Dismiss'))
+    expect(screen.queryByTestId('on-device-generator')).not.toBeInTheDocument()
+
+    // Re-open and test Complete
+    fireEvent.click(screen.getByRole('button', { name: /🔒 On-Device AI/i }))
+    fireEvent.click(screen.getByText('Complete'))
+    expect(defaultProps.onGenerated).toHaveBeenCalledWith('On-device result', undefined, undefined)
+    expect(screen.queryByTestId('on-device-generator')).not.toBeInTheDocument()
+  })
+
+  it('exercises all prompt building modes', async () => {
+    ;(useAISettings as jest.Mock).mockReturnValue({
+      ...mockAISettings,
+      settings: { ...mockAISettings.settings, providerType: 'on-device' },
+    })
+
+    const { rerender } = renderComponent({ mode: 'coverLetter' })
+    fireEvent.click(screen.getByRole('button', { name: /Generate by JD/i }))
+
+    rerender(
+      <ResumeContext.Provider value={{ resumeData: mockResumeData } as any}>
+        <AIContentGenerator {...defaultProps} mode="workExperience" />
+      </ResumeContext.Provider>
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Generate by JD/i }))
+
+    rerender(
+      <ResumeContext.Provider value={{ resumeData: mockResumeData } as any}>
+        <AIContentGenerator {...defaultProps} mode="jobDescription" />
+      </ResumeContext.Provider>
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Generate by JD/i }))
+
+    rerender(
+      <ResumeContext.Provider value={{ resumeData: mockResumeData } as any}>
+        <AIContentGenerator {...defaultProps} mode="skillsToHighlight" />
+      </ResumeContext.Provider>
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Generate by JD/i }))
+
+    expect(screen.getByTestId('on-device-generator')).toBeInTheDocument()
   })
 })

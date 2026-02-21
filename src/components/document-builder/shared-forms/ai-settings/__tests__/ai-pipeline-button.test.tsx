@@ -1,12 +1,34 @@
 import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import AIPipelineButton from '@/components/document-builder/shared-forms/ai-settings/ai-pipeline-button'
+import { useAISettings } from '@/lib/contexts/ai-settings-context'
+
+jest.mock('@/lib/contexts/ai-settings-context')
 
 describe('AIPipelineButton', () => {
-  it('renders with Sparkles icon when not loading', () => {
+  const mockAISettings = {
+    settings: { providerType: 'openai' },
+    isAIWorking: false,
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    ;(useAISettings as jest.Mock).mockReturnValue(mockAISettings)
+  })
+
+  it('renders correctly with default state', () => {
     render(<AIPipelineButton onRun={jest.fn()} disabled={false} isLoading={false} />)
-    expect(screen.getByText('Optimize by JD')).toBeInTheDocument()
-    // Icon rendering check (just checking it doesn't throw and renders button content)
-    expect(screen.getByRole('button')).toBeInTheDocument()
+    expect(screen.getByText(/Optimize Resume by Job Description/i)).toBeInTheDocument()
+  })
+
+  it('shows on-device label when provider is on-device', () => {
+    ;(useAISettings as jest.Mock).mockReturnValue({
+      ...mockAISettings,
+      settings: { providerType: 'on-device' },
+    })
+
+    render(<AIPipelineButton onRun={jest.fn()} disabled={false} isLoading={false} />)
+    expect(screen.getByText(/Optimize Resume \(On-Device\)/i)).toBeInTheDocument()
   })
 
   it('renders with Loader2 spinner when loading', () => {
