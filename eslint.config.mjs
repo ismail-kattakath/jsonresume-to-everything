@@ -12,7 +12,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const eslintConfig = tseslint.config(
+const eslintConfig = [
   {
     ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
@@ -120,6 +120,6 @@ const eslintConfig = tseslint.config(
       '@next/next/no-img-element': 'off',
     },
   }
-)
+]
 
 export default eslintConfig
