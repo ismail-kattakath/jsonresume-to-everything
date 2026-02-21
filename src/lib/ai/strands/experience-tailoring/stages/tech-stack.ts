@@ -34,7 +34,9 @@ export async function runTechStackStage(
 
   const maxAlignIterations = 2
   for (let i = 0; i < maxAlignIterations; i++) {
-    await runAgentStream(await agents.techStackAligner.stream(alignerPrompt), onProgress, 'Aligning Tech Stack')
+    await runAgentStream(await agents.techStackAligner.stream(alignerPrompt), onProgress, 'Aligning Tech Stack', {
+      silentText: true,
+    })
 
     const alignData = extractToolOutput<TechStackAlignmentResult>(
       agents.techStackAligner.messages,
@@ -57,7 +59,8 @@ export async function runTechStackStage(
     const validationResult = await runAgentStream(
       await agents.techStackValidator.stream(validatorPrompt),
       onProgress,
-      'Validating Tech Stack'
+      'Validating Tech Stack',
+      { silentText: true }
     )
     if (validationResult.toString().trim().startsWith('APPROVED')) {
       break

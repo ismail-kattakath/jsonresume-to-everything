@@ -88,5 +88,64 @@ describe('experience-tailoring utils', () => {
       const result = await runAgentStream(mockStream())
       expect(result).toBe('Hello World')
     })
+
+    it('should prepend contextMessage to progress', async () => {
+      const onProgress = jest.fn()
+      const events: AgentStreamEvent[] = [
+        {
+          type: 'modelContentBlockDeltaEvent',
+          delta: { type: 'textDelta', text: 'Working on something important.' },
+        } as any,
+      ]
+
+      async function* mockStream() {
+        for (const e of events) yield e
+      }
+
+      await runAgentStream(mockStream(), onProgress, 'Context')
+      expect(onProgress).toHaveBeenCalledWith({
+        content: 'Context: Working on something important.',
+        done: false,
+      })
+    })
+
+    it('should suppress progress when silentText is true', async () => {
+      const onProgress = jest.fn()
+      const events: AgentStreamEvent[] = [
+        {
+          type: 'modelContentBlockDeltaEvent',
+          delta: { type: 'textDelta', text: 'Secret internal thoughts' },
+        } as any,
+      ]
+
+      async function* mockStream() {
+        for (const e of events) yield e
+      }
+
+      await runAgentStream(mockStream(), onProgress, 'Internal', { silentText: true })
+      expect(onProgress).not.toHaveBeenCalledWith(
+        expect.objectContaining({ content: expect.stringContaining('Secret') })
+      )
+    })
+
+    it('should scrub common technical noise from progress', async () => {
+      const onProgress = jest.fn()
+      const events: AgentStreamEvent[] = [
+        {
+          type: 'modelContentBlockDeltaEvent',
+          delta: { type: 'textDelta', text: '```json\n{"noisy": true}\n``` and keep this' },
+        } as any,
+      ]
+
+      async function* mockStream() {
+        for (const e of events) yield e
+      }
+
+      await runAgentStream(mockStream(), onProgress, '')
+      const call = onProgress.mock.calls[0][0]
+      expect(call.content).not.toContain('```')
+      expect(call.content).not.toContain('{')
+      expect(call.content).toContain('and keep this')
+    })
   })
 })

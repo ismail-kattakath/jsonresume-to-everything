@@ -23,7 +23,14 @@ export async function runAchievementsStage(
     `Original Achievements:\n${originalAchievements.join('\n')}\n\n` +
     `Identify JD keywords missing from the achievements for ATS optimization.`
 
-  await runAgentStream(await agents.keywordExtractor.stream(keywordExtractionPrompt), onProgress, 'Extracting Keywords')
+  await runAgentStream(
+    await agents.keywordExtractor.stream(keywordExtractionPrompt),
+    onProgress,
+    'Extracting Keywords',
+    {
+      silentText: true,
+    }
+  )
 
   const extractedKeywords = extractToolOutput<KeywordExtractionResult>(
     agents.keywordExtractor.messages,
@@ -58,7 +65,8 @@ export async function runAchievementsStage(
     await runAgentStream(
       await agents.keywordEnrichmentClassifier.stream(classifierPrompt),
       onProgress,
-      'Classifying Keywords'
+      'Classifying Keywords',
+      { silentText: true }
     )
     const parsed = extractToolOutput<EnrichmentMapResult>(
       agents.keywordEnrichmentClassifier.messages,
@@ -133,7 +141,8 @@ export async function runAchievementsStage(
     const integrityText = await runAgentStream(
       await agents.achievementIntegrityAuditor.stream(integrityPrompt),
       onProgress,
-      'Auditing Integrity'
+      'Auditing Integrity',
+      { silentText: true }
     )
 
     if (integrityText.startsWith('APPROVED')) {

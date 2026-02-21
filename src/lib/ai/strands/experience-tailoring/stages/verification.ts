@@ -31,7 +31,8 @@ export async function runVerificationStage(
     const factCheckText = await runAgentStream(
       await agents.factChecker.stream(factCheckPrompt),
       onProgress,
-      'Fact Checking'
+      'Fact Checking',
+      { silentText: true }
     )
 
     if (factCheckText.startsWith('APPROVED')) {
@@ -60,7 +61,8 @@ export async function runVerificationStage(
     const relevanceText = await runAgentStream(
       await agents.relevanceEvaluator.stream(relevancePrompt),
       onProgress,
-      'Evaluating Relevance'
+      'Evaluating Relevance',
+      { silentText: true }
     )
 
     if (relevanceText.startsWith('APPROVED')) {

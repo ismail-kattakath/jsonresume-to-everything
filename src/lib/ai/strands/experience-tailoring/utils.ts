@@ -59,29 +59,50 @@ export function extractToolOutput<T>(messages: Message[], toolName: string, fall
 /**
  * Consumes an agent stream and converts TextDelta and ToolUse events into
  * standard onProgress UI strings. Returns the final concatenated string.
+ *
+ * @param stream The AsyncIterable stream from the agent
+ * @param onProgress UI callback for progress updates
+ * @param contextMessage Prefix to show in the UI (e.g. "Fact Checking")
+ * @param options.silentText If true, suppresses TextDelta events (useful for tool-only agents)
  */
 export async function runAgentStream(
   stream: AsyncIterable<AgentStreamEvent>,
   onProgress?: StreamCallback,
-  contextMessage: string = ''
+  contextMessage: string = '',
+  options: { silentText?: boolean } = {}
 ): Promise<string> {
   let fullText = ''
   let buffer = ''
   const BUFFER_THRESHOLD = 40
 
+  const emitProgress = (content: string) => {
+    if (options.silentText) return
+
+    // Scrub noise: avoid showing raw JSON or markdown fences in toasts
+    const scrubbed = content
+      .replace(/```\w*/g, '')
+      .replace(/[{}|[\]"']/g, '')
+      .trim()
+
+    if (scrubbed.length > 0) {
+      onProgress?.({
+        content: `${contextMessage ? contextMessage + ': ' : ''}${scrubbed}`,
+        done: false,
+      })
+    }
+  }
+
   for await (const event of stream) {
     if (event.type === 'agentResult') {
-      // Flush any remaining buffer before returning
       if (buffer.trim().length > 0) {
-        onProgress?.({ content: buffer, done: false })
+        emitProgress(buffer)
       }
       return event.toString().trim()
     }
 
     if (event.type === 'modelContentBlockStartEvent' && event.start?.type === 'toolUseStart') {
-      // Flush buffer before tool execution message
       if (buffer.trim().length > 0) {
-        onProgress?.({ content: buffer, done: false })
+        emitProgress(buffer)
         buffer = ''
       }
       onProgress?.({
@@ -93,19 +114,17 @@ export async function runAgentStream(
       fullText += deltaText
       buffer += deltaText
 
-      // Only emit if buffer contains a newline or exceeds threshold
       if (buffer.includes('\n') || buffer.length >= BUFFER_THRESHOLD) {
         if (buffer.trim().length > 0) {
-          onProgress?.({ content: buffer, done: false })
+          emitProgress(buffer)
         }
         buffer = ''
       }
     }
   }
 
-  // Final flush
   if (buffer.trim().length > 0) {
-    onProgress?.({ content: buffer, done: false })
+    emitProgress(buffer)
   }
 
   return fullText
