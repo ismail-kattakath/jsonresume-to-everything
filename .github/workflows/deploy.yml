@@ -20,103 +20,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.18.1'
-          cache: 'npm'
-
-      - name: Restore node_modules cache
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci --no-fund --loglevel=error
+      - name: Setup Project
+        uses: ./.github/actions/setup-project
 
   build:
     name: Build
-    needs: [install]
-    environment: github-pages
-    runs-on: ubuntu-latest
-    env:
-      RESUME_JSON_GIST: ${{ vars.RESUME_JSON_GIST || 'https://gist.githubusercontent.com/ismail-kattakath/89b610867a975476693d3f28219acd8b/raw/resume.json' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.18.1'
-          cache: 'npm'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Restore Next.js build cache
-        uses: actions/cache@v4
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
-          restore-keys: |
-            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
-            nextjs-${{ runner.os }}-
-
-      - name: Create .nojekyll file
-        run: touch .nojekyll
-
-      - name: Download resume data
-        run: npm run download-resume-json
-
-      - name: Sync resume markdown to Gist
-        run: npm run sync-resume-markdown
-        env:
-          RESUME_MD_GIST: ${{ vars.RESUME_MD_GIST }}
-          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
-
-      - name: Validate HuggingFace Token
-        run: |
-          URL="${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}"
-          if [ -z "$URL" ]; then
-            URL="https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/main/gemma3-1b-it-int4.task?download=true"
-          fi
-          echo "Validating access to model URL..."
-          RESPONSE=$(curl -s -o /dev/null -L -w "%{http_code}" -I \
-            -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}" \
-            "$URL")
-          if [ "$RESPONSE" != "200" ]; then
-            echo "::error::HuggingFace token validation failed with HTTP $RESPONSE"
-            echo "Check if NEXT_PUBLIC_HF_TOKEN is set correctly in GitHub Secrets."
-            echo "URL attempted: $URL"
-            exit 1
-          fi
-          echo "Token validation successful (HTTP $RESPONSE)"
-        env:
-          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
-          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}
-
-      - name: Build with Next.js
-        run: npm run build
-        env:
-          NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
-          NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
-          NEXT_PUBLIC_ON_DEVICE_MODEL_URL: ${{ vars.NEXT_PUBLIC_ON_DEVICE_MODEL_URL }}
-
-      - name: Add .nojekyll to output
-        run: touch out/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
+    needs: install
+    uses: ./.github/workflows/_build.yml
+    with:
+      sync-markdown: true
+      is-gh-pages: true
+    secrets:
+      NEXT_PUBLIC_EDIT_PASSWORD_HASH: ${{ secrets.NEXT_PUBLIC_EDIT_PASSWORD_HASH }}
+      NEXT_PUBLIC_HF_TOKEN: ${{ secrets.NEXT_PUBLIC_HF_TOKEN }}
+      RESUME_MD_GIST: ${{ vars.RESUME_MD_GIST }}
+      GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
 
   deploy:
     name: Deploy
