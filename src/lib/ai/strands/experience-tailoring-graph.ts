@@ -146,11 +146,12 @@ export async function tailorExperienceToJDGraph(
       '4. **HONEST FRAMING**: If a keyword does not fit naturally, skip it — do not force awkward insertions\n' +
       '5. **QUANTIFY**: Maintain or enhance all quantifiable metrics\n' +
       '6. **ONE PER LINE**: Return each achievement on a separate line\n' +
-      '7. **PRESERVE COUNT**: Return the same number of achievements as input\n\n' +
+      '7. **PRESERVE COUNT**: Return the same number of achievements as input\n' +
+      '8. **PLAIN TEXT OUTPUT**: Do NOT echo input labels. Never start a line with "Achievement [N]:" or any index prefix — output the achievement text only\n\n' +
       'INPUT FORMAT:\n' +
       'Achievement [N]: <original text>\n' +
       'Approved keywords for [N]: keyword_a, keyword_b (or "none" if empty)\n\n' +
-      'OUTPUT: Rewritten achievements, one per line, in the same order as input.',
+      'OUTPUT: Plain rewritten achievement text only, one per line, in the same order as input. No labels, no prefixes, no numbering.',
     printer: false,
   })
 
@@ -317,6 +318,12 @@ export async function tailorExperienceToJDGraph(
       .toString()
       .trim()
       .split('\n')
+      .map((line) =>
+        line
+          .replace(/^Achievement\s*\[\d+\]:\s*/i, '')
+          .replace(/^Approved keywords for\s*\[\d+\]:\s*.*/i, '')
+          .trim()
+      )
       .filter((a) => a.trim())
   }
 
