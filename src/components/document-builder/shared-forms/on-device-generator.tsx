@@ -21,15 +21,20 @@ const MODEL_CACHE_KEY = 'on-device-model-blob'
 /** HuggingFace access token — required for gated Gemma models */
 const HF_TOKEN = process.env['NEXT_PUBLIC_HF_TOKEN'] || ''
 
+export interface DownloadStatus {
+  loadedBytes: number
+  totalBytes: number | null
+  isDone: boolean
+}
+
 async function downloadWithProgress(
   url: string,
-  onProgress: (pct: number) => void,
+  onProgress: (status: DownloadStatus) => void,
   signal: AbortSignal
 ): Promise<string> {
-  // Try to get a cached blob URL from sessionStorage (object URL survives the session)
   const cached = sessionStorage.getItem(MODEL_CACHE_KEY)
   if (cached) {
-    onProgress(100)
+    onProgress({ loadedBytes: 555 * 1024 * 1024, totalBytes: 555 * 1024 * 1024, isDone: true })
     return cached
   }
 
@@ -40,24 +45,26 @@ async function downloadWithProgress(
   if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`)
 
   const contentLength = response.headers.get('content-length')
-  const total = contentLength ? parseInt(contentLength, 10) : 0
+  const total = contentLength ? parseInt(contentLength, 10) : null
 
   const reader = response.body!.getReader()
   const chunks: Uint8Array[] = []
   let received = 0
+
+  // Signal that headers arrived and body download is starting
+  onProgress({ loadedBytes: 0, totalBytes: total, isDone: false })
 
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
     chunks.push(value)
     received += value.length
-    if (total > 0) {
-      onProgress(Math.round((received / total) * 95)) // reserve last 5% for model init
-    } else {
-      // Unknown size — pulse between 10-80%
-      onProgress(Math.min(80, Math.round((received / (555 * 1024 * 1024)) * 95)))
-    }
+
+    // Update UI every loop to ensure real-time feedback
+    onProgress({ loadedBytes: received, totalBytes: total, isDone: false })
   }
+
+  onProgress({ loadedBytes: received, totalBytes: total, isDone: true })
 
   const blob = new Blob(chunks as unknown as BlobPart[])
   const blobUrl = URL.createObjectURL(blob)
@@ -71,17 +78,10 @@ async function downloadWithProgress(
 
 /**
  * Self-contained component that runs on-device Gemma3 inference.
- *
- * Phase 1: Downloads the model with real byte-level progress via fetch() streaming.
- * Phase 2: Once blobUrl is ready, renders <LlmRunner> which mounts useLlm and runs generation.
- *
- * This two-phase pattern is necessary because:
- * - useLlm must always be called (React hook rules) — so it lives in a dedicated child
- * - Real download progress requires fetch streaming, which the MediaPipe library doesn't expose
  */
 export function OnDeviceGenerator({ prompt, onComplete, onDismiss }: OnDeviceGeneratorProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
-  const [downloadPct, setDownloadPct] = useState(0)
+  const [status, setStatus] = useState<DownloadStatus | null>(null)
   const [downloadError, setDownloadError] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
   const startedRef = useRef(false)
@@ -93,7 +93,7 @@ export function OnDeviceGenerator({ prompt, onComplete, onDismiss }: OnDeviceGen
     const controller = new AbortController()
     abortRef.current = controller
 
-    downloadWithProgress(ON_DEVICE_MODEL_URL, setDownloadPct, controller.signal)
+    downloadWithProgress(ON_DEVICE_MODEL_URL, setStatus, controller.signal)
       .then(setBlobUrl)
       .catch((err: Error) => {
         if (err.name !== 'AbortError') setDownloadError(err.message)
@@ -117,38 +117,50 @@ export function OnDeviceGenerator({ prompt, onComplete, onDismiss }: OnDeviceGen
 
   // --- Phase 1: Download progress ---
   if (!blobUrl) {
-    const isInitializing = downloadPct >= 95
-    const stage = isInitializing
-      ? 'Initializing model…'
-      : downloadPct === 0
-        ? 'Connecting…'
-        : `Downloading model… ${downloadPct}%`
+    let stageText = 'Connecting…'
+    let progressNode = <div className="h-full w-1/3 animate-pulse rounded-full bg-emerald-500" />
+
+    if (status) {
+      if (status.isDone) {
+        stageText = 'Initializing model…'
+        progressNode = <div className="h-full w-full rounded-full bg-emerald-500" />
+      } else {
+        const mb = (status.loadedBytes / (1024 * 1024)).toFixed(1)
+
+        if (status.totalBytes) {
+          const totalMb = (status.totalBytes / (1024 * 1024)).toFixed(1)
+          const pct = Math.round((status.loadedBytes / status.totalBytes) * 100)
+          stageText = `Downloading model… ${mb} MB / ${totalMb} MB (${pct}%)`
+          progressNode = (
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+              style={{ width: `${pct}%` }}
+            />
+          )
+        } else {
+          // Unknown total size — indeterminate but show bytes transferred
+          stageText = `Downloading model… ${mb} MB / ~555 MB`
+          // Pulse the bar to show activity
+          progressNode = <div className="h-full w-1/2 animate-pulse rounded-full bg-emerald-500" />
+        }
+      }
+    }
 
     return (
-      <div className="space-y-3 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
+      <div className="relative space-y-3 overflow-hidden rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
         <div className="flex items-center gap-2 text-sm font-medium text-emerald-400">
           <Loader2 className="h-4 w-4 animate-spin" />
           <span>On-Device AI</span>
         </div>
-        <p className="text-xs text-white/50">{stage}</p>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-          {downloadPct > 0 ? (
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-              style={{ width: `${downloadPct}%` }}
-            />
-          ) : (
-            /* indeterminate shimmer when no content-length */
-            <div className="h-full w-1/3 animate-pulse rounded-full bg-emerald-500" />
-          )}
-        </div>
+        <p className="font-mono text-xs text-white/50">{stageText}</p>
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">{progressNode}</div>
         <p className="text-xs text-white/30">~555MB · downloaded once and cached in your browser</p>
         <button
           onClick={() => {
             abortRef.current?.abort()
             onDismiss()
           }}
-          className="text-xs text-white/30 underline transition-colors hover:text-white/60"
+          className="relative z-10 text-xs text-white/30 underline transition-colors hover:text-white/60"
         >
           Cancel
         </button>
