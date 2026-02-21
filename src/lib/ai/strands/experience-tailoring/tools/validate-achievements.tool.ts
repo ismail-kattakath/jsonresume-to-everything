@@ -10,33 +10,27 @@ import { z } from 'zod'
  * but has the tool as a deterministic anchor for structural issues.
  */
 export const validateAchievementsTool = tool({
-    name: 'validate_achievements_integrity',
-    description:
-        'Checks whether rewritten achievements are structurally valid. Validates count, length, and that ' +
-        'no achievement is suspiciously short or empty. Returns {valid: bool, issues: string[]}.',
-    inputSchema: z.object({
-        original: z
-            .array(z.string())
-            .describe('The original achievement strings before rewriting'),
-        rewritten: z
-            .array(z.string())
-            .describe('The rewritten achievement strings to validate'),
-    }),
-    callback: (input: { original: string[]; rewritten: string[] }) => {
-        const issues: string[] = []
+  name: 'validate_achievements_integrity',
+  description:
+    'Checks whether rewritten achievements are structurally valid. Validates count, length, and that ' +
+    'no achievement is suspiciously short or empty. Returns {valid: bool, issues: string[]}.',
+  inputSchema: z.object({
+    original: z.array(z.string()).describe('The original achievement strings before rewriting'),
+    rewritten: z.array(z.string()).describe('The rewritten achievement strings to validate'),
+  }),
+  callback: (input: { original: string[]; rewritten: string[] }) => {
+    const issues: string[] = []
 
-        if (input.rewritten.length !== input.original.length) {
-            issues.push(
-                `Count mismatch: expected ${input.original.length} achievements, got ${input.rewritten.length}`
-            )
-        }
+    if (input.rewritten.length !== input.original.length) {
+      issues.push(`Count mismatch: expected ${input.original.length} achievements, got ${input.rewritten.length}`)
+    }
 
-        input.rewritten.forEach((ach, i) => {
-            if (!ach || ach.trim().length < 10) {
-                issues.push(`Achievement [${i}] is too short or empty: "${ach}"`)
-            }
-        })
+    input.rewritten.forEach((ach, i) => {
+      if (!ach || ach.trim().length < 10) {
+        issues.push(`Achievement [${i}] is too short or empty: "${ach}"`)
+      }
+    })
 
-        return JSON.stringify({ valid: issues.length === 0, issues })
-    },
+    return JSON.stringify({ valid: issues.length === 0, issues })
+  },
 })

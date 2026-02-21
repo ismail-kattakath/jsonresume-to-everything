@@ -32,14 +32,13 @@ jest.mock('@strands-agents/sdk', () => {
   }
 })
 
-
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue('mock-model'),
 }))
 
 describe('skillsSortingGraph', () => {
   beforeEach(() => {
-    ; (Agent as unknown as jest.Mock).mockClear()
+    ;(Agent as unknown as jest.Mock).mockClear()
     jest.clearAllMocks()
     // Reset to happy-path defaults
     brainResponse = 'Analysis'
@@ -85,26 +84,26 @@ describe('skillsSortingGraph', () => {
   it('should retry when editor returns CRITIQUE then APPROVED', async () => {
     let editorCallCount = 0
     editorResponse = 'will-be-overridden'
-      ; (Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
-        systemPrompt,
-        invoke: jest.fn().mockImplementation((_prompt: string) => {
-          const sp = (systemPrompt || '').toLowerCase()
-          if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
-          if (sp.includes('scribe'))
+    ;(Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+      systemPrompt,
+      invoke: jest.fn().mockImplementation((_prompt: string) => {
+        const sp = (systemPrompt || '').toLowerCase()
+        if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
+        if (sp.includes('scribe'))
+          return Promise.resolve({
+            toString: () => '{"groupOrder": ["G1"], "skillOrder": {"G1": ["S1"]}}',
+          })
+        if (sp.includes('editor')) {
+          editorCallCount++
+          if (editorCallCount === 1)
             return Promise.resolve({
-              toString: () => '{"groupOrder": ["G1"], "skillOrder": {"G1": ["S1"]}}',
+              toString: () => 'CRITIQUE: missing something',
             })
-          if (sp.includes('editor')) {
-            editorCallCount++
-            if (editorCallCount === 1)
-              return Promise.resolve({
-                toString: () => 'CRITIQUE: missing something',
-              })
-            return Promise.resolve({ toString: () => 'APPROVED' })
-          }
-          return Promise.resolve({ toString: () => 'Default' })
-        }),
-      }))
+          return Promise.resolve({ toString: () => 'APPROVED' })
+        }
+        return Promise.resolve({ toString: () => 'Default' })
+      }),
+    }))
     const result = await sortSkillsGraph(mockSkills, 'JD', mockConfig)
     expect(result).toBeDefined()
     expect(result.groupOrder).toContain('G1')
@@ -113,22 +112,22 @@ describe('skillsSortingGraph', () => {
   it('should fall into fallback when APPROVED is received but JSON.parse fails', async () => {
     // Scribe returns valid JSON for fallback, but first APPROVED attempt gets bad JSON
     let scribeCallCount = 0
-      ; (Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
-        systemPrompt,
-        invoke: jest.fn().mockImplementation((_prompt: string) => {
-          const sp = (systemPrompt || '').toLowerCase()
-          if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
-          if (sp.includes('scribe')) {
-            scribeCallCount++
-            if (scribeCallCount === 1) return Promise.resolve({ toString: () => 'not-valid-json' })
-            return Promise.resolve({
-              toString: () => '{"groupOrder": ["G1"], "skillOrder": {"G1": ["S1"]}}',
-            })
-          }
-          if (sp.includes('editor')) return Promise.resolve({ toString: () => 'APPROVED' })
-          return Promise.resolve({ toString: () => 'Default' })
-        }),
-      }))
+    ;(Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+      systemPrompt,
+      invoke: jest.fn().mockImplementation((_prompt: string) => {
+        const sp = (systemPrompt || '').toLowerCase()
+        if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
+        if (sp.includes('scribe')) {
+          scribeCallCount++
+          if (scribeCallCount === 1) return Promise.resolve({ toString: () => 'not-valid-json' })
+          return Promise.resolve({
+            toString: () => '{"groupOrder": ["G1"], "skillOrder": {"G1": ["S1"]}}',
+          })
+        }
+        if (sp.includes('editor')) return Promise.resolve({ toString: () => 'APPROVED' })
+        return Promise.resolve({ toString: () => 'Default' })
+      }),
+    }))
     // First iteration: scribe returns bad JSON, editor says APPROVED, parse fails → critique recorded
     // Subsequent iteration: eventually either passes or falls to fallback
     const result = await sortSkillsGraph(mockSkills, 'JD', mockConfig)
@@ -136,7 +135,7 @@ describe('skillsSortingGraph', () => {
   })
 
   it('should throw if all iterations fail and fallback JSON is also invalid', async () => {
-    ; (Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+    ;(Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
       systemPrompt,
       invoke: jest.fn().mockImplementation(() => {
         const sp = (systemPrompt || '').toLowerCase()
@@ -153,19 +152,19 @@ describe('skillsSortingGraph', () => {
 
   it('should use markdown-wrapped JSON in fallback (strips code blocks)', async () => {
     const validJson = '{"groupOrder": ["G1"], "skillOrder": {"G1": ["S1"]}}'
-      ; (Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
-        systemPrompt,
-        invoke: jest.fn().mockImplementation(() => {
-          const sp = (systemPrompt || '').toLowerCase()
-          if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
-          if (sp.includes('scribe'))
-            return Promise.resolve({
-              toString: () => `\`\`\`json\n${validJson}\n\`\`\``,
-            })
-          if (sp.includes('editor')) return Promise.resolve({ toString: () => 'CRITIQUE: wrapped in md' })
-          return Promise.resolve({ toString: () => 'Default' })
-        }),
-      }))
+    ;(Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
+      systemPrompt,
+      invoke: jest.fn().mockImplementation(() => {
+        const sp = (systemPrompt || '').toLowerCase()
+        if (sp.includes('brain')) return Promise.resolve({ toString: () => 'Analysis' })
+        if (sp.includes('scribe'))
+          return Promise.resolve({
+            toString: () => `\`\`\`json\n${validJson}\n\`\`\``,
+          })
+        if (sp.includes('editor')) return Promise.resolve({ toString: () => 'CRITIQUE: wrapped in md' })
+        return Promise.resolve({ toString: () => 'Default' })
+      }),
+    }))
     // All iterations produce CRITIQUE, falls to fallback which strips backticks and parses
     const result = await sortSkillsGraph(mockSkills, 'JD', mockConfig)
     expect(result.groupOrder).toContain('G1')

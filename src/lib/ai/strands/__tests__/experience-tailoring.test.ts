@@ -3,40 +3,53 @@ import { AgentConfig } from '@/lib/ai/strands/types'
 
 jest.mock('@strands-agents/sdk', () => {
   return {
-    Agent: jest.fn().mockImplementation(({ systemPrompt }: { systemPrompt: string }) => ({
-      systemPrompt,
-      invoke: jest.fn().mockImplementation((prompt: string) => {
+    Agent: jest.fn().mockImplementation(({ systemPrompt }: { systemPrompt: string }) => {
+      const getResponse = (prompt: string) => {
         if (systemPrompt.includes('Alignment Analyst')) {
-          return Promise.resolve({ toString: () => 'Analysis score: High' })
+          return 'Analysis score: High'
         } else if (systemPrompt.includes('Resume Writer')) {
           if (prompt.includes('REFINEMENT_TRIGGER')) {
-            return Promise.resolve({ toString: () => 'Refined description' })
+            return 'Refined description'
           }
-          return Promise.resolve({ toString: () => 'Tailored description' })
+          return 'Tailored description'
         } else if (systemPrompt.includes('Achievement Optimizer')) {
-          return Promise.resolve({
-            toString: () => 'Tailored achievement 1\nTailored achievement 2',
-          })
+          return 'Tailored achievement 1\nTailored achievement 2'
         } else if (systemPrompt.includes('Fact-Checking Auditor')) {
           if (prompt.includes('REFINEMENT_TRIGGER') && !prompt.includes('Refined')) {
-            return Promise.resolve({ toString: () => 'CRITIQUE: Inaccuracy' })
+            return 'CRITIQUE: Inaccuracy'
           }
-          return Promise.resolve({ toString: () => 'APPROVED' })
+          return 'APPROVED'
         } else if (systemPrompt.includes('JD-Resume Alignment Evaluator')) {
           if (prompt.includes('RELEVANCE_TRIGGER') && !prompt.includes('highlight JD')) {
-            return Promise.resolve({
-              toString: () => 'CRITIQUE: Low relevance',
-            })
+            return 'CRITIQUE: Low relevance'
           }
-          return Promise.resolve({ toString: () => 'APPROVED' })
+          return 'APPROVED'
         }
-        return Promise.resolve({ toString: () => 'Default' })
-      }),
-    })),
+        return 'Default'
+      }
+
+      return {
+        systemPrompt,
+        invoke: jest.fn().mockImplementation(async (prompt: string) => {
+          const text = getResponse(prompt)
+          return { toString: () => text }
+        }),
+        stream: jest.fn().mockImplementation(async (prompt: string) => {
+          const text = getResponse(prompt)
+          return {
+            async *[Symbol.asyncIterator]() {
+              yield { type: 'agentResult', toString: () => text }
+            },
+          }
+        }),
+        messages: [],
+      }
+    }),
     tool: jest.fn().mockImplementation((config) => config),
+    SlidingWindowConversationManager: jest.fn().mockImplementation(() => ({})),
+    TelemetryHookProvider: jest.fn().mockImplementation(() => ({})),
   }
 })
-
 
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue('mock-model'),

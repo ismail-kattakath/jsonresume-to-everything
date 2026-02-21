@@ -1,12 +1,12 @@
-import { validateJDFormatTool } from '../jd-refinement/tools/validate-format.tool'
+import { validateJDFormatTool } from '@/lib/ai/strands/jd-refinement/tools/validate-format.tool'
 
 jest.mock('@strands-agents/sdk', () => ({
-    tool: jest.fn().mockImplementation((config) => config),
+  tool: jest.fn().mockImplementation((config) => config),
 }))
 
 describe('validateJDFormatTool', () => {
-    it('should return valid true for properly formatted JD', () => {
-        const goodJD = `
+  it('should return valid true for properly formatted JD', () => {
+    const goodJD = `
 # position-title
 Software Engineer
 
@@ -22,13 +22,13 @@ Software Engineer
 - React
 - TypeScript
 `
-        const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: goodJD }))
-        expect(result.valid).toBe(true)
-        expect(result.issues).toHaveLength(0)
-    })
+    const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: goodJD }))
+    expect(result.valid).toBe(true)
+    expect(result.issues).toHaveLength(0)
+  })
 
-    it('should complain if markdown bold formatting is used', () => {
-        const jd = `
+  it('should complain if markdown bold formatting is used', () => {
+    const jd = `
 # position-title
 **Software Engineer**
 
@@ -41,13 +41,13 @@ Software Engineer
 # required-skills
 - React
 `
-        const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
-        expect(result.valid).toBe(false)
-        expect(result.issues).toContain('Contains disallowed bold markdown (**)')
-    })
+    const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
+    expect(result.valid).toBe(false)
+    expect(result.issues).toContain('Contains disallowed bold markdown (**)')
+  })
 
-    it('should enforce max 5 items for list sections', () => {
-        const jd = `
+  it('should enforce max 5 items for list sections', () => {
+    const jd = `
 # position-title
 Dev
 
@@ -65,24 +65,26 @@ Dev
 # required-skills
 - React
 `
-        const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
-        expect(result.valid).toBe(false)
-        expect(result.issues[0]).toContain('core-responsibilities has 6 items (max 5)')
-    })
+    const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
+    expect(result.valid).toBe(false)
+    expect(result.issues[0]).toContain('core-responsibilities has 6 items (max 5)')
+  })
 
-    it('should flag missing sections', () => {
-        const jd = `
+  it('should flag missing sections', () => {
+    const jd = `
 # position-title
 Dev
 
 # required-skills
 - React
 `
-        const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
-        expect(result.valid).toBe(false)
-        expect(result.issues).toEqual(expect.arrayContaining([
-            "Missing required section: # core-responsibilities",
-            "Missing required section: # desired-qualifications"
-        ]))
-    })
+    const result = JSON.parse((validateJDFormatTool as any).callback({ jd_text: jd }))
+    expect(result.valid).toBe(false)
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        'Missing required section: # core-responsibilities',
+        'Missing required section: # desired-qualifications',
+      ])
+    )
+  })
 })

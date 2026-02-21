@@ -1,29 +1,22 @@
 import { StreamCallback } from '@/types/openai'
 import { TailoringAgents } from '@/lib/ai/strands/experience-tailoring/agents'
+import { runAgentStream } from '@/lib/ai/strands/experience-tailoring/utils'
 
-/**
- *
- */
-export interface VerificationStageInput {
-  jobDescription: string
-  originalDescription: string
-  originalAchievements: string[]
-  rewrittenDescription: string
-  rewrittenAchievements: string[]
-  analysis: string
-}
+import { TailoringInvocationState } from '@/lib/ai/strands/experience-tailoring/types'
 
 /**
  * Stage 4: Run fact checker and relevance evaluator, and refine description if needed.
  */
 export async function runVerificationStage(
   agents: TailoringAgents,
-  input: VerificationStageInput,
+  state: TailoringInvocationState,
   onProgress?: StreamCallback
-): Promise<string> {
-  const { jobDescription, originalDescription, originalAchievements, rewrittenAchievements, analysis } = input
+): Promise<void> {
+  const { jobDescription, rewrittenDescription: originalDescription, finalTechStack: analysis } = state
+  const originalAchievements = state.rewrittenAchievements ?? []
+  const rewrittenAchievements = state.rewrittenAchievements ?? []
 
-  let currentDescription = input.rewrittenDescription
+  let currentDescription = state.rewrittenDescription || ''
 
   // Stage 4a: Fact checking loop (max 2 iterations)
   onProgress?.({ content: 'Validating factual accuracy...', done: false })
@@ -35,8 +28,11 @@ export async function runVerificationStage(
       `Original Achievements:\n${originalAchievements.join('\n')}\n\n` +
       `Rewritten Achievements:\n${rewrittenAchievements.join('\n')}`
 
-    const factCheckResult = await agents.factChecker.invoke(factCheckPrompt)
-    const factCheckText = factCheckResult.toString().trim()
+    const factCheckText = await runAgentStream(
+      await agents.factChecker.stream(factCheckPrompt),
+      onProgress,
+      'Fact Checking'
+    )
 
     if (factCheckText.startsWith('APPROVED')) {
       break
@@ -44,8 +40,11 @@ export async function runVerificationStage(
       // Use critique to refine
       const descriptionPrompt = `Analysis:\n${analysis}\n\nOriginal Description:\n${originalDescription}\n\nJob Description:\n${jobDescription}`
       const refinementPrompt = `${descriptionPrompt}\n\nFact Check Feedback: ${factCheckText}\n\nPlease revise to address these concerns.`
-      const refinedResult = await agents.descriptionWriter.invoke(refinementPrompt)
-      currentDescription = refinedResult.toString().trim()
+      currentDescription = await runAgentStream(
+        await agents.descriptionWriter.stream(refinementPrompt),
+        onProgress,
+        'Refining Description'
+      )
     }
   }
 
@@ -58,8 +57,11 @@ export async function runVerificationStage(
       `Job Description:\n${jobDescription}\n\n` +
       `Rewritten Content:\nDescription: ${currentDescription}\nAchievements:\n${rewrittenAchievements.join('\n')}`
 
-    const relevanceResult = await agents.relevanceEvaluator.invoke(relevancePrompt)
-    const relevanceText = relevanceResult.toString().trim()
+    const relevanceText = await runAgentStream(
+      await agents.relevanceEvaluator.stream(relevancePrompt),
+      onProgress,
+      'Evaluating Relevance'
+    )
 
     if (relevanceText.startsWith('APPROVED')) {
       break
@@ -67,10 +69,13 @@ export async function runVerificationStage(
       // Use critique to enhance relevance
       const descriptionPrompt = `Analysis:\n${analysis}\n\nOriginal Description:\n${originalDescription}\n\nJob Description:\n${jobDescription}`
       const enhancementPrompt = `${descriptionPrompt}\n\nRelevance Feedback: ${relevanceText}\n\nPlease enhance to better highlight JD alignment.`
-      const enhancedResult = await agents.descriptionWriter.invoke(enhancementPrompt)
-      currentDescription = enhancedResult.toString().trim()
+      currentDescription = await runAgentStream(
+        await agents.descriptionWriter.stream(enhancementPrompt),
+        onProgress,
+        'Enhancing Relevance'
+      )
     }
   }
 
-  return currentDescription
+  state.rewrittenDescription = currentDescription
 }

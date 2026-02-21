@@ -28,7 +28,6 @@ jest.mock('@strands-agents/sdk', () => {
   }
 })
 
-
 jest.mock('../factory', () => ({
   createModel: jest.fn().mockReturnValue('mock-model'),
 }))
@@ -47,7 +46,7 @@ describe('achievementsSortingGraph', () => {
   })
 
   it('should recover from critique with corrected JSON', async () => {
-    ; (Agent as unknown as jest.Mock)
+    ;(Agent as unknown as jest.Mock)
       .mockImplementationOnce(() => ({
         invoke: jest.fn().mockResolvedValue({ toString: () => 'Analysis' }),
       }))
@@ -66,7 +65,7 @@ describe('achievementsSortingGraph', () => {
   })
 
   it('should fallback to original order on invalid JSON', async () => {
-    ; (Agent as unknown as jest.Mock)
+    ;(Agent as unknown as jest.Mock)
       .mockImplementationOnce(() => ({
         invoke: jest.fn().mockResolvedValue({ toString: () => 'Analysis' }),
       }))
@@ -82,7 +81,7 @@ describe('achievementsSortingGraph', () => {
   })
 
   it('should fallback if indices are missing', async () => {
-    ; (Agent as unknown as jest.Mock)
+    ;(Agent as unknown as jest.Mock)
       .mockImplementationOnce(() => ({
         invoke: jest.fn().mockResolvedValue({ toString: () => 'Analysis' }),
       }))
@@ -97,7 +96,7 @@ describe('achievementsSortingGraph', () => {
   })
 
   it('should handle iteration limit in review loop', async () => {
-    ; (Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt: _ }: { systemPrompt: string }) => ({
+    ;(Agent as unknown as jest.Mock).mockImplementation(({ systemPrompt: _ }: { systemPrompt: string }) => ({
       invoke: jest.fn().mockResolvedValue({
         toString: () => 'CRITIQUE: Keep failing\n{"rankedIndices": [1, 0]}',
       }),

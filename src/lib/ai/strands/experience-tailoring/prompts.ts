@@ -34,8 +34,8 @@ export const SYSTEM_PROMPTS = {
     '3. **Domains**: Business/functional areas (e.g., FinTech, MLOps, Edge Computing)\n' +
     '4. **Soft Skills**: Only include if JD explicitly weights them (e.g., stakeholder management)\n\n' +
     'CRITICAL: Only list keywords that are ABSENT from the original achievements text.\n\n' +
-    'OUTPUT FORMAT (strict JSON, no markdown, no code blocks):\n' +
-    '{"missingKeywords":["kw1","kw2"],"criticalKeywords":["must-have"],"niceToHaveKeywords":["optional"]}\n\n' +
+    'REQUIRED OUTCOME: You MUST call the `finalize_keyword_extraction` tool with your strict JSON analysis to yield your decision.\n' +
+    'Do not output raw JSON text. Call the tool!\n\n' +
     'criticalKeywords = appear 2+ times in JD or explicitly listed as required skills\n' +
     'niceToHaveKeywords = appear once or in desired/preferred qualifications',
 
@@ -52,8 +52,8 @@ export const SYSTEM_PROMPTS = {
     '- Adding keyword would require expertise clearly absent from the achievement context\n' +
     '- Keyword would change what was actually accomplished\n' +
     '- Keyword is aspirational, not evidential\n\n' +
-    'OUTPUT FORMAT (strict JSON, no markdown, no code blocks):\n' +
-    '{"enrichmentMap":{"0":["kw1","kw2"],"1":["kw3"],"2":[]},"rationale":"brief justification"}\n\n' +
+    'REQUIRED OUTCOME: You MUST call the `finalize_enrichment_classification` tool with your strict JSON analysis to yield your decision.\n' +
+    'Do not output raw JSON text. Call the tool!\n\n' +
     'Keys are achievement indices as strings (0-based). Empty array = no injection allowed for that achievement.',
 
   ACHIEVEMENTS_OPTIMIZER:
@@ -110,11 +110,8 @@ export const SYSTEM_PROMPTS = {
     '- DO NOT add tech that is not evidenced in the finalized description/achievements.\n' +
     '- STRIP OUT all non-technologies (concepts/methodologies) from the current stack.\n' +
     '- ORDER: Original items (normalized and filtered) first, new additions last.\n\n' +
-    'OUTPUT FORMAT (strict JSON):\n' +
-    '{\n' +
-    '  "techStack": ["Item1", "Item2", ...],\n' +
-    '  "rationale": "brief explanation"\n' +
-    '}',
+    'REQUIRED OUTCOME: You MUST call the `finalize_tech_stack_alignment` tool with your strict JSON analysis to yield your decision.\n' +
+    'Do not output raw JSON text. Call the tool!',
 
   TECH_STACK_VALIDATOR:
     'You are a Tech Stack Alignment Auditor.\n\n' +

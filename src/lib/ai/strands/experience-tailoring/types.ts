@@ -32,3 +32,22 @@ export interface TechStackAlignmentResult {
   techStack: string[]
   rationale: string
 }
+
+/**
+ * Shared state object passed across all agent stages.
+ * Represents the manual orchestrator graph state.
+ */
+export interface TailoringInvocationState {
+  jobDescription: string
+  position: string
+  organization: string
+
+  originalDescription: string
+  originalAchievements: string[]
+  originalTechStack?: string[]
+
+  analysis?: string
+  rewrittenDescription?: string
+  rewrittenAchievements?: string[]
+  finalTechStack?: string[]
+}

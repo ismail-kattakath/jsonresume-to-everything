@@ -1,12 +1,12 @@
 import { StreamCallback } from '@/types/openai'
 import { AgentConfig } from '@/lib/ai/strands/types'
-import { ExperienceTailoringResult } from '@/lib/ai/strands/experience-tailoring/types'
+import { ExperienceTailoringResult, TailoringInvocationState } from '@/lib/ai/strands/experience-tailoring/types'
 import { createTailoringAgents } from '@/lib/ai/strands/experience-tailoring/agents'
 
-import { runAnalyzerAndWriterStage } from '@/lib/ai/strands/experience-tailoring/stages/1-analyzer-writer'
-import { runAchievementsStage } from '@/lib/ai/strands/experience-tailoring/stages/2-achievements'
-import { runTechStackStage } from '@/lib/ai/strands/experience-tailoring/stages/3-tech-stack'
-import { runVerificationStage } from '@/lib/ai/strands/experience-tailoring/stages/4-verification'
+import { runAnalyzerStage } from './stages/analyzer-writer'
+import { runAchievementsStage } from './stages/achievements'
+import { runTechStackStage } from './stages/tech-stack'
+import { runVerificationStage } from './stages/verification'
 
 export * from '@/lib/ai/strands/experience-tailoring/types'
 
@@ -38,46 +38,32 @@ export async function tailorExperienceToJDGraph(
 ): Promise<ExperienceTailoringResult> {
   const agents = createTailoringAgents(config)
 
+  const state: TailoringInvocationState = {
+    jobDescription,
+    position,
+    organization,
+    originalDescription: description,
+    originalAchievements: achievements,
+    originalTechStack: techStack,
+  }
+
   // Stage 1: Analyze alignment potential & rewrite description
-  const { rewrittenDescription, analysis } = await runAnalyzerAndWriterStage(
-    agents,
-    { jobDescription, position, organization, description, achievements },
-    onProgress
-  )
+  await runAnalyzerStage(agents, state, onProgress)
 
   // Stage 2: Keyword extraction, enrichment, and formatting
-  const rewrittenAchievements = await runAchievementsStage(
-    agents,
-    { jobDescription, achievements, analysis },
-    onProgress
-  )
+  await runAchievementsStage(agents, state, onProgress)
 
   // Stage 3: Tech Stack Alignment (only if techStack provided and non-empty)
-  const finalTechStack = await runTechStackStage(
-    agents,
-    { jobDescription, rewrittenDescription, rewrittenAchievements, techStack },
-    onProgress
-  )
+  await runTechStackStage(agents, state, onProgress)
 
   // Stage 4: Fact checking & relevance evaluation
-  const finalDescription = await runVerificationStage(
-    agents,
-    {
-      jobDescription,
-      originalDescription: description,
-      originalAchievements: achievements,
-      rewrittenDescription,
-      rewrittenAchievements,
-      analysis,
-    },
-    onProgress
-  )
+  await runVerificationStage(agents, state, onProgress)
 
   onProgress?.({ content: 'Experience tailored!', done: true })
 
   return {
-    description: finalDescription,
-    achievements: rewrittenAchievements,
-    techStack: finalTechStack,
+    description: state.rewrittenDescription || description,
+    achievements: state.rewrittenAchievements || achievements,
+    techStack: state.finalTechStack || techStack,
   }
 }

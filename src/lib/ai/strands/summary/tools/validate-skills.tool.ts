@@ -9,17 +9,17 @@ import { validateSkillsInSummary } from '@/lib/ai/strands/summary/utils'
  * @param allowedSkills - The list of permitted technology/skill names
  */
 export function createValidateSkillsTool(allowedSkills: string[]) {
-    return tool({
-        name: 'validate_skills',
-        description:
-            'Checks if the summary contains any technologies NOT in the allowed skills list. ' +
-            'Call this before finalizing the summary to ensure compliance.',
-        inputSchema: z.object({
-            summary: z.string().describe('The generated professional summary text to validate'),
-        }),
-        callback: (input: { summary: string }) => {
-            const result = validateSkillsInSummary(input.summary, allowedSkills)
-            return JSON.stringify(result)
-        },
-    })
+  return tool({
+    name: 'validate_skills',
+    description:
+      'Checks if the summary contains any technologies NOT in the allowed skills list. ' +
+      'Call this before finalizing the summary to ensure compliance.',
+    inputSchema: z.object({
+      summary: z.string().describe('The generated professional summary text to validate'),
+    }),
+    callback: (input: { summary: string }) => {
+      const result = validateSkillsInSummary(input.summary, allowedSkills)
+      return JSON.stringify(result)
+    },
+  })
 }
