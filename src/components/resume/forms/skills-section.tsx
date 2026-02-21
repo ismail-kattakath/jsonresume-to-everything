@@ -13,9 +13,9 @@ import { AccordionCard } from '@/components/ui/accordion-card'
 import { SkillGroupHeader } from './skill-group-header'
 import Skill from './skill'
 import AIActionButton from '@/components/ui/ai-action-button'
-import { FormTextarea } from '@/components/ui/form-textarea'
 import { AILoadingToast } from '@/components/ui/ai-loading-toast'
 import { tooltips } from '@/config/tooltips'
+import AIContentGenerator from '@/components/document-builder/shared-forms/ai-content-generator'
 import type { DropResult } from '@hello-pangea/dnd'
 
 /**
@@ -26,7 +26,6 @@ export function SkillsSection() {
   const context = useContext(ResumeContext)
   const { settings, updateSettings, isConfigured, setIsAnyAIActionActive } = useAISettings()
   const [isSorting, setIsSorting] = useState(false)
-  const [isExtractingSkills, setIsExtractingSkills] = useState(false)
 
   if (!context) return null
 
@@ -136,66 +135,6 @@ export function SkillsSection() {
     }
   }
 
-  const handleAIExtractSkills = async () => {
-    if (!isConfigured) {
-      toast.error('AI not configured', {
-        description: 'Please fill in the API settings and job description in the Generative AI Settings section above.',
-      })
-      return
-    }
-
-    if (!settings.jobDescription || settings.jobDescription.trim().length < 50) {
-      toast.error('Job description too short', {
-        description: 'Please provide a more detailed job description first.',
-      })
-      return
-    }
-
-    setIsExtractingSkills(true)
-    setIsAnyAIActionActive(true)
-    let toastId: string | number | undefined
-
-    const extractPromise = extractSkillsGraph(
-      settings.jobDescription,
-      {
-        apiUrl: settings.apiUrl,
-        apiKey: settings.apiKey,
-        model: settings.model,
-        providerType: settings.providerType,
-      },
-      (chunk: { content?: string; done: boolean }) => {
-        if (chunk.content) {
-          console.log('[Skills Extraction Graph]', chunk.content)
-          if (!toastId) {
-            toastId = toast(<AILoadingToast message={chunk.content} />, {
-              duration: Infinity,
-            })
-          } else {
-            toast(<AILoadingToast message={chunk.content} />, {
-              id: toastId,
-              duration: Infinity,
-            })
-          }
-        }
-      }
-    )
-
-    try {
-      const skills = await extractPromise
-      if (toastId) toast.dismiss(toastId)
-
-      updateSettings({ skillsToHighlight: skills })
-      setIsExtractingSkills(false)
-      setIsAnyAIActionActive(false)
-      toast.success('Skills extracted and aligned with your resume!')
-    } catch (err: unknown) {
-      if (toastId) toast.dismiss(toastId)
-      setIsExtractingSkills(false)
-      setIsAnyAIActionActive(false)
-      toast.error(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
-    }
-  }
-
   return (
     <div className="space-y-6">
       <DnDContext onDragEnd={handleDragEnd}>
@@ -293,23 +232,18 @@ export function SkillsSection() {
       )}
 
       <div className="pt-2">
-        <FormTextarea
+        <AIContentGenerator
           label="Skills to highlight"
           name="skillsToHighlight"
           value={settings.skillsToHighlight}
-          onChange={(e) => updateSettings({ skillsToHighlight: e.target.value })}
+          onChange={(val) => updateSettings({ skillsToHighlight: typeof val === 'string' ? val : val.target.value })}
+          onGenerated={(val) => updateSettings({ skillsToHighlight: val })}
           placeholder="E.g. Focus on cloud architecture, mention leadership experience..."
           variant="blue"
           minHeight="80px"
-          helpText="Specify skills to highlight (comma-separated)"
-          onAIAction={handleAIExtractSkills}
-          isAILoading={isExtractingSkills}
-          aiButtonTitle="Extract skills from JD"
-          aiShowLabel={false}
-          aiVariant="amber"
-          isAIConfigured={isConfigured}
-          showCounter={false}
+          mode="skillsToHighlight"
         />
+        <p className="mt-1 text-xs text-white/50">{tooltips.skills.skillsToHighlight}</p>
       </div>
     </div>
   )

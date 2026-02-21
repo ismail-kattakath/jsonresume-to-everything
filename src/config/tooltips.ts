@@ -116,6 +116,7 @@ export const tooltips = {
     dragGroup: 'Drag to reorder skill groups - put most relevant first',
     dragSkill: 'Drag to reorder skills within this group',
     expandCollapse: 'Show or hide skills in this group',
+    skillsToHighlight: 'Identify key skills from the job description to emphasize in your resume',
   },
 
   // Additional Info (Certifications, Languages, Projects)

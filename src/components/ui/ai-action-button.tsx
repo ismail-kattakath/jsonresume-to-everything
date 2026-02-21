@@ -46,9 +46,15 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
   showLabel = true,
   className: customClassName = '',
   fullWidth = false,
-  variant = 'blue',
+  variant,
 }) => {
-  const { isAIWorking } = useAISettings()
+  const { isAIWorking, settings } = useAISettings()
+  const isOnDevice = settings.providerType === 'on-device'
+
+  // Default variant based on provider type if not explicitly set
+  // On-device AI always uses green variant for the "green box" feel
+  const effectiveVariant = isOnDevice ? 'green' : variant || 'blue'
+
   const iconSize = (() => {
     switch (size) {
       case 'lg':
@@ -62,7 +68,7 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
   })()
 
   const baseButtonVariant = (() => {
-    switch (variant) {
+    switch (effectiveVariant) {
       case 'amber':
         return 'gradient-amber'
       case 'green':
@@ -73,17 +79,20 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
     }
   })() as 'gradient-blue' | 'gradient-amber' | 'gradient-green'
 
-  const isActuallyDisabled = !isConfigured || isLoading || explicitlyDisabled || isAIWorking
-  const isSelfLoading = isLoading
+  const isActuallyDisabled = (!isConfigured && !isOnDevice) || isLoading || explicitlyDisabled || isAIWorking
   const showLoadingState = isLoading || isAIWorking
 
   const showTooltip = !showLabel || (isActuallyDisabled && !showLoadingState)
+
+  // Add lock icon or special prefix for on-device AI label if needed
+  const displayLabel = isOnDevice && label === 'Generate by JD' ? '🔒 On-Device AI' : label
+
   const tooltipText =
     explicitlyDisabled && !showLoadingState
       ? 'Disabled while optimization is running'
-      : !isConfigured && !showLoadingState
+      : !isConfigured && !isOnDevice && !showLoadingState
         ? disabledTooltip
-        : label
+        : displayLabel
 
   const icon = showLoadingState ? (
     <Loader2 className={`${iconSize} animate-spin`} />
@@ -105,10 +114,10 @@ const AIActionButton: React.FC<AIActionButtonProps> = ({
       size={size}
       fullWidth={fullWidth}
       icon={icon}
-      aria-label={label}
+      aria-label={displayLabel}
       className={customClassName}
     >
-      {showLabel && <span>{label}</span>}
+      {showLabel && <span>{displayLabel}</span>}
     </BaseButton>
   )
 }

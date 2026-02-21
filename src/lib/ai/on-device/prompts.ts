@@ -107,3 +107,40 @@ Write the bullet points now:
 
 <assistant>`
 }
+/**
+ * Builds a prompt for on-device job description refinement.
+ */
+export function buildOnDeviceRefineJDPrompt(jobDescription: string): string {
+  return `<system>
+You are a job search expert. Refine the provided job description to be clearer, more structured, and highlight the most important requirements.
+Use bullet points for requirements. Keep the original meaning but make it professional and scannable.
+</system>
+
+<user>
+ORIGINAL JOB DESCRIPTION:
+${jobDescription}
+
+Refine this job description now:
+</user>
+
+<assistant>`
+}
+
+/**
+ * Builds a prompt for on-device skill extraction from a job description.
+ */
+export function buildOnDeviceExtractSkillsPrompt(jobDescription: string): string {
+  return `<system>
+You are a technical recruiter. Extract the top 10 relevant hard skills, technologies, and certifications from the job description.
+Return them as a simple comma-separated list. Do not include introductory text.
+</system>
+
+<user>
+JOB DESCRIPTION:
+${jobDescription}
+
+Extract the skills now (comma-separated list):
+</user>
+
+<assistant>`
+}

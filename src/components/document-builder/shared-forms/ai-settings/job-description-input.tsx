@@ -1,42 +1,28 @@
 'use client'
 
 import React from 'react'
-import { FormTextarea } from '@/components/ui/form-textarea'
+import AIContentGenerator from '@/components/document-builder/shared-forms/ai-content-generator'
 
 interface JobDescriptionInputProps {
   value: string
   onChange: (value: string) => void
-  onRefine: () => void
-  isAnalyzing: boolean
-  isConfigured: boolean
   disabled?: boolean
 }
 
-const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
-  value,
-  onChange,
-  onRefine,
-  isAnalyzing,
-  isConfigured,
-  disabled,
-}) => {
+const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({ value, onChange, disabled }) => {
   return (
-    <FormTextarea
+    <AIContentGenerator
       label="Job Description"
       name="jobDescription"
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(val) => onChange(typeof val === 'string' ? val : val.target.value)}
       placeholder="Paste the job description here..."
       variant="blue"
       minHeight="160px"
-      onAIAction={onRefine}
-      isAILoading={isAnalyzing}
-      isAIConfigured={isConfigured}
-      aiButtonTitle="Refine with AI"
-      aiShowLabel={false}
-      aiVariant="amber"
+      mode="jobDescription"
       disabled={disabled}
-      showCounter={false}
+      showCharacterCount={false}
+      onGenerated={(val) => onChange(val)}
     />
   )
 }

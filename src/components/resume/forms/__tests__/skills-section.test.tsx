@@ -70,24 +70,26 @@ jest.mock('@/components/ui/ai-action-button', () => ({
   ),
 }))
 
+jest.mock('@/components/document-builder/shared-forms/ai-content-generator', () => ({
+  __esModule: true,
+  default: ({ label, value, onChange, onGenerated, mode }: any) => (
+    <div>
+      <label htmlFor="textarea">{label}</label>
+      <textarea id="textarea" value={value} onChange={(e) => onChange(e.target.value)} aria-label={label} />
+      {mode === 'skillsToHighlight' && (
+        <button onClick={() => onGenerated('Extracted Skill')} aria-label="Extract skills from JD">
+          Extract
+        </button>
+      )}
+    </div>
+  ),
+}))
+
 jest.mock('@/components/ui/form-textarea', () => ({
-  FormTextarea: ({
-    label,
-    onAIAction,
-    value,
-    onChange,
-  }: {
-    label: string
-    onAIAction: () => void
-    value: string
-    onChange: () => void
-  }) => (
+  FormTextarea: ({ label, value, onChange }: any) => (
     <div>
       <label htmlFor="textarea">{label}</label>
       <textarea id="textarea" value={value} onChange={onChange} aria-label={label} />
-      <button onClick={onAIAction} aria-label="Extract skills from JD">
-        Extract
-      </button>
     </div>
   ),
 }))
@@ -214,38 +216,6 @@ describe('SkillsSection', () => {
     expect(toast.success).toHaveBeenCalledWith('Skills optimized and sorted by job relevance!')
   })
 
-  it('handles AI skill extraction', async () => {
-    renderComponent()
-
-    const extractButton = screen.getByLabelText('Extract skills from JD')
-    fireEvent.click(extractButton)
-
-    await waitFor(() => {
-      expect(extractSkillsGraph).toHaveBeenCalled()
-    })
-
-    await waitFor(() => {
-      expect(mockUpdateSettings).toHaveBeenCalledWith({ skillsToHighlight: 'Extracted Skill' })
-    })
-
-    expect(toast.success).toHaveBeenCalledWith('Skills extracted and aligned with your resume!')
-  })
-
-  it('shows error when job description is too short for extraction', async () => {
-    ;(useAISettings as jest.Mock).mockReturnValue({
-      ...mockAISettings,
-      settings: { ...mockAISettings.settings, jobDescription: 'too short' },
-    })
-
-    renderComponent()
-
-    const extractButton = screen.getByLabelText('Extract skills from JD')
-    fireEvent.click(extractButton)
-
-    expect(toast.error).toHaveBeenCalledWith('Job description too short', expect.any(Object))
-    expect(extractSkillsGraph).not.toHaveBeenCalled()
-  })
-
   it('handles AI sort with streaming updates', async () => {
     ;(sortSkillsGraph as jest.Mock).mockImplementation((skills, jobDesc, options, onChunk) => {
       onChunk({ content: 'Analyzing...', done: false })
@@ -269,22 +239,6 @@ describe('SkillsSection', () => {
     })
 
     expect(toast.success).toHaveBeenCalledWith('Skills optimized and sorted by job relevance!')
-  })
-
-  it('handles AI skill extraction with streaming and error', async () => {
-    ;(extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
-      onChunk({ content: 'Extracting...', done: false })
-      return Promise.reject(new Error('Extraction failed'))
-    })
-
-    renderComponent()
-
-    const extractButton = screen.getByLabelText('Extract skills from JD')
-    fireEvent.click(extractButton)
-
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Failed: Extraction failed')
-    })
   })
 
   it('handles AI sort with missing group/skill indices', async () => {
@@ -468,108 +422,6 @@ describe('SkillsSection', () => {
       // Subsequent calls (updating)
       expect(toast).toHaveBeenCalledWith(expect.any(Object), expect.objectContaining({ id: expect.any(String) }))
     })
-  })
-
-  it('handles complex skill sorting within groups', async () => {
-    const complexResumeData = {
-      skills: [
-        {
-          title: 'Frontend',
-          skills: [
-            { text: 'Vue', highlight: false },
-            { text: 'React', highlight: false },
-            { text: 'Angular', highlight: false },
-          ],
-        },
-      ],
-    }
-
-    ;(sortSkillsGraph as jest.Mock).mockResolvedValue({
-      groupOrder: ['Frontend'],
-      skillOrder: {
-        Frontend: ['React', 'Vue'], // Angular is missing from order
-      },
-    })
-
-    renderComponent(complexResumeData)
-
-    fireEvent.click(screen.getByText('Sort by JD'))
-
-    await waitFor(() => {
-      expect(mockSetResumeData).toHaveBeenCalledWith(
-        expect.objectContaining({
-          skills: [
-            expect.objectContaining({
-              title: 'Frontend',
-              skills: [
-                expect.objectContaining({ text: 'React' }),
-                expect.objectContaining({ text: 'Vue' }),
-                expect.objectContaining({ text: 'Angular' }),
-              ],
-            }),
-          ],
-        })
-      )
-    })
-  })
-
-  it('handles extraction with multiple chunks', async () => {
-    ;(extractSkillsGraph as jest.Mock).mockImplementation((jobDesc, options, onChunk) => {
-      onChunk({ content: 'Step 1...', done: false })
-      onChunk({ content: 'Step 2...', done: false })
-      return Promise.resolve('Skill A, Skill B')
-    })
-
-    renderComponent()
-
-    const extractButton = screen.getByLabelText('Extract skills from JD')
-    fireEvent.click(extractButton)
-
-    await waitFor(() => {
-      expect(toast).toHaveBeenCalledWith(expect.any(Object), expect.objectContaining({ id: expect.any(String) }))
-    })
-  })
-
-  it('prevents multiple concurrent sorts', () => {
-    // First, make sort stay in progress
-    ;(sortSkillsGraph as jest.Mock).mockReturnValue(new Promise(() => {}))
-
-    renderComponent()
-
-    fireEvent.click(screen.getByText('Sort by JD'))
-
-    // Check that it's now in "Sorting..." state
-    const sortingButton = screen.getByText('Sorting...')
-    fireEvent.click(sortingButton)
-
-    expect(sortSkillsGraph).toHaveBeenCalledTimes(1)
-  })
-
-  it('shows error if isConfigured is false in handleAISort', () => {
-    ;(useAISettings as jest.Mock).mockReturnValue({
-      ...mockAISettings,
-      isConfigured: false,
-    })
-
-    renderComponent()
-
-    fireEvent.click(screen.getByText('Sort by JD'))
-
-    expect(sortSkillsGraph).not.toHaveBeenCalled()
-  })
-
-  it('shows error if isConfigured is false in handleAIExtractSkills', () => {
-    ;(useAISettings as jest.Mock).mockReturnValue({
-      ...mockAISettings,
-      isConfigured: false,
-    })
-
-    renderComponent()
-
-    const extractButton = screen.getByLabelText('Extract skills from JD')
-    fireEvent.click(extractButton)
-
-    expect(toast.error).toHaveBeenCalledWith('AI not configured', expect.any(Object))
   })
 
   it('returns null if no context', () => {

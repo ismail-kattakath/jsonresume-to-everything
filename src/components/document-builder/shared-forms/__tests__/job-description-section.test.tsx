@@ -21,7 +21,7 @@ jest.mock('sonner', () => {
 
 // Mock components
 jest.mock('../ai-settings/job-description-input', () => {
-  return function MockJDInput({ value, onChange, onRefine }: any) {
+  return function MockJDInput({ value, onChange }: any) {
     return (
       <div>
         <textarea
@@ -29,7 +29,6 @@ jest.mock('../ai-settings/job-description-input', () => {
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
-        <button onClick={onRefine}>Refine with AI</button>
       </div>
     )
   }
@@ -163,107 +162,6 @@ describe('JobDescriptionSection', () => {
         jobDescription: 'New JD',
       })
     )
-  })
-
-  it('calls analyzeJobDescriptionGraph when Refine button is clicked', async () => {
-    const refinedJD = 'Refined Job Description'
-    ;(aiAgent.analyzeJobDescriptionGraph as jest.Mock).mockResolvedValue(refinedJD)
-
-    // Ensure JD is long enough to pass validation
-    const longJD = 'a'.repeat(60)
-    const settingsWithLongJD = { ...mockAISettings, jobDescription: longJD }
-
-    const updateSettingsMock = jest.fn()
-    render(
-      <AISettingsContext.Provider
-        value={
-          {
-            settings: settingsWithLongJD as any,
-            updateSettings: updateSettingsMock,
-            isConfigured: true,
-            isPipelineActive: false,
-            setIsPipelineActive: jest.fn(),
-            connectionStatus: 'connected',
-            jobDescriptionStatus: 'valid',
-            validateAll: jest.fn(),
-            isAnyAIActionActive: false,
-            setIsAnyAIActionActive: jest.fn(),
-            isAIWorking: false,
-            resetAll: jest.fn(),
-          } as any
-        }
-      >
-        <ResumeContext.Provider
-          value={
-            {
-              resumeData: mockResumeData,
-              setResumeData: mockSetResumeData,
-              handleProfilePicture: jest.fn(),
-              handleChange: jest.fn(),
-            } as any
-          }
-        >
-          <JobDescriptionSection />
-        </ResumeContext.Provider>
-      </AISettingsContext.Provider>
-    )
-
-    const refineButton = screen.getByText(/Refine with AI/i)
-    fireEvent.click(refineButton)
-
-    await waitFor(() => {
-      expect(aiAgent.analyzeJobDescriptionGraph).toHaveBeenCalled()
-      expect(updateSettingsMock).toHaveBeenCalledWith({ jobDescription: refinedJD })
-    })
-  })
-
-  it('handles analyzeJobDescriptionGraph chunk callback', async () => {
-    const refinedJD = 'Refined Job Description'
-    const longJD = 'a'.repeat(60)
-    const settingsWithLongJD = { ...mockAISettings, jobDescription: longJD }
-
-    ;(aiAgent.analyzeJobDescriptionGraph as jest.Mock).mockImplementation((jd, config, onChunk) => {
-      onChunk({ content: 'Analyzing...', done: false })
-      return Promise.resolve(refinedJD)
-    })
-
-    renderComponent(mockResumeData, settingsWithLongJD)
-    const refineButton = screen.getByText(/Refine with AI/i)
-    fireEvent.click(refineButton)
-
-    await waitFor(() => {
-      expect(toast).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ duration: Infinity }))
-    })
-  })
-
-  it('shows error if JD is too short for refinement', () => {
-    const shortJD = 'Too short'
-    const settingsWithShortJD = { ...mockAISettings, jobDescription: shortJD }
-
-    renderComponent(mockResumeData, settingsWithShortJD)
-
-    const refineButton = screen.getByText(/Refine with AI/i)
-    fireEvent.click(refineButton)
-
-    expect(toast.error).toHaveBeenCalled()
-    expect(aiAgent.analyzeJobDescriptionGraph).not.toHaveBeenCalled()
-  })
-
-  it('handles refinement errors gracefully', async () => {
-    const longJD = 'a'.repeat(60)
-    const settingsWithLongJD = { ...mockAISettings, jobDescription: longJD }
-    ;(aiAgent.analyzeJobDescriptionGraph as jest.Mock).mockRejectedValue(new Error('AI Error'))
-
-    renderComponent(mockResumeData, settingsWithLongJD)
-    const refineButton = screen.getByText(/Refine with AI/i)
-
-    await suppressConsoleError(/Refinement error/i, async () => {
-      fireEvent.click(refineButton)
-
-      await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled()
-      })
-    })
   })
 
   it('renders the AI Pipeline Button and handles onRun', async () => {

@@ -6,7 +6,13 @@ import AIActionButton from '@/components/ui/ai-action-button'
 import { toast } from 'sonner'
 import { useAISettings } from '@/lib/contexts/ai-settings-context'
 import { ResumeContext } from '@/lib/contexts/document-context'
-import { generateCoverLetterGraph, generateSummaryGraph, tailorExperienceToJDGraph } from '@/lib/ai/strands/agent'
+import {
+  generateCoverLetterGraph,
+  generateSummaryGraph,
+  tailorExperienceToJDGraph,
+  analyzeJobDescriptionGraph,
+  extractSkillsGraph,
+} from '@/lib/ai/strands/agent'
 import { AIAPIError, sanitizeAIError } from '@/lib/ai/api'
 import { fetchAvailableModels } from '@/lib/ai/models'
 import { analytics } from '@/lib/analytics'
@@ -18,6 +24,8 @@ import {
   buildOnDeviceCoverLetterPrompt,
   buildOnDeviceSummaryPrompt,
   buildOnDeviceWorkExperiencePrompt,
+  buildOnDeviceRefineJDPrompt,
+  buildOnDeviceExtractSkillsPrompt,
 } from '@/lib/ai/on-device/prompts'
 
 interface AIContentGeneratorProps {
@@ -32,7 +40,7 @@ interface AIContentGeneratorProps {
   maxLength?: number
   showCharacterCount?: boolean
   className?: string
-  mode: 'coverLetter' | 'summary' | 'workExperience'
+  mode: 'coverLetter' | 'summary' | 'workExperience' | 'jobDescription' | 'skillsToHighlight'
   disabled?: boolean
   experienceData?: {
     organization: string
@@ -85,6 +93,18 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
       successMessage: 'Experience description tailored successfully!',
       successDescription: 'The AI has optimized your experience for the job requirements.',
       errorMessage: 'Failed to tailor experience',
+    },
+    jobDescription: {
+      label: 'Job Description',
+      successMessage: 'Job description refined successfully!',
+      successDescription: 'The AI has structured and polished the job description.',
+      errorMessage: 'Failed to refine job description',
+    },
+    skillsToHighlight: {
+      label: 'Skills to highlight',
+      successMessage: 'Skills extracted successfully!',
+      successDescription: 'The AI has identified the most relevant skills from the JD.',
+      errorMessage: 'Failed to extract skills',
     },
   }
 
@@ -226,6 +246,56 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
         })
         setIsGenerating(false)
         return
+      } else if (mode === 'jobDescription') {
+        content = await analyzeJobDescriptionGraph(
+          settings.jobDescription,
+          {
+            apiUrl: settings.apiUrl,
+            apiKey: settings.apiKey,
+            model: settings.model || 'gpt-4o-mini',
+            providerType: settings.providerType,
+          },
+          (chunk) => {
+            if (chunk.content && !chunk.done) {
+              if (!toastId) {
+                toastId = toast(<AILoadingToast message={chunk.content} />, {
+                  duration: Infinity,
+                })
+              } else {
+                toast(<AILoadingToast message={chunk.content} />, {
+                  id: toastId,
+                  duration: Infinity,
+                })
+              }
+            }
+          }
+        )
+        if (toastId) toast.dismiss(toastId)
+      } else if (mode === 'skillsToHighlight') {
+        content = await extractSkillsGraph(
+          settings.jobDescription,
+          {
+            apiUrl: settings.apiUrl,
+            apiKey: settings.apiKey,
+            model: settings.model,
+            providerType: settings.providerType,
+          },
+          (chunk) => {
+            if (chunk.content) {
+              if (!toastId) {
+                toastId = toast(<AILoadingToast message={chunk.content} />, {
+                  duration: Infinity,
+                })
+              } else {
+                toast(<AILoadingToast message={chunk.content} />, {
+                  id: toastId,
+                  duration: Infinity,
+                })
+              }
+            }
+          }
+        )
+        if (toastId) toast.dismiss(toastId)
       } else {
         content = await generateCoverLetterGraph(
           resumeData,
@@ -317,6 +387,10 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
         experienceData?.achievements || [],
         settings.jobDescription
       )
+    } else if (mode === 'jobDescription') {
+      return buildOnDeviceRefineJDPrompt(settings.jobDescription)
+    } else if (mode === 'skillsToHighlight') {
+      return buildOnDeviceExtractSkillsPrompt(settings.jobDescription)
     }
     return buildOnDeviceSummaryPrompt(resumeData, settings.jobDescription)
   }
@@ -339,9 +413,7 @@ const AIContentGenerator: React.FC<AIContentGeneratorProps> = ({
         onAIAction={handleGenerate}
         isAILoading={isGenerating}
         isAIConfigured={isConfigured || isOnDevice}
-        aiButtonTitle={isOnDevice ? '🔒 On-Device AI' : 'Generate by JD'}
-        aiShowLabel={false}
-        aiVariant={isOnDevice ? 'green' : 'amber'}
+        aiButtonTitle={isOnDevice && mode === 'summary' ? '🔒 On-Device AI' : 'Generate by JD'}
       />
       {showOnDevicePanel && isOnDevice && (
         <OnDeviceGenerator

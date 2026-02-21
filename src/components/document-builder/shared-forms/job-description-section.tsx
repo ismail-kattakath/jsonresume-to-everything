@@ -17,51 +17,6 @@ const JobDescriptionSection = () => {
   const { resumeData, setResumeData } = useContext(ResumeContext)
   const { settings, updateSettings, isConfigured, isPipelineActive, setIsPipelineActive } = useAISettings()
 
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-
-  const handleRefineJD = async () => {
-    if (!isConfigured || !settings.jobDescription || settings.jobDescription.length < 50) {
-      toast.error('Add more detail to your job description first (min 50 chars)')
-      return
-    }
-
-    setIsAnalyzing(true)
-    const toastId: string | number | undefined = toast(<AILoadingToast message="Refining job description..." />, {
-      duration: Infinity,
-    })
-
-    try {
-      const refinedJD = await analyzeJobDescriptionGraph(
-        settings.jobDescription,
-        {
-          apiUrl: settings.apiUrl,
-          apiKey: settings.apiKey,
-          model: settings.model || 'gpt-4o-mini',
-          providerType: settings.providerType,
-        },
-        (chunk) => {
-          // Update toast with progress messages
-          if (chunk.content && !chunk.done) {
-            toast(<AILoadingToast message={chunk.content} />, {
-              id: toastId,
-              duration: Infinity,
-            })
-          }
-        }
-      )
-
-      updateSettings({ jobDescription: refinedJD })
-      toast.success('Job description refined successfully!', { id: toastId })
-    } catch (error) {
-      console.error('[JobDescriptionSection] Refinement error:', error)
-      toast.error(`Refinement failed: ${sanitizeAIError(error)}`, {
-        id: toastId,
-      })
-    } finally {
-      setIsAnalyzing(false)
-    }
-  }
-
   const handleRunPipeline = async () => {
     if (!isConfigured || !settings.jobDescription) return
 
@@ -166,15 +121,12 @@ const JobDescriptionSection = () => {
       <JobDescriptionInput
         value={settings.jobDescription}
         onChange={(val) => updateSettings({ jobDescription: val })}
-        onRefine={handleRefineJD}
-        isAnalyzing={isAnalyzing}
-        isConfigured={isConfigured}
-        disabled={isAnalyzing || isPipelineActive}
+        disabled={isPipelineActive}
       />
 
       <AIPipelineButton
         onRun={handleRunPipeline}
-        disabled={!isConfigured || !settings.jobDescription || isPipelineActive || isAnalyzing}
+        disabled={!isConfigured || !settings.jobDescription || isPipelineActive}
         isLoading={isPipelineActive}
       />
     </div>
