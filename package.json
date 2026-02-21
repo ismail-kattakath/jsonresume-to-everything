@@ -30,6 +30,7 @@
     "dev:reload": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true && rm -rf .next && npm run dev",
     "build": "next build",
     "download-resume": "if [ -f .env.local ]; then node --env-file=.env.local scripts/download-resume.mjs; else node scripts/download-resume.mjs; fi",
+    "sync-resume-markdown": "if [ -f .env.local ]; then node --env-file=.env.local scripts/sync-resume-markdown.mjs; else node scripts/sync-resume-markdown.mjs; fi",
     "postinstall": "npm run download-resume",
     "postbuild": "next-sitemap",
     "start": "next start",

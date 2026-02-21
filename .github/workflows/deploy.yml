@@ -75,6 +75,12 @@ jobs:
       - name: Download resume data
         run: npm run download-resume
 
+      - name: Sync resume markdown to Gist
+        run: npm run sync-resume-markdown
+        env:
+          RESUME_MD_GIST: ${{ secrets.RESUME_MD_GIST }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Build with Next.js
         run: npm run build
         env:
